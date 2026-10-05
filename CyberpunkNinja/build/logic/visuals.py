@@ -506,17 +506,25 @@ def r_init():
 
 @on("t_draw")
 def draw():
-    if ingame == 1 and chapter < 2 and (mode == "play" or mode == "dlg" or mode == "trans" or mode == "dead" or menu == "pause"):
+    live = 0
+    if ingame == 1 and (mode == "play" or mode == "dlg" or mode == "trans" or mode == "dead" or menu == "pause"):
+        live = 1
+    if live == 1 and chapter < 2:
         costume(join("rain_", floor(frame / 3) % 4))
         goto(0, 0)
         effect("ghost", 15)
+        show()
+    elif live == 1 and wind != 0:
+        costume(join("wind_", floor(frame / 2) % 4))
+        goto(0, 0)
+        effect("ghost", 20)
         show()
     else:
         hide()
 '''
 
 
-def parallax(k):
+def parallax(k, auto=0):
     return '''
 @flag
 def p_init():
@@ -541,9 +549,11 @@ def draw():
             costume("neon_alley")
         elif chapter == 2:
             costume("vaults")
-        else:
+        elif chapter == 3:
             costume("server_gardens")
-        po = (0 - px * %s) %% 480
+        else:
+            costume("rail")
+        po = (0 - px * %s - frame * %s * moving) %% 480
         if is_clone == 1:
             goto(po - 480, 0)
         else:
@@ -551,7 +561,7 @@ def draw():
         show()
     else:
         hide()
-''' % k
+''' % (k, auto)
 
 
 LEVEL = '''
@@ -638,6 +648,8 @@ def draw():
     want = 0
     if ingame == 1 and mode != "menu" and chapter < 2:
         want = 1
+    if ingame == 1 and mode != "menu" and chapter == 4 and moving == 1:
+        want = 2
     if want != amb:
         amb = want
         broadcast("amb")
@@ -650,6 +662,11 @@ def amb_go():
         while amb == 1:
             play("rain_loop")
             wait(C_RAIN_LEN)
+    elif amb == 2:
+        volume(opt_sfx * 7)
+        while amb == 2:
+            play("wind_loop")
+            wait(C_WIND_LEN)
     else:
         volume(0)
 '''

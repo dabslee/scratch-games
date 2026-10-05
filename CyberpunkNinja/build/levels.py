@@ -49,6 +49,8 @@ class Room:
         self.objs = []
         self.exits = {}
         self.flags = []
+        self.wind = 0                   # constant push on Hotaru (px per frame)
+        self.moving = 0                 # 1 = the train is moving (background scrolls)
 
     # --- terrain -------------------------------------------------------
     def solid(self, c1, r1, c2, r2, ch='#'):
@@ -641,15 +643,137 @@ c7.obj('trig', cx(10), 0, a='muk_gate')
 # C8 Mukuro's dojo --------------------------------------------------
 c8 = room('c8', 3, "Mukuro's Dojo")
 c8.solid(0, 19, 29, 22).solid(0, 0, 29, 1)
-c8.solid(0, 2, 0, 13).solid(29, 2, 29, 18)
+c8.solid(0, 2, 0, 13).solid(29, 2, 29, 13)
 c8.plat(3, 7, 14).plat(22, 26, 14)
 c8.deco('g', 1, 19, 28, 19)
 c8.obj('door', left(0) + 8, bottom(18), a='ambush')
+c8.obj('door', left(29), bottom(18), a='lock')
 c8.obj('toro', cx(11), bottom(18))
 c8.obj('toro', cx(18), bottom(18))
 c8.obj('mukuro', cx(22), bottom(18))
 c8.obj('trig', cx(4), 0, a='muk_start')
 c8.flags.append('boss')
+
+
+# =====================================================================
+# CHAPTER 4: MONORAIL ASCENT
+# =====================================================================
+ROOF = 15                               # car roofs: top edge at stage y = -60
+
+
+def car(r, c1, c2, roof=ROOF):
+    """A monorail car: a solid body from the roof down, with windows."""
+    r.solid(c1, roof, c2, 22).deco('c', c1, roof, c2, roof)
+    for c in range(c1 + 1, c2, 3):
+        r.deco('o', c, roof + 2)
+    return r
+
+
+# D1 Platform 9 (station) ----------------------------------------------
+d1 = room('d1', 4, 'Platform 9')
+d1.solid(0, 19, 25, 22).solid(0, 0, 25, 2).solid(0, 3, 0, 13)
+car(d1, 18, 29)
+d1.deco('i', 8, 3, 8, 18).deco('i', 15, 3, 15, 18).deco('z', 1, 19, 17, 19)
+d1.obj('start', cx(2), bottom(18))
+d1.obj('shrine', cx(5), bottom(18))
+d1.obj('sign', cx(11) + 8, top(4), a='NeonSign_Danger')
+d1.obj('lantern', cx(4), top(3))
+d1.obj('lantern', cx(12), top(3))
+d1.obj('trig', -999, 0, a='ch4_start')
+
+# D2 Roof run ----------------------------------------------------------
+d2 = room('d2', 4, 'Roof Run')
+car(d2, 0, 7)
+car(d2, 12, 19)
+car(d2, 25, 29)
+d2.plat(8, 11, 19).plat(20, 24, 19)
+d2.obj('drone', cx(10), top(9))
+d2.obj('drone', cx(22), top(8))
+d2.obj('hannya', cx(16), bottom(14), a=0)
+d2.obj('trig', cx(2), 0, a='wind')
+d2.wind, d2.moving = -1.3, 1
+
+# D3 Signal line -------------------------------------------------------
+d3 = room('d3', 4, 'Signal Line')
+car(d3, 0, 9)
+car(d3, 13, 21)
+car(d3, 25, 29)
+d3.solid(4, 12, 7, 14).solid(16, 12, 19, 14).deco('c', 4, 12, 7, 12).deco('c', 16, 12, 19, 12)
+d3.plat(10, 12, 19).plat(22, 24, 19)
+d3.obj('post', 0, top(ROOF), a=150, b=0)
+d3.obj('hannya', cx(14), bottom(14), a=1)
+d3.obj('croupier', cx(27), bottom(14), a=0)
+d3.obj('trig', cx(2), 0, a='posts')
+d3.wind, d3.moving = -1.3, 1
+
+# D4 Spiral junction (climb to the upper line; side door to the bay) ----
+d4 = room('d4', 4, 'Spiral Junction')
+d4.solid(0, 15, 10, 22).solid(11, 19, 25, 22).solid(26, 0, 29, 22).solid(0, 0, 18, 1)
+d4.clear(26, 16, 29, 18)
+d4.deco('c', 0, 15, 10, 15).deco('c', 11, 19, 25, 19)
+for r in range(3, 15, 3):
+    d4.deco('o', 27, r).deco('o', 28, r)
+d4.deco('l', 25, 4, 25, 18)
+d4.plat(12, 16, 12).plat(18, 22, 9).plat(13, 17, 6).plat(20, 24, 3)
+d4.obj('shrine', cx(14), bottom(18))
+d4.obj('trig', cx(4), 0, a='junction')
+
+# D5 Upper line --------------------------------------------------------
+d5 = room('d5', 4, 'Upper Line')
+car(d5, 0, 18)
+car(d5, 26, 29)
+d5.solid(8, 12, 11, 14).deco('c', 8, 12, 11, 12)
+d5.plat(19, 25, 19)
+d5.obj('post', 0, top(ROOF), a=190, b=60)
+d5.obj('croupier', cx(4), bottom(14), a=0)
+d5.obj('hannya', cx(15), bottom(14), a=1)
+d5.obj('drone', cx(22), top(10))
+d5.wind, d5.moving = -1.3, 1
+
+# D5s Maintenance bay (Memory Shard challenge, inside the tower) ---------
+d5s = room('d5s', 4, 'Maintenance Bay')
+d5s.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 15).solid(28, 3, 29, 18)
+d5s.plat(4, 9, 14).plat(12, 17, 10).plat(20, 25, 7)
+for r in (5, 9, 13):
+    d5s.deco('o', 2, r, 5, r).deco('o', 22, r, 25, r)
+d5s.obj('croupier', cx(8), bottom(18), a=0)
+d5s.obj('croupier', cx(22), bottom(18), a=0)
+d5s.obj('hannya', cx(15), bottom(18), a=1)
+d5s.obj('shard', cx(22) + 8, top(5), a=5)
+d5s.flags.append('challenge')
+
+# D6 Dining car --------------------------------------------------------
+d6 = room('d6', 4, 'Dining Car')
+d6.solid(0, 15, 29, 22).solid(2, 3, 29, 5).solid(29, 6, 29, 9)
+d6.deco('x', 2, 6, 29, 14).deco('u', 3, 8, 28, 9).deco('c', 2, 5, 29, 5)
+for c in (5, 9, 13, 17):
+    d6.obj('seat', cx(c), bottom(14))
+d6.obj('daicam', cx(21), bottom(14), a='dine')
+d6.obj('hannya', cx(10), bottom(14), a=0)
+d6.obj('hannya', cx(16), bottom(14), a=1)
+d6.obj('croupier', cx(26), bottom(14), a=0)
+d6.obj('door', left(29), bottom(14), a='lock')
+d6.obj('trig', cx(6), 0, a='daicam5')
+d6.moving = 1
+
+# D7 Observation deck --------------------------------------------------
+d7 = room('d7', 4, 'Observation Deck')
+d7.solid(0, 15, 29, 22).solid(0, 3, 12, 5).solid(0, 6, 0, 9)
+d7.deco('x', 0, 6, 12, 14).deco('u', 1, 8, 11, 9).deco('c', 0, 5, 12, 5).deco('c', 13, 15, 29, 15)
+d7.obj('trig', cx(16), 0, a='raijin_gate')
+d7.wind, d7.moving = -1.0, 1
+
+# D8 Raijin -----------------------------------------------------------
+d8 = room('d8', 4, 'Thunder Line')
+d8.solid(0, 15, 29, 22).solid(29, 0, 29, 14)
+d8.deco('c', 0, 15, 29, 15).deco('z', 29, 0, 29, 14)
+for c in range(2, 29, 4):
+    d8.deco('o', c, 17)
+d8.obj('door', left(0) + 8, bottom(14), a='ambush')
+d8.obj('raijin', 116, top(ROOF))
+d8.obj('trig', cx(4), 0, a='raijin_start')
+d8.flags.append('boss')
+d8.moving = 1
 
 # --- connections --------------------------------------------------------
 link(p1, 'R', p2)
@@ -688,12 +812,21 @@ link(c5, 'U', c5s)
 link(c5, 'R', c6)
 link(c6, 'R', c7)
 link(c7, 'R', c8)
+link(c8, 'R', d1)
+link(d1, 'R', d2)
+link(d2, 'R', d3)
+link(d3, 'R', d4)
+link(d4, 'U', d5)
+link(d4, 'R', d5s)
+link(d5, 'R', d6)
+link(d6, 'R', d7)
+link(d7, 'R', d8)
 
 ROOM_INDEX = {r.key: i + 1 for i, r in enumerate(ROOMS)}
 
 
 # edge cells that differ but that the player can never reach
-UNREACHABLE = {('p2', 'U', 0)}
+UNREACHABLE = {('p2', 'U', 0), ('d3', 'R', 0), ('d3', 'R', 1)}
 
 
 def validate():

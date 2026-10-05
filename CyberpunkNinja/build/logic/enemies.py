@@ -428,6 +428,11 @@ if not (oi in dead_objs):
     y = O_Y[oi]
     brk_ok = O_A[oi]
     myobj = oi
+    skin = ""
+    pkind = "card"
+    if chapter == 4:
+        skin = "g_"
+        pkind = "bolt"
     add_ent("hannya", x, y, 10, 38, 6, 8, 1)
     find_bounds()
     st = "idle"
@@ -662,29 +667,29 @@ def h_draw():
     if st == "dead":
         if fr >= 7:
             delete_clone()
-        costume(join("death_", min(4, floor(fr))))
+        costume(join(join(skin, "death_"), min(4, floor(fr))))
         if fr > 5:
             effect("ghost", (fr - 5) * 50)
     elif st == "idle":
-        costume(join("idle_", floor(fr) % 4))
+        costume(join(join(skin, "idle_"), floor(fr) % 4))
     elif st == "walk":
-        costume(join("walk_", floor(fr) % 6))
+        costume(join(join(skin, "walk_"), floor(fr) % 6))
     elif st == "wind":
         if t < 9:
-            costume("attack_1")
+            costume(join(skin, "attack_1"))
         else:
-            costume("attack_2")
+            costume(join(skin, "attack_2"))
     elif st == "swing":
         if t < 3:
-            costume("attack_3")
+            costume(join(skin, "attack_3"))
         else:
-            costume("attack_4")
+            costume(join(skin, "attack_4"))
     elif st == "recover":
-        costume("attack_5")
+        costume(join(skin, "attack_5"))
     elif st == "stagger":
-        costume("hurt_1")
+        costume(join(skin, "hurt_1"))
     else:
-        costume(join("hurt_", min(1, floor(t / 4))))
+        costume(join(join(skin, "hurt_"), min(1, floor(t / 4))))
     if st == "stagger":
         goto(x + shx + (frame % 4 < 2) * 2 - 1, y + z + shy)
     else:
@@ -1007,6 +1012,11 @@ if not (oi in dead_objs):
     x = O_X[oi]
     y = O_Y[oi]
     myobj = oi
+    skin = ""
+    pkind = "card"
+    if chapter == 4:
+        skin = "g_"
+        pkind = "bolt"
     add_ent("croupier", x, y, 10, 38, 5, 6, 1)
     find_bounds()
     st = "idle"
@@ -1062,12 +1072,15 @@ def throw_card(spread):
     dd = sqrt(ax * ax + ay * ay)
     if dd < 1:
         dd = 1
-    pq_t.append("card")
+    pq_t.append(pkind)
     pq_x.append(mx)
     pq_y.append(my)
     pq_vx.append(ax / dd * 5.5)
     pq_vy.append(ay / dd * 5.5 + spread)
-    sfxq.append("card_throw")
+    if pkind == "bolt":
+        sfxq.append("turret_fire")
+    else:
+        sfxq.append("card_throw")
 
 
 @proc
@@ -1193,34 +1206,34 @@ def c_draw():
     if st == "dead":
         if fr >= 7:
             delete_clone()
-        costume(join("death_", min(4, floor(fr))))
+        costume(join(join(skin, "death_"), min(4, floor(fr))))
         if fr > 5:
             effect("ghost", (fr - 5) * 50)
     elif st == "idle":
-        costume(join("idle_", floor(fr) % 4))
+        costume(join(join(skin, "idle_"), floor(fr) % 4))
     elif st == "walk":
-        costume(join("walk_", floor(fr) % 6))
+        costume(join(join(skin, "walk_"), floor(fr) % 6))
     elif st == "aim":
         if t < 10 or (t >= 20 and t < 26):
-            costume("attack_1")
+            costume(join(skin, "attack_1"))
         elif t < 18 or (t >= 26 and t < 28):
-            costume("attack_2")
+            costume(join(skin, "attack_2"))
         else:
-            costume("attack_4")
+            costume(join(skin, "attack_4"))
     elif st == "wind":
         if t < 9:
-            costume("attack_1")
+            costume(join(skin, "attack_1"))
         else:
-            costume("attack_2")
+            costume(join(skin, "attack_2"))
     elif st == "swing":
         if t < 3:
-            costume("attack_3")
+            costume(join(skin, "attack_3"))
         else:
-            costume("attack_4")
+            costume(join(skin, "attack_4"))
     elif st == "stagger":
-        costume("hurt_1")
+        costume(join(skin, "hurt_1"))
     else:
-        costume(join("hurt_", min(1, floor(t / 4))))
+        costume(join(join(skin, "hurt_"), min(1, floor(t / 4))))
     goto(x + shx, y + z + shy)
     if face == 1:
         point(90)
@@ -2470,4 +2483,435 @@ def m_draw():
     else:
         effect("brightness", 0)
     show()
+'''
+
+
+# Raijin: the armored locomotive racing alongside on the parallel track.
+# One sprite, several clone roles: the body (which owns the reactor core's
+# hitbox and the brain), the pantograph arm, the ram plow, and four roof
+# sections that it electrifies. The core is shuttered except while venting.
+RAIJIN = spawner('raijin', '''
+if raijin_dead == 0:
+    roof_y = O_Y[oi]
+    x = O_X[oi]
+    y = roof_y + 22
+    rest_x = x
+    myobj = oi
+    rj_bx = 420
+    rj_arm = 999
+    rj_plow = 999
+    rj_open = 0
+    RZ.clear()
+    for k in range(4):
+        RZ.append(0)
+    add_ent("raijin", 420, y - 14, 12, 28, 20, 16, 1)
+    boss_slot = slot
+    st = "wait"
+    t = 0
+    ehp = 20
+    imax = 16
+    integ = 0
+    int_t = 0
+    phase = 1
+    flash_t = 0
+    fire_t = 0
+    step = 0
+    last = 0
+    idle_len = 40
+    boss_hp = 20
+    boss_int = 0
+    is_clone = 1
+    role = "body"
+    clone()
+    role = "arm"
+    clone()
+    role = "plow"
+    clone()
+    role = "zone"
+    for k in range(1, 5):
+        zi = k
+        clone()
+    is_clone = 0
+    ui_slot.append(slot)
+    ui_role.append("mark")
+    clone("EnemyUI")
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1 and role == "body":
+        rj_update()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        rj_draw()
+
+
+@proc
+def zones_off():
+    for k in range(1, 5):
+        RZ[k] = 0
+
+
+@proc
+def to_vent():
+    st = "vent"
+    t = 0
+    rj_open = 1
+    sfxq.append("vent")
+
+
+@proc
+def rj_die():
+    st = "dead"
+    t = 0
+    ent_alive[slot] = 0
+    ent_stag[slot] = 0
+    ent_brk[slot] = 0
+    boss_hp = 0
+    boss_int = 0
+    rj_arm = 999
+    rj_plow = 999
+    rj_open = 1
+    zones_off()
+    sfxq.append("rj_die")
+    shake = 30
+    shake_amp = 7
+    hitstop = 14
+    broadcast("ev_raijin_dead")
+
+
+@proc
+def pick_attack():
+    t = 0
+    hitdone = 0
+    if phase == 1:
+        step += 1
+        roll = step % 3 + 1
+    else:
+        roll = rand(1, 4)
+        if roll == last:
+            roll = roll % 4 + 1
+    last = roll
+    if roll == 1:
+        st = "cannon"
+        nshot = 0
+        nshots = 3 + 2 * (phase - 1)
+        gap = 15 - 4 * (phase - 1)
+    elif roll == 2:
+        st = "zap"
+        nw = phase
+    elif roll == 3:
+        st = "arm"
+        sweeps = phase
+        sfxq.append("arm")
+    else:
+        st = "ram"
+
+
+@proc
+def fire_shell():
+    mx = rj_bx + 36
+    my = y + 106
+    tx = px + (nshot % 3 - 1) * 34
+    ft = 34
+    pq_t.append("shell")
+    pq_x.append(mx)
+    pq_y.append(my)
+    pq_vx.append((tx - mx) / ft)
+    pq_vy.append((py + 16 - my) / ft + 0.175 * ft)
+    sfxq.append("cannon")
+    fire_t = 5
+    shake = 3
+    shake_amp = 2
+
+
+@proc
+def zap_wave():
+    # phase 1: alternate halves; phase 2: three live sections, one safe
+    safe = rand(1, 4)
+    pat = rand(0, 1)
+    for k in range(1, 5):
+        if phase == 1:
+            if k % 2 == pat:
+                RZ[k] = 1
+            else:
+                RZ[k] = 0
+        elif k == safe:
+            RZ[k] = 0
+        else:
+            RZ[k] = 1
+    sfxq.append("zap_warn")
+
+
+@proc
+def rj_update():
+    t += 1
+    if fire_t > 0:
+        fire_t -= 1
+    if st == "dead":
+        rj_bx += 2.5
+        if t % 9 == 1 and t < 90:
+            cfx("explosion", rj_bx + rand(-30, 120), y + rand(-10, 90), 0)
+            sfxq.append("explode")
+        return
+    if st == "wait":
+        if boss_on == 1:
+            st = "enter"
+            t = 0
+            sfxq.append("horn")
+        return
+    if st == "enter":
+        rj_bx = max(rest_x, rj_bx - 8)
+        ent_x[slot] = rj_bx
+        if rj_bx <= rest_x:
+            st = "idle"
+            t = 0
+            idle_len = 30
+        return
+    if ent_sev[slot] == 1:
+        ent_sev[slot] = 0
+        seg = ceil(ehp / 5)
+        ehp = (seg - 1) * 5
+        integ = 0
+        ent_stag[slot] = 0
+        rj_open = 0
+        st = "stagger"
+        t = 0
+        flash_t = 6
+        sfxq.append("rj_hurt")
+        shake = 12
+        shake_amp = 5
+        if ehp <= 0:
+            rj_die()
+            return
+    if ent_dmg[slot] > 0:
+        hk = ent_hk[slot]
+        if hk == "projectile":
+            ehp -= ent_dmg[slot]
+            flash_t = 3
+            sfxq.append("rj_hurt")
+            if st != "overload":
+                integ = min(imax, integ + ent_idmg[slot])
+        elif rj_open == 1:
+            # armor plating: melee on the open core does half damage
+            ehp -= ent_dmg[slot] * 0.5
+            flash_t = 3
+            sfxq.append("rj_hurt")
+            if st != "overload":
+                integ = min(imax, integ + ent_idmg[slot])
+        else:
+            sfxq.append("clang")
+            cfx("deflect", rj_bx - 10, y, 0)
+        int_t = 0
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+        if ehp <= 0:
+            rj_die()
+            return
+    if ehp <= 10 and phase == 1:
+        phase = 2
+        broadcast("ev_raijin_phase2")
+    if integ >= imax and st != "overload" and st != "stagger" and st != "ram":
+        st = "overload"
+        t = 0
+        integ = imax
+        ent_stag[slot] = 1
+        rj_open = 1
+        rj_arm = 999
+        zones_off()
+        sfxq.append("stagger")
+    # live roof sections
+    for k in range(1, 5):
+        if RZ[k] == 2 and p_ground == 1 and px >= -360 + k * 120 and px < -240 + k * 120:
+            hit_player(2, 1, px - pface)
+    if st == "idle":
+        if t >= idle_len:
+            pick_attack()
+    elif st == "cannon":
+        if t % gap == 8 and nshot < nshots:
+            fire_shell()
+            nshot += 1
+        if t >= nshots * gap + 34:
+            to_vent()
+    elif st == "zap":
+        wt = t % 80
+        if wt == 1:
+            zap_wave()
+        elif wt == 34:
+            for k in range(1, 5):
+                if RZ[k] == 1:
+                    RZ[k] = 2
+            sfxq.append("zap")
+            shake = 4
+            shake_amp = 2
+        elif wt == 74:
+            zones_off()
+        if t >= nw * 80:
+            to_vent()
+    elif st == "arm":
+        if rj_arm > 900:
+            if t >= 24:
+                rj_arm = rj_bx - 24
+                hitdone = 0
+        else:
+            rj_arm -= 11
+            if hitdone == 0 and abs(rj_arm - px) < 12 and py < -30 + roof_y + 60 and py + 34 > -38 + roof_y + 60:
+                hitdone = 1
+                hit_player(2, 0, rj_arm - 20)
+                if res == "deflect":
+                    integ = min(imax, integ + 3)
+                    int_t = 0
+                    sfxq.append("clang")
+                    cfx("deflect", rj_arm, py + 20, 0)
+                    rj_arm = -999
+            if rj_arm < -270:
+                rj_arm = 999
+                sweeps -= 1
+                t = 0
+                if sweeps <= 0:
+                    to_vent()
+                else:
+                    sfxq.append("arm")
+    elif st == "ram":
+        if t < 30:
+            rj_bx += 10
+        elif t == 30:
+            sfxq.append("horn")
+            rj_bx = 560
+            hitdone = 0
+        elif t > 52:
+            rj_bx -= 15
+            rj_plow = rj_bx - 70
+            if hitdone == 0 and abs(rj_plow - px) < 46 and py < roof_y + 22:
+                hitdone = 1
+                hit_player(3, 1, rj_plow - 40)
+            if rj_bx < -620:
+                rj_plow = 999
+                rj_bx = 520
+                st = "enter"
+                t = 0
+    elif st == "vent":
+        if t >= 60 - 8 * (phase - 1):
+            rj_open = 0
+            st = "idle"
+            t = 0
+            idle_len = 24
+    elif st == "overload":
+        if t >= 130:
+            st = "idle"
+            t = 0
+            idle_len = 20
+            integ = 8
+            ent_stag[slot] = 0
+            rj_open = 0
+    elif st == "stagger":
+        if t >= 40:
+            st = "idle"
+            t = 0
+            idle_len = 16
+    int_t += 1
+    if int_t > 90 and integ > 0 and st != "overload" and t % 20 == 0:
+        integ -= 1
+    ent_x[slot] = rj_bx
+    ent_int[slot] = integ
+    boss_hp = ceil(ehp)
+    boss_int = integ
+
+
+@proc
+def rj_draw():
+    effect("ghost", 0)
+    effect("brightness", 0)
+    if role == "body":
+        if st == "wait":
+            hide()
+            return
+        if st == "dead":
+            costume("rj_dead")
+            effect("ghost", min(100, t * 1.2))
+        elif rj_open == 1:
+            costume(join("rj_vent_", floor(frame / 4) % 2))
+        elif fire_t > 0:
+            costume("rj_fire")
+        else:
+            costume(join("rj_idle_", floor(frame / 6) % 2))
+        if flash_t > 0:
+            flash_t -= 1
+            effect("brightness", 60)
+        if st == "overload" or st == "dead":
+            goto(rj_bx + shx + (frame % 4 < 2) * 2 - 1, y + shy)
+        else:
+            goto(rj_bx + shx, y + shy)
+        show()
+    elif role == "arm":
+        if rj_arm > -300 and rj_arm < 900:
+            costume(join("arm_", frame % 2))
+            if rj_arm > px and (rj_arm - px - 12) / 11 <= 9:
+                effect("brightness", 100)
+            goto(rj_arm + shx, roof_y + 26 + shy)
+            show()
+        else:
+            hide()
+    elif role == "plow":
+        if rj_plow < 900:
+            costume(join("plow_", frame % 2))
+            goto(rj_plow + shx, roof_y + shy)
+            show()
+        else:
+            hide()
+    else:
+        if RZ[zi] == 1:
+            costume(join("zapw_", floor(frame / 3) % 2))
+            goto(-300 + zi * 120 + shx, roof_y + shy)
+            show()
+        elif RZ[zi] == 2:
+            costume(join("zapl_", frame % 3))
+            goto(-300 + zi * 120 + shx, roof_y + shy)
+            show()
+        else:
+            hide()
+'''
+
+
+TRACKPOST = spawner('post', '''
+y = O_Y[oi]
+period = O_A[oi]
+offs = O_B[oi]
+x = 999
+is_clone = 1
+clone()
+is_clone = 0
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1:
+        ph = (frame + offs) % period
+        if ph < 30:
+            x = 999
+        else:
+            if ph == 30:
+                sfxq.append("post")
+            x = 262 - (ph - 30) * 14
+            if x < -262:
+                x = 999
+            elif abs(x - px) < 12 and py < y + 42 and py + 34 > y:
+                hit_player(2, 1, x + 30)
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        ph = (frame + offs) % period
+        if ph < 30 and mode == "play":
+            costume(join("warn_", floor(frame / 4) % 2))
+            goto(222, y + 64)
+            show()
+        elif x < 900 and ph >= 30:
+            costume("post")
+            goto(x + shx, y + shy)
+            show()
+        else:
+            hide()
 '''

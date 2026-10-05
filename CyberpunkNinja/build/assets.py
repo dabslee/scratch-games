@@ -84,7 +84,7 @@ def up4(im):
 
 
 # ---------------------------------------------------------------- tiles
-MATERIAL = {0: 'sump', 1: 'alley', 2: 'vaults', 3: 'gardens'}
+MATERIAL = {0: 'sump', 1: 'alley', 2: 'vaults', 3: 'gardens', 4: 'rail'}
 
 
 def tile_images(material):
@@ -92,6 +92,9 @@ def tile_images(material):
     if material == 'vaults':
         import art_ch2
         atlas = art_ch2.vaults_atlas()
+    elif material == 'rail':
+        import art_ch4
+        atlas = art_ch4.rail_atlas()
     else:
         atlas = Image.open(pack_path('tilesets', '%s_atlas_8x8.png' % material)).convert('RGBA')
     tiles = {}
@@ -204,6 +207,11 @@ def preview_room(room, scale=2):
         bg = art_ch2.sky()
         bg.alpha_composite(art_ch2.far())
         bg.alpha_composite(art_ch2.mid())
+    elif room.chapter == 4:
+        import art_ch4
+        bg = art_ch4.sky()
+        bg.alpha_composite(art_ch4.far())
+        bg.alpha_composite(art_ch4.mid())
     else:
         ch = {0: 'sump', 1: 'neon_alley', 3: 'server_gardens'}[room.chapter]
         bg = Image.open(pack_path('backgrounds', ch, 'sky.png')).convert('RGBA')
@@ -214,10 +222,14 @@ def preview_room(room, scale=2):
     im.alpha_composite(render_room(room))
     import art_ch2
     import art_ch3
+    import art_ch4
     for o in room.objs:
         extra = {'pachinko': (art_ch2.pachinko_prop(0), 8, 30), 'slot': (art_ch2.slot_machine(0), 40, 38),
                  'jackpot': (art_ch2.jackpot_sign(True), 26, 0), 'pod': (art_ch3.pod(0), 7, 30),
-                 'toro': (art_ch3.toro(0), 6, 22), 'bonsai': (art_ch3.bonsai(), 7, 18)}
+                 'toro': (art_ch3.toro(0), 6, 22), 'bonsai': (art_ch3.bonsai(), 7, 18),
+                 'seat': (art_ch4.seat(), 9, 12), 'post': (art_ch4.post(), 5, 22),
+                 'raijin': (art_ch4.raijin('idle', 0).crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT)),
+                            art_ch4.RJ_CORE[0], art_ch4.RJ_CUT)}
         key = 'jackpot' if o['type'] == 'sign' and o['a'] == 'NeonSign_Jackpot' else o['type']
         if key == 'mist':
             for k in range(o['a']):
@@ -227,10 +239,13 @@ def preview_room(room, scale=2):
             sp, ax, ay = extra[key]
             _paste_clip(im, sp, int((o['x'] + 240) / 2) - ax, int((180 - o['y']) / 2) - ay)
             continue
-        if o['type'] in CH2_PREVIEW:
-            spr, mp, cos = CH2_PREVIEW[o['type']]
+        if o['type'] in CH2_PREVIEW or (room.chapter == 4 and o['type'] in ('hannya', 'croupier')):
+            if room.chapter == 4 and o['type'] in ('hannya', 'croupier'):
+                spr, mp, cos = 'HannyaBoy', 'art_ch4.' + ('GUARD_MAP' if o['type'] == 'hannya' else 'GUNNER_MAP'), 'idle_0'
+            else:
+                spr, mp, cos = CH2_PREVIEW[o['type']]
             c = st.costume(spr, cos)
-            mod = art_ch3 if mp.startswith('art_ch3.') else art_ch2
+            mod = {'art_ch3': art_ch3, 'art_ch4': art_ch4}.get(mp.split('.')[0], art_ch2)
             sp = art_ch2.recolor(st.image_1x(spr, cos), getattr(mod, mp.split('.')[-1]))
             if o['a'] == -90:
                 sp = sp.transpose(Image.FLIP_LEFT_RIGHT)

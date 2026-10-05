@@ -7,7 +7,7 @@ Speaker keys pick the name plate; long lines are wrapped and split into
 NAMEPLATE = {
     'hotaru': 'name_hotaru', 'kuro': 'name_kuro', 'tetsu': 'name_tetsu',
     'daicam': 'name_daicam', 'unknown': 'name_unknown', 'luck': 'name_lady_luck', 'system': 'name_system',
-    'mukuro': 'name_mukuro',
+    'mukuro': 'name_mukuro', 'daimyo': 'name_the_daimyo',
 }
 
 CONVERSATIONS = {
@@ -241,6 +241,67 @@ CONVERSATIONS = {
         ('hotaru', 'hotaru_neutral', "Did it hurt?"),
         ('kuro', 'kuro_neutral', "I don't remember. Which I think is the answer."),
     ],
+    'ch4': [
+        ('hotaru', 'hotaru_neutral', "A train station? This high up?"),
+        ('kuro', 'kuro_neutral', "The monorail spirals around the outside of the Spire, all the way to the top."),
+        ('kuro', 'kuro_smirk', "Hop on the roof. Kanshi doesn't sell tickets to people like us."),
+        ('hotaru', 'hotaru_visor_up', "DaiCam said there was an elevator."),
+        ('kuro', 'kuro_neutral', "DaiCam says a lot of things."),
+    ],
+    'wind': [
+        ('kuro', 'kuro_neutral', "Headwind. It'll shove you back toward the last car. Keep pushing forward."),
+        ('kuro', 'kuro_smirk', "And mind the gaps. If you slip, the couplers below can catch you."),
+    ],
+    'posts': [
+        ('kuro', 'kuro_neutral', "Signal posts coming up along the track. Watch for the warning on your right."),
+        ('kuro', 'kuro_smirk', "Jump them, Phase Step through them, or stand on something tall."),
+    ],
+    'junction': [
+        ('hotaru', 'hotaru_neutral', "The track splits. The upper line climbs higher up the tower."),
+        ('kuro', 'kuro_neutral', "Up it is. There's a maintenance door in the tower wall too, if you're curious."),
+    ],
+    'daicam5': [
+        ('daicam', 'daicam_neutral', "Hotaru! First class! They have little towels! Chat, she's here!"),
+        ('hotaru', 'hotaru_angry', "You're in a train full of Kanshi guards."),
+        ('daicam', 'daicam_neutral', "Yes, and they would like me to leave. Could you, maybe, make them stop?"),
+    ],
+    'daicam5b': [
+        ('daicam', 'daicam_neutral', "Okay, chat, that was a lot. My ticket did not cover being saved by a ninja."),
+        ('daicam', 'daicam_neutral', "I'm getting off at the next stop. Stay safe! Like and subscribe!"),
+    ],
+    'raijin_gate': [
+        ('hotaru', 'hotaru_neutral', "There's something coming up the other track. Fast."),
+        ('unknown', 'daimyo_neutral', "Unit H-0. You have wandered a long way from your shelf."),
+        ('kuro', 'kuro_neutral', "That voice... the man in the samurai mask. From my memory."),
+    ],
+    'raijin': [
+        ('daimyo', 'daimyo_neutral', "Meet Raijin. He carries my freight up the Spire, and he does not stop for strays."),
+        ('kuro', 'kuro_neutral', "The core on its nose is shuttered. Wait for it to vent, then hit it."),
+        ('kuro', 'kuro_smirk', "Deflect its shells and they fly right back into it."),
+    ],
+    'raijin2': [
+        ('daimyo', 'daimyo_neutral', "You are a recording, little unit. Recordings do not get to argue."),
+        ('kuro', 'kuro_neutral', "It's going to ram us. When you hear the horn, get off the roof."),
+    ],
+    'raijin_dead': [
+        ('hotaru', 'hotaru_neutral', "It's coming apart. Something just fell out of the cab. A black box."),
+        ('kuro', 'kuro_neutral', "Freight manifest. Let's see what Kanshi ships up the tower."),
+    ],
+    'record': [
+        ('system', 'sys_boot', "MANUFACTURING RECORD // UNIT H-0 'HOTARU'. Shinobi shell, grown 14 months ago."),
+        ('system', 'sys_boot', "Engram source: KURO (original subject). Instance 3 of 3. Status: DECOMMISSIONED."),
+        ('hotaru', 'hotaru_neutral', "Instance three. Grown. I was never... I was never a person."),
+        ('kuro', 'kuro_neutral', "...I didn't know. I swear I didn't know. I thought they'd put me in you."),
+        ('hotaru', 'hotaru_angry', "They didn't put you in me. They made me out of you. You're the real one."),
+        ('kuro', 'kuro_neutral', "Hotaru. Listen to me. Your head is about to..."),
+        ('system', 'sys_boot', "WARNING: engram conflict. Identity partition failing. Opening HOLLOW FLOOR."),
+    ],
+    'shard5': [
+        ('kuro', 'kuro_neutral', "...A rooftop in the Sump. Rain. Somebody laughing next to me, sharing noodles."),
+        ('kuro', 'kuro_neutral', "Big guy. Two arms back then. He called me 'kid'."),
+        ('hotaru', 'hotaru_visor_up', "Tetsu? You knew Tetsu?"),
+        ('kuro', 'kuro_neutral', "I think he was my best friend. I think he's been waiting a long time."),
+    ],
 }
 
 # Tutorial prompts: list of segments. ('k', costume) = key icon, ('t', text) = label.
@@ -266,6 +327,9 @@ HINTS = {
     'pulse': [('t', 'This vent pulses on and off.'), ('n',), ('t', 'Ride it while the mist is thick')],
     'warden': [('t', 'Wardens guard your attacks.'), ('n',), ('k', 'key_down'), ('t', 'Deflect their strikes, then counter')],
     'duel': [('t', 'Mukuro guards everything.'), ('n',), ('k', 'key_down'), ('t', 'Deflect to break him, then strike')],
+    'wind': [('t', 'Headwind pushes you back.'), ('n',), ('k', 'key_space'), ('t', 'Phase Step across wide gaps')],
+    'posts': [('t', 'Signal posts sweep the roof.'), ('n',), ('k', 'key_up'), ('t', 'Jump or'), ('k', 'key_space'), ('t', 'Phase Step through')],
+    'raijin': [('t', 'Deflect shells back at the core.'), ('n',), ('t', 'Strike the core while it vents')],
 }
 
 OPTION_LABELS = {
@@ -297,12 +361,12 @@ CONTROLS = [
 ]
 
 END_PAGE = [
-    ('b', 'END OF CHAPTER 3'),
-    ('t', 'THE SERVER GARDENS'),
+    ('b', 'END OF CHAPTER 4'),
+    ('t', 'MONORAIL ASCENT'),
 ]
 
 END_NEXT = [
     ('t', "Hotaru's climb continues in"),
-    ('t', 'Chapter 4: Monorail Ascent.'),
+    ('t', 'Chapter 5: Hollow Floor.'),
     ('t', 'Thanks for playing!'),
 ]

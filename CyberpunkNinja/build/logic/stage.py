@@ -62,6 +62,10 @@ def reset_run():
     daicam_done = 0
     daicam3_done = 0
     daicam4_done = 0
+    daicam5_done = 0
+    raijin_dead = 0
+    wind = 0
+    moving = 0
     boss_name = "big_oni"
     lift_ride = 0
     cp_room = 1
@@ -283,6 +287,8 @@ def load_room(r):
         grid.append(letter(gi, rs))
         gi += 1
     chapter = R_CH[r]
+    wind = R_WIND[r]
+    moving = R_MOVE[r]
     exL = R_L[r]
     exR = R_R[r]
     exU = R_U[r]
@@ -332,10 +338,13 @@ def load_room(r):
     elif chapter == 2:
         backdrop("sky_vaults")
         music_want = "vaults"
-    else:
+    elif chapter == 3:
         backdrop("sky_server_gardens")
         music_want = "gardens"
-    if (R_BOSS[r] == 1 and boss_dead == 0) or (R_BOSS[r] == 2 and luck_dead == 0) or (R_BOSS[r] == 3 and muk_dead == 0):
+    else:
+        backdrop("sky_rail")
+        music_want = "monorail"
+    if (R_BOSS[r] == 1 and boss_dead == 0) or (R_BOSS[r] == 2 and luck_dead == 0) or (R_BOSS[r] == 3 and muk_dead == 0) or (R_BOSS[r] == 4 and raijin_dead == 0):
         music_want = "none"
     broadcast("clear")
     broadcast("spawn")
@@ -441,6 +450,31 @@ def start_ch3():
     seen.append("tetsu")
     enter_dir = "S"
     load_room(C_ROOM_C1)
+    wait(0)
+    fade_to = 0
+    wait_until(fade < 50)
+    mode = "play"
+
+
+@on("start_ch4")
+def start_ch4():
+    mode = "trans"
+    broadcast("menu_close")
+    fade_to = 100
+    wait_until(fade > 99)
+    reset_run()
+    has_gourd = 1
+    gmax = 4
+    gourd = 4
+    boss_dead = 1
+    luck_dead = 1
+    muk_dead = 1
+    daicam_done = 1
+    daicam3_done = 1
+    daicam4_done = 1
+    seen.append("tetsu")
+    enter_dir = "S"
+    load_room(C_ROOM_D1)
     wait(0)
     fade_to = 0
     wait_until(fade < 50)
@@ -785,7 +819,8 @@ def ev_luck_dead():
     boss_on = 0
     say("luck_dead")
     wait_until(mode == "play")
-    music_want = "vaults"
+    if chapter == 2:
+        music_want = "vaults"
 
 
 # ------------------------------------------------------------ chapter 3
@@ -896,6 +931,115 @@ def ev_muk_dead():
     sfxq.append("muk_warp")
     wait(1.2)
     say("muk_gone")
+    wait_until(mode == "play")
+    if chapter == 3:
+        music_want = "gardens"
+
+
+# ------------------------------------------------------------ chapter 4
+@on("ev_ch4_start")
+def ev_ch4_start():
+    cp_room = room
+    cp_x = C_D1_X
+    cp_y = C_D1_Y
+    once("ch4")
+    if first == 1:
+        card = "ch4"
+        wait(2.5)
+        say("ch4")
+
+
+@on("ev_wind")
+def ev_wind():
+    once("wind")
+    if first == 1:
+        say("wind")
+        wait_until(mode == "play")
+    hint = "wind"
+
+
+@on("ev_posts")
+def ev_posts():
+    once("posts")
+    if first == 1:
+        say("posts")
+        wait_until(mode == "play")
+    hint = "posts"
+
+
+@on("ev_junction")
+def ev_junction():
+    once("junction")
+    if first == 1:
+        say("junction")
+
+
+@on("ev_daicam5")
+def ev_daicam5():
+    if daicam5_done == 0:
+        once("daicam5")
+        if first == 1:
+            say("daicam5")
+
+
+@on("ev_daicam5_end")
+def ev_daicam5_end():
+    say("daicam5b")
+    wait_until(mode == "play")
+    daicam5_done = 1
+
+
+@on("ev_raijin_gate")
+def ev_raijin_gate():
+    if raijin_dead == 0:
+        once("raijin_gate")
+        if first == 1:
+            sfxq.append("horn")
+            say("raijin_gate")
+            wait_until(mode == "play")
+        hint = "raijin"
+
+
+@on("ev_raijin_start")
+def ev_raijin_start():
+    if raijin_dead == 0:
+        hint = ""
+        ambush_on = 1
+        boss_on = 1
+        boss_phase = 1
+        boss_name = "raijin"
+        music_want = "raijin"
+        once("raijin")
+        if first == 1:
+            wait(1.2)
+            say("raijin")
+
+
+@on("ev_raijin_phase2")
+def ev_raijin_phase2():
+    boss_phase = 2
+    broadcast("drums")
+    once("raijin2")
+    if first == 1:
+        say("raijin2")
+
+
+@on("ev_raijin_dead")
+def ev_raijin_dead():
+    raijin_dead = 1
+    music_want = "none"
+    wait(2.4)
+    banner = "victory"
+    sfxq.append("victory")
+    wait(3)
+    banner = ""
+    boss_on = 0
+    say("raijin_dead")
+    wait_until(mode == "play")
+    wait(0.6)
+    sfxq.append("reboot")
+    flash = 60
+    say("record")
     wait_until(mode == "play")
     wait(0.5)
     mode = "trans"

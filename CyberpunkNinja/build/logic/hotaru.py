@@ -838,6 +838,12 @@ def physics():
     if cc == "~" or (cc == "%" and frame % 110 < 70):
         updraft = 1
         jumping = 0
+    # headwind on the monorail roofs
+    if wind != 0 and pst != "dash" and pst != "dead" and px > -226:
+        if grounded == 1:
+            move_x(wind * 0.5)
+        else:
+            move_x(wind)
     if pst != "dash":
         if updraft == 1:
             if pvy < 0:

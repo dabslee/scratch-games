@@ -642,6 +642,87 @@ def song_mukuro(drums=False):
     return s.render((1.0, 0.16, 3600)), s.length
 
 
+# ---------------------------------------------------------------------- monorail
+def song_monorail():
+    """Chapter 4: driving synthwave over a train-wheel clatter."""
+    s = Song(132, 16)
+    prog = [('E3', 'm'), ('C3', 'M7'), ('G2', 'M'), ('D3', 'M'),
+            ('E3', 'm'), ('C3', 'M7'), ('A2', 'm7'), ('B2', '7')]
+    k, sn, h = kick(0.9), snare(0.5), hat(False, 0.18)
+    clack = hp(noise(0.04), 1800) * expenv(0.04, 0.01)
+    bl = s.beat * 4
+    for i in range(16):
+        r, kd = prog[i % 8]
+        root = n2m(r)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl + 0.2, 2000, 0.26, 0.1, 0.3), i)
+        for j in range(8):
+            s.add(bass(root - 12 + (12 if j in (3, 7) else 0), s.beat * 0.42, 0.55, 1000), i, j * 0.5)
+        for j in range(4):
+            s.add(k, i, j)
+            if j % 2:
+                s.add(sn, i, j)
+            s.add(h, i, j + 0.5)
+        # da-dum da-dum: rail joints
+        for b in (0, 0.25, 2, 2.25):
+            s.add(clack, i, b, 0.45)
+        notes = chord(r, kd, 1)
+        for j in range(8):
+            s.add(arp_note(notes[(j * 2) % len(notes)] + 12, s.beat * 0.4, 0.08), i, j * 0.5 + 0.25)
+    hook = [('B4', 0, 0.5), ('E5', 0.5, 0.5), ('G5', 1, 1), ('F#5', 2, 0.5), ('E5', 2.5, 0.5), ('D5', 3, 1),
+            ('E5', 4, 1.5), ('B4', 5.5, 0.5), ('D5', 6, 1), ('E5', 7, 1)]
+    for rep in (4, 6, 12, 14):
+        for nm, b, d in hook:
+            s.add(shamisen(n2m(nm), d * s.beat + 0.2, 0.3), rep, b)
+    return s.render((1.0, 0.16, 4200)), s.length
+
+
+# ---------------------------------------------------------------------- raijin
+def song_raijin(drums=False):
+    """Raijin: thunder-god taiko and a growling synth bass; extra drums at phase 2."""
+    s = Song(144, 8)
+    prog = [('D3', 'm'), ('D3', 'm'), ('A#2', 'M'), ('C3', 'M'),
+            ('D3', 'm'), ('F3', 'M'), ('G2', 'm'), ('A2', '7')]
+    if drums:
+        for i in range(8):
+            for j in range(16):
+                acc = j in (0, 3, 6, 10, 12)
+                if acc or j % 2 == 0:
+                    s.add(taiko(0.8 if acc else 0.3, 0.9 if acc else 1.3), i, j * 0.25)
+            s.add(ka(0.4), i, 1.5)
+            s.add(ka(0.4), i, 3.5)
+        return s.render((0.9, 0.12, 2200)), s.length
+    k, sn = kick(1.0), snare(0.6)
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        root = n2m(r)
+        for j in range(8):
+            g = dist(bass(root - 12, s.beat * 0.45, 0.5, 700), 2.5)
+            s.add(g, i, j * 0.5)
+        for j in range(4):
+            s.add(k, i, j)
+            if j % 2:
+                s.add(sn, i, j)
+        s.add(taiko(0.8), i, 0)
+        s.add(taiko(0.5, 1.2), i, 2.5)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl, 1400, 0.3, 0.05, 0.2), i)
+    riff = [('D5', 0, 0.75), ('F5', 0.75, 0.25), ('A5', 1, 0.5), ('G#5', 1.5, 0.5), ('A5', 2, 1), ('C6', 3, 0.5),
+            ('A5', 3.5, 0.5)]
+    for bar in range(8):
+        off = {2: -4, 3: -2, 5: 3, 6: -7, 7: -5}.get(bar, 0)
+        for nm, b, d in riff:
+            s.add(shamisen(n2m(nm) + off, d * s.beat + 0.2, 0.3), bar, b)
+    for bar in (3, 7):
+        s.add(lp(noise(1.2), 400) * expenv(1.2, 0.6) * 0.6, bar, 2)
+    return s.render((1.0, 0.18, 3200)), s.length
+
+
+def wind_loop():
+    d = 6.0
+    x = lp(noise(d + 1), 900) * 0.5 + bp(noise(d + 1), 1500, 3500) * 0.18
+    x = x * (0.75 + 0.25 * np.sin(2 * np.pi * T(d + 1) / (d / 2)))
+    return loopify(x, d), d
+
+
 def rain_loop():
     d = 8.0
     x = lp(noise(d + 1), 3500) * 0.35 + hp(lp(noise(d + 1), 9000), 2500) * 0.25
@@ -835,6 +916,13 @@ def build_sfx():
     S['muk_slash'] = add(blade(1.3, 0.2, 1.0), metal(3200, 0.12, 0.12))
     S['muk_warp'] = cat(glitch(0.35, 0.6), sweep_tone(900, 120, 0.5, 'square', 0.12) * expenv(0.5, 0.25))
     S['vent'] = lp(noise(0.6), 2200) * adsr(0.6, 0.08, 0.1, 0.6, 0.3) * 0.5
+    S['post'] = add(whoosh(0.45, 300, 5000, 0.9), sweep_tone(900, 500, 0.45, 'square', 0.05))
+    S['horn'] = lp(add(saw(196, 1.4), saw(247, 1.4), saw(294, 1.4)), 1800) * adsr(1.4, 0.08, 0.1, 0.8, 0.3) * 0.5
+    S['cannon'] = add(impact(0.5, 60, 1.0, 1.4), lp(noise(0.5), 1200) * expenv(0.5, 0.15) * 0.6)
+    S['zap_warn'] = cat(*[cat(hp(noise(0.03), 3000) * 0.6, silence(0.05)) for _ in range(8)])
+    S['arm'] = add(whoosh(0.6, 200, 2500, 1.0), metal(500, 0.6, 0.3))
+    S['rj_hurt'] = add(metal(700, 0.5, 0.8), impact(0.4, 100, 0.6, 1.2))
+    S['rj_die'] = cat(explosion(0.9, 1.0), explosion(1.2, 0.9))
     out = {}
     for k, v in S.items():
         v = np.asarray(v, dtype=float)
@@ -912,19 +1000,23 @@ def build_all():
         out[k] = (wav_bytes(v), SR, len(v), 'wav')
         SFX_NAMES.append(k)
     songs = {'title': song_title, 'sump': song_sump, 'alley': song_alley, 'boss': song_boss,
-             'vaults': song_vaults, 'luck': song_luck, 'gardens': song_gardens, 'mukuro': song_mukuro}
+             'vaults': song_vaults, 'luck': song_luck, 'gardens': song_gardens, 'mukuro': song_mukuro,
+             'monorail': song_monorail, 'raijin': song_raijin}
     for name, fn in songs.items():
         x, length = fn()
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')
         MUSIC[name] = round(length, 4)
-    for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck), ('mukuro_drums', song_mukuro)):
+    for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck), ('mukuro_drums', song_mukuro), ('raijin_drums', song_raijin)):
         x, length = fn(drums=True)
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')
     x, length = rain_loop()
     x = normalize(x, 0.5)
     out['rain_loop'] = (mp3_bytes(x, 64), SR, len(x), 'mp3')
+    x, length = wind_loop()
+    x = normalize(x, 0.5)
+    out['wind_loop'] = (mp3_bytes(x, 64), SR, len(x), 'mp3')
     return out
 
 

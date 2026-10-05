@@ -25,7 +25,7 @@ def pr_spawn():
         vx = pq_vx[qi]
         vy = pq_vy[qi]
         t = 0
-        if kind == "bullet" or kind == "card":
+        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell":
             owner = "e"
         elif kind == "wave":
             owner = "w"
@@ -44,9 +44,11 @@ def pr_spawn():
 @proc
 def pr_update():
     t += 1
+    if kind == "shell":
+        vy -= 0.35
     x += vx
     y += vy
-    if t > 100 or x < -260 or x > 260 or y < -200 or y > 200:
+    if t > 100 or x < -260 or x > 260 or y < -200 or y > 260:
         delete_clone()
     if kind == "wave":
         cell(x + vx * 2, y + 8)
@@ -63,14 +65,32 @@ def pr_update():
         return
     cell(x, y)
     if cc == "#" or cc == "B" or cc == "D":
-        cfx("hit", x - vx, y - vy, 0)
+        if kind == "shell":
+            cfx("explosion", x, y, 0)
+            sfxq.append("explode")
+            if abs(px - x) < 24 and py < y + 10 and py + 34 > y - 10:
+                hit_player(2, 0, x)
+        else:
+            cfx("hit", x - vx, y - vy, 0)
         delete_clone()
     if owner == "e":
         if px + 7 > x - 4 and px - 7 < x + 4 and py + 36 > y - 4 and py < y + 4:
-            hit_player(1, 0, x - vx * 3)
+            if kind == "shell":
+                hit_player(2, 0, x - vx * 3)
+            else:
+                hit_player(1, 0, x - vx * 3)
             if res == "deflect":
-                vx = 0 - vx * 1.6
-                vy = 0 - vy * 1.6
+                if kind == "shell":
+                    # a deflected shell flies straight back into Raijin's core
+                    kind = "rshell"
+                    ddx = ent_x[boss_slot] - x
+                    ddy = ent_y[boss_slot] + 14 - y
+                    dd = sqrt(ddx * ddx + ddy * ddy) + 0.01
+                    vx = ddx / dd * 11
+                    vy = ddy / dd * 11
+                else:
+                    vx = 0 - vx * 1.6
+                    vy = 0 - vy * 1.6
                 owner = "p"
                 t = 0
             elif res != "miss":
@@ -79,11 +99,14 @@ def pr_update():
         for ei in range(1, len(ent_type) + 1):
             if ent_alive[ei] == 1 and ent_x[ei] + ent_w[ei] + 4 > x and ent_x[ei] - ent_w[ei] - 4 < x:
                 if ent_y[ei] + ent_h[ei] + 4 > y and ent_y[ei] - 4 < y:
-                    if kind == "bullet":
+                    if kind == "bullet" or kind == "rshell":
                         ent_dmg[ei] = ent_dmg[ei] + 2
                     else:
                         ent_dmg[ei] = ent_dmg[ei] + 1
-                    ent_idmg[ei] = ent_idmg[ei] + 2
+                    if kind == "rshell":
+                        ent_idmg[ei] = ent_idmg[ei] + 3
+                    else:
+                        ent_idmg[ei] = ent_idmg[ei] + 2
                     ent_hk[ei] = "projectile"
                     if vx > 0:
                         ent_kb[ei] = 2
@@ -98,7 +121,11 @@ def pr_update():
 def pr_draw():
     # enemy shots flash white for the last 0.3 s (9 frames) before reaching Hotaru
     tell = 0
-    if owner != "p" and vx != 0 and (px - x) * vx > 0:
+    if kind == "shell":
+        sd = sqrt((px - x) * (px - x) + (py + 18 - y) * (py + 18 - y))
+        if (sd - 14) / (sqrt(vx * vx + vy * vy) + 0.01) <= 9:
+            tell = 1
+    elif owner != "p" and vx != 0 and (px - x) * vx > 0:
         eta = (abs(px - x) - 11) / abs(vx)
         if eta <= 9 and abs((py + 18) - y) < 40:
             tell = 1
@@ -110,6 +137,10 @@ def pr_draw():
         costume(join("wave_", floor(t / 3) % 2))
     elif kind == "card":
         costume(join("card_", floor(t / 3) % 4))
+    elif kind == "shell":
+        costume(join("shell_", floor(t / 3) % 2))
+    elif kind == "rshell":
+        costume(join("rshell_", floor(t / 3) % 2))
     else:
         costume(join("bullet_", floor(t / 4) % 2))
     goto(x + shx, y + shy)
@@ -242,6 +273,8 @@ def dc_done():
         ddone = daicam3_done
     elif dmode == "float":
         ddone = daicam4_done
+    elif dmode == "dine":
+        ddone = daicam5_done
 
 
 @proc
@@ -272,6 +305,8 @@ def dc_update():
                 broadcast("ev_daicam3_free")
             elif dmode == "float":
                 broadcast("ev_daicam4_end")
+            elif dmode == "dine":
+                broadcast("ev_daicam5_end")
             else:
                 broadcast("ev_daicam_end")
     elif st == "talk":
@@ -716,7 +751,7 @@ fr = 0
 is_clone = 1
 clone()
 is_clone = 0
-''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai":').replace(
+''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat":').replace(
     'kind = O_A[oi]', 'kind = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
 @on("t_draw")
 def draw():
@@ -738,6 +773,8 @@ def draw():
                 costume("toro_0")
         elif kind == "bonsai":
             costume("bonsai")
+        elif kind == "seat":
+            costume("seat")
         else:
             fl_t -= 1
             if fl_t < 0:
