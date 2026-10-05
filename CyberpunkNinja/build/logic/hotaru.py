@@ -623,6 +623,9 @@ def start_deflect():
 def st_deflect():
     if grounded == 1:
         pvx = pvx * 0.6
+    guard_cancel()
+    if pst != "deflect":
+        return
     if pfr >= a_n:
         if kS == 1:
             pst = "block"
@@ -640,9 +643,38 @@ def st_block():
     if kR == 1:
         pface = 1
     anim("block")
+    guard_cancel()
+    if pst != "block":
+        return
     if kS == 0:
         pst = "move"
         pblock = 0
+
+
+@proc
+def guard_cancel():
+    # Deflect / block live on the Down key, so Down-based moves cancel out of them:
+    # Down+Up drops through thin platforms, Down+attack in the air plunges,
+    # Up jumps out of a block, and Phase Step (aimable downward) always cancels.
+    if pZ == 1:
+        pblock = 0
+        pst = "move"
+        try_dash()
+        return
+    if pA == 1 and grounded == 0 and kD == 1:
+        pblock = 0
+        start_atk("plunge")
+        return
+    if jbuf > 0 and (grounded == 1 or coyote > 0):
+        pblock = 0
+        pst = "move"
+        if kD == 1 and on_oneway == 1 and grounded == 1:
+            drop_t = 8
+            jbuf = 0
+            grounded = 0
+            py -= 2
+        else:
+            do_jump()
 
 
 @proc

@@ -155,8 +155,8 @@ def read_input():
     kU = key("up arrow") or key("w")
     kD = key("down arrow") or key("s")
     kA = mouse_down() or key("x") or key("j")
-    kZ = key("z") or key("k")
-    kS = key("space") or key("l")
+    kZ = key("space") or key("z") or key("k")
+    kS = key("down arrow") or key("s") or key("l")
     kH = key("r")
     kQ = key("q")
     kE = key("e")
@@ -204,7 +204,7 @@ def read_input():
     if mdown == 1 and oM == 0:
         p_click = 1
     p_ok = 0
-    if (kN == 1 and oN == 0) or pE == 1 or pS == 1 or (pA == 1 and mdown == 0):
+    if (kN == 1 and oN == 0) or pE == 1 or pZ == 1 or (pA == 1 and mdown == 0):
         p_ok = 1
     oU = kU
     oD = kD
