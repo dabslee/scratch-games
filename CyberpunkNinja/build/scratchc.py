@@ -755,6 +755,7 @@ class SpriteCompiler:
         for n in tree.body:
             if not isinstance(n, (ast.FunctionDef, ast.Expr, ast.Pass)):
                 raise CompileError('%s: top-level must be functions (line %s)' % (self.t.name, n.lineno))
+        funcs = self.wrap_loop_hats(funcs)
         # pass 1: procedures and locals
         for fn in funcs:
             kind, arg = self.decorator(fn)
@@ -792,6 +793,50 @@ class SpriteCompiler:
         # pass 2: bodies
         for fn in funcs:
             self.compile_func(fn)
+
+    YIELDING = {'wait', 'wait_until', 'broadcast_wait', 'play_wait'}
+
+    def wrap_loop_hats(self, funcs):
+        """Run looping event scripts without screen refresh.
+
+        In Scratch a loop inside an ordinary script yields to the next frame
+        after every pass. Event scripts here are re-triggered every frame by
+        broadcasts, so such a loop would restart before finishing (e.g. a
+        sound queue replaying its first item forever). Any hat script that
+        loops but never deliberately waits gets its body moved into a
+        generated warp custom block, which always completes within the frame.
+        """
+        out = []
+        for fn in funcs:
+            kind, _ = self.decorator(fn)
+            if kind in ('proc', 'proc_yield'):
+                out.append(fn)
+                continue
+            has_loop = has_yield = False
+            for node in ast.walk(fn):
+                if isinstance(node, ast.For):
+                    has_loop = True
+                elif isinstance(node, ast.While):
+                    if isinstance(node.test, ast.Constant) and node.test.value is True:
+                        has_yield = True
+                    has_loop = True
+                elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in self.YIELDING:
+                    has_yield = True
+            if not has_loop or has_yield:
+                out.append(fn)
+                continue
+            pname = '%s_run' % fn.name
+            n = 2
+            while any(f.name == pname for f in funcs + out):
+                pname = '%s_run%d' % (fn.name, n)
+                n += 1
+            proc = ast.FunctionDef(name=pname, args=ast.arguments(posonlyargs=[], args=[], kwonlyargs=[], kw_defaults=[], defaults=[]),
+                                   body=fn.body, decorator_list=[ast.Name(id='proc')], lineno=fn.lineno)
+            call = ast.Expr(value=ast.Call(func=ast.Name(id=pname), args=[], keywords=[], lineno=fn.lineno), lineno=fn.lineno)
+            hat = ast.FunctionDef(name=fn.name, args=fn.args, body=[call], decorator_list=fn.decorator_list, lineno=fn.lineno)
+            out.append(hat)
+            out.append(proc)
+        return out
 
     def decorator(self, fn):
         if not fn.decorator_list:
