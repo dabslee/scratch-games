@@ -182,7 +182,7 @@ CONVERSATIONS = {
 # Tutorial prompts: list of segments. ('k', costume) = key icon, ('t', text) = label.
 HINTS = {
     'move': [('k', 'key_left'), ('k', 'key_right'), ('t', 'Run'), ('g',), ('k', 'key_up'), ('t', 'Jump (hold to jump higher)')],
-    'jump': [('k', 'key_down'), ('t', '+'), ('k', 'key_space'), ('t', 'dash down through platforms')],
+    'jump': [('k', 'key_down'), ('k', 'key_down'), ('t', 'or'), ('k', 'key_down'), ('t', '+'), ('k', 'key_space'), ('t', 'drop through platforms')],
     'cling': [('t', 'Jump into a wall to cling to it'), ('n',), ('k', 'key_up'), ('t', 'while clinging: wall jump')],
     'attack': [('k', 'mouse_l'), ('t', '/'), ('k', 'key_x'), ('t', 'Attack'), ('n',), ('t', 'Keep pressing to chain a 4-hit combo')],
     'deflect': [('k', 'key_down'), ('t', 'Deflect right before a hit lands'), ('n',), ('t', 'Hold to block (blocking builds Heat)')],
@@ -235,7 +235,7 @@ CONTROLS = [
     ('b', 'CONTROLS'),
     ('c', 'Move', 'Arrows  or  A / D'),
     ('c', 'Jump (hold: higher)', 'Up  or  W'),
-    ('c', 'Through platforms', 'Phase Step up / down'),
+    ('c', 'Drop through', 'Double-tap Down'),
     ('c', 'Attack (combo)', 'Click  or  X / J'),
     ('c', 'Launcher', 'Up + attack'),
     ('c', 'Phase Step (dash)', 'Space  or  Z / K'),

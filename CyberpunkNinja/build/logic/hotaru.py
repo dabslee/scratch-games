@@ -113,6 +113,7 @@ def p_update():
         st_dead()
         return
     timers()
+    down_tap()
     if pst == "move":
         st_move()
     elif pst == "dash":
@@ -160,6 +161,8 @@ def timers():
         dash_end_buf -= 1
     if drop_t > 0:
         drop_t -= 1
+    if dtap_t > 0:
+        dtap_t -= 1
     if land_t > 0:
         land_t -= 1
     air_t += 1
@@ -169,6 +172,25 @@ def timers():
 
 
 # ------------------------------------------------------------ states
+@proc
+def down_tap():
+    # Double-tapping Down while standing on a thin platform drops through it.
+    # The first tap is still a normal deflect.
+    if pS == 0:
+        return
+    if dtap_t > 0 and grounded == 1 and on_oneway == 1 and on_solid == 0 and (pst == "move" or pst == "deflect" or pst == "block"):
+        dtap_t = 0
+        pS = 0
+        pblock = 0
+        pparry = 0
+        pst = "move"
+        drop_t = 6
+        pvy = -3
+        jumping = 0
+    else:
+        dtap_t = 10
+
+
 @proc
 def st_move():
     dirx = kR - kL
@@ -293,7 +315,7 @@ def try_dash():
         dash_ch -= 1
         ddx = kR - kL
         ddy = kU - kD
-        if grounded == 1 and ddy < 0:
+        if grounded == 1 and ddy < 0 and not (on_oneway == 1 and on_solid == 0):
             ddy = 0
         if ddx == 0 and ddy == 0:
             ddx = pface
@@ -819,6 +841,7 @@ def physics():
             pvy = max(pvy - C_G, 0 - C_MAXFALL)
     grounded = 0
     on_oneway = 0
+    on_solid = 0
     steps = ceil(max(abs(pvx), abs(pvy)) / 7)
     if steps < 1:
         steps = 1
@@ -947,6 +970,7 @@ def foot(fx, oy):
     if cc == "#" or cc == "B" or cc == "D" or (cc == "L" and pdash == 0):
         blocked = 1
         land_top = max(land_top, ftop)
+        on_solid = 1
     elif cc == "=" and drop_t == 0 and oy >= ftop - 0.01 and not (pst == "dash" and ddy < 0):
         blocked = 1
         land_top = max(land_top, ftop)

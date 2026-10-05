@@ -4,7 +4,7 @@
 Click the green flag, press any key at the title screen, and choose "New Game" (or pick a chapter from "Chapters"). Hotaru, a decommissioned cyborg shinobi, reboots in a scrapyard in the Sump beneath the Kanshi Spire with no memory of anything before tonight. The only other voice is Kuro, a ninja's engram wired into her combat software, who speaks through her audio feed and flickers at the edge of her visor as a violet glitch. Climb the Spire for answers through the Prologue, Chapter 1: Neon Alley (boss: Big Oni of the Hannya Boys) and Chapter 2: The Vaults (boss: Lady Luck).
 
 CONTROLS:
-- Arrow keys or A / D to run. Up or W to jump (hold for a higher jump). Jump into a wall to cling to it, then jump again to wall jump. Thin platforms can be jumped up through, or passed through with an upward or downward Phase Step.
+- Arrow keys or A / D to run. Up or W to jump (hold for a higher jump). Jump into a wall to cling to it, then jump again to wall jump. Thin platforms can be jumped up through. To drop down through one, double-tap Down or Phase Step downward (Down + Space).
 - Left click (or X / J) to attack. Keep pressing to chain a 4-hit combo. Up + attack is a rising Launcher.
 - Space (or Z / K) to Phase Step: an invincible dash that passes through lasers and attacks. Hold the arrow keys to aim it, including diagonals and downward. You have 2 charges, shown by the color of Hotaru's scarf and the pips under her health bar; they refill when you land or perfectly deflect.
 - Attack during or right after a Phase Step for a Heavy Strike, which breaks guards and deals big Integrity damage.
