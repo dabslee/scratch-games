@@ -1017,7 +1017,7 @@ def post():
     elif px < -244 and exL > 0:
         want_room = exL
         enter_dir = "R"
-    elif py + 20 > 184 and exU > 0:
+    elif py + 30 > 180 and exU > 0:
         want_room = exU
         enter_dir = "B"
         lift_ride = onplat

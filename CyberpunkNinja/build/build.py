@@ -205,7 +205,7 @@ a1_start = [o for o in levels.a1.objs if o['type'] == 'start'][0]
 C.update({
     'C_ROOM_P1': RI['p1'], 'C_ROOM_A1': RI['a1'], 'C_A1_X': a1_start['x'], 'C_A1_Y': a1_start['y'],
     'C_LIFT_LOW': -200, 'C_LIFT_TOP': levels.top(19),
-    'C_G': 1.5, 'C_JUMP': 15, 'C_WALLJUMP': 13.5, 'C_BOOST': 15, 'C_RUN': 6, 'C_MAXFALL': 13,
+    'C_G': 1.5, 'C_JUMP': 16.5, 'C_WALLJUMP': 15, 'C_BOOST': 18, 'C_RUN': 6, 'C_MAXFALL': 13,
     'C_SLIDE': 3, 'C_DASHV': 21.3, 'C_DASHF': 6, 'C_HW': 7, 'C_PH': 34, 'C_COYOTE': 3,
     'C_JBUF': 4, 'C_PARRY': 6, 'C_PARRY_WIDE': 12, 'C_OVERHEAT': 36, 'C_IFRAMES': 30,
     'C_HEAL': 4, 'C_COMBO': 11,
@@ -288,13 +288,14 @@ MENU_COSTUMES += copy_costumes('Panels')
 MENU_COSTUMES += copy_costumes('ChapterCards')
 MENU_COSTUMES += copy_costumes('KeyPrompts', names=['key_left', 'key_right'])
 MENU_COSTUMES += copy_costumes('Banners', names=['press_any_key'])
-big = panel_image(212, 172)
-MENU_COSTUMES.append(costume_from(big, 'panel', 106, 86))
-for key, label in (('ttl_options', 'OPTIONS'), ('ttl_chapters', 'CHAPTERS')):
-    im = text_image([label], BOLD, P['cyan3'], shadow=P['mag2'])
+big = panel_image(232, 176)
+MENU_COSTUMES.append(costume_from(big, 'panel', 116, 88))
+for key, label, col in (('ttl_options', 'OPTIONS', 'cyan3'), ('ttl_chapters', 'CHAPTERS', 'cyan3'), ('ttl_assist', 'ASSIST MODE', 'mag3')):
+    im = text_image([label], BOLD, P[col], shadow=P['mag2'] if col == 'cyan3' else P['ink'])
     MENU_COSTUMES.append(costume_from(im, key, im.width / 2, 4.5))
 for key, label in dialogue.OPTION_LABELS.items():
     im = text_image([label], REG, P['white'], shadow=P['ink'])
+    assert im.width <= 128, ('option label too wide', label, im.width)
     MENU_COSTUMES.append(costume_from(im, 'lbl_' + key, 0, 5))
 values = {'on': 'ON', 'off': 'OFF', 'view': 'VIEW'}
 for i in range(6):
@@ -319,6 +320,8 @@ def page_image(rows, width=200):
             lines.append(('gap', 5))
         elif kind == 'c':
             lines.append(('col', r[1], r[2]))
+        elif kind == 'n':
+            lines.append(('note', r[1]))
         else:
             lines.append((kind, r[1]))
     h = sum(5 if l[0] == 'gap' else 11 for l in lines)
@@ -329,8 +332,11 @@ def page_image(rows, width=200):
             y += 5
             continue
         if l[0] == 'col':
-            REG.draw(im, 4, y, l[1], P['steel'], P['ink'])
-            REG.draw(im, 92, y, l[2], P['white'], P['ink'])
+            REG.draw(im, 2, y, l[1], P['steel'], P['ink'])
+            REG.draw(im, 104, y, l[2], P['white'], P['ink'])
+            assert REG.width(l[1]) < 100 and 104 + REG.width(l[2]) <= width, ('controls row too wide', l)
+        elif l[0] == 'note':
+            REG.draw(im, (width - REG.width(l[1])) // 2, y, l[1], P['slate3'], P['ink'])
         else:
             font = BOLD if l[0] in ('b', 'h') else REG
             col = {'b': P['cyan3'], 'h': P['mag3'], 't': P['white']}[l[0]]
@@ -340,7 +346,7 @@ def page_image(rows, width=200):
     return im
 
 
-for key, rows, w in (('credits_page', dialogue.CREDITS, 204), ('controls_page', dialogue.CONTROLS, 204),
+for key, rows, w in (('credits_page', dialogue.CREDITS, 220), ('controls_page', dialogue.CONTROLS, 222),
                      ('end_page', dialogue.END_PAGE, 236)):
     im = page_image(rows, w)
     if im.width > 0 and key == 'controls_page':
@@ -534,7 +540,7 @@ dlg = (copy_costumes('Dialogue') + copy_costumes('Portraits') + copy_costumes('N
 sprite('Dialogue', dlg, visuals.DIALOGUE)
 sprite('Menu', MENU_COSTUMES, menu.MENU)
 sprite('TextFX', copy_costumes('Font'), menu.TEXTFX)
-sprite('Fade', FADE_COSTUMES, visuals.FADE, visible=True)
+sprite('Fade', FADE_COSTUMES, visuals.FADE)
 sprite('SFX', [FADE_COSTUMES[0]], visuals.SFX, sounds=audio.SFX_NAMES)
 for track, length in audio.MUSIC.items():
     sprite('Music_' + track, [FADE_COSTUMES[0]], visuals.music(track, length), sounds=[track])

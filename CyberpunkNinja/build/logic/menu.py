@@ -56,34 +56,35 @@ def build():
         add_btn("quit", 0, -28)
     elif menu == "options" or menu == "pause_options":
         add_deco("panel", 0, 0)
-        add_deco("ttl_options", 0, 150)
-        add_opt("wide", 112)
-        add_opt("slow", 87)
+        add_deco("ttl_options", 0, 158)
+        add_deco("ttl_assist", -150, 134)
+        add_opt("wide", 110)
+        add_opt("slow", 86)
         add_opt("heat", 62)
-        add_opt("gourd", 37)
-        add_opt("god", 12)
+        add_opt("gourd", 38)
+        add_opt("god", 14)
         add_opt("music", -18)
-        add_opt("sfx", -43)
-        add_opt("shake", -68)
-        add_opt("controls", -98)
-        add_btn("back", 0, -138)
+        add_opt("sfx", -42)
+        add_opt("shake", -66)
+        add_opt("controls", -96)
+        add_btn("back", 0, -142)
     elif menu == "chapters":
         add_deco("panel", 0, 0)
         add_deco("ttl_chapters", 0, 150)
-        add_item("prev", "arrow", -196, 50)
+        add_item("prev", "arrow", -208, 50)
         add_item("card", "card", 0, 50)
-        add_item("next", "arrow", 196, 50)
-        add_deco("chap_label", 0, -10)
-        add_btn("back", 0, -138)
+        add_item("next", "arrow", 208, 50)
+        add_deco("chap_label", 0, -20)
+        add_btn("back", 0, -142)
         msel = 2
     elif menu == "credits" or menu == "credits_end":
         add_deco("panel", 0, 0)
-        add_deco("credits_page", 0, 10)
-        add_btn("back", 0, -138)
+        add_deco("credits_page", 0, 18)
+        add_btn("back", 0, -142)
     elif menu == "controls":
         add_deco("panel", 0, 0)
-        add_deco("controls_page", 0, 10)
-        add_btn("back", 0, -138)
+        add_deco("controls_page", 0, 22)
+        add_btn("back", 0, -146)
     elif menu == "end":
         add_deco("end_page", 0, 60)
         add_deco("press_any_key", 0, -150)
@@ -131,8 +132,8 @@ def add_item(k, kind, x, y):
 
 @proc
 def add_opt(k, y):
-    add_deco(join("lbl_", k), -200, y)
-    add_item(k, "opt", 140, y)
+    add_deco(join("lbl_", k), -212, y)
+    add_item(k, "opt", 148, y)
 
 
 @proc
@@ -221,7 +222,7 @@ def m_ctl():
 @proc
 def item_w(k):
     if MI_KIND[k] == "card":
-        iw = 150
+        iw = 170
     elif MI_KIND[k] == "arrow":
         iw = 16
     elif MI_KIND[k] == "opt":
@@ -328,11 +329,12 @@ def m_draw():
     if ckind == "cursor":
         k = msel
         if MI_KIND[k] == "opt":
-            goto(MI_X[k] - 86, MI_Y[k] - 2)
+            goto(MI_X[k] - 92, MI_Y[k] - 2)
         elif MI_KIND[k] == "card":
-            goto(-160, MI_Y[k] - 70)
+            hide()
+            return
         elif MI_KIND[k] == "arrow":
-            goto(MI_X[k], MI_Y[k] - 30)
+            goto(MI_X[k], MI_Y[k] - 34)
         else:
             goto(MI_X[k] - 98, MI_Y[k] - 2)
         costume(join("spin_", floor(frame / 3) % 4))
@@ -385,8 +387,11 @@ def m_draw():
             effect("brightness", 0)
     elif ckind == "card":
         costume(join("ch", chap_i))
+        size(88)
         if chap_i > 1:
             effect("brightness", -55)
+        elif msel == cidx and frame % 30 < 15:
+            effect("brightness", 15)
         else:
             effect("brightness", 0)
     elif ccos == "chap_label":

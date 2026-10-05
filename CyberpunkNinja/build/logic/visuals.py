@@ -458,7 +458,6 @@ def draw():
         else:
             point(90)
         effect("ghost", rand(35, 55))
-        effect("color", 150 + rand(-10, 10))
         show()
     else:
         hide()

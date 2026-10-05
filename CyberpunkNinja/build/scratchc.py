@@ -841,7 +841,25 @@ class SpriteCompiler:
         ids = self.block_list(fn.body)
         self.chain([hat] + ids)
         self.params = None
-        self.t.script_y += 60 + 30 * (len(self.t.blocks) - nstart) // 3
+        hat_h = 100 if kind in ('proc', 'proc_yield') else 80
+        self.t.script_y += hat_h + self.stack_height(self.t.blocks[hat]['next']) + 60
+
+    def stack_height(self, bid):
+        """Approximate rendered height of a stack of blocks (workspace units)."""
+        h = 0
+        while bid:
+            b = self.t.blocks[bid]
+            h += 56
+            ins = b['inputs']
+            if 'SUBSTACK' in ins or b['opcode'] in ('control_forever', 'control_repeat', 'control_if',
+                                                     'control_if_else', 'control_repeat_until'):
+                sub = ins.get('SUBSTACK', [2, None])[1]
+                h += max(32, self.stack_height(sub)) + 32
+                if b['opcode'] == 'control_if_else':
+                    sub2 = ins.get('SUBSTACK2', [2, None])[1]
+                    h += max(32, self.stack_height(sub2)) + 40
+            bid = b['next']
+        return h
 
 
 def compile_sprite(target, src, consts=None):

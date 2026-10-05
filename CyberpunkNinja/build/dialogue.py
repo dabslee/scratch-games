@@ -132,11 +132,11 @@ HINTS = {
 }
 
 OPTION_LABELS = {
-    'wide': 'Assist: wide deflect window',
-    'slow': 'Assist: slower game speed',
-    'heat': 'Assist: slower Heat buildup',
-    'gourd': 'Assist: infinite Nano-Gourd',
-    'god': 'Assist: invincibility',
+    'wide': 'Wide deflect window',
+    'slow': 'Slower game speed',
+    'heat': 'Slower Heat buildup',
+    'gourd': 'Infinite Nano-Gourd',
+    'god': 'Invincibility',
     'music': 'Music volume',
     'sfx': 'Sound volume',
     'shake': 'Screen shake',
@@ -164,22 +164,19 @@ CREDITS = [
 
 CONTROLS = [
     ('b', 'CONTROLS'),
-    ('s', ''),
-    ('c', 'Move', 'Arrow keys  or  A / D'),
-    ('c', 'Jump (hold = higher)', 'Up arrow  or  W'),
-    ('c', 'Crouch / drop down', 'Down arrow  or  S'),
-    ('c', 'Attack (chain combo)', 'Left click  or  X / J'),
-    ('c', 'Launcher / Plunge', 'Up + attack  /  Down + attack in air'),
-    ('c', 'Phase Step (dash)', 'Z  or  K   (+ arrows to aim)'),
-    ('c', 'Heavy Strike', 'Phase Step, then attack'),
-    ('c', 'Deflect / hold to block', 'Space  or  L'),
-    ('c', 'Heal (Nano-Gourd)', 'R'),
-    ('c', 'Throw shuriken', 'Q'),
-    ('c', 'Talk / Shrine / next line', 'E  or  Enter'),
+    ('c', 'Move', 'Arrows  or  A / D'),
+    ('c', 'Jump (hold: higher)', 'Up  or  W'),
+    ('c', 'Crouch / drop down', 'Down  or  S'),
+    ('c', 'Attack (combo)', 'Click  or  X / J'),
+    ('c', 'Launcher / Plunge', 'Up / Down + attack'),
+    ('c', 'Phase Step (dash)', 'Z  or  K  (+ arrows)'),
+    ('c', 'Heavy Strike', 'Phase Step + attack'),
+    ('c', 'Deflect / block', 'Space  or  L'),
+    ('c', 'Heal', 'R'),
+    ('c', 'Shuriken', 'Q'),
+    ('c', 'Talk / Shrine / next', 'E  or  Enter'),
     ('c', 'Pause', 'P'),
-    ('s', ''),
-    ('t', 'Scratch cannot read Shift or Esc, so'),
-    ('t', 'Phase Step is on Z and Pause is on P.'),
+    ('n', "(Scratch can't read Shift or Esc)"),
 ]
 
 END_PAGE = [
