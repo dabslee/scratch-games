@@ -211,9 +211,12 @@ def draw():
 
 DAICAM = spawner('daicam', '''
 dmode = O_A[oi]
-if (dmode != "cage" and daicam_done == 0) or (dmode == "cage" and daicam3_done == 0):
+dc_done()
+if ddone == 0:
     x = O_X[oi]
     y = O_Y[oi]
+    by = y
+    fy = O_B[oi]
     fr = 0
     st = "panic"
     if dmode == "cage":
@@ -233,8 +236,23 @@ def tick():
 
 
 @proc
+def dc_done():
+    ddone = daicam_done
+    if dmode == "cage":
+        ddone = daicam3_done
+    elif dmode == "float":
+        ddone = daicam4_done
+
+
+@proc
 def dc_update():
     t += 1
+    if dmode == "float" and (st == "panic" or st == "wait"):
+        if st == "panic":
+            y = by + sin(frame * 6) * 6
+        elif y > fy:
+            y = max(fy, y - 7)
+            t = 14
     if st == "caged":
         fr += 0.34
         if cage_broken == 1:
@@ -252,11 +270,14 @@ def dc_update():
             st = "talk"
             if dmode == "cage":
                 broadcast("ev_daicam3_free")
+            elif dmode == "float":
+                broadcast("ev_daicam4_end")
             else:
                 broadcast("ev_daicam_end")
     elif st == "talk":
         fr += 0.27
-        if (dmode != "cage" and daicam_done == 1) or (dmode == "cage" and daicam3_done == 1):
+        dc_done()
+        if ddone == 1:
             st = "run"
             t = 0
             sfxq.append("cam_beep")
@@ -695,7 +716,7 @@ fr = 0
 is_clone = 1
 clone()
 is_clone = 0
-''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko":').replace(
+''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai":').replace(
     'kind = O_A[oi]', 'kind = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
 @on("t_draw")
 def draw():
@@ -706,6 +727,17 @@ def draw():
             costume(join("cart_idle_", floor(frame / 5) % 4))
         elif kind == "pachinko":
             costume(join("pachinko_", (floor(frame / 8) + floor(x / 16)) % 2))
+        elif kind == "rack":
+            costume(join("rack_blink_", (floor(frame / 9) + floor(x / 16)) % 4))
+        elif kind == "pod":
+            costume(join("pod_", (floor(frame / 18) + floor(x / 16)) % 2))
+        elif kind == "toro":
+            if (floor(frame / 5) + floor(x / 16)) % 9 == 0:
+                costume("toro_1")
+            else:
+                costume("toro_0")
+        elif kind == "bonsai":
+            costume("bonsai")
         else:
             fl_t -= 1
             if fl_t < 0:
@@ -759,6 +791,35 @@ def draw():
             costume("cage_1")
         else:
             costume("cage_0")
+        goto(x + shx, y + shy)
+        show()
+'''
+
+
+MIST = spawner('mist', '''
+x = O_X[oi]
+pulse = O_B[oi]
+for k in range(floor((O_A[oi] + 1) / 2)):
+    y = O_Y[oi] + 16 + k * 32
+    seg = k
+    is_clone = 1
+    clone()
+    is_clone = 0
+''') + '''
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        if pulse == 1:
+            ph = frame % 110
+            if ph < 70:
+                effect("ghost", 25)
+            elif ph < 80:
+                effect("ghost", 25 + (ph - 70) * 7)
+            else:
+                effect("ghost", 100)
+        else:
+            effect("ghost", 25)
+        costume(join("mist_", (floor(frame / 2) + seg * 3) % 8))
         goto(x + shx, y + shy)
         show()
 '''

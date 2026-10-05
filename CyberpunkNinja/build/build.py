@@ -18,6 +18,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'logic'))
 
 import art_ch2  # noqa: E402
+import art_ch3  # noqa: E402
 import assets  # noqa: E402
 import dialogue  # noqa: E402
 import levels  # noqa: E402
@@ -148,6 +149,7 @@ boss_on boss_hp boss_int boss_slot boss_phase boss_dead ambush_on mp_on mp_x mp_
 cp_room cp_x cp_y has_save shards shard_id deaths play_time daicam_done cam_x cam_y music_cur music_want
 first tstr pfr slash_fx slash_off dlg_t msel press_t chap_i
 luck_dead boss_name slot_state slot_t slot_sym daicam3_done cage_broken
+muk_dead muk_exit daicam4_done
 '''.split()
 
 GLOBAL_LISTS = '''
@@ -182,7 +184,7 @@ set_list('R_LEVEL', ['room_' + r.key for r in ROOMS])
 set_list('R_CH', [r.chapter for r in ROOMS])
 for d in 'LRUD':
     set_list('R_' + d, [RI[r.exits[d]] if d in r.exits else 0 for r in ROOMS])
-set_list('R_BOSS', [(r.chapter if r.chapter == 2 else 1) if 'boss' in r.flags else 0 for r in ROOMS])
+set_list('R_BOSS', [max(1, r.chapter) if 'boss' in r.flags else 0 for r in ROOMS])
 O_FIRST, O_NUM, OT, OX, OY, OA, OB = [], [], [], [], [], [], []
 for r in ROOMS:
     O_FIRST.append(len(OT) + 1)
@@ -205,9 +207,11 @@ set_list('O_A', OA)
 set_list('O_B', OB)
 a1_start = [o for o in levels.a1.objs if o['type'] == 'start'][0]
 b1_start = [o for o in levels.b1.objs if o['type'] == 'start'][0]
+c1_start = [o for o in levels.c1.objs if o['type'] == 'start'][0]
 C.update({
     'C_ROOM_P1': RI['p1'], 'C_ROOM_A1': RI['a1'], 'C_A1_X': a1_start['x'], 'C_A1_Y': a1_start['y'],
     'C_ROOM_B1': RI['b1'], 'C_B1_X': b1_start['x'], 'C_B1_Y': b1_start['y'],
+    'C_ROOM_C1': RI['c1'], 'C_C1_X': c1_start['x'], 'C_C1_Y': c1_start['y'],
     'C_LIFT_LOW': -200, 'C_LIFT_TOP': levels.top(19),
     'C_G': 1.5, 'C_JUMP': 16.5, 'C_WALLJUMP': 15, 'C_BOOST': 18, 'C_RUN': 6, 'C_MAXFALL': 13,
     'C_SLIDE': 3, 'C_DASHV': 21.3, 'C_DASHF': 6, 'C_HW': 7, 'C_PH': 34, 'C_COYOTE': 3,
@@ -350,8 +354,8 @@ def page_image(rows, width=200):
     return im
 
 
-for key, rows, w in (('credits_page', dialogue.CREDITS, 220), ('controls_page', dialogue.CONTROLS, 222),
-                     ('end_page', dialogue.END_PAGE, 236)):
+for key, rows, w in (('controls_page', dialogue.CONTROLS, 222),
+                     ('end_page', dialogue.END_PAGE, 236), ('end_next', dialogue.END_NEXT, 236)):
     im = page_image(rows, w)
     if im.width > 0 and key == 'controls_page':
         for r in rows:
@@ -471,14 +475,14 @@ def atk_info_src():
 
 # Stage
 stage = target('Stage', stage=True)
-stage.costumes = copy_costumes('Stage', names=['title_', 'sky_sump', 'sky_neon_alley', 'black'])
+stage.costumes = copy_costumes('Stage', names=['title_', 'sky_sump', 'sky_neon_alley', 'sky_server_gardens', 'black'])
 stage.costumes.append(make_costume('sky_vaults', up4(art_ch2.sky()), 480, 360, FILES))
 stage.sounds = []
 scratchc.compile_sprite(stage, read_logic('stage.py'), C)
 
-PAR_FAR = sprite('Parallax_far', copy_costumes('Parallax_far', names=['sump', 'neon_alley'])
+PAR_FAR = sprite('Parallax_far', copy_costumes('Parallax_far', names=['sump', 'neon_alley', 'server_gardens'])
                  + [make_costume('vaults', up4(art_ch2.far()), 480, 360, FILES)], visuals.parallax(0.05))
-PAR_MID = sprite('Parallax_mid', copy_costumes('Parallax_mid', names=['sump', 'neon_alley'])
+PAR_MID = sprite('Parallax_mid', copy_costumes('Parallax_mid', names=['sump', 'neon_alley', 'server_gardens'])
                  + [make_costume('vaults', up4(art_ch2.mid()), 480, 360, FILES)], visuals.parallax(0.12))
 sprite('Level', ROOM_COSTUMES, visuals.LEVEL)
 props = []
@@ -493,11 +497,23 @@ props.append(costume_from(jp_on, 'jackpot_on_0', jp_on.width / 2, 0))
 for i in range(8):
     im = jp_on if i in (0, 2, 3, 6) else jp_off
     props.append(costume_from(im, 'jackpot_flicker_%d' % i, im.width / 2, 0))
+props += copy_costumes('ServerRack', rename=lambda n: 'rack_' + n)
+props += [costume_from(art_ch3.pod(i), 'pod_%d' % i, 7, 30) for i in range(2)]
+props += [costume_from(art_ch3.toro(i), 'toro_%d' % i, 6, 22) for i in range(2)]
+props.append(costume_from(art_ch3.bonsai(), 'bonsai', 7, 18))
 sprite('Props', props, CL + objects.PROPS)
+sprite('Mist', [costume_from(art_ch3.mist(i), 'mist_%d' % i, 8, 8) for i in range(art_ch3.MIST_FRAMES)], CL + objects.MIST)
 slot_cos = [costume_from(art_ch2.slot_machine(i), 'slot_%d' % i, 40, 38) for i in range(2)]
 sprite('SlotMachine', slot_cos, CL + enemies.SLOT_MACHINE)
 reel_cos = [costume_from(art_ch2.symbol(n), 'sym_' + n, 6, 7) for n in art_ch2.SYMBOLS]
 reel_cos += [costume_from(art_ch2.reel_blur(i), 'blur_%d' % i, 6, 7) for i in range(2)]
+SLOT_CALLOUTS = {'spade': 'CARD FAN!', 'seven': 'RAPID FIRE!', 'cherry': 'DASH SLASH!',
+                 'skull': 'SHOCKWAVE!', 'jackpot': 'LASERS!'}
+for sym, text in SLOT_CALLOUTS.items():
+    w = BOLD.width(text) + 12
+    im = panel_image(w, 15, fill='ink', border='gold', accent='red2')
+    BOLD.draw(im, 6, 3, text, P['red2'] if sym in ('skull', 'jackpot') else P['yellow'], P['ink'])
+    reel_cos.append(costume_from(im, 'call_' + sym, w / 2, 7))
 sprite('Reels', reel_cos, CL + enemies.REELS)
 sprite('Breakable', BREAK_COSTUMES, CL + FX + objects.BREAKABLE)
 sprite('LaserBarrier', copy_costumes('LaserBarrier'), CL + objects.LASER)
@@ -519,6 +535,8 @@ sprite('HannyaBoy', copy_costumes('HannyaBoy'), CL + FX + EN + enemies.HANNYA)
 sprite('BigOni', copy_costumes('BigOni'), CL + FX + EN + enemies.ONI)
 sprite('ScavDrone', copy_costumes('ScavDrone'), CL + FX + EN + enemies.DRONE)
 sprite('LadyLuck', recolored('Mukuro', art_ch2.LUCK_MAP), CL + FX + EN + enemies.LUCK)
+sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP), CL + FX + EN + enemies.WARDEN)
+sprite('Mukuro', copy_costumes('Mukuro'), CL + FX + EN + enemies.MUKURO)
 sprite('SweepLaser', copy_costumes('LaserBarrier', names=['on_']), CL + EN + enemies.SWEEP)
 sprite('Kuro', copy_costumes('Kuro', names=['idle_']), visuals.KURO)
 hotaru_src = read_logic('hotaru.py') + FX + anim_info_src('Hotaru') + atk_info_src()
@@ -552,7 +570,7 @@ sprite('Rain', copy_costumes('Rain'), visuals.RAIN)
 sprite('Flash', FLASH_COSTUMES, visuals.FLASH)
 eui = copy_costumes('HUD', names=['enemy_int_']) + copy_costumes('CombatFX', names=['breach_', 'severance_'])
 sprite('EnemyUI', eui, CL + visuals.ENEMY_UI)
-hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck'])
+hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro'])
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])
 sprite('Hints', hint_cos, visuals.HINTS)
@@ -575,6 +593,8 @@ sprite('Music_drums', [FADE_COSTUMES[0]], visuals.music('boss_drums', audio.MUSI
        sounds=['boss_drums'])
 sprite('Music_luck_drums', [FADE_COSTUMES[0]], visuals.music('luck_drums', audio.MUSIC['luck'], drums=True, drums_for='luck'),
        sounds=['luck_drums'])
+sprite('Music_mukuro_drums', [FADE_COSTUMES[0]], visuals.music('mukuro_drums', audio.MUSIC['mukuro'], drums=True, drums_for='mukuro'),
+       sounds=['mukuro_drums'])
 sprite('Ambience', [FADE_COSTUMES[0]], visuals.AMBIENCE, sounds=['rain_loop'])
 
 # make sure the HUD/Hotaru-local name 'pfr' is shared: Hotaru writes it as a global

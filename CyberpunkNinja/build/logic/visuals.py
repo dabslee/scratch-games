@@ -539,8 +539,10 @@ def draw():
             costume("sump")
         elif chapter == 1:
             costume("neon_alley")
-        else:
+        elif chapter == 2:
             costume("vaults")
+        else:
+            costume("server_gardens")
         po = (0 - px * %s) %% 480
         if is_clone == 1:
             goto(po - 480, 0)

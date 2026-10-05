@@ -1,4 +1,4 @@
-# Menus: main menu, options (assist mode), chapters, credits, controls, pause, end.
+# Menus: main menu, options (assist mode), chapters, controls, pause, end.
 
 MENU = '''
 @flag
@@ -41,12 +41,11 @@ def build():
     menu_t = 0
     broadcast("text_clear")
     if menu == "main":
-        add_btn("new_game", 0, 22)
-        add_btn("continue", 0, -12)
-        add_btn("chapters", 0, -46)
-        add_btn("options", 0, -80)
-        add_btn("credits", 0, -114)
-        add_btn("quit", 0, -148)
+        add_btn("new_game", 0, 8)
+        add_btn("continue", 0, -28)
+        add_btn("chapters", 0, -64)
+        add_btn("options", 0, -100)
+        add_btn("quit", 0, -136)
         if has_save == 1:
             msel = 2
     elif menu == "pause":
@@ -77,16 +76,13 @@ def build():
         add_deco("chap_label", 0, -20)
         add_btn("back", 0, -142)
         msel = 2
-    elif menu == "credits" or menu == "credits_end":
-        add_deco("panel", 0, 0)
-        add_deco("credits_page", 0, 18)
-        add_btn("back", 0, -142)
     elif menu == "controls":
         add_deco("panel", 0, 0)
         add_deco("controls_page", 0, 22)
         add_btn("back", 0, -146)
     elif menu == "end":
-        add_deco("end_page", 0, 60)
+        add_deco("end_page", 0, 118)
+        add_deco("end_next", 0, -84)
         add_deco("press_any_key", 0, -150)
         end_stats()
     if len(MI_KEY) > 0:
@@ -167,7 +163,8 @@ def m_ctl():
     if menu == "end":
         if p_any == 1:
             sfxq.append("menu_select")
-            menu = "credits_end"
+            menu = "main"
+            music_want = "title"
             broadcast("menu_build")
         return
     if n == 0:
@@ -294,9 +291,6 @@ def activate(k):
         else:
             menu = "options"
         broadcast("menu_build")
-    elif k == "credits":
-        menu = "credits"
-        broadcast("menu_build")
     elif k == "quit":
         broadcast("quit_to_title")
     elif k == "resume":
@@ -310,15 +304,14 @@ def activate(k):
             broadcast("start_ch1")
         elif chap_i == 2:
             broadcast("start_ch2")
+        elif chap_i == 3:
+            broadcast("start_ch3")
         else:
             sfxq.append("empty")
     elif k == "back":
         sfxq.append("menu_back")
         if menu == "pause_options":
             menu = "pause"
-        elif menu == "credits_end":
-            menu = "main"
-            music_want = "title"
         elif menu == "controls":
             menu = ctl_from
         else:
@@ -390,14 +383,14 @@ def m_draw():
     elif ckind == "card":
         costume(join("ch", chap_i))
         size(88)
-        if chap_i > 2:
+        if chap_i > 3:
             effect("brightness", -55)
         elif msel == cidx and frame % 30 < 15:
             effect("brightness", 15)
         else:
             effect("brightness", 0)
     elif ccos == "chap_label":
-        if chap_i < 3:
+        if chap_i < 4:
             costume("lbl_play")
         else:
             costume("lbl_locked")
@@ -430,9 +423,9 @@ def t_clear():
 @on("text_write")
 def t_write():
     if is_clone == 0:
-        write_line(join("TIME   ", tstr), -70, -6)
-        write_line(join("DEATHS   ", deaths), -70, -30)
-        write_line(join("MEMORY SHARDS   ", shards, " / 3"), -70, -54)
+        write_line(join("TIME   ", tstr), -116, 34)
+        write_line(join("DEATHS   ", deaths), -116, 10)
+        write_line(join("MEMORY SHARDS   ", shards, " / 4"), -116, -14)
 
 
 @proc

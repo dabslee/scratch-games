@@ -832,8 +832,18 @@ def physics():
             py = mp_y
         else:
             onplat = 0
+    # Cooling-mist updrafts ("~" always on, "%" pulsing) lift Hotaru.
+    updraft = 0
+    cell(px, py + 12)
+    if cc == "~" or (cc == "%" and frame % 110 < 70):
+        updraft = 1
+        jumping = 0
     if pst != "dash":
-        if cling != 0 and pvy < 0:
+        if updraft == 1:
+            if pvy < 0:
+                pvy = pvy * 0.8
+            pvy = min(pvy + 1.2, 8)
+        elif cling != 0 and pvy < 0:
             pvy = max(pvy - C_G, 0 - C_SLIDE)
         elif pst == "atk" and (p_atk == "air_attack" or p_atk == "launcher") and pvy < 0:
             pvy = max(pvy - C_G * 0.35, -3)

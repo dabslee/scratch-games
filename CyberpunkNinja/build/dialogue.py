@@ -7,6 +7,7 @@ Speaker keys pick the name plate; long lines are wrapped and split into
 NAMEPLATE = {
     'hotaru': 'name_hotaru', 'kuro': 'name_kuro', 'tetsu': 'name_tetsu',
     'daicam': 'name_daicam', 'unknown': 'name_unknown', 'luck': 'name_lady_luck', 'system': 'name_system',
+    'mukuro': 'name_mukuro',
 }
 
 CONVERSATIONS = {
@@ -177,6 +178,69 @@ CONVERSATIONS = {
         ('hotaru', 'hotaru_neutral', "Mukuro?"),
         ('kuro', 'kuro_neutral', "You'll meet him. I'm sorry in advance."),
     ],
+    'ch3': [
+        ('hotaru', 'hotaru_neutral', "It's quiet up here. Gravel, bonsai, mist. Somebody built a garden on the roof."),
+        ('kuro', 'kuro_neutral', "On top of a server farm. Listen to the fans under the stones."),
+        ('kuro', 'kuro_neutral', "Kanshi's brain is up here somewhere. Keep your blade low and your eyes open."),
+    ],
+    'mist': [
+        ('kuro', 'kuro_neutral', "Coolant vents. That mist is hot air rising off the racks below."),
+        ('kuro', 'kuro_smirk', "Strong enough to carry you. Step in and ride it up."),
+    ],
+    'racks': [
+        ('system', 'sys_boot', "RACK 7 // 4,096 ENGRAMS. Status: HARVESTING. Thought yield: 98.2%."),
+        ('hotaru', 'hotaru_neutral', "Those glowing things in the tanks... are those people?"),
+        ('kuro', 'kuro_neutral', "Minds. Copied out of the city below and put to work. Every thought is a calculation."),
+        ('kuro', 'kuro_neutral', "That's what runs the Spire. Not electricity. Them."),
+        ('hotaru', 'hotaru_angry', "Is that what I was going to be? Another tank on a shelf?"),
+        ('kuro', 'kuro_neutral', "...Maybe. Keep climbing. We'll find out."),
+    ],
+    'warden': [
+        ('kuro', 'kuro_neutral', "A Garden Warden. Kanshi duelist. It'll block anything you throw at it."),
+        ('kuro', 'kuro_smirk', "So let it swing first. Deflect, break its guard, then cut."),
+    ],
+    'daicam4': [
+        ('daicam', 'daicam_neutral', "Chat, update: my drone's fan is jammed on HOVER and the mist is doing the rest."),
+        ('daicam', 'daicam_neutral', "I've been up here forty minutes. The view is incredible. Also please help."),
+        ('kuro', 'kuro_smirk', "Clear the Wardens first. He's not going anywhere."),
+    ],
+    'daicam4b': [
+        ('daicam', 'daicam_neutral', "Solid ground! I'm never hovering again. Okay, maybe for the thumbnail."),
+        ('hotaru', 'hotaru_visor_up', "How are you even getting this high?"),
+        ('daicam', 'daicam_neutral', "Elevator. There's an elevator. You didn't know about the elevator?"),
+    ],
+    'muk_gate': [
+        ('kuro', 'kuro_neutral', "Wait. Do you hear that? Someone breathing on our channel."),
+        ('unknown', 'mukuro_neutral', "Unit H-0. Decommissioned. You are not authorized to be awake."),
+        ('kuro', 'kuro_neutral', "...That's my voice."),
+    ],
+    'mukuro': [
+        ('mukuro', 'mukuro_neutral', "Kuro engram, copy two. Personality pruned. Loyalty: Kanshi Dynamics."),
+        ('kuro', 'kuro_neutral', "They copied me. Stripped out everything that ever said no."),
+        ('hotaru', 'hotaru_angry', "So you're the copy that said yes."),
+        ('mukuro', 'mukuro_neutral', "I am the copy that works. Draw."),
+    ],
+    'mukuro2': [
+        ('mukuro', 'mukuro_neutral', "Adapting."),
+        ('kuro', 'kuro_neutral', "He fights like me. He waits for you to swing first. So don't."),
+        ('kuro', 'kuro_smirk', "Watch the rhythm. He'll hold a strike to bait your deflect."),
+    ],
+    'muk_dead': [
+        ('mukuro', 'mukuro_neutral', "Integrity... compromised. This unit will... recompile."),
+        ('hotaru', 'hotaru_angry', "Who sent you? Who's running this tower?"),
+        ('mukuro', 'mukuro_neutral', "The Daimyo sees every thought in this garden. Including yours."),
+    ],
+    'muk_gone': [
+        ('hotaru', 'hotaru_neutral', "He's gone. Teleported, or uploaded, or whatever ghosts do."),
+        ('kuro', 'kuro_neutral', "He'll be back. Better. That's what I'd do."),
+        ('hotaru', 'hotaru_visor_up', "Then so will we. Up it is."),
+    ],
+    'shard4': [
+        ('kuro', 'kuro_neutral', "...A white room. A man in a samurai mask asking me to hold still."),
+        ('kuro', 'kuro_neutral', "He said it wouldn't hurt. He said I'd live forever, in a way."),
+        ('hotaru', 'hotaru_neutral', "Did it hurt?"),
+        ('kuro', 'kuro_neutral', "I don't remember. Which I think is the answer."),
+    ],
 }
 
 # Tutorial prompts: list of segments. ('k', costume) = key icon, ('t', text) = label.
@@ -197,7 +261,11 @@ HINTS = {
     'lasergrid': [('t', 'Laser grids pulse on and off.'), ('n',), ('t', 'Wait for a gap, or'), ('k', 'key_space'), ('t', 'Phase Step through')],
     'cards': [('k', 'key_down'), ('t', 'Deflect a card-blade to send it back'), ('n',), ('t', 'Returned cards hurt and crack Integrity')],
     'cage': [('k', 'mouse_l'), ('t', 'Attack the cage to free DaiCam')],
-    'reels': [('t', 'Watch the reels: they pick her next move.'), ('n',), ('t', 'SKULL = Breach.  JACKPOT = lasers')],
+    'reels': [('t', 'Watch the reels: they pick her next move.'), ('n',), ('t', 'SHOCKWAVE is a Breach. Jump or Phase Step')],
+    'mist': [('t', 'Step into the mist to ride the updraft'), ('n',), ('k', 'key_left'), ('k', 'key_right'), ('t', 'steer while rising')],
+    'pulse': [('t', 'This vent pulses on and off.'), ('n',), ('t', 'Ride it while the mist is thick')],
+    'warden': [('t', 'Wardens guard your attacks.'), ('n',), ('k', 'key_down'), ('t', 'Deflect their strikes, then counter')],
+    'duel': [('t', 'Mukuro guards everything.'), ('n',), ('k', 'key_down'), ('t', 'Deflect to break him, then strike')],
 }
 
 OPTION_LABELS = {
@@ -211,25 +279,6 @@ OPTION_LABELS = {
     'shake': 'Screen shake',
     'controls': 'Controls',
 }
-
-CREDITS = [
-    ('b', 'CYBERPUNK NINJA'),
-    ('t', 'Prologue, Chapter 1 and Chapter 2'),
-    ('s', ''),
-    ('h', 'GAME DESIGN BRIEF & ART'),
-    ('t', 'Cyberpunk Ninja asset pack'),
-    ('t', 'Pixel art, Shinobi Mono font, palette'),
-    ('s', ''),
-    ('h', 'SCRATCH BUILD, MUSIC & SOUND'),
-    ('t', 'Generated with Claude Code'),
-    ('t', 'Synthwave, shamisen & taiko synthesized from scratch'),
-    ('s', ''),
-    ('h', 'STARRING'),
-    ('t', 'Hotaru, Kuro, Tetsu, DaiCam,'),
-    ('t', 'the Hannya Boys, Big Oni and Lady Luck'),
-    ('s', ''),
-    ('t', 'Thanks for playing!'),
-]
 
 CONTROLS = [
     ('b', 'CONTROLS'),
@@ -248,15 +297,12 @@ CONTROLS = [
 ]
 
 END_PAGE = [
-    ('b', 'END OF CHAPTER 2'),
-    ('t', 'THE PACHINKO VAULTS'),
-    ('s', ''),
-    ('s', ''),
-    ('s', ''),
-    ('s', ''),
-    ('s', ''),
-    ('s', ''),
+    ('b', 'END OF CHAPTER 3'),
+    ('t', 'THE SERVER GARDENS'),
+]
+
+END_NEXT = [
     ('t', "Hotaru's climb continues in"),
-    ('t', 'Chapter 3: The Server Gardens.'),
-    ('t', 'Thanks for playing this vertical slice!'),
+    ('t', 'Chapter 4: Monorail Ascent.'),
+    ('t', 'Thanks for playing!'),
 ]

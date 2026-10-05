@@ -572,6 +572,76 @@ def song_luck(drums=False):
     return s.render((0.9, 0.14, 4000)), s.length
 
 
+# ---------------------------------------------------------------------- gardens
+def song_gardens():
+    """Chapter 3: quiet koto over cooling-fan pads, water drops and soft taiko."""
+    s = Song(80, 12)
+    prog = [('D3', 'm9'), ('A#2', 'M7'), ('G2', 'm7'), ('A2', 'sus4'),
+            ('D3', 'm9'), ('F2', 'M7'), ('G2', 'm7'), ('A2', 'm')]
+    bl = s.beat * 4
+    h = hat(False, 0.08)
+    for i in range(12):
+        r, kd = prog[i % 8]
+        s.add(pad([m + 12 for m in chord(r, kd)], bl + 0.9, 1100, 0.42, 0.9, 0.9), i)
+        s.add(bass(n2m(r) - 12, bl * 0.9, 0.38, 380, pluck=False), i)
+        for j in range(4):
+            s.add(h, i, j + 0.5, 0.7 if j % 2 else 1.0)
+        if i % 2 == 0:
+            s.add(taiko(0.32, 0.9), i, 0)
+        else:
+            s.add(ka(0.12), i, 2.5)
+        for _ in range(2):
+            drop = sine(RNG.uniform(1800, 2600) * np.exp(-T(0.12) / 0.05) + 600, 0.12) * expenv(0.12, 0.03)
+            s.add(drop, i, RNG.choice([0.75, 1.75, 2.25, 3.25]), 0.12)
+    # Japanese "in" scale motif on koto, answered an octave up.
+    phrase = [('D5', 0, 1), ('D#5', 1, 0.5), ('G5', 1.5, 1.5), ('A5', 3, 1),
+              ('A#5', 4, 1), ('A5', 5, 0.5), ('G5', 5.5, 1.5), ('D5', 7, 1)]
+    for rep, shift in ((0, 0), (2, 0), (4, -2), (6, 0), (8, 12), (10, 0)):
+        for nm, b, d in phrase:
+            m = n2m(nm) + shift
+            if rep == 4 and nm == 'D#5':
+                m = n2m('D5')
+            s.add(koto(m, d * s.beat + 0.8, 0.34), rep, b)
+    return s.render((2.4, 0.32, 3200)), s.length
+
+
+# ---------------------------------------------------------------------- mukuro
+def song_mukuro(drums=False):
+    """Mukuro I: a cold, driving duel theme; taiko join at phase 2."""
+    s = Song(138, 8)
+    prog = [('C#3', 'm'), ('C#3', 'm'), ('A2', 'M'), ('B2', 'M'),
+            ('C#3', 'm'), ('E3', 'M'), ('D3', 'M'), ('G#2', '7')]
+    if drums:
+        for i in range(8):
+            for j in range(8):
+                acc = j in (0, 3, 6)
+                s.add(taiko(0.75 if acc else 0.3, 1.0 if acc else 1.25), i, j * 0.5)
+            s.add(ka(0.35), i, 1.75)
+            s.add(ka(0.35), i, 3.75)
+        return s.render((0.8, 0.12, 2400)), s.length
+    k, sn, h = kick(1.0), snare(0.5), hat(False, 0.2)
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        root = n2m(r)
+        for j in range(8):
+            s.add(bass(root - 12 + (7 if j == 6 else 0), s.beat * 0.4, 0.62, 900), i, j * 0.5)
+        for j in range(4):
+            s.add(k, i, j)
+            if j % 2:
+                s.add(sn, i, j)
+            s.add(h, i, j + 0.5)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl, 1600, 0.32, 0.2, 0.3), i)
+    riff = [('C#5', 0, 0.5), ('E5', 0.5, 0.5), ('G#5', 1, 1), ('F#5', 2, 0.5), ('E5', 2.5, 0.5),
+            ('D#5', 3, 0.5), ('E5', 3.5, 0.5)]
+    for bar in range(8):
+        off = {2: -4, 3: -2, 6: -3, 7: -5}.get(bar, 0)
+        for nm, b, d in riff:
+            s.add(shamisen(n2m(nm) + off, d * s.beat + 0.2, 0.3), bar, b)
+    for bar in (3, 7):
+        s.add(metal(1700, 1.2, 0.12), bar, 3)
+    return s.render((1.0, 0.16, 3600)), s.length
+
+
 def rain_loop():
     d = 8.0
     x = lp(noise(d + 1), 3500) * 0.35 + hp(lp(noise(d + 1), 9000), 2500) * 0.25
@@ -761,6 +831,10 @@ def build_sfx():
     S['jackpot'] = add(chime([n2m(x) for x in ('C6', 'E6', 'G6', 'C7', 'G6', 'C7')], 0.06, 0.4, 0.5),
                        cat(silence(0.4), np.tile(cat(blip(1320, 0.08, 'square', 0.3), silence(0.04)), 6)))
     S['thunder'] = thunder()
+    S['muk_guard'] = add(metal(1900, 0.45, 0.8), impact(0.3, 260, 0.3, 0.4))
+    S['muk_slash'] = add(blade(1.3, 0.2, 1.0), metal(3200, 0.12, 0.12))
+    S['muk_warp'] = cat(glitch(0.35, 0.6), sweep_tone(900, 120, 0.5, 'square', 0.12) * expenv(0.5, 0.25))
+    S['vent'] = lp(noise(0.6), 2200) * adsr(0.6, 0.08, 0.1, 0.6, 0.3) * 0.5
     out = {}
     for k, v in S.items():
         v = np.asarray(v, dtype=float)
@@ -838,13 +912,13 @@ def build_all():
         out[k] = (wav_bytes(v), SR, len(v), 'wav')
         SFX_NAMES.append(k)
     songs = {'title': song_title, 'sump': song_sump, 'alley': song_alley, 'boss': song_boss,
-             'vaults': song_vaults, 'luck': song_luck}
+             'vaults': song_vaults, 'luck': song_luck, 'gardens': song_gardens, 'mukuro': song_mukuro}
     for name, fn in songs.items():
         x, length = fn()
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')
         MUSIC[name] = round(length, 4)
-    for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck)):
+    for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck), ('mukuro_drums', song_mukuro)):
         x, length = fn(drums=True)
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')

@@ -57,8 +57,11 @@ def reset_run():
     play_time = 0
     boss_dead = 0
     luck_dead = 0
+    muk_dead = 0
+    muk_exit = 0
     daicam_done = 0
     daicam3_done = 0
+    daicam4_done = 0
     boss_name = "big_oni"
     lift_ride = 0
     cp_room = 1
@@ -114,7 +117,7 @@ def frame_step():
             sfxq.append("menu_select")
             open_menu("main")
     elif mode == "menu":
-        if menu == "end" or menu == "credits_end":
+        if menu == "end":
             backdrop("black")
         elif menu != "pause" and menu != "pause_options":
             backdrop(join("title_menu_", (frame // 4) % 8))
@@ -326,10 +329,13 @@ def load_room(r):
     elif chapter == 1:
         backdrop("sky_neon_alley")
         music_want = "alley"
-    else:
+    elif chapter == 2:
         backdrop("sky_vaults")
         music_want = "vaults"
-    if (R_BOSS[r] == 1 and boss_dead == 0) or (R_BOSS[r] == 2 and luck_dead == 0):
+    else:
+        backdrop("sky_server_gardens")
+        music_want = "gardens"
+    if (R_BOSS[r] == 1 and boss_dead == 0) or (R_BOSS[r] == 2 and luck_dead == 0) or (R_BOSS[r] == 3 and muk_dead == 0):
         music_want = "none"
     broadcast("clear")
     broadcast("spawn")
@@ -412,6 +418,29 @@ def start_ch2():
     seen.append("tetsu")
     enter_dir = "S"
     load_room(C_ROOM_B1)
+    wait(0)
+    fade_to = 0
+    wait_until(fade < 50)
+    mode = "play"
+
+
+@on("start_ch3")
+def start_ch3():
+    mode = "trans"
+    broadcast("menu_close")
+    fade_to = 100
+    wait_until(fade > 99)
+    reset_run()
+    has_gourd = 1
+    gmax = 4
+    gourd = 4
+    boss_dead = 1
+    luck_dead = 1
+    daicam_done = 1
+    daicam3_done = 1
+    seen.append("tetsu")
+    enter_dir = "S"
+    load_room(C_ROOM_C1)
     wait(0)
     fade_to = 0
     wait_until(fade < 50)
@@ -755,6 +784,118 @@ def ev_luck_dead():
     banner = ""
     boss_on = 0
     say("luck_dead")
+    wait_until(mode == "play")
+    music_want = "vaults"
+
+
+# ------------------------------------------------------------ chapter 3
+@on("ev_ch3_start")
+def ev_ch3_start():
+    cp_room = room
+    cp_x = C_C1_X
+    cp_y = C_C1_Y
+    once("ch3")
+    if first == 1:
+        card = "ch3"
+        wait(2.5)
+        say("ch3")
+
+
+@on("ev_mist")
+def ev_mist():
+    once("mist")
+    if first == 1:
+        say("mist")
+        wait_until(mode == "play")
+    hint = "mist"
+
+
+@on("ev_racks")
+def ev_racks():
+    once("racks")
+    if first == 1:
+        say("racks")
+
+
+@on("ev_warden")
+def ev_warden():
+    if len(ent_type) > 0:
+        once("warden")
+        if first == 1:
+            say("warden")
+            wait_until(mode == "play")
+        hint = "warden"
+
+
+@on("ev_pulse")
+def ev_pulse():
+    hint = "pulse"
+
+
+@on("ev_daicam4")
+def ev_daicam4():
+    if daicam4_done == 0:
+        once("daicam4")
+        if first == 1:
+            say("daicam4")
+
+
+@on("ev_daicam4_end")
+def ev_daicam4_end():
+    say("daicam4b")
+    wait_until(mode == "play")
+    daicam4_done = 1
+
+
+@on("ev_muk_gate")
+def ev_muk_gate():
+    if muk_dead == 0:
+        once("muk_gate")
+        if first == 1:
+            say("muk_gate")
+            wait_until(mode == "play")
+        hint = "duel"
+
+
+@on("ev_muk_start")
+def ev_muk_start():
+    if muk_dead == 0:
+        hint = ""
+        ambush_on = 1
+        boss_on = 1
+        boss_phase = 1
+        boss_name = "mukuro"
+        music_want = "mukuro"
+        once("mukuro")
+        if first == 1:
+            say("mukuro")
+
+
+@on("ev_muk_phase2")
+def ev_muk_phase2():
+    boss_phase = 2
+    broadcast("drums")
+    once("mukuro2")
+    if first == 1:
+        say("mukuro2")
+
+
+@on("ev_muk_dead")
+def ev_muk_dead():
+    muk_dead = 1
+    music_want = "none"
+    wait(1.4)
+    banner = "victory"
+    sfxq.append("victory")
+    wait(3)
+    banner = ""
+    boss_on = 0
+    say("muk_dead")
+    wait_until(mode == "play")
+    muk_exit = 1
+    sfxq.append("muk_warp")
+    wait(1.2)
+    say("muk_gone")
     wait_until(mode == "play")
     wait(0.5)
     mode = "trans"

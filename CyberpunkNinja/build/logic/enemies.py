@@ -1437,7 +1437,7 @@ def l_update():
             face = -1
         if t == 33 or t == 43 or t == 53:
             sfxq.append("reel_stop")
-        if t >= 60:
+        if t >= 68:
             slot_state = "show"
             st = slot_sym
             t = 0
@@ -1556,6 +1556,8 @@ def l_update():
     elif st == "stagger2":
         if t >= 36:
             to_recover(20)
+    if slot_state == "show":
+        slot_t += 1
     int_t += 1
     if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
         integ -= 1
@@ -1669,7 +1671,7 @@ y = O_Y[oi]
 is_clone = 1
 clone()
 is_clone = 0
-for k in range(1, 4):
+for k in range(1, 5):
     reel_q.append(k)
     clone("Reels")
 ''') + '''
@@ -1701,7 +1703,20 @@ def reel_clear():
 
 @on("t_draw")
 def draw():
-    if is_clone == 1:
+    if is_clone == 1 and rk == 4:
+        # Outcome callout on the machine's payout panel, from the last reel
+        # stop until the attack is under way.
+        if (slot_state == "spin" and slot_t >= 53) or (slot_state == "show" and slot_t < 110):
+            costume(join("call_", slot_sym))
+            if slot_t < 57:
+                size(100 + (57 - slot_t) * 8)
+            else:
+                size(100)
+            goto(shx, 22 + shy)
+            show()
+        else:
+            hide()
+    elif is_clone == 1:
         if slot_state == "spin" and slot_t < 22 + 10 * rk:
             costume(join("blur_", (floor(slot_t / 2) + rk) % 2))
         elif slot_state == "idle":
@@ -1710,4 +1725,749 @@ def draw():
             costume(join("sym_", slot_sym))
         goto(-82 + 40 * rk + shx, 65 + shy)
         show()
+'''
+
+
+def _proc(src, name):
+    """Copy one @proc definition out of another sprite's source."""
+    i = src.index('@proc\ndef %s(' % name)
+    j = src.index('\n\n\n', i)
+    return src[i:j] + '\n\n\n'
+
+
+# Garden Warden: a Kanshi duelist that guards in neutral. Deflect its strikes
+# (or land a Heavy Strike) to break its guard; it takes damage only while
+# recovering, recoiling or staggered, and counters anyone who mashes.
+WARDEN = spawner('warden', '''
+if not (oi in dead_objs):
+    x = O_X[oi]
+    y = O_Y[oi]
+    brk_ok = O_A[oi]
+    myobj = oi
+    add_ent("warden", x, y, 10, 38, 6, 6, 1)
+    find_bounds()
+    st = "idle"
+    t = 0
+    ehp = 6
+    imax = 6
+    integ = 0
+    int_t = 0
+    z = 0
+    vz = 0
+    fr = 0
+    face = -1
+    acd = 25
+    guard_t = 0
+    guard_n = 0
+    hitrow = 0
+    hit_t = 0
+    nh = 1
+    flash_t = 0
+    is_clone = 1
+    clone()
+    is_clone = 0
+    ui_slot.append(slot)
+    ui_role.append("bar")
+    clone("EnemyUI")
+    ui_slot.append(slot)
+    ui_role.append("mark")
+    clone("EnemyUI")
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1:
+        w_update()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        w_draw()
+
+
+''' + _proc(HANNYA, 'find_bounds') + '''
+@proc
+def w_face():
+    if px > x:
+        face = 1
+    else:
+        face = -1
+
+
+@proc
+def w_combo(n):
+    w_face()
+    t = 0
+    hitdone = 0
+    nh = n
+    if brk_ok == 1 and rand(1, 100) <= 35:
+        st = "heavy"
+        sfxq.append("breach")
+    else:
+        st = "combo"
+        sfxq.append("windup")
+
+
+@proc
+def w_die():
+    st = "dead"
+    t = 0
+    fr = 0
+    ent_alive[slot] = 0
+    ent_stag[slot] = 0
+    ent_brk[slot] = 0
+    dead_objs.append(myobj)
+    sfxq.append("thug_die")
+
+
+@proc
+def w_strike(reach, dmg, brk, last):
+    if face == 1:
+        p_overlap(x, x + reach, y + 4, y + 40)
+    else:
+        p_overlap(x - reach, x, y + 4, y + 40)
+    if ov == 1:
+        hit_player(dmg, brk, x)
+        if res == "deflect":
+            integ = min(imax, integ + 2)
+            int_t = 0
+            x = min(max(x - face * 5, xmin), xmax)
+            if last == 1:
+                st = "recoil"
+                t = 0
+
+
+@proc
+def w_update():
+    t += 1
+    if st == "dead":
+        fr += 0.27
+        return
+    if ent_sev[slot] == 1:
+        w_die()
+        return
+    if ent_dmg[slot] > 0:
+        hk = ent_hk[slot]
+        if st == "recover" or st == "recoil" or st == "hurt" or st == "stagger" or st == "air" or hk == "projectile":
+            ehp -= ent_dmg[slot]
+            if st != "stagger":
+                integ = min(imax, integ + ent_idmg[slot])
+            x = min(max(x + ent_kb[slot], xmin), xmax)
+            flash_t = 3
+            sfxq.append("thug_hurt")
+            if ehp <= 0:
+                w_die()
+                return
+            if st != "stagger":
+                hitrow += 1
+                if hk == "launcher":
+                    st = "air"
+                    vz = 10
+                    t = 0
+                elif st != "air":
+                    if hitrow >= 3:
+                        hitrow = 0
+                        st = "walk"
+                        acd = 4
+                    else:
+                        st = "hurt"
+                        t = 0
+        else:
+            sfxq.append("muk_guard")
+            cfx("deflect", x + face * 12, y + 26, 0 - face)
+            if st != "combo" and st != "heavy":
+                guard_t = 8
+                w_face()
+            if hk == "heavy":
+                integ = min(imax, integ + ent_idmg[slot])
+            else:
+                integ = min(imax, integ + ent_idmg[slot] * 0.5)
+            guard_n += 1
+            hit_t = 0
+            if guard_n >= 3 and st != "combo" and st != "heavy":
+                guard_n = 0
+                st = "combo"
+                w_face()
+                hitdone = 0
+                nh = 1
+                t = 7
+                sfxq.append("windup")
+        int_t = 0
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+    if integ >= imax and st != "stagger" and st != "air":
+        st = "stagger"
+        t = 0
+        integ = imax
+        ent_stag[slot] = 1
+        sfxq.append("stagger")
+    dx = px - x
+    if guard_t > 0:
+        guard_t -= 1
+    if st == "idle":
+        fr += 0.17
+        if abs(dx) < 240 and abs(py - y) < 90:
+            st = "walk"
+    elif st == "walk":
+        w_face()
+        if acd > 0:
+            acd -= 1
+        if abs(dx) > 40:
+            fr += 0.3
+            x = min(max(x + face * 1.8, xmin), xmax)
+        if abs(dx) < 56 and acd == 0 and abs(py - y) < 60 and pst != "dead":
+            w_combo(rand(1, 2))
+    elif st == "combo":
+        if t == 16 or (nh == 2 and t == 30):
+            sfxq.append("muk_slash")
+            w_strike(46, 2, 0, (t == 30 or nh == 1) + 0)
+        if st == "combo" and ((nh == 1 and t >= 22) or t >= 36):
+            st = "recover"
+            t = 0
+    elif st == "heavy":
+        if t == 24:
+            sfxq.append("swing")
+            w_strike(56, 3, 1, 1)
+        if t >= 32:
+            st = "recover"
+            t = 0
+    elif st == "recover":
+        if t >= 22:
+            st = "walk"
+            acd = rand(12, 36)
+            hitrow = 0
+    elif st == "recoil":
+        if t >= 22:
+            st = "walk"
+            acd = 10
+            hitrow = 0
+    elif st == "hurt":
+        if t >= 12:
+            st = "walk"
+            acd = max(acd, 6)
+    elif st == "stagger":
+        if t >= 80:
+            st = "walk"
+            integ = imax / 2
+            ent_stag[slot] = 0
+            acd = 10
+    elif st == "air":
+        z += vz
+        vz -= 1.1
+        if z <= 0:
+            z = 0
+            st = "hurt"
+            t = 0
+    int_t += 1
+    if int_t > 60 and integ > 0 and st != "stagger" and t % 15 == 0:
+        integ -= 1
+    hit_t += 1
+    if hit_t > 40:
+        guard_n = 0
+    ent_x[slot] = x
+    ent_y[slot] = y + z
+    ent_int[slot] = integ
+    if st == "heavy" and t < 24:
+        ent_brk[slot] = 1
+    else:
+        ent_brk[slot] = 0
+
+
+@proc
+def w_draw():
+    if st == "dead":
+        if fr >= 8:
+            delete_clone()
+        costume(join("death_", min(5, floor(fr))))
+        if fr > 6:
+            effect("ghost", (fr - 6) * 50)
+    elif guard_t > 0:
+        costume(join("deflect_", min(2, floor((8 - guard_t) / 3))))
+    elif st == "idle":
+        costume(join("idle_", floor(fr) % 4))
+    elif st == "walk":
+        if abs(px - x) <= 60:
+            costume("block_0")
+        else:
+            costume(join("run_", floor(fr) % 8))
+    elif st == "combo":
+        if t < 23:
+            hf = t - 16
+            an = "attack1_"
+        else:
+            hf = t - 30
+            an = "attack2_"
+        if hf < -6:
+            costume(join(an, 0))
+        elif hf < 0:
+            costume(join(an, 1))
+        elif hf < 3:
+            costume(join(an, 2))
+        else:
+            costume(join(an, 3))
+    elif st == "heavy":
+        if t < 8:
+            costume("heavy_0")
+        elif t < 15:
+            costume("heavy_1")
+        elif t < 21:
+            costume("heavy_2")
+        elif t < 24:
+            costume("heavy_3")
+        else:
+            costume(join("heavy_", min(5, 4 + floor((t - 24) / 4))))
+    elif st == "stagger":
+        costume(join("overheat_", floor(t / 5) % 4))
+    elif st == "recover":
+        costume(join("idle_", floor(t / 5) % 4))
+    else:
+        costume(join("hurt_", min(1, floor(t / 5))))
+    if st == "stagger":
+        goto(x + shx + (frame % 4 < 2) * 2 - 1, y + z + shy)
+    else:
+        goto(x + shx, y + z + shy)
+    if face == 1:
+        point(90)
+    else:
+        point(-90)
+    tell = 0
+    if st == "combo" and ((t >= 7 and t <= 16) or (nh == 2 and t >= 21 and t <= 30)):
+        tell = 1
+    if st == "heavy" and t >= 15 and t <= 24:
+        tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
+        flash_t -= 1
+        effect("brightness", 70)
+    elif st != "dead":
+        effect("brightness", 0)
+    show()
+'''
+
+
+# Mukuro I: a pure deflect duel. He guards every blow outside his openings,
+# so the way through is deflecting his strings to fill his Integrity, then
+# punishing the recoveries. Mashing into his guard earns a counter, and so
+# does staying greedy in an opening.
+MUKURO = spawner('mukuro', '''
+if muk_dead == 0:
+    x = O_X[oi]
+    y = O_Y[oi]
+    myobj = oi
+    add_ent("mukuro", x, y, 10, 38, 20, 16, 1)
+    boss_slot = slot
+    st = "wait"
+    t = 0
+    ehp = 20
+    imax = 16
+    integ = 0
+    int_t = 0
+    fr = 0
+    face = -1
+    phase = 1
+    flash_t = 0
+    guard_t = 0
+    guard_n = 0
+    hitrow = 0
+    hit_t = 0
+    acd = 30
+    rec_len = 30
+    boss_hp = 20
+    boss_int = 0
+    is_clone = 1
+    clone()
+    is_clone = 0
+    ui_slot.append(slot)
+    ui_role.append("mark")
+    clone("EnemyUI")
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1:
+        m_update()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        m_draw()
+
+
+@proc
+def m_face():
+    if px > x:
+        face = 1
+    else:
+        face = -1
+
+
+@proc
+def set_combo(kind):
+    st = "combo"
+    ck = kind
+    t = 0
+    hitdone = 0
+    n = 3
+    h1 = 14
+    h2 = 28
+    h3 = 44
+    h4 = 0
+    k1 = "attack1"
+    k2 = "attack2"
+    k3 = "attack3"
+    k4 = "heavy"
+    b3 = 0
+    b4 = 0
+    if kind == "c2h":
+        h3 = 60
+        k3 = "heavy"
+        b3 = 1
+    elif kind == "c4":
+        h1 = 12
+        h2 = 24
+        h3 = 36
+        h4 = 66
+        n = 4
+        b4 = 1
+    elif kind == "delay":
+        h2 = 44
+        h3 = 56
+    elif kind == "lunge":
+        n = 1
+        h1 = 18
+        k1 = "attack3"
+        sfxq.append("dash")
+    elif kind == "counter":
+        n = 1
+        h1 = 8
+        k1 = "attack2"
+        if phase == 2:
+            n = 2
+            h2 = 20
+            k2 = "attack1"
+    m_face()
+    if kind != "lunge":
+        sfxq.append("windup")
+
+
+@proc
+def get_hit():
+    # current strike of the string: ci, its time ht, animation kk, breach bb
+    ci = 0
+    if t <= h1 + 4:
+        ci = 1
+        ht = h1
+        kk = k1
+        bb = 0
+    elif n >= 2 and t <= h2 + 4:
+        ci = 2
+        ht = h2
+        kk = k2
+        bb = 0
+    elif n >= 3 and t <= h3 + 4:
+        ci = 3
+        ht = h3
+        kk = k3
+        bb = b3
+    elif n >= 4 and t <= h4 + 4:
+        ci = 4
+        ht = h4
+        kk = k4
+        bb = b4
+
+
+@proc
+def m_strike():
+    reach = 48
+    dmg = 2
+    if kk == "attack3":
+        reach = 64
+    if kk == "heavy":
+        reach = 58
+        dmg = 3
+    if face == 1:
+        p_overlap(x - 6, x + reach, y + 2, y + 40)
+    else:
+        p_overlap(x - reach, x + 6, y + 2, y + 40)
+    if kk == "heavy":
+        sfxq.append("swing")
+        cfx("shockwave", x + face * 30, y, 0)
+        shake = 6
+        shake_amp = 3
+    else:
+        sfxq.append("muk_slash")
+    if ov == 1:
+        hit_player(dmg, bb, x)
+        if res == "deflect":
+            integ = min(imax, integ + 2)
+            int_t = 0
+            x = min(max(x - face * 4, -205), 205)
+            if ci == n:
+                st = "recoil"
+                t = 0
+
+
+@proc
+def m_beaten():
+    st = "beaten"
+    t = 0
+    ehp = 0
+    ent_alive[slot] = 0
+    ent_stag[slot] = 0
+    ent_brk[slot] = 0
+    boss_hp = 0
+    boss_int = 0
+    sfxq.append("stagger")
+    shake = 16
+    shake_amp = 5
+    hitstop = 12
+    broadcast("ev_muk_dead")
+
+
+@proc
+def m_open():
+    mo = 0
+    if st == "recover" or st == "recoil" or st == "broken":
+        mo = 1
+
+
+@proc
+def m_update():
+    t += 1
+    if st == "beaten":
+        if muk_exit == 1:
+            st = "exit"
+            t = 0
+        return
+    if st == "exit":
+        return
+    if st == "wait":
+        fr += 0.2
+        if boss_on == 1:
+            st = "move"
+            t = 0
+            acd = 40
+        return
+    if ent_sev[slot] == 1:
+        ent_sev[slot] = 0
+        seg = ceil(ehp / 5)
+        ehp = (seg - 1) * 5
+        integ = 0
+        ent_stag[slot] = 0
+        st = "stagger2"
+        t = 0
+        flash_t = 6
+        sfxq.append("oni_hurt")
+        if ehp <= 0:
+            m_beaten()
+            return
+    if ent_dmg[slot] > 0:
+        hk = ent_hk[slot]
+        m_open()
+        if mo == 1:
+            ehp -= ent_dmg[slot]
+            flash_t = 3
+            sfxq.append("thug_hurt")
+            if st != "broken":
+                integ = min(imax, integ + ent_idmg[slot])
+            if st == "recover" or st == "recoil":
+                hitrow += 1
+                if hitrow >= 4 - phase:
+                    hitrow = 0
+                    set_combo("counter")
+        else:
+            sfxq.append("muk_guard")
+            cfx("deflect", x + face * 12, y + 26, 0 - face)
+            if hk == "heavy":
+                integ = min(imax, integ + ent_idmg[slot] * 0.5)
+            else:
+                integ = min(imax, integ + ent_idmg[slot] * 0.1)
+            if st != "combo":
+                guard_t = 8
+                m_face()
+                guard_n += 1
+                hit_t = 0
+                if guard_n >= 3:
+                    guard_n = 0
+                    set_combo("counter")
+        int_t = 0
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+        if ehp <= 0:
+            m_beaten()
+            return
+    if ehp <= 10 and phase == 1:
+        phase = 2
+        broadcast("ev_muk_phase2")
+    if integ >= imax and st != "broken" and st != "stagger2":
+        st = "broken"
+        t = 0
+        integ = imax
+        ent_stag[slot] = 1
+        ent_brk[slot] = 0
+        sfxq.append("stagger")
+    if guard_t > 0:
+        guard_t -= 1
+    dx = px - x
+    ent_brk[slot] = 0
+    if st == "move":
+        m_face()
+        if acd > 0:
+            acd -= 1
+        ad = abs(dx)
+        if ad > 150 and acd == 0:
+            set_combo("lunge")
+        elif ad > 62:
+            fr += 0.4
+            x += face * (2 + 2 * (ad > 120))
+        elif acd == 0 and pst != "dead":
+            roll = rand(1, 100)
+            if phase == 1:
+                if roll <= 58:
+                    set_combo("c3")
+                else:
+                    set_combo("c2h")
+            else:
+                if roll <= 28:
+                    set_combo("c3")
+                elif roll <= 54:
+                    set_combo("delay")
+                elif roll <= 80:
+                    set_combo("c4")
+                else:
+                    set_combo("c2h")
+        elif ad < 36:
+            x -= face * 1.5
+    elif st == "combo":
+        get_hit()
+        if ci == 0:
+            st = "recover"
+            t = 0
+            rec_len = 26 - 8 * (phase - 1)
+            hitrow = 0
+        else:
+            if t == ht - 10:
+                m_face()
+                if bb == 1:
+                    sfxq.append("breach")
+            if ck == "lunge" and t < 12:
+                if abs(dx) > 46:
+                    x += face * 11
+            elif t >= ht - 8 and t < ht and abs(dx) > 40:
+                x += face * 3
+            if bb == 1 and t >= ht - 20 and t < ht:
+                ent_brk[slot] = 1
+            if t == ht:
+                m_strike()
+    elif st == "recover":
+        if t >= rec_len:
+            st = "move"
+            t = 0
+            hitrow = 0
+            acd = rand(10, 30) - 8 * (phase - 1)
+    elif st == "recoil":
+        if t >= 26:
+            st = "recover"
+            t = 0
+            rec_len = 10
+    elif st == "broken":
+        if t >= 110:
+            st = "move"
+            t = 0
+            integ = 8
+            ent_stag[slot] = 0
+            acd = 6
+    elif st == "stagger2":
+        if t >= 36:
+            st = "move"
+            t = 0
+            acd = 20
+            if abs(dx) < 80:
+                x = min(max(x - face * 30, -205), 205)
+    int_t += 1
+    if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
+        integ -= 1
+    hit_t += 1
+    if hit_t > 40:
+        guard_n = 0
+    x = min(max(x, -205), 205)
+    ent_x[slot] = x
+    ent_int[slot] = integ
+    boss_hp = ehp
+    boss_int = integ
+
+
+@proc
+def m_draw():
+    effect("ghost", 0)
+    if st == "beaten":
+        costume(join("overheat_", floor(t / 6) % 4))
+    elif st == "exit":
+        costume("dash_1")
+        effect("ghost", min(100, t * 5))
+        if t > 22:
+            hide()
+            return
+    elif guard_t > 0:
+        costume(join("deflect_", min(2, floor((8 - guard_t) / 3))))
+    elif st == "wait":
+        costume(join("idle_", floor(fr) % 4))
+    elif st == "move":
+        if abs(px - x) > 62:
+            costume(join("run_", floor(fr) % 8))
+        else:
+            costume("block_0")
+    elif st == "combo":
+        get_hit()
+        if ck == "lunge" and t < 12:
+            costume(join("dash_", min(3, floor(t / 3))))
+        elif kk == "heavy":
+            hf = t - ht
+            if hf < -16:
+                costume("heavy_0")
+            elif hf < -8:
+                costume("heavy_1")
+            elif hf < -3:
+                costume("heavy_2")
+            elif hf < 0:
+                costume("heavy_3")
+            else:
+                costume(join("heavy_", min(5, 4 + floor(hf / 4))))
+        else:
+            hf = t - ht
+            if hf < -6:
+                costume(join(kk, "_0"))
+            elif hf < 0:
+                costume(join(kk, "_1"))
+            elif hf < 3:
+                costume(join(kk, "_2"))
+            else:
+                costume(join(kk, "_3"))
+    elif st == "broken":
+        costume(join("overheat_", floor(t / 5) % 4))
+    elif st == "recover":
+        costume(join("idle_", floor(t / 5) % 4))
+    else:
+        costume(join("hurt_", floor(t / 5) % 2))
+    if st == "broken" or st == "exit":
+        goto(x + shx + (frame % 4 < 2) * 2 - 1, y + shy)
+    else:
+        goto(x + shx, y + shy)
+    if face == 1:
+        point(90)
+    else:
+        point(-90)
+    tell = 0
+    if st == "combo":
+        if t >= ht - 9 and t <= ht and ci > 0:
+            tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
+        flash_t -= 1
+        effect("brightness", 60)
+    else:
+        effect("brightness", 0)
+    show()
 '''
