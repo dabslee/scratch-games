@@ -383,9 +383,10 @@ a9.obj('trig', cx(16), 0, a='boss_gate')
 # A10 Big Oni arena ---------------------------------------------------
 a10 = room('a10', 1, 'Rooftop Arena')
 a10.solid(0, 19, 29, 22)
-a10.solid(29, 0, 29, 18)
+a10.solid(28, 0, 29, 13)
 a10.solid(0, 0, 0, 13)
-a10.deco('z', 29, 0, 29, 18).deco('m', 0, 19, 29, 19)
+a10.deco('z', 28, 0, 28, 13).deco('m', 0, 19, 29, 19)
+a10.obj('door', left(29), bottom(18), a='lock')
 a10.obj('puddle', cx(3), bottom(18))
 a10.obj('puddle', cx(26), bottom(18))
 a10.obj('door', left(0) + 8, bottom(18), a='ambush')
@@ -394,6 +395,125 @@ a10.obj('sign', cx(6), top(2), a='NeonSign_Ninja')
 a10.obj('sign', cx(23), top(1), a='NeonSign_Danger')
 a10.obj('trig', cx(4), 0, a='boss_start')
 a10.flags.append('boss')
+
+
+# =====================================================================
+# CHAPTER 2: THE PACHINKO VAULTS
+# =====================================================================
+
+# B1 Vault entrance ---------------------------------------------------
+b1 = room('b1', 2, 'Vault Entrance')
+b1.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13)
+b1.solid(28, 3, 29, 13)
+b1.solid(11, 16, 18, 18).deco('y', 11, 16, 18, 16)
+b1.plat(3, 7, 14).plat(22, 26, 14)
+b1.deco('g', 1, 3, 27, 3)
+b1.obj('start', cx(3), bottom(18))
+b1.obj('sign', cx(14) + 8, top(4), a='NeonSign_Jackpot')
+for c in (2, 5, 21, 24):
+    b1.obj('pachinko', cx(c), bottom(18))
+b1.obj('lantern', cx(9), top(3))
+b1.obj('lantern', cx(20), top(3))
+b1.obj('trig', -999, 0, a='ch2_start')
+
+# B2 Laser hall -------------------------------------------------------
+b2 = room('b2', 2, 'Laser Hall')
+b2.solid(0, 19, 29, 22).solid(0, 0, 29, 11)
+b2.solid(0, 12, 0, 13).solid(28, 12, 29, 13)
+b2.deco('u', 2, 9, 9, 9).deco('o', 12, 9, 17, 9).deco('u', 20, 9, 26, 9).deco('y', 1, 11, 28, 11)
+b2.obj('laser', cx(9), bottom(18), b=1)
+b2.obj('laser', cx(19), bottom(18), b=50)
+b2.obj('hannya', cx(14), bottom(18), a=0)
+b2.obj('croupier', cx(25), bottom(18), a=0)
+b2.obj('door', left(29), bottom(18), a='lock')
+b2.obj('trig', cx(3), 0, a='lasers')
+
+# B3 Slot floor -------------------------------------------------------
+b3 = room('b3', 2, 'Slot Floor')
+b3.solid(0, 19, 29, 22).solid(0, 0, 23, 2).solid(28, 0, 29, 18)
+b3.solid(0, 3, 0, 13)
+b3.solid(12, 9, 13, 18).deco('y', 12, 9, 13, 9)
+b3.plat(14, 18, 15).plat(19, 23, 11).plat(23, 27, 7).plat(24, 27, 3)
+b3.plat(4, 9, 14)
+b3.obj('shrine', cx(4), bottom(18))
+b3.obj('slotturret', left(14), top(12) - 8, a=90)
+b3.obj('slotturret', left(28), top(15) - 8, a=-90)
+b3.obj('pachinko', cx(7), bottom(18))
+b3.obj('pachinko', cx(9), bottom(18))
+b3.obj('trig', cx(10), 0, a='slots')
+
+# B4 Pachinko shaft (vertical) ----------------------------------------
+b4 = room('b4', 2, 'Pachinko Shaft')
+b4.solid(0, 0, 2, 1).solid(7, 0, 29, 1)
+b4.solid(0, 2, 1, 22).solid(28, 2, 29, 22)
+b4.solid(2, 19, 23, 22).plat(24, 27, 19)
+b4.plat(17, 22, 15).plat(9, 14, 11).plat(16, 21, 7).plat(10, 13, 5).plat(3, 8, 3)
+b4.deco('o', 2, 6, 4, 6).deco('u', 24, 10, 26, 10).deco('x', 3, 14, 6, 14)
+b4.obj('drone', cx(12), top(9))
+b4.obj('drone', cx(20), top(13))
+b4.obj('slotturret', left(28), top(9) - 8, a=-90)
+b4.obj('pachinko', cx(5), bottom(18))
+b4.obj('pachinko', cx(8), bottom(18))
+
+# B5 High rollers lounge ----------------------------------------------
+b5 = room('b5', 2, 'High Rollers')
+b5.solid(0, 0, 23, 2).solid(27, 0, 29, 2)
+b5.solid(0, 3, 1, 22).solid(28, 3, 29, 13)
+b5.solid(2, 19, 2, 22).solid(7, 19, 29, 22).plat(3, 6, 19)
+b5.plat(8, 13, 14).plat(17, 22, 14).plat(22, 26, 10).plat(24, 26, 6)
+b5.deco('y', 2, 3, 27, 3).deco('u', 9, 8, 13, 8)
+b5.obj('croupier', cx(10), bottom(13), a=0)
+b5.obj('croupier', cx(20), bottom(13), a=0)
+b5.obj('hannya', cx(16), bottom(18), a=1)
+b5.obj('door', left(29), bottom(18), a='lock')
+b5.obj('sign', cx(15), top(3), a='NeonSign_Jackpot')
+b5.obj('trig', cx(4), 0, a='rollers')
+
+# B5s Shard room -------------------------------------------------------
+b5s = room('b5s', 2, 'Back Room')
+b5s.solid(0, 0, 29, 2).solid(0, 0, 1, 22).solid(28, 0, 29, 22)
+b5s.solid(0, 19, 23, 22).solid(27, 19, 29, 22).plat(24, 26, 19)
+b5s.plat(4, 9, 14).plat(13, 18, 11)
+b5s.deco('y', 2, 3, 27, 3).deco('o', 3, 6, 8, 6)
+b5s.obj('slotturret', left(2), top(10) - 8, a=90)
+b5s.obj('croupier', cx(16), bottom(18), a=0)
+b5s.obj('drone', cx(20), top(9))
+b5s.obj('shard', cx(15) + 8, top(8), a=3)
+b5s.flags.append('challenge')
+
+# B6 Cashier's cage ---------------------------------------------------
+b6 = room('b6', 2, "Cashier's Cage")
+b6.solid(0, 19, 29, 22).solid(0, 0, 29, 2)
+b6.solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+b6.solid(14, 12, 26, 12).deco('y', 14, 12, 26, 12)
+b6.deco('o', 2, 6, 6, 6).deco('u', 9, 6, 12, 6)
+b6.obj('shrine', cx(5), bottom(18))
+b6.obj('daicam', cx(20), bottom(18), a='cage')
+b6.obj('lantern', cx(16), bottom(12))
+b6.obj('lantern', cx(24), bottom(12))
+b6.obj('trig', cx(12), 0, a='daicam3')
+
+# B7 Boss gate --------------------------------------------------------
+b7 = room('b7', 2, 'Velvet Rope')
+b7.solid(0, 19, 29, 22).solid(0, 0, 29, 2)
+b7.solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+b7.deco('z', 1, 3, 28, 3).deco('r', 22, 12, 28, 12)
+for c in (4, 8, 21, 25):
+    b7.obj('pachinko', cx(c), bottom(18))
+b7.obj('sign', cx(14) + 8, top(4), a='NeonSign_Jackpot')
+b7.obj('trig', cx(12), 0, a='luck_gate')
+
+# B8 Lady Luck's table ------------------------------------------------
+b8 = room('b8', 2, "Lady Luck's Table")
+b8.solid(0, 19, 29, 22).solid(0, 0, 29, 1)
+b8.solid(0, 2, 0, 13).solid(29, 2, 29, 18)
+b8.plat(3, 7, 14).plat(22, 26, 14)
+b8.deco('y', 1, 19, 28, 19).deco('z', 29, 2, 29, 18)
+b8.obj('slot', 0, 64)
+b8.obj('door', left(0) + 8, bottom(18), a='ambush')
+b8.obj('luck', cx(22), bottom(18))
+b8.obj('trig', cx(4), 0, a='luck_start')
+b8.flags.append('boss')
 
 # --- connections --------------------------------------------------------
 link(p1, 'R', p2)
@@ -414,6 +534,15 @@ link(a6, 'R', a7)
 link(a7, 'U', a8)
 link(a7, 'R', a9)
 link(a9, 'R', a10)
+link(a10, 'R', b1)
+link(b1, 'R', b2)
+link(b2, 'R', b3)
+link(b3, 'U', b4)
+link(b4, 'U', b5)
+link(b5, 'U', b5s)
+link(b5, 'R', b6)
+link(b6, 'R', b7)
+link(b7, 'R', b8)
 
 ROOM_INDEX = {r.key: i + 1 for i, r in enumerate(ROOMS)}
 

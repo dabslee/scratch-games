@@ -6,17 +6,27 @@ Speaker keys pick the name plate; long lines are wrapped and split into
 
 NAMEPLATE = {
     'hotaru': 'name_hotaru', 'kuro': 'name_kuro', 'tetsu': 'name_tetsu',
-    'daicam': 'name_daicam', 'unknown': 'name_unknown',
+    'daicam': 'name_daicam', 'unknown': 'name_unknown', 'luck': 'name_lady_luck', 'system': 'name_system',
 }
 
 CONVERSATIONS = {
+    'boot0': [
+        ('system', 'sys_boot', "KANSHI DYNAMICS // SHINOBI UNIT. Status: DECOMMISSIONED. Dumped in Sump Scrapyard 9."),
+        ('system', 'sys_boot', "Emergency reboot... Motor control: OK. Visor: OK. Memory index: NOT FOUND."),
+    ],
     'boot': [
+        ('hotaru', 'hotaru_neutral', "...Rain. Cold. Scrap metal everywhere. Where am I?"),
+        ('hotaru', 'hotaru_neutral', "My name is Hotaru. I know that much. Everything before tonight is just... static."),
         ('unknown', 'kuro_smirk', "Good. You're awake. Try not to die before I figure out whose body this is."),
         ('hotaru', 'hotaru_neutral', "Mine."),
         ('unknown', 'kuro_smirk', "We'll see."),
-        ('hotaru', 'hotaru_angry', "Who's talking? Where are you?"),
-        ('kuro', 'kuro_neutral', "In your head, apparently. Call me Kuro. Somebody filed my combat engram under 'scrap'. Same as you."),
-        ('kuro', 'kuro_smirk', "Legs work? Good. The Spire's that way. Up. Everything worth knowing is up."),
+        ('hotaru', 'hotaru_angry', "Who said that? There's no one here."),
+        ('kuro', 'kuro_neutral', "Not out there. In here. I'm wired into your combat software. A voice in your audio feed."),
+        ('hotaru', 'hotaru_angry', "And the purple ghost flickering at the edge of my visor?"),
+        ('kuro', 'kuro_smirk', "Also me. Call me Kuro. Somebody filed my engram under 'scrap'. Same as you."),
+        ('hotaru', 'hotaru_visor_up', "I'm not scrap. I'm a person. Somebody rebuilt me with chrome, that's all."),
+        ('kuro', 'kuro_neutral', "Then let's find out who. See that tower? The Kanshi Spire. Sump to sky, Kanshi owns it all."),
+        ('kuro', 'kuro_smirk', "Whatever they took out of your head is up there. So are my answers. Up it is."),
     ],
     'drones': [
         ('kuro', 'kuro_neutral', "Scavenger drones. They strip anything that stops moving."),
@@ -111,6 +121,62 @@ CONVERSATIONS = {
         ('hotaru', 'hotaru_angry', "He did this to you."),
         ('kuro', 'kuro_neutral', "To us. Keep climbing."),
     ],
+    'ch2': [
+        ('kuro', 'kuro_neutral', "The Pachinko Vaults. Every floor up here is a casino, and the house always wins."),
+        ('hotaru', 'hotaru_neutral', "Then we don't play."),
+        ('kuro', 'kuro_smirk', "Everybody plays. The lasers decide when."),
+    ],
+    'lasers': [
+        ('kuro', 'kuro_neutral', "Laser grid. It pulses on and off, and Kanshi stations dealers behind it."),
+        ('kuro', 'kuro_neutral', "Wait for a gap, or Phase Step straight through it. Mid-fight, if you have to."),
+    ],
+    'slots': [
+        ('kuro', 'kuro_neutral', "Slot turrets. Three card-blades at a time."),
+        ('kuro', 'kuro_smirk', "Deflect the one coming at you and it goes straight back to whoever threw it."),
+    ],
+    'rollers': [
+        ('kuro', 'kuro_neutral', "High rollers' lounge. The dealers here throw from the balconies. Get up there with them."),
+    ],
+    'daicam3': [
+        ('daicam', 'daicam_neutral', "Chat, I am currently being held as collateral. My debt is... unclear."),
+        ('daicam', 'daicam_neutral', "Ninja lady! You came back for me! For the content!"),
+        ('hotaru', 'hotaru_neutral', "I came for the elevator."),
+        ('daicam', 'daicam_neutral', "Same thing! Hit the cage! Hit it with the sword!"),
+    ],
+    'daicam3b': [
+        ('daicam', 'daicam_neutral', "FREEDOM! Chat, she freed me. I'm calling this episode 'Jackpot'."),
+        ('hotaru', 'hotaru_visor_up', "Stop following me."),
+        ('daicam', 'daicam_neutral', "I'm not following you, I'm documenting you. Totally different. Byeee!"),
+    ],
+    'luck_gate': [
+        ('kuro', 'kuro_neutral', "Lady Luck runs every table on this tier. The machine behind her picks her moves."),
+        ('kuro', 'kuro_neutral', "Watch the reels. Spades, sevens, cherries... and if they land on skulls, get off the floor."),
+        ('hotaru', 'hotaru_neutral', "And if it hits the jackpot?"),
+        ('kuro', 'kuro_smirk', "Then we find out how fast you are."),
+    ],
+    'luck': [
+        ('luck', 'luck_neutral', "A scrapped Shinobi unit at my table. The house is feeling generous tonight."),
+        ('luck', 'luck_neutral', "Place your bet, little firefly. Everything you have."),
+        ('hotaru', 'hotaru_angry', "Deal."),
+    ],
+    'luck2': [
+        ('luck', 'luck_neutral', "Double or nothing!"),
+        ('kuro', 'kuro_neutral', "Jackpot means lasers. Phase Step through them!"),
+    ],
+    'luck_dead': [
+        ('luck', 'luck_neutral', "The house... doesn't... lose..."),
+        ('kuro', 'kuro_smirk', "It does now."),
+        ('hotaru', 'hotaru_visor_up', "Those reels weren't random. Something upstairs was picking her moves."),
+        ('kuro', 'kuro_neutral', "Something upstairs is picking everybody's moves. The Server Gardens are next."),
+        ('kuro', 'kuro_neutral', "Whatever runs this tower lives up there."),
+        ('daicam', 'daicam_neutral', "Chat, the ninja just broke the bank. Literally. Somebody clip the reels!"),
+    ],
+    'shard3': [
+        ('kuro', 'kuro_neutral', "...The Academy. Rows of us, practicing the same cut a thousand times."),
+        ('kuro', 'kuro_neutral', "Mukuro was there, before they emptied him out."),
+        ('hotaru', 'hotaru_neutral', "Mukuro?"),
+        ('kuro', 'kuro_neutral', "You'll meet him. I'm sorry in advance."),
+    ],
 }
 
 # Tutorial prompts: list of segments. ('k', costume) = key icon, ('t', text) = label.
@@ -128,6 +194,10 @@ HINTS = {
     'breach': [('t', 'Red diamond = BREACH attack'), ('n',), ('t', "Can't block it:"), ('k', 'key_space'), ('t', 'Phase Step through')],
     'launch': [('k', 'key_up'), ('t', '+'), ('k', 'mouse_l'), ('t', 'Launcher: pops enemies into the air')],
     'upgrade': [('t', 'NANO-GOURD UPGRADED: now holds 4 charges')],
+    'lasergrid': [('t', 'Laser grids pulse on and off.'), ('n',), ('t', 'Wait for a gap, or'), ('k', 'key_space'), ('t', 'Phase Step through')],
+    'cards': [('k', 'key_down'), ('t', 'Deflect a card-blade to send it back'), ('n',), ('t', 'Returned cards hurt and crack Integrity')],
+    'cage': [('k', 'mouse_l'), ('t', 'Attack the cage to free DaiCam')],
+    'reels': [('t', 'Watch the reels: they pick her next move.'), ('n',), ('t', 'SKULL = Breach.  JACKPOT = lasers')],
 }
 
 OPTION_LABELS = {
@@ -144,7 +214,7 @@ OPTION_LABELS = {
 
 CREDITS = [
     ('b', 'CYBERPUNK NINJA'),
-    ('t', 'Prologue + Chapter 1 vertical slice'),
+    ('t', 'Prologue, Chapter 1 and Chapter 2'),
     ('s', ''),
     ('h', 'GAME DESIGN BRIEF & ART'),
     ('t', 'Cyberpunk Ninja asset pack'),
@@ -156,7 +226,7 @@ CREDITS = [
     ('s', ''),
     ('h', 'STARRING'),
     ('t', 'Hotaru, Kuro, Tetsu, DaiCam,'),
-    ('t', 'the Hannya Boys and Big Oni'),
+    ('t', 'the Hannya Boys, Big Oni and Lady Luck'),
     ('s', ''),
     ('t', 'Thanks for playing!'),
 ]
@@ -178,8 +248,8 @@ CONTROLS = [
 ]
 
 END_PAGE = [
-    ('b', 'END OF CHAPTER 1'),
-    ('t', 'NEON ALLEY'),
+    ('b', 'END OF CHAPTER 2'),
+    ('t', 'THE PACHINKO VAULTS'),
     ('s', ''),
     ('s', ''),
     ('s', ''),
@@ -187,6 +257,6 @@ END_PAGE = [
     ('s', ''),
     ('s', ''),
     ('t', "Hotaru's climb continues in"),
-    ('t', 'Chapter 2: The Pachinko Vaults.'),
+    ('t', 'Chapter 3: The Server Gardens.'),
     ('t', 'Thanks for playing this vertical slice!'),
 ]

@@ -498,6 +498,80 @@ def song_boss(drums=False):
     return s.render((0.9, 0.14, 4000)), s.length
 
 
+
+# ---------------------------------------------------------------------- vaults
+def song_vaults():
+    """Chapter 2: swung casino synthwave with a walking bass and shamisen hook."""
+    s = Song(124, 16)
+    prog = [('D3', 'm9'), ('G2', '7'), ('C3', 'M7'), ('A2', '7'),
+            ('D3', 'm9'), ('A#2', 'M7'), ('E2', 'm7'), ('A2', '7')]
+    bl = s.beat * 4
+    sw = 0.62
+    k, rim, h = kick(0.8), ka(0.35), hat(False, 0.2)
+    for i in range(16):
+        r, kd = prog[i % 8]
+        root = n2m(r)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl + 0.3, 1800, 0.3, 0.05, 0.4), i)
+        walk = [0, 7, 10, 12] if i % 2 == 0 else [12, 10, 7, 5]
+        for j, iv in enumerate(walk):
+            s.add(bass(root + iv - 12, s.beat * 0.85, 0.55, 700, pluck=False), i, j)
+        for j in range(4):
+            s.add(h, i, j)
+            s.add(h, i, j + sw, 0.6)
+            if j % 2 == 0:
+                s.add(k, i, j)
+            else:
+                s.add(rim, i, j)
+        if i % 4 == 3:
+            s.add(chime([root + 24, root + 31, root + 36], 0.05, 0.5, 0.18), i, 3)
+    hook = [('D5', 0, 0.62), ('F5', 0.62, 0.38), ('A5', 1, 1), ('G5', 2, 0.62), ('F5', 2.62, 0.38), ('E5', 3, 1),
+            ('D5', 4, 0.62), ('E5', 4.62, 0.38), ('F5', 5, 0.62), ('A5', 5.62, 0.38), ('C6', 6, 1), ('A5', 7, 1)]
+    for rep in (4, 8, 12):
+        for nm, b, d in hook:
+            s.add(shamisen(n2m(nm), d * s.beat + 0.25, 0.32), rep, b)
+    return s.render((1.3, 0.2, 4200)), s.length
+
+
+# ---------------------------------------------------------------------- luck
+def song_luck(drums=False):
+    """Lady Luck: frantic minor-key boss theme; the drum layer joins at phase 2."""
+    s = Song(150, 8)
+    prog = [('E2', 'm'), ('C3', 'M'), ('A2', 'm'), ('B2', '7'),
+            ('E2', 'm'), ('C3', 'M'), ('D3', 'M'), ('B2', '7')]
+    if drums:
+        cl = clap(0.6)
+        for i in range(8):
+            for j in range(8):
+                acc = j in (0, 3, 5)
+                s.add(taiko(0.7 if acc else 0.35, 1.0 if acc else 1.3), i, j * 0.5)
+            s.add(cl, i, 1)
+            s.add(cl, i, 3)
+            s.add(ka(0.3), i, 2.75)
+        return s.render((0.7, 0.12, 2500)), s.length
+    k, sn, h = kick(1.0), snare(0.55), hat(False, 0.24)
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        root = n2m(r)
+        for j in range(16):
+            s.add(bass(root + (12 if j % 4 == 3 else 0), s.beat * 0.22, 0.6, 1200), i, j * 0.25)
+        for j in range(4):
+            s.add(k, i, j)
+            if j % 2:
+                s.add(sn, i, j)
+            s.add(h, i, j + 0.5)
+            s.add(h, i, j + 0.75, 0.5)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl, 2400, 0.28, 0.05, 0.2), i)
+        stab = pad([m + 24 for m in chord(r, kd)], s.beat * 0.3, 3200, 0.35, 0.005, 0.08)
+        s.add(stab, i, 0.5)
+        s.add(stab, i, 2.5)
+    riff = ['E5', 'G5', 'B5', 'E6', 'D6', 'B5', 'G5', 'F#5']
+    for bar in range(8):
+        off = {2: -4, 3: -1, 6: 2, 7: -1}.get(bar, 0)
+        for j, nm in enumerate(riff):
+            s.add(shamisen(n2m(nm) + off, s.beat * 0.5 + 0.15, 0.28), bar, j * 0.5)
+    return s.render((0.9, 0.14, 4000)), s.length
+
+
 def rain_loop():
     d = 8.0
     x = lp(noise(d + 1), 3500) * 0.35 + hp(lp(noise(d + 1), 9000), 2500) * 0.25
@@ -681,6 +755,11 @@ def build_sfx():
     S['menu_back'] = np.concatenate([blip(990, 0.05, 'square', 0.2), blip(660, 0.07, 'square', 0.2)])
     S['pause'] = np.concatenate([blip(660, 0.05, 'sine', 0.3), blip(440, 0.08, 'sine', 0.3)])
     S['lift'] = lp(saw(55, 0.5) + saw(55.7, 0.5), 400) * adsr(0.5, 0.05, 0.1, 0.8, 0.15) * 0.35
+    S['card_throw'] = add(whoosh(0.14, 2500, 8000, 0.7), metal(4200, 0.08, 0.15))
+    S['reels'] = reel_spin()
+    S['reel_stop'] = add(impact(0.12, 300, 0.6, 1.2), blip(1760, 0.06, 'square', 0.15))
+    S['jackpot'] = add(chime([n2m(x) for x in ('C6', 'E6', 'G6', 'C7', 'G6', 'C7')], 0.06, 0.4, 0.5),
+                       cat(silence(0.4), np.tile(cat(blip(1320, 0.08, 'square', 0.3), silence(0.04)), 6)))
     S['thunder'] = thunder()
     out = {}
     for k, v in S.items():
@@ -700,6 +779,18 @@ def victory_sting():
     mix_into(x, chordx, 0.45, 0.8)
     mix_into(x, shamisen(n2m('A5'), 1.6, 0.7), 0.45)
     return reverb(x, 1.6, 0.3)[:int(d * SR)]
+
+
+def reel_spin():
+    d = 1.8
+    x = np.zeros(int(d * SR))
+    t = 0.0
+    step = 0.035
+    while t < d - 0.05:
+        mix_into(x, hp(noise(0.012), 2500) * np.linspace(1, 0, int(0.012 * SR)), t, 0.5)
+        mix_into(x, sine(900, 0.01) * 0.2, t)
+        t += step
+    return x + lp(saw(80, d), 300) * adsr(d, 0.1, 0.2, 0.5, 0.3) * 0.2
 
 
 def thunder():
@@ -746,15 +837,17 @@ def build_all():
     for k, v in sfx.items():
         out[k] = (wav_bytes(v), SR, len(v), 'wav')
         SFX_NAMES.append(k)
-    songs = {'title': song_title, 'sump': song_sump, 'alley': song_alley, 'boss': song_boss}
+    songs = {'title': song_title, 'sump': song_sump, 'alley': song_alley, 'boss': song_boss,
+             'vaults': song_vaults, 'luck': song_luck}
     for name, fn in songs.items():
         x, length = fn()
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')
         MUSIC[name] = round(length, 4)
-    x, length = song_boss(drums=True)
-    x = normalize(x, 0.8)
-    out['boss_drums'] = (mp3_bytes(x), SR, len(x), 'mp3')
+    for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck)):
+        x, length = fn(drums=True)
+        x = normalize(x, 0.8)
+        out[name] = (mp3_bytes(x), SR, len(x), 'mp3')
     x, length = rain_loop()
     x = normalize(x, 0.5)
     out['rain_loop'] = (mp3_bytes(x, 64), SR, len(x), 'mp3')

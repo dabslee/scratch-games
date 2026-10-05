@@ -308,6 +308,8 @@ def activate(k):
             broadcast("new_game")
         elif chap_i == 1:
             broadcast("start_ch1")
+        elif chap_i == 2:
+            broadcast("start_ch2")
         else:
             sfxq.append("empty")
     elif k == "back":
@@ -388,14 +390,14 @@ def m_draw():
     elif ckind == "card":
         costume(join("ch", chap_i))
         size(88)
-        if chap_i > 1:
+        if chap_i > 2:
             effect("brightness", -55)
         elif msel == cidx and frame % 30 < 15:
             effect("brightness", 15)
         else:
             effect("brightness", 0)
     elif ccos == "chap_label":
-        if chap_i < 2:
+        if chap_i < 3:
             costume("lbl_play")
         else:
             costume("lbl_locked")
@@ -430,7 +432,7 @@ def t_write():
     if is_clone == 0:
         write_line(join("TIME   ", tstr), -70, -6)
         write_line(join("DEATHS   ", deaths), -70, -30)
-        write_line(join("MEMORY SHARDS   ", shards, " / 2"), -70, -54)
+        write_line(join("MEMORY SHARDS   ", shards, " / 3"), -70, -54)
 
 
 @proc

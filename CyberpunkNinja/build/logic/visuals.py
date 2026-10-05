@@ -179,7 +179,7 @@ def hud_draw():
         show()
     elif role == "bplate":
         if boss_on == 1:
-            costume("boss_big_oni")
+            costume(join("boss_", boss_name))
             goto(-164, 148)
             show()
         else:
@@ -506,7 +506,7 @@ def r_init():
 
 @on("t_draw")
 def draw():
-    if ingame == 1 and (mode == "play" or mode == "dlg" or mode == "trans" or mode == "dead" or menu == "pause"):
+    if ingame == 1 and chapter < 2 and (mode == "play" or mode == "dlg" or mode == "trans" or mode == "dead" or menu == "pause"):
         costume(join("rain_", floor(frame / 3) % 4))
         goto(0, 0)
         effect("ghost", 15)
@@ -537,8 +537,10 @@ def draw():
     if ingame == 1 and (mode != "menu" or menu == "pause"):
         if chapter == 0:
             costume("sump")
-        else:
+        elif chapter == 1:
             costume("neon_alley")
+        else:
+            costume("vaults")
         po = (0 - px * %s) %% 480
         if is_clone == 1:
             goto(po - 480, 0)
@@ -587,8 +589,8 @@ def vol():
 '''
 
 
-def music(track, length, drums=False):
-    cond = 'music_cur == "%s"' % ('boss' if drums else track)
+def music(track, length, drums=False, drums_for='boss'):
+    cond = 'music_cur == "%s"' % (drums_for if drums else track)
     vol = '(boss_phase == 2) * opt_music * 20' if drums else 'opt_music * 20'
     return '''
 @flag
@@ -632,7 +634,7 @@ def a_init():
 @on("t_draw")
 def draw():
     want = 0
-    if ingame == 1 and mode != "menu":
+    if ingame == 1 and mode != "menu" and chapter < 2:
         want = 1
     if want != amb:
         amb = want

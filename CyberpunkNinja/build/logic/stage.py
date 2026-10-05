@@ -56,7 +56,10 @@ def reset_run():
     deaths = 0
     play_time = 0
     boss_dead = 0
+    luck_dead = 0
     daicam_done = 0
+    daicam3_done = 0
+    boss_name = "big_oni"
     lift_ride = 0
     cp_room = 1
     cp_x = 0
@@ -315,13 +318,18 @@ def load_room(r):
     hint = ""
     prompt_on = 0
     hitstop = 0
+    cage_broken = 0
+    slot_state = "idle"
     if chapter == 0:
         backdrop("sky_sump")
         music_want = "sump"
-    else:
+    elif chapter == 1:
         backdrop("sky_neon_alley")
         music_want = "alley"
-    if R_BOSS[r] == 1 and boss_dead == 0:
+    else:
+        backdrop("sky_vaults")
+        music_want = "vaults"
+    if (R_BOSS[r] == 1 and boss_dead == 0) or (R_BOSS[r] == 2 and luck_dead == 0):
         music_want = "none"
     broadcast("clear")
     broadcast("spawn")
@@ -389,6 +397,27 @@ def new_game():
     mode = "play"
 
 
+@on("start_ch2")
+def start_ch2():
+    mode = "trans"
+    broadcast("menu_close")
+    fade_to = 100
+    wait_until(fade > 99)
+    reset_run()
+    has_gourd = 1
+    gmax = 4
+    gourd = 4
+    boss_dead = 1
+    daicam_done = 1
+    seen.append("tetsu")
+    enter_dir = "S"
+    load_room(C_ROOM_B1)
+    wait(0)
+    fade_to = 0
+    wait_until(fade < 50)
+    mode = "play"
+
+
 @on("start_ch1")
 def start_ch1():
     mode = "trans"
@@ -437,9 +466,11 @@ def quit_to_title():
 def ev_boot():
     once("boot")
     if first == 1:
-        wait(1.2)
+        wait(1.0)
+        say("boot0")
+        wait_until(mode == "play")
         p_cmd = "reboot"
-        wait(1.8)
+        wait(1.6)
         say("boot")
         wait_until(mode == "play")
     hint = "move"
@@ -578,6 +609,7 @@ def ev_boss_start():
         ambush_on = 1
         boss_on = 1
         boss_phase = 1
+        boss_name = "big_oni"
         music_want = "boss"
         once("oni")
         if first == 1:
@@ -611,6 +643,119 @@ def ev_oni_dead():
     say("oni_dead")
     wait_until(mode == "play")
     hint = ""
+    music_want = "alley"
+
+
+@on("ev_shard")
+def ev_shard():
+    banner = "shard"
+    sfxq.append("shard")
+    wait(2)
+    banner = ""
+    say(join("shard", shard_id))
+
+
+# ------------------------------------------------------------ chapter 2
+@on("ev_ch2_start")
+def ev_ch2_start():
+    cp_room = room
+    cp_x = C_B1_X
+    cp_y = C_B1_Y
+    once("ch2")
+    if first == 1:
+        card = "ch2"
+        wait(2.5)
+        say("ch2")
+
+
+@on("ev_lasers")
+def ev_lasers():
+    once("lasers")
+    if first == 1:
+        say("lasers")
+        wait_until(mode == "play")
+    hint = "lasergrid"
+
+
+@on("ev_slots")
+def ev_slots():
+    once("slots")
+    if first == 1:
+        say("slots")
+        wait_until(mode == "play")
+    hint = "cards"
+
+
+@on("ev_rollers")
+def ev_rollers():
+    once("rollers")
+    if first == 1:
+        say("rollers")
+
+
+@on("ev_daicam3")
+def ev_daicam3():
+    if daicam3_done == 0:
+        once("daicam3")
+        if first == 1:
+            say("daicam3")
+            wait_until(mode == "play")
+        hint = "cage"
+
+
+@on("ev_daicam3_free")
+def ev_daicam3_free():
+    hint = ""
+    say("daicam3b")
+    wait_until(mode == "play")
+    daicam3_done = 1
+
+
+@on("ev_luck_gate")
+def ev_luck_gate():
+    if luck_dead == 0:
+        once("luck_gate")
+        if first == 1:
+            say("luck_gate")
+            wait_until(mode == "play")
+        hint = "reels"
+
+
+@on("ev_luck_start")
+def ev_luck_start():
+    if luck_dead == 0:
+        hint = ""
+        ambush_on = 1
+        boss_on = 1
+        boss_phase = 1
+        boss_name = "lady_luck"
+        music_want = "luck"
+        once("luck")
+        if first == 1:
+            say("luck")
+
+
+@on("ev_luck_phase2")
+def ev_luck_phase2():
+    boss_phase = 2
+    broadcast("drums")
+    once("luck2")
+    if first == 1:
+        say("luck2")
+
+
+@on("ev_luck_dead")
+def ev_luck_dead():
+    luck_dead = 1
+    music_want = "none"
+    wait(1.4)
+    banner = "victory"
+    sfxq.append("victory")
+    wait(3)
+    banner = ""
+    boss_on = 0
+    say("luck_dead")
+    wait_until(mode == "play")
     wait(0.5)
     mode = "trans"
     fade_to = 100
@@ -621,12 +766,3 @@ def ev_oni_dead():
     backdrop("black")
     open_menu("end")
     fade_to = 0
-
-
-@on("ev_shard")
-def ev_shard():
-    banner = "shard"
-    sfxq.append("shard")
-    wait(2)
-    banner = ""
-    say(join("shard", shard_id))

@@ -25,7 +25,7 @@ def pr_spawn():
         vx = pq_vx[qi]
         vy = pq_vy[qi]
         t = 0
-        if kind == "bullet":
+        if kind == "bullet" or kind == "card":
             owner = "e"
         elif kind == "wave":
             owner = "w"
@@ -83,6 +83,7 @@ def pr_update():
                         ent_dmg[ei] = ent_dmg[ei] + 2
                     else:
                         ent_dmg[ei] = ent_dmg[ei] + 1
+                    ent_idmg[ei] = ent_idmg[ei] + 2
                     ent_hk[ei] = "projectile"
                     if vx > 0:
                         ent_kb[ei] = 2
@@ -95,11 +96,11 @@ def pr_update():
 
 @proc
 def pr_draw():
-    # enemy shots flash white in the last 0.1 s (3 frames) before reaching Hotaru
+    # enemy shots flash white for the last 0.3 s (9 frames) before reaching Hotaru
     tell = 0
     if owner != "p" and vx != 0 and (px - x) * vx > 0:
         eta = (abs(px - x) - 11) / abs(vx)
-        if eta > 0 and eta <= 3 and abs((py + 18) - y) < 40:
+        if eta <= 9 and abs((py + 18) - y) < 40:
             tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -107,6 +108,8 @@ def pr_draw():
         effect("brightness", 0)
     if kind == "wave":
         costume(join("wave_", floor(t / 3) % 2))
+    elif kind == "card":
+        costume(join("card_", floor(t / 3) % 4))
     else:
         costume(join("bullet_", floor(t / 4) % 2))
     goto(x + shx, y + shy)
@@ -207,11 +210,14 @@ def draw():
 
 
 DAICAM = spawner('daicam', '''
-if daicam_done == 0:
+dmode = O_A[oi]
+if (dmode != "cage" and daicam_done == 0) or (dmode == "cage" and daicam3_done == 0):
     x = O_X[oi]
     y = O_Y[oi]
     fr = 0
     st = "panic"
+    if dmode == "cage":
+        st = "caged"
     t = 0
     cam_x = x
     cam_y = y + 70
@@ -229,7 +235,12 @@ def tick():
 @proc
 def dc_update():
     t += 1
-    if st == "panic":
+    if st == "caged":
+        fr += 0.34
+        if cage_broken == 1:
+            st = "wait"
+            t = 0
+    elif st == "panic":
         fr += 0.34
         count_foes()
         if foes == 0:
@@ -239,10 +250,13 @@ def dc_update():
         fr += 0.2
         if t > 25:
             st = "talk"
-            broadcast("ev_daicam_end")
+            if dmode == "cage":
+                broadcast("ev_daicam3_free")
+            else:
+                broadcast("ev_daicam_end")
     elif st == "talk":
         fr += 0.27
-        if daicam_done == 1:
+        if (dmode != "cage" and daicam_done == 1) or (dmode == "cage" and daicam3_done == 1):
             st = "run"
             t = 0
             sfxq.append("cam_beep")
@@ -297,19 +311,60 @@ x = O_X[oi]
 y = O_Y[oi]
 lc = floor((x + 240) / 16)
 lr = floor((180 - (y + 1)) / 16)
-for k in range(6):
-    grid[(lr - k) * 30 + lc + 1] = "L"
+pulse = 0
+phase = 0
+if O_B[oi] != "":
+    pulse = 1
+    phase = O_B[oi]
+lon = 1
+set_cells("L")
 is_clone = 1
 clone()
 is_clone = 0
 ''') + '''
+@proc
+def set_cells(v):
+    for k in range(6):
+        grid[(lr - k) * 30 + lc + 1] = v
+
+
+@on("t_world")
+def tick():
+    if is_clone == 1 and pulse == 1:
+        # laser grids pulse: on for 60 frames, off for 40 (warning flicker in the last 15)
+        ph = (frame + phase) % 100
+        if ph < 60:
+            want = 1
+        else:
+            want = 0
+        if want != lon:
+            lon = want
+            if lon == 1:
+                set_cells("L")
+                sfxq.append("laser_hum")
+                if abs(px - x) < 14 and pdash == 0 and pinv == 0 and pst != "dead":
+                    hq_t.append("hit")
+                    hq_d.append(1)
+                    hq_x.append(x)
+            else:
+                set_cells(".")
+
+
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        costume(join("on_", floor(frame / 3) % 4))
+        if lon == 1:
+            costume(join("on_", floor(frame / 3) % 4))
+            effect("ghost", 0)
+        elif (frame + phase) % 100 >= 85 and frame % 4 < 2:
+            costume("on_0")
+            effect("ghost", 70)
+        else:
+            costume("off_0")
+            effect("ghost", 0)
         goto(x + shx, y + shy)
         show()
-        if abs(px - x) < 70 and frame % 20 == 0 and ingame == 1:
+        if lon == 1 and abs(px - x) < 70 and frame % 20 == 0 and ingame == 1:
             sfxq.append("laser_hum")
 '''
 
@@ -640,7 +695,7 @@ fr = 0
 is_clone = 1
 clone()
 is_clone = 0
-''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart":').replace(
+''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko":').replace(
     'kind = O_A[oi]', 'kind = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
 @on("t_draw")
 def draw():
@@ -649,6 +704,8 @@ def draw():
             costume(join("lantern_sway_", floor(frame / 7.5) % 4))
         elif kind == "cart":
             costume(join("cart_idle_", floor(frame / 5) % 4))
+        elif kind == "pachinko":
+            costume(join("pachinko_", (floor(frame / 8) + floor(x / 16)) % 2))
         else:
             fl_t -= 1
             if fl_t < 0:
@@ -659,6 +716,49 @@ def draw():
                     fr = 0
             else:
                 costume(join(kind, "_on_0"))
+        goto(x + shx, y + shy)
+        show()
+'''
+
+
+CAGE = spawner('daicam', '''
+if O_A[oi] == "cage" and daicam3_done == 0:
+    x = O_X[oi]
+    y = O_Y[oi]
+    myobj = oi
+    add_ent("crate", x, y, 14, 40, 3, 0, 0)
+    ehp = 3
+    cage_broken = 0
+    is_clone = 1
+    clone()
+    is_clone = 0
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1 and ehp > 0:
+        if ent_dmg[slot] > 0:
+            ent_dmg[slot] = 0
+            ent_idmg[slot] = 0
+            ehp -= 1
+            sfxq.append("metal_hit")
+            cfx("hit", x, y + 30, 0)
+            if ehp <= 0:
+                ent_alive[slot] = 0
+                cage_broken = 1
+                sfxq.append("block_break")
+                shake = 4
+                shake_amp = 3
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        if ehp <= 0:
+            costume("cage_2")
+        elif ehp < 3:
+            costume("cage_1")
+        else:
+            costume("cage_0")
         goto(x + shx, y + shy)
         show()
 '''

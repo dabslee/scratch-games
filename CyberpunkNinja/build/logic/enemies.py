@@ -180,7 +180,7 @@ def d_draw():
     else:
         point(-90)
     tell = 0
-    if st == "dive" and hitdone == 0 and sqrt((px - x) * (px - x) + (py + 18 - y) * (py + 18 - y)) < 52:
+    if st == "dive" and hitdone == 0 and sqrt((px - x) * (px - x) + (py + 18 - y) * (py + 18 - y)) < 100:
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -283,6 +283,121 @@ def fire():
     pq_vx.append(ax / dd * 5)
     pq_vy.append(ay / dd * 5)
     sfxq.append("turret_fire")
+
+
+@proc
+def t_draw():
+    if st == "dead":
+        delete_clone()
+    costume(join(st, "_", floor(fr)))
+    goto(x + shx, y + shy)
+    if face == 1:
+        point(90)
+    else:
+        point(-90)
+    tell = 0
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
+        flash_t -= 1
+        effect("brightness", 70)
+    else:
+        effect("brightness", 0)
+    show()
+'''
+
+
+SLOT_TURRET = spawner('slotturret', '''
+if not (oi in dead_objs):
+    x = O_X[oi]
+    y = O_Y[oi]
+    if O_A[oi] > 0:
+        face = 1
+    else:
+        face = -1
+    myobj = oi
+    add_ent("turret", x + face * 18, y - 12, 18, 24, 4, 0, 1)
+    st = "idle"
+    t = rand(0, 30)
+    ehp = 4
+    fr = 0
+    flash_t = 0
+    is_clone = 1
+    clone()
+    is_clone = 0
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1:
+        t_update()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        t_draw()
+
+
+@proc
+def t_update():
+    t += 1
+    if st == "dead":
+        return
+    if ent_dmg[slot] > 0:
+        ehp -= ent_dmg[slot]
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+        flash_t = 4
+        sfxq.append("metal_hit")
+        if ehp <= 0:
+            st = "dead"
+            ent_alive[slot] = 0
+            dead_objs.append(myobj)
+            cfx("explosion", x + face * 16, y, 0)
+            sfxq.append("explode")
+            shake = max(shake, 5)
+            shake_amp = 3
+            return
+    dx = px - x
+    dy = (py + 18) - y
+    if st == "idle":
+        fr += 0.14
+        if fr >= 4:
+            fr = 0
+        if t > 50 and dx * face > 30 and abs(dx) < 420 and abs(dy) < 150 and pst != "dead":
+            st = "charge"
+            fr = 0
+            sfxq.append("turret_charge")
+    elif st == "charge":
+        fr += 0.34
+        if fr >= 3:
+            st = "fire"
+            fr = 0
+            fire()
+    elif st == "fire":
+        fr += 0.47
+        if fr >= 2:
+            st = "idle"
+            fr = 0
+            t = 0
+
+
+@proc
+def fire():
+    # slot turret: a fan of three card-blades
+    mx = x + face * 34
+    my = y
+    ax = px - mx
+    ay = (py + 20) - my
+    base = atan(ay / (abs(ax) + 0.01))
+    for k in range(3):
+        ang = base + (k - 1) * 14
+        pq_t.append("card")
+        pq_x.append(mx)
+        pq_y.append(my)
+        pq_vx.append(face * cos(ang) * 4.5)
+        pq_vy.append(sin(ang) * 4.5)
+    sfxq.append("card_throw")
 
 
 @proc
@@ -579,7 +694,7 @@ def h_draw():
     else:
         point(-90)
     tell = 0
-    if (st == "wind" and t >= 21) or (st == "swing" and t == 0):
+    if (st == "wind" and t >= 15) or (st == "swing" and t <= 1):
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -672,8 +787,11 @@ def o_update():
         else:
             sfxq.append("clang")
             cfx("deflect", x + face * 20, y + 70, 0 - face)
+        gain = ent_idmg[slot]
+        if vuln == 0 and hk != "heavy":
+            gain = gain * 0.5
         if st != "broken":
-            integ = min(imax, integ + ent_idmg[slot])
+            integ = min(imax, integ + gain)
         int_t = 0
         ent_dmg[slot] = 0
         ent_idmg[slot] = 0
@@ -865,7 +983,7 @@ def o_draw():
     else:
         point(-90)
     tell = 0
-    if (st == "swing" and t >= 12 and t <= 14) or (st == "slam" and t >= 37 and t <= 39):
+    if (st == "swing" and t >= 6 and t <= 15) or (st == "slam" and t >= 31 and t <= 40):
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -875,4 +993,721 @@ def o_draw():
     else:
         effect("brightness", 0)
     show()
+'''
+
+
+def _extract(src, name):
+    i = src.index('@proc\ndef %s(' % name)
+    j = src.index('\n\n\n', i)
+    return src[i:j] + '\n\n\n'
+
+
+CROUPIER = spawner('croupier', '''
+if not (oi in dead_objs):
+    x = O_X[oi]
+    y = O_Y[oi]
+    myobj = oi
+    add_ent("croupier", x, y, 10, 38, 5, 6, 1)
+    find_bounds()
+    st = "idle"
+    t = 0
+    ehp = 5
+    imax = 6
+    integ = 0
+    int_t = 0
+    z = 0
+    vz = 0
+    fr = 0
+    face = -1
+    acd = 30 + rand(0, 30)
+    hitrow = 0
+    hit_t = 0
+    flash_t = 0
+    is_clone = 1
+    clone()
+    is_clone = 0
+    ui_slot.append(slot)
+    ui_role.append("bar")
+    clone("EnemyUI")
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1:
+        c_update()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        c_draw()
+
+
+''' + _extract(HANNYA, 'find_bounds') + '''@proc
+def c_die():
+    st = "dead"
+    t = 0
+    fr = 0
+    ent_alive[slot] = 0
+    ent_stag[slot] = 0
+    dead_objs.append(myobj)
+    sfxq.append("thug_die")
+
+
+@proc
+def throw_card(spread):
+    mx = x + face * 16
+    my = y + 30
+    ax = px - mx
+    ay = (py + 20) - my
+    dd = sqrt(ax * ax + ay * ay)
+    if dd < 1:
+        dd = 1
+    pq_t.append("card")
+    pq_x.append(mx)
+    pq_y.append(my)
+    pq_vx.append(ax / dd * 5.5)
+    pq_vy.append(ay / dd * 5.5 + spread)
+    sfxq.append("card_throw")
+
+
+@proc
+def c_update():
+    t += 1
+    if st == "dead":
+        fr += 0.27
+        return
+    if ent_sev[slot] == 1:
+        c_die()
+        return
+    if ent_dmg[slot] > 0:
+        ehp -= ent_dmg[slot]
+        if st != "stagger":
+            integ = min(imax, integ + ent_idmg[slot])
+        int_t = 0
+        hk = ent_hk[slot]
+        x = min(max(x + ent_kb[slot], xmin), xmax)
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+        flash_t = 3
+        sfxq.append("thug_hurt")
+        if ehp <= 0:
+            c_die()
+            return
+        if st != "stagger":
+            if hk == "launcher":
+                st = "air"
+                vz = 10
+                t = 0
+            elif st != "swing":
+                st = "hurt"
+                t = 0
+    if integ >= imax and st != "stagger" and st != "air":
+        st = "stagger"
+        t = 0
+        integ = imax
+        ent_stag[slot] = 1
+        sfxq.append("stagger")
+    dx = px - x
+    if st == "idle":
+        fr += 0.17
+        if abs(dx) < 300 and abs(py - y) < 140:
+            st = "walk"
+    elif st == "walk":
+        fr += 0.27
+        if dx > 0:
+            face = 1
+        else:
+            face = -1
+        if acd > 0:
+            acd -= 1
+        if abs(dx) < 56 and abs(py - y) < 50:
+            if acd < 20:
+                st = "wind"
+                t = 0
+                hitdone = 0
+                sfxq.append("windup")
+        elif abs(dx) < 110:
+            x = min(max(x - face * 1.4, xmin), xmax)
+        elif abs(dx) > 190:
+            x = min(max(x + face * 1.4, xmin), xmax)
+        if st == "walk" and acd == 0 and abs(dx) >= 56 and pst != "dead":
+            st = "aim"
+            t = 0
+    elif st == "aim":
+        if t == 18:
+            throw_card(0)
+        if t == 28:
+            throw_card(0)
+        if t >= 40:
+            st = "walk"
+            acd = rand(45, 80)
+    elif st == "wind":
+        if t > 22:
+            st = "swing"
+            t = 0
+            sfxq.append("swing")
+    elif st == "swing":
+        if hitdone == 0 and t <= 4:
+            if face == 1:
+                p_overlap(x, x + 46, y + 4, y + 40)
+            else:
+                p_overlap(x - 46, x, y + 4, y + 40)
+            if ov == 1:
+                hitdone = 1
+                hit_player(2, 0, x)
+                if res == "deflect":
+                    integ = min(imax, integ + 2)
+                    int_t = 0
+                    st = "hurt"
+                    t = 0
+        if t >= 8 and st == "swing":
+            st = "walk"
+            acd = 30
+    elif st == "hurt":
+        if t >= 12:
+            st = "walk"
+            acd = max(acd, 10)
+    elif st == "stagger":
+        if t >= 80:
+            st = "walk"
+            integ = imax / 2
+            ent_stag[slot] = 0
+            acd = 20
+    elif st == "air":
+        z += vz
+        vz -= 1.1
+        if z <= 0:
+            z = 0
+            st = "hurt"
+            t = 0
+    int_t += 1
+    if int_t > 60 and integ > 0 and st != "stagger" and t % 15 == 0:
+        integ -= 1
+    ent_x[slot] = x
+    ent_y[slot] = y + z
+    ent_int[slot] = integ
+
+
+@proc
+def c_draw():
+    if st == "dead":
+        if fr >= 7:
+            delete_clone()
+        costume(join("death_", min(4, floor(fr))))
+        if fr > 5:
+            effect("ghost", (fr - 5) * 50)
+    elif st == "idle":
+        costume(join("idle_", floor(fr) % 4))
+    elif st == "walk":
+        costume(join("walk_", floor(fr) % 6))
+    elif st == "aim":
+        if t < 10 or (t >= 20 and t < 26):
+            costume("attack_1")
+        elif t < 18 or (t >= 26 and t < 28):
+            costume("attack_2")
+        else:
+            costume("attack_4")
+    elif st == "wind":
+        if t < 9:
+            costume("attack_1")
+        else:
+            costume("attack_2")
+    elif st == "swing":
+        if t < 3:
+            costume("attack_3")
+        else:
+            costume("attack_4")
+    elif st == "stagger":
+        costume("hurt_1")
+    else:
+        costume(join("hurt_", min(1, floor(t / 4))))
+    goto(x + shx, y + z + shy)
+    if face == 1:
+        point(90)
+    else:
+        point(-90)
+    tell = 0
+    if (st == "wind" and t >= 15) or (st == "swing" and t <= 1):
+        tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
+        flash_t -= 1
+        effect("brightness", 70)
+    elif st != "dead":
+        effect("brightness", 0)
+    show()
+'''
+
+
+LUCK = spawner('luck', '''
+if luck_dead == 0:
+    x = O_X[oi]
+    y = O_Y[oi]
+    myobj = oi
+    add_ent("luck", x, y, 10, 40, 20, 16, 1)
+    boss_slot = slot
+    st = "wait"
+    t = 0
+    ehp = 20
+    imax = 16
+    integ = 0
+    int_t = 0
+    fr = 0
+    face = -1
+    phase = 1
+    flash_t = 0
+    guard_t = 0
+    tx = x
+    boss_hp = 20
+    boss_int = 0
+    slot_state = "idle"
+    slot_sym = "seven"
+    is_clone = 1
+    clone()
+    is_clone = 0
+    ui_slot.append(slot)
+    ui_role.append("mark")
+    clone("EnemyUI")
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1:
+        l_update()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        l_draw()
+
+
+@proc
+def throw_card(ang_off, spd):
+    mx = x + face * 16
+    my = y + 30
+    ax = px - mx
+    ay = (py + 20) - my
+    base = atan(ay / (abs(ax) + 0.01))
+    if ax < 0:
+        dirx = -1
+    else:
+        dirx = 1
+    ang = base + ang_off
+    pq_t.append("card")
+    pq_x.append(mx)
+    pq_y.append(my)
+    pq_vx.append(dirx * cos(ang) * spd)
+    pq_vy.append(sin(ang) * spd)
+    sfxq.append("card_throw")
+
+
+@proc
+def vulnerable():
+    vuln = 0
+    if st == "recover" or st == "recoil" or st == "stagger" or st == "broken" or st == "stagger2":
+        vuln = 1
+
+
+@proc
+def pick_symbol():
+    roll = rand(1, 100)
+    if phase == 2 and roll <= 22:
+        slot_sym = "jackpot"
+    elif roll <= 40:
+        slot_sym = "spade"
+    elif roll <= 62:
+        slot_sym = "seven"
+    elif roll <= 84:
+        slot_sym = "cherry"
+    else:
+        slot_sym = "skull"
+
+
+@proc
+def l_die():
+    st = "dead"
+    t = 0
+    fr = 0
+    ent_alive[slot] = 0
+    ent_stag[slot] = 0
+    ent_brk[slot] = 0
+    boss_hp = 0
+    boss_int = 0
+    slot_state = "idle"
+    sfxq.append("oni_die")
+    shake = 24
+    shake_amp = 6
+    hitstop = 12
+    broadcast("ev_luck_dead")
+
+
+@proc
+def l_update():
+    t += 1
+    if st == "dead":
+        fr += 0.27
+        return
+    if st == "wait":
+        fr += 0.2
+        if boss_on == 1:
+            st = "move"
+            t = 0
+            tx = 140
+            if px > 0:
+                tx = -140
+        return
+    if ent_sev[slot] == 1:
+        ent_sev[slot] = 0
+        seg = ceil(ehp / 5)
+        ehp = (seg - 1) * 5
+        integ = 0
+        ent_stag[slot] = 0
+        st = "stagger2"
+        t = 0
+        flash_t = 6
+        slot_state = "idle"
+        sfxq.append("oni_hurt")
+        if ehp <= 0:
+            l_die()
+            return
+    if ent_dmg[slot] > 0:
+        hk = ent_hk[slot]
+        vulnerable()
+        if vuln == 1 or hk == "projectile" or (hk == "heavy" and st != "jackpot"):
+            ehp -= ent_dmg[slot]
+            flash_t = 3
+            if hk == "heavy" and vuln == 0:
+                st = "stagger"
+                t = 0
+                slot_state = "idle"
+                sfxq.append("oni_hurt")
+        else:
+            sfxq.append("clang")
+            cfx("deflect", x + face * 12, y + 26, 0 - face)
+            guard_t = 8
+        gain = ent_idmg[slot]
+        if vuln == 0 and hk != "projectile" and hk != "heavy":
+            gain = gain * 0.4
+        if st != "broken":
+            integ = min(imax, integ + gain)
+        int_t = 0
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+        if ehp <= 0:
+            ehp = 0
+            l_die()
+            return
+    if ehp <= 10 and phase == 1:
+        phase = 2
+        broadcast("ev_luck_phase2")
+    if integ >= imax and st != "broken" and st != "stagger2":
+        st = "broken"
+        t = 0
+        integ = imax
+        ent_stag[slot] = 1
+        ent_brk[slot] = 0
+        slot_state = "idle"
+        sfxq.append("stagger")
+    if guard_t > 0:
+        guard_t -= 1
+    dx = px - x
+    ent_brk[slot] = 0
+    if st == "move":
+        fr += 0.53
+        if tx > x:
+            face = 1
+        else:
+            face = -1
+        if abs(tx - x) < 10:
+            st = "spin"
+            t = 0
+            pick_symbol()
+            slot_state = "spin"
+            slot_t = 0
+            sfxq.append("reels")
+        else:
+            x += face * 7
+    elif st == "spin":
+        slot_t = t
+        fr += 0.2
+        if dx > 0:
+            face = 1
+        else:
+            face = -1
+        if t == 33 or t == 43 or t == 53:
+            sfxq.append("reel_stop")
+        if t >= 60:
+            slot_state = "show"
+            st = slot_sym
+            t = 0
+            hitdone = 0
+            if slot_sym == "skull":
+                sfxq.append("breach")
+            if slot_sym == "jackpot":
+                sfxq.append("jackpot")
+                sl_q.append(-220)
+                sl_q.append(220)
+    elif st == "spade":
+        if dx > 0:
+            face = 1
+        else:
+            face = -1
+        if t == 8 or t == 30:
+            throw_card(-14, 5)
+            throw_card(0, 5)
+            throw_card(14, 5)
+        if t >= 44:
+            to_recover(32)
+    elif st == "seven":
+        if dx > 0:
+            face = 1
+        else:
+            face = -1
+        if t >= 8 and t <= 40 and (t - 8) % 8 == 0:
+            throw_card(0, 6.5)
+        if t >= 48:
+            to_recover(32)
+    elif st == "cherry":
+        if t < 45 and abs(dx) > 44:
+            if dx > 0:
+                face = 1
+            else:
+                face = -1
+            x = min(max(x + face * 8, -200), 200)
+            fr += 0.53
+        else:
+            st = "slash"
+            t = 0
+            hitdone = 0
+            sfxq.append("swing")
+    elif st == "slash":
+        if (t == 12 or t == 30) and hitdone < 2:
+            if face == 1:
+                p_overlap(x, x + 50, y + 4, y + 42)
+            else:
+                p_overlap(x - 50, x, y + 4, y + 42)
+            if ov == 1:
+                hit_player(2, 0, x)
+                if res == "deflect":
+                    integ = min(imax, integ + 2)
+                    int_t = 0
+                    st = "recoil"
+                    t = 0
+                    sfxq.append("clang")
+            hitdone += 1
+            if t == 12 and st == "slash":
+                sfxq.append("swing")
+        if t >= 42 and st == "slash":
+            to_recover(30)
+    elif st == "skull":
+        if t < 30:
+            ent_brk[slot] = 1
+        if t == 30:
+            pq_t.append("wave")
+            pq_x.append(x)
+            pq_y.append(y)
+            pq_vx.append(6.5)
+            pq_vy.append(0)
+            pq_t.append("wave")
+            pq_x.append(x)
+            pq_y.append(y)
+            pq_vx.append(-6.5)
+            pq_vy.append(0)
+            cfx("shockwave", x, y, 0)
+            sfxq.append("oni_slam")
+            shake = 10
+            shake_amp = 5
+        if t >= 50:
+            to_recover(36)
+    elif st == "jackpot":
+        if dx > 0:
+            face = 1
+        else:
+            face = -1
+        if t % 24 == 12:
+            throw_card(0, 5)
+        if t >= 150:
+            to_recover(40)
+    elif st == "recover":
+        if t >= rec_len:
+            st = "move"
+            t = 0
+            slot_state = "idle"
+            if x > 0:
+                tx = -140
+            else:
+                tx = 140
+            if rand(1, 3) == 1:
+                tx = 0 - tx
+    elif st == "recoil":
+        if t >= 22:
+            to_recover(30)
+    elif st == "stagger":
+        if t >= 20:
+            to_recover(20)
+    elif st == "broken":
+        if t >= 110:
+            st = "move"
+            t = 0
+            integ = 8
+            ent_stag[slot] = 0
+            tx = 0 - x
+    elif st == "stagger2":
+        if t >= 36:
+            to_recover(20)
+    int_t += 1
+    if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
+        integ -= 1
+    if x < -200:
+        x = -200
+    if x > 200:
+        x = 200
+    ent_x[slot] = x
+    ent_int[slot] = integ
+    boss_hp = ehp
+    boss_int = integ
+
+
+@proc
+def to_recover(n):
+    st = "recover"
+    t = 0
+    rec_len = n
+    slot_state = "idle"
+
+
+@proc
+def l_draw():
+    if st == "dead":
+        costume(join("death_", min(5, floor(fr))))
+    elif guard_t > 0:
+        costume(join("deflect_", min(2, floor((8 - guard_t) / 3))))
+    elif st == "wait" or st == "spin" or st == "jackpot":
+        costume(join("idle_", floor(fr) % 4))
+    elif st == "move" or st == "cherry":
+        costume(join("dash_", 1 + floor(fr) % 2))
+    elif st == "spade" or st == "seven":
+        costume(join("attack2_", min(3, floor(t / 4) % 4)))
+    elif st == "slash":
+        if t < 30:
+            costume(join("attack1_", min(3, floor(t / 4))))
+        else:
+            costume(join("attack3_", min(3, floor((t - 30) / 4))))
+    elif st == "skull":
+        costume(join("heavy_", min(5, floor(t / 6))))
+    elif st == "broken":
+        costume(join("overheat_", floor(t / 5) % 4))
+    elif st == "recover":
+        costume(join("block_0", ""))
+        if t > 6:
+            costume(join("idle_", floor(t / 5) % 4))
+    else:
+        costume(join("hurt_", floor(t / 5) % 2))
+    goto(x + shx, y + shy)
+    if face == 1:
+        point(90)
+    else:
+        point(-90)
+    tell = 0
+    if st == "slash" and ((t >= 3 and t <= 12) or (t >= 21 and t <= 30)):
+        tell = 1
+    if st == "skull" and t >= 21 and t <= 30:
+        tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
+        flash_t -= 1
+        effect("brightness", 60)
+    else:
+        effect("brightness", 0)
+    show()
+'''
+
+
+SWEEP = '''
+@on("t_world")
+def tick():
+    if is_clone == 1:
+        t += 1
+        if t < 75:
+            x += vx
+        else:
+            x -= vx
+        if t > 150 or ent_alive[boss_slot] != 1:
+            delete_clone()
+        if abs(px - x) < 12 and py < y + 90:
+            hit_player(2, 1, x - vx * 4)
+    else:
+        for qi in range(1, len(sl_q) + 1):
+            x = sl_q[qi]
+            y = -124
+            if x < 0:
+                vx = 2.6
+            else:
+                vx = -2.6
+            t = 0
+            is_clone = 1
+            clone()
+            is_clone = 0
+        sl_q.clear()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        costume(join("on_", floor(frame / 2) % 4))
+        goto(x + shx, y + shy)
+        size(100)
+        show()
+'''
+
+
+SLOT_MACHINE = spawner('slot', '''
+x = O_X[oi]
+y = O_Y[oi]
+is_clone = 1
+clone()
+is_clone = 0
+for k in range(1, 4):
+    reel_q.append(k)
+    clone("Reels")
+''') + '''
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        if slot_state == "spin":
+            costume(join("slot_", floor(frame / 2) % 2))
+        else:
+            costume(join("slot_", floor(frame / 12) % 2))
+        goto(x + shx, y + shy)
+        show()
+'''
+
+
+REELS = '''
+@clone
+def reel_start():
+    is_clone = 1
+    rk = reel_q[1]
+    reel_q.delete(1)
+
+
+@on("clear")
+def reel_clear():
+    if is_clone == 1:
+        delete_clone()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        if slot_state == "spin" and slot_t < 22 + 10 * rk:
+            costume(join("blur_", (floor(slot_t / 2) + rk) % 2))
+        elif slot_state == "idle":
+            costume("sym_seven")
+        else:
+            costume(join("sym_", slot_sym))
+        goto(-82 + 40 * rk + shx, 65 + shy)
+        show()
 '''
