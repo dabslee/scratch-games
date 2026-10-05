@@ -64,8 +64,6 @@ def pr_update():
     cell(x, y)
     if cc == "#" or cc == "B" or cc == "D":
         cfx("hit", x - vx, y - vy, 0)
-        if kind == "shuriken":
-            sfxq.append("clink")
         delete_clone()
     if owner == "e":
         if px + 7 > x - 4 and px - 7 < x + 4 and py + 36 > y - 4 and py < y + 4:
@@ -85,7 +83,7 @@ def pr_update():
                         ent_dmg[ei] = ent_dmg[ei] + 2
                     else:
                         ent_dmg[ei] = ent_dmg[ei] + 1
-                    ent_hk[ei] = "shuriken"
+                    ent_hk[ei] = "projectile"
                     if vx > 0:
                         ent_kb[ei] = 2
                     else:
@@ -97,9 +95,17 @@ def pr_update():
 
 @proc
 def pr_draw():
-    if kind == "shuriken":
-        costume(join("shuriken_", floor(t / 2) % 4))
-    elif kind == "wave":
+    # enemy shots flash white in the last 0.1 s (3 frames) before reaching Hotaru
+    tell = 0
+    if owner != "p" and vx != 0 and (px - x) * vx > 0:
+        eta = (abs(px - x) - 11) / abs(vx)
+        if eta > 0 and eta <= 3 and abs((py + 18) - y) < 40:
+            tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    else:
+        effect("brightness", 0)
+    if kind == "wave":
         costume(join("wave_", floor(t / 3) % 2))
     else:
         costume(join("bullet_", floor(t / 4) % 2))
@@ -140,7 +146,6 @@ def sync():
     heat = 0
     if has_gourd == 1:
         gourd = gmax
-    tool_n = tool_max
     dash_ch = 2
     dead_objs.clear()
     has_save = 1

@@ -51,8 +51,6 @@ def reset_run():
     gourd = 0
     gmax = 3
     has_gourd = 0
-    tool_n = 3
-    tool_max = 3
     dash_ch = 2
     shards = 0
     deaths = 0
@@ -75,7 +73,6 @@ def respawn_state():
     heat = 0
     if has_gourd == 1:
         gourd = gmax
-    tool_n = tool_max
     dash_ch = 2
     dead_objs.clear()
 
@@ -158,7 +155,6 @@ def read_input():
     kZ = key("space") or key("z") or key("k")
     kS = key("down arrow") or key("s") or key("l")
     kH = key("r")
-    kQ = key("q")
     kE = key("e")
     kN = key("enter")
     kP = key("p")
@@ -171,7 +167,6 @@ def read_input():
     pZ = 0
     pS = 0
     pH = 0
-    pQ = 0
     pE = 0
     p_pause = 0
     p_any = 0
@@ -192,8 +187,6 @@ def read_input():
         pS = 1
     if kH == 1 and oH == 0:
         pH = 1
-    if kQ == 1 and oQ == 0:
-        pQ = 1
     if kE == 1 and oE == 0:
         pE = 1
     if kP == 1 and oP == 0:
@@ -214,7 +207,6 @@ def read_input():
     oZ = kZ
     oS = kS
     oH = kH
-    oQ = kQ
     oE = kE
     oN = kN
     oP = kP
@@ -577,7 +569,7 @@ def ev_boss_gate():
         if first == 1:
             say("boss_gate")
             wait_until(mode == "play")
-        hint = "tool"
+        hint = "heavy"
 
 
 @on("ev_boss_start")
@@ -611,8 +603,8 @@ def ev_oni_dead():
     wait(3)
     banner = ""
     boss_on = 0
-    tool_max = 5
-    tool_n = 5
+    gmax = 4
+    gourd = gmax
     hint = "upgrade"
     sfxq.append("pickup")
     wait(2.5)

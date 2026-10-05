@@ -139,8 +139,8 @@ def target(name, stage=False):
 GLOBALS = '''
 mode menu frame ingame room chapter exL exR exU exD enter_dir want_room want_respawn
 px py pface pst pinv pparry pblock pdash p_ground p_onplat p_cmd hp heat gourd gmax has_gourd
-tool_n tool_max dash_ch hitstop shake shake_amp shx shy flash fade fade_to
-kL kR kU kD kA kZ kS kH kQ kE kN kP pU pD pL pR pA pZ pS pH pQ pE p_ok p_click p_pause p_any
+dash_ch hitstop shake shake_amp shx shy flash fade fade_to
+kL kR kU kD kA kZ kS kH kE kN kP pU pD pL pR pA pZ pS pH pE p_ok p_click p_pause p_any
 opt_wide opt_slow opt_heat opt_gourd opt_god opt_music opt_sfx opt_shake
 banner banner_t card hint prompt_on prompt_x prompt_y dlg_req dlg_on dlg_spk dlg_port dlg_txt dlg_nm dlg_name
 boss_on boss_hp boss_int boss_slot boss_phase boss_dead ambush_on mp_on mp_x mp_y lift_ride
@@ -239,7 +239,7 @@ set_list('DL_SPK', DL_SPK)
 set_list('DL_PORT', DL_PORT)
 set_list('DL_TEXT', DL_TEXT)
 set_list('DL_NAME', DL_NAME)
-set_list('HUD_ROLES', ['hp', 'dash', 'gourd', 'tool', 'tcount', 'heat', 'bplate', 'bbar', 'bint'])
+set_list('HUD_ROLES', ['hp', 'dash', 'gourd', 'heat', 'bplate', 'bbar', 'bint'])
 set_list('DLG_ROLES', ['box', 'port', 'name', 'text', 'arrow'])
 set_list('FONT_W', [REG.glyphs[c['name'][3:]].width for c in ST.costumes('Font')])
 
@@ -361,10 +361,6 @@ white = Image.new('RGBA', (120, 90), P['white'] + (255,))
 FADE_COSTUMES = [make_costume('black', black.resize((960, 720), Image.NEAREST), 480, 360, FILES)]
 FLASH_COSTUMES = [make_costume('white', white.resize((960, 720), Image.NEAREST), 480, 360, FILES)]
 
-tcount = []
-for i in range(6):
-    im = text_image(['x%d' % i], BOLD, P['white'], shadow=P['ink'])
-    tcount.append(costume_from(im, 'tcount_%d' % i, 0, 0))
 
 gourd_icon = ST.image_1x('HUD', 'gourd_1')
 bbox = gourd_icon.getbbox()
@@ -446,10 +442,8 @@ ATTACKS = {
     'attack4': (2, 2, 1, 9, 'finisher', 1, 'finisher'),
     'air_attack': (1, 1, 1, 3, 'air', 0, 'slash2'),
     'launcher': (1, 1, 1, 0, 'launcher', 0, 'launcher'),
-    'plunge': (1, 2, 1, 0, '', 0, 'plunge'),
     'heavy': (2, 3, 3, 10, 'heavy', 2, 'heavy'),
     'severance': (1, 0, 0, 0, '', 0, 'sever_draw'),
-    'throw': (1, 0, 0, 0, '', 0, 'throw'),
 }
 
 
@@ -529,7 +523,7 @@ sprite('Rain', copy_costumes('Rain'), visuals.RAIN)
 sprite('Flash', FLASH_COSTUMES, visuals.FLASH)
 eui = copy_costumes('HUD', names=['enemy_int_']) + copy_costumes('CombatFX', names=['breach_', 'severance_'])
 sprite('EnemyUI', eui, CL + visuals.ENEMY_UI)
-hud = copy_costumes('HUD') + tcount + copy_costumes('NamePlates', names=['boss_big_oni'])
+hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni'])
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])
 sprite('Hints', hint_cos, visuals.HINTS)

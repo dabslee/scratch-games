@@ -93,7 +93,7 @@ CONVERSATIONS = {
     'oni_dead': [
         ('kuro', 'kuro_smirk', "Ha! Severed. The Hannya Boys will be telling that story for years."),
         ('hotaru', 'hotaru_visor_up', "He had a Kanshi chip in his neck. Same as the drones."),
-        ('kuro', 'kuro_neutral', "Everything up here is Kanshi. Keep his shuriken pouch. You'll need it where we're going."),
+        ('kuro', 'kuro_neutral', "Everything up here is Kanshi. And everything up here bleeds. Keep climbing."),
         ('hotaru', 'hotaru_neutral', "Kuro. Whose memories are these? The fighting. The way my hands know where to go."),
         ('kuro', 'kuro_neutral', "Mine. I think. Ask me again at the top."),
         ('daicam', 'daicam_neutral', "...and CUT. Chat, did everybody clip that?! Ninja lady just took down Big Oni! We're trending!"),
@@ -116,7 +116,7 @@ CONVERSATIONS = {
 # Tutorial prompts: list of segments. ('k', costume) = key icon, ('t', text) = label.
 HINTS = {
     'move': [('k', 'key_left'), ('k', 'key_right'), ('t', 'Run'), ('g',), ('k', 'key_up'), ('t', 'Jump (hold to jump higher)')],
-    'jump': [('k', 'key_down'), ('t', '+'), ('k', 'key_up'), ('t', 'Drop through thin platforms')],
+    'jump': [('k', 'key_down'), ('t', '+'), ('k', 'key_space'), ('t', 'dash down through platforms')],
     'cling': [('t', 'Jump into a wall to cling to it'), ('n',), ('k', 'key_up'), ('t', 'while clinging: wall jump')],
     'attack': [('k', 'mouse_l'), ('t', '/'), ('k', 'key_x'), ('t', 'Attack'), ('n',), ('t', 'Keep pressing to chain a 4-hit combo')],
     'deflect': [('k', 'key_down'), ('t', 'Deflect right before a hit lands'), ('n',), ('t', 'Hold to block (blocking builds Heat)')],
@@ -126,9 +126,8 @@ HINTS = {
     'integrity': [('t', "Fill an enemy's INTEGRITY bar,"), ('n',), ('t', 'then'), ('k', 'mouse_l'), ('t', 'near the red reticle to SEVER')],
     'heavy': [('k', 'key_space'), ('t', 'then'), ('k', 'mouse_l'), ('t', 'Heavy Strike'), ('n',), ('t', 'Breaks guards. Big Integrity damage')],
     'breach': [('t', 'Red diamond = BREACH attack'), ('n',), ('t', "Can't block it:"), ('k', 'key_space'), ('t', 'Phase Step through')],
-    'launch': [('k', 'key_up'), ('t', '+'), ('k', 'mouse_l'), ('t', 'Launcher'), ('n',), ('k', 'key_down'), ('t', '+'), ('k', 'mouse_l'), ('t', 'in the air: Plunge')],
-    'tool': [('k', 'key_q'), ('t', 'Throw a shuriken (refills at Shrines)')],
-    'upgrade': [('t', 'SHURIKEN POUCH UPGRADED: 5 uses')],
+    'launch': [('k', 'key_up'), ('t', '+'), ('k', 'mouse_l'), ('t', 'Launcher: pops enemies into the air')],
+    'upgrade': [('t', 'NANO-GOURD UPGRADED: now holds 4 charges')],
 }
 
 OPTION_LABELS = {
@@ -166,14 +165,13 @@ CONTROLS = [
     ('b', 'CONTROLS'),
     ('c', 'Move', 'Arrows  or  A / D'),
     ('c', 'Jump (hold: higher)', 'Up  or  W'),
-    ('c', 'Drop through', 'Hold Down + Up'),
+    ('c', 'Through platforms', 'Phase Step up / down'),
     ('c', 'Attack (combo)', 'Click  or  X / J'),
-    ('c', 'Launcher / Plunge', 'Up / Down + attack'),
+    ('c', 'Launcher', 'Up + attack'),
     ('c', 'Phase Step (dash)', 'Space  or  Z / K'),
     ('c', 'Heavy Strike', 'Phase Step + attack'),
     ('c', 'Deflect / block', 'Down  or  S / L'),
     ('c', 'Heal', 'R'),
-    ('c', 'Shuriken', 'Q'),
     ('c', 'Talk / Shrine / next', 'E  or  Enter'),
     ('c', 'Pause', 'P'),
     ('n', "(Scratch can't read Shift or Esc)"),

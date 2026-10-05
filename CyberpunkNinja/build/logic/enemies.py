@@ -179,7 +179,12 @@ def d_draw():
         point(90)
     else:
         point(-90)
-    if flash_t > 0:
+    tell = 0
+    if st == "dive" and hitdone == 0 and sqrt((px - x) * (px - x) + (py + 18 - y) * (py + 18 - y)) < 52:
+        tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
         flash_t -= 1
         effect("brightness", 70)
     else:
@@ -290,7 +295,10 @@ def t_draw():
         point(90)
     else:
         point(-90)
-    if flash_t > 0:
+    tell = 0
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
         flash_t -= 1
         effect("brightness", 70)
     else:
@@ -437,7 +445,7 @@ def h_update():
                 else:
                     st = "hurt"
                     t = 0
-            elif st == "wind" and (hk == "heavy" or hk == "shuriken"):
+            elif st == "wind" and hk == "heavy":
                 hitrow = 0
                 st = "hurt"
                 t = 0
@@ -570,7 +578,12 @@ def h_draw():
         point(90)
     else:
         point(-90)
-    if flash_t > 0:
+    tell = 0
+    if (st == "wind" and t >= 21) or (st == "swing" and t == 0):
+        tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
         flash_t -= 1
         effect("brightness", 70)
     elif st != "dead":
@@ -851,7 +864,12 @@ def o_draw():
         point(90)
     else:
         point(-90)
-    if flash_t > 0:
+    tell = 0
+    if (st == "swing" and t >= 12 and t <= 14) or (st == "slam" and t >= 37 and t <= 39):
+        tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
         flash_t -= 1
         effect("brightness", 60)
     else:

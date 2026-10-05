@@ -125,7 +125,7 @@ def hud_init():
 @on("boot")
 def hud_boot():
     if is_clone == 0:
-        for k in range(1, 10):
+        for k in range(1, len(HUD_ROLES) + 1):
             role = HUD_ROLES[k]
             is_clone = 1
             clone()
@@ -165,14 +165,6 @@ def hud_draw():
             show()
         else:
             hide()
-    elif role == "tool":
-        costume("tool_shuriken")
-        goto(186, 174)
-        show()
-    elif role == "tcount":
-        costume(join("tcount_", tool_n))
-        goto(208, 124)
-        show()
     elif role == "heat":
         if pst == "overheat":
             if frame % 6 < 3:

@@ -192,13 +192,7 @@ def st_move():
             pface = dirx
     if jbuf > 0:
         if grounded == 1 or coyote > 0:
-            if kD == 1 and on_oneway == 1 and grounded == 1:
-                drop_t = 8
-                jbuf = 0
-                grounded = 0
-                py -= 2
-            else:
-                do_jump()
+            do_jump()
         else:
             near_wall()
             if nw != 0:
@@ -219,9 +213,6 @@ def st_move():
         return
     if pH == 1:
         try_heal()
-        return
-    if pQ == 1:
-        try_throw()
         return
     if grounded == 1:
         if land_t > 0:
@@ -353,6 +344,8 @@ def st_dash():
                 pvy = ddy * 7
             else:
                 pvy = 0
+            if ddy < 0:
+                drop_t = 3
             dash_end_buf = 5
 
 
@@ -367,9 +360,6 @@ def try_attack():
         start_heavy(0)
         return
     if grounded == 0:
-        if kD == 1:
-            start_atk("plunge")
-            return
         if kU == 1 and air_t < 8:
             start_atk("launcher")
             return
@@ -403,7 +393,6 @@ def start_atk(a):
     pt = 0
     hitdone = 0
     queued = 0
-    plunge_hit = 0
     lunge_on = 0
     anim_force(a)
     atk_info(a)
@@ -417,9 +406,6 @@ def start_atk(a):
         pvy = max(pvy, 8)
         grounded = 0
         onplat = 0
-    if a == "plunge":
-        pvy = 3
-        pvx = 0
     if a == "air_attack":
         if pvy < 0:
             pvy = 0
@@ -441,35 +427,11 @@ def st_atk():
             pvx = pface * 8
         else:
             pvx = pvx * 0.7
-    elif p_atk == "plunge":
-        if fr >= 1:
-            pvy = -14
-            pvx = 0
-            if pfr > 2.5:
-                pfr = 2.5
-            if plunge_hit == 0:
-                do_hit()
-                if nh > 0:
-                    plunge_hit = 1
-                    pvy = 11
-                    pst = "move"
-                    airatk = 0
-                    return
-            if grounded == 1:
-                shake = 4
-                shake_amp = 3
-                mfx("land_dust", px, py, pface)
-                sfxq.append("land")
-                pst = "move"
-                land_t = 6
-        return
     elif grounded == 1:
         pvx = pvx * 0.75
     if hitdone == 0 and fr >= atk_conn:
         hitdone = 1
-        if p_atk == "throw":
-            throw_star()
-        elif p_atk == "severance":
+        if p_atk == "severance":
             do_sever()
         else:
             do_hit()
@@ -519,11 +481,6 @@ def hb_box():
         hb = 40
         ay1 = py - 8
         ay2 = py + 50
-    elif p_atk == "plunge":
-        ha = -14
-        hb = 14
-        ay1 = py - 20
-        ay2 = py + 12
     if pface == 1:
         ax1 = px + ha
         ax2 = px + hb
@@ -597,16 +554,6 @@ def banner_flash(b):
 
 
 @proc
-def throw_star():
-    tool_n -= 1
-    pq_t.append("shuriken")
-    pq_x.append(px + pface * 14)
-    pq_y.append(py + 22)
-    pq_vx.append(pface * 13)
-    pq_vy.append(0)
-
-
-@proc
 def start_deflect():
     pst = "deflect"
     pt = 0
@@ -653,28 +600,17 @@ def st_block():
 
 @proc
 def guard_cancel():
-    # Deflect / block live on the Down key, so Down-based moves cancel out of them:
-    # Down+Up drops through thin platforms, Down+attack in the air plunges,
-    # Up jumps out of a block, and Phase Step (aimable downward) always cancels.
+    # Deflect / block live on the Down key: Phase Step (aimable, including
+    # down through thin platforms) cancels them, and Up jumps out of a block.
     if pZ == 1:
         pblock = 0
         pst = "move"
         try_dash()
         return
-    if pA == 1 and grounded == 0 and kD == 1:
-        pblock = 0
-        start_atk("plunge")
-        return
     if jbuf > 0 and (grounded == 1 or coyote > 0):
         pblock = 0
         pst = "move"
-        if kD == 1 and on_oneway == 1 and grounded == 1:
-            drop_t = 8
-            jbuf = 0
-            grounded = 0
-            py -= 2
-        else:
-            do_jump()
+        do_jump()
 
 
 @proc
@@ -702,14 +638,6 @@ def st_heal():
         sfxq.append("heal")
     if pfr >= a_n:
         pst = "move"
-
-
-@proc
-def try_throw():
-    if tool_n > 0:
-        start_atk("throw")
-    else:
-        sfxq.append("empty")
 
 
 @proc
@@ -1019,7 +947,7 @@ def foot(fx, oy):
     if cc == "#" or cc == "B" or cc == "D" or (cc == "L" and pdash == 0):
         blocked = 1
         land_top = max(land_top, ftop)
-    elif cc == "=" and drop_t == 0 and oy >= ftop - 0.01:
+    elif cc == "=" and drop_t == 0 and oy >= ftop - 0.01 and not (pst == "dash" and ddy < 0):
         blocked = 1
         land_top = max(land_top, ftop)
         on_oneway = 1

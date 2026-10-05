@@ -4,18 +4,19 @@
 Click the green flag, press any key at the title screen, and choose "New Game" (or pick a chapter from "Chapters"). Hotaru, a scrapped cyborg shinobi, wakes up in the Sump beneath the Kanshi Spire with a dead ninja's voice in her head. Fight your way up through the Prologue and Chapter 1: Neon Alley, and defeat the Hannya Boys' boss, Big Oni.
 
 CONTROLS:
-- Arrow keys or A / D to run. Up or W to jump (hold for a higher jump). Jump into a wall to cling to it, then jump again to wall jump. Hold Down and press Up to drop through thin platforms.
-- Left click (or X / J) to attack. Keep pressing to chain a 4-hit combo. Up + attack is a rising Launcher, and Down + attack in the air is a Plunge.
+- Arrow keys or A / D to run. Up or W to jump (hold for a higher jump). Jump into a wall to cling to it, then jump again to wall jump. Thin platforms can be jumped up through, or passed through with an upward or downward Phase Step.
+- Left click (or X / J) to attack. Keep pressing to chain a 4-hit combo. Up + attack is a rising Launcher.
 - Space (or Z / K) to Phase Step: an invincible dash that passes through lasers and attacks. Hold the arrow keys to aim it, including diagonals and downward. You have 2 charges, shown by the color of Hotaru's scarf and the pips under her health bar; they refill when you land or perfectly deflect.
 - Attack during or right after a Phase Step for a Heavy Strike, which breaks guards and deals big Integrity damage.
 - Down (or S / L) to deflect right before a hit lands. Hold it to block, but blocking builds Heat (the bar at the bottom). If Heat fills up, Hotaru overheats and is defenseless for a moment. Press Up to jump out of a block, or Space to dash out of it.
-- R to drink from the Nano-Gourd and heal. Q to throw a shuriken. E to talk and to rest at Shrine Terminals. E, Enter or Space advances dialogue. P to pause.
+- R to drink from the Nano-Gourd and heal. E to talk and to rest at Shrine Terminals. E, Enter or Space advances dialogue. P to pause.
 - Scratch can't detect the Shift or Esc keys, so Phase Step is on Space and Pause is on P.
 
 TIPS:
+- Enemies flash white just before an attack lands: that's the moment to deflect.
 - Deflects and Heavy Strikes fill an enemy's Integrity bar. When it's full, a red reticle appears: attack near it to perform a Severance. Regular enemies die instantly, and bosses lose a whole health segment.
 - A red diamond over an enemy means a Breach attack, which can't be blocked or deflected. Phase Step through it (or jump over Big Oni's shockwave).
-- Shrine Terminals (the hacked vending machines) heal you, refill your gourd and shuriken, and become your respawn point.
+- Shrine Terminals (the hacked vending machines) heal you, refill your gourd, and become your respawn point.
 - Two hidden Memory Shards unlock fragments of Kuro's past. One is up through the ceiling of the Gauntlet, and the other is behind a breakable ceiling in the Ambush room.
 - Options include Assist Mode toggles (wider deflect window, slower game speed, slower Heat buildup, infinite gourd, invincibility), music and sound volume, and screen shake.
 
