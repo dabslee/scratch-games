@@ -9,7 +9,7 @@ CONTROLS:
 - Space (or Z / K) to Phase Step: an invincible dash that passes through lasers and attacks. Hold the arrow keys to aim it, including diagonals and downward. You have 2 charges, shown by the color of Hotaru's scarf and the pips under her health bar; they refill when you land or perfectly deflect.
 - Attack during or right after a Phase Step for a Heavy Strike, which breaks guards and deals big Integrity damage.
 - Down (or S / L) to deflect right before a hit lands. Hold it to block, but blocking builds Heat (the bar at the bottom). If Heat fills up, Hotaru overheats and is defenseless for a moment. Press Up to jump out of a block, or Space to dash out of it.
-- R to drink from the Nano-Gourd and heal. Q to throw a shuriken. E (or Enter or Space) to talk, rest at Shrine Terminals, and advance dialogue. P to pause.
+- R to drink from the Nano-Gourd and heal. Q to throw a shuriken. E to talk and to rest at Shrine Terminals. E, Enter or Space advances dialogue. P to pause.
 - Scratch can't detect the Shift or Esc keys, so Phase Step is on Space and Pause is on P.
 
 TIPS:
