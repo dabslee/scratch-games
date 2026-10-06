@@ -1027,8 +1027,11 @@ def post():
     if grounded == 1 and onplat == 0 and on_oneway == 0 and pst == "move":
         cell(px - 6, py - 4)
         sa = cc
+        oa = letter(ccy * 30 + ccx + 1, R_GRID[room])
         cell(px + 6, py - 4)
-        if sa == "#" and cc == "#":
+        ob = letter(ccy * 30 + ccx + 1, R_GRID[room])
+        # phasing blocks come and go, so they never count as safe ground
+        if sa == "#" and cc == "#" and oa == "#" and ob == "#":
             cell(px - 22, py + 5)
             sb = cc
             cell(px + 22, py + 5)

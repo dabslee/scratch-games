@@ -509,7 +509,15 @@ def draw():
     live = 0
     if ingame == 1 and (mode == "play" or mode == "dlg" or mode == "trans" or mode == "dead" or menu == "pause"):
         live = 1
-    if live == 1 and chapter < 2:
+    if live == 1 and (flip == 1 or flip_warn == 1):
+        costume("possess")
+        goto(0, 0)
+        if flip == 1:
+            effect("ghost", 20)
+        else:
+            effect("ghost", 30 + (frame % 6 < 3) * 50)
+        show()
+    elif live == 1 and chapter < 2:
         costume(join("rain_", floor(frame / 3) % 4))
         goto(0, 0)
         effect("ghost", 15)
@@ -551,8 +559,12 @@ def draw():
             costume("vaults")
         elif chapter == 3:
             costume("server_gardens")
-        else:
+        elif chapter == 4:
             costume("rail")
+        elif chapter == 5:
+            costume("hollow")
+        else:
+            costume("academy")
         po = (0 - px * %s - frame * %s * moving) %% 480
         if is_clone == 1:
             goto(po - 480, 0)

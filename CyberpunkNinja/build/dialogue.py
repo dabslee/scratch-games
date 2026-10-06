@@ -302,6 +302,120 @@ CONVERSATIONS = {
         ('hotaru', 'hotaru_visor_up', "Tetsu? You knew Tetsu?"),
         ('kuro', 'kuro_neutral', "I think he was my best friend. I think he's been waiting a long time."),
     ],
+    'ch5': [
+        ('hotaru', 'hotaru_neutral', "Where... This is the Sump. No. It's purple. Everything's wrong."),
+        ('kuro', 'kuro_neutral', "You're in your head, Hotaru. In mine, really. These are my memories."),
+        ('kuro', 'kuro_neutral', "And since you're just a copy of me, I think it's time I took my body back."),
+        ('hotaru', 'hotaru_angry', "Kuro? Don't you dare."),
+    ],
+    'glitch': [
+        ('kuro', 'kuro_smirk', "Memories don't hold still. Those blocks flicker in and out. Watch the rhythm."),
+    ],
+    'sump_mem': [
+        ('hotaru', 'hotaru_neutral', "The scrapyard. But the scrap is new. This is from before it rusted."),
+        ('kuro', 'kuro_neutral', "I grew up down here. Long before Kanshi built the Spire on top of us."),
+    ],
+    'tetsu_mem': [
+        ('tetsu', 'tetsu_neutral', "Eat up, kid. Nobody climbs that tower on an empty stomach."),
+        ('kuro', 'kuro_neutral', "...Tetsu. With both arms. He lost one pulling me out of a Kanshi raid."),
+        ('hotaru', 'hotaru_visor_up', "You remember him. Really remember him."),
+        ('kuro', 'kuro_neutral', "Of course I do. That's what being real feels like. Not that you'd know."),
+    ],
+    'possess': [
+        ('kuro', 'kuro_smirk', "Let me drive for a bit. Left is right, right is left. You'll get used to it."),
+        ('hotaru', 'hotaru_angry', "Get out of my legs!"),
+    ],
+    'white_room': [
+        ('system', 'sys_boot', "ENGRAM CAPTURE // SUBJECT: KURO. Upload 34%. Subject resisting."),
+        ('kuro', 'kuro_neutral', "This is where they did it. The man in the mask held my head still."),
+        ('kuro', 'kuro_neutral', "Everything after this room is a copy. Mukuro. You. Me, even."),
+    ],
+    'daicam6': [
+        ('daicam', 'daicam_neutral', "H-hey chat... wait. Where's chat? Why is everything purple?"),
+        ('hotaru', 'hotaru_neutral', "You're not really here. You're just a memory. Mine."),
+        ('daicam', 'daicam_neutral', "Honored, honestly. Top five memories? Don't answer that. Bye!"),
+    ],
+    'kuro_gate': [
+        ('kuro', 'kuro_neutral', "Last floor. Nothing below it but me. Come on, then."),
+        ('kuro', 'kuro_smirk', "When I Phase Step at you, Phase Step back. If we cross, we clash."),
+    ],
+    'kuro_fight': [
+        ('kuro', 'kuro_neutral', "I know every move you have. I taught them to you."),
+        ('hotaru', 'hotaru_angry', "Then you know what comes next."),
+    ],
+    'kuro2': [
+        ('kuro', 'kuro_neutral', "Why won't you just let go? You were never supposed to be a person!"),
+        ('hotaru', 'hotaru_angry', "Too late. I already am one."),
+    ],
+    'kuro_dead': [
+        ('kuro', 'kuro_neutral', "...I'm tired, Hotaru. I've been dead for years and I didn't notice."),
+        ('kuro', 'kuro_neutral', "Without you I'm a file nobody opens. I need you more than you need me."),
+        ('hotaru', 'hotaru_visor_up', "Then stop trying to drive. Ride along. We'll climb together."),
+        ('kuro', 'kuro_smirk', "Together. ...Fine. But I'm still telling you when you're wrong."),
+        ('hotaru', 'hotaru_neutral', "I'd be worried if you stopped."),
+    ],
+    'shard6': [
+        ('kuro', 'kuro_neutral', "...A girl at the Academy, two rows over. Quick hands. She always beat me."),
+        ('kuro', 'kuro_neutral', "They called her Hotaru. Firefly. I think you got her name from me."),
+        ('hotaru', 'hotaru_neutral', "Where is she now?"),
+        ('kuro', 'kuro_neutral', "Somewhere in a server rack, probably. Like the rest of us."),
+    ],
+    'ch6': [
+        ('hotaru', 'hotaru_neutral', "We're out. Kuro? Are you there?"),
+        ('kuro', 'kuro_smirk', "Riding along. Like you said. Welcome to the Academy, partner."),
+        ('kuro', 'kuro_neutral', "Kanshi's ninja school. I trained here. So did Mukuro. Stay sharp."),
+    ],
+    'shell': [
+        ('hotaru', 'hotaru_neutral', "That one looks like... me. Gray, empty, but me."),
+        ('kuro', 'kuro_neutral', "Shinobi shells. Unfinished instances. They fight like you, so fight smarter."),
+        ('kuro', 'kuro_smirk', "They dash in and throw kunai. Deflect them back."),
+    ],
+    'holo': [
+        ('kuro', 'kuro_neutral', "Training holograms. Same trick as in your head. Watch them flicker."),
+    ],
+    'spar': [
+        ('kuro', 'kuro_neutral', "The sparring ring. Doors seal until someone stops moving."),
+    ],
+    'daicam7': [
+        ('daicam', 'daicam_neutral', "Hotaru! I enrolled! The uniform is free, and they don't check IDs!"),
+        ('hotaru', 'hotaru_angry', "DaiCam, this is a school for assassins."),
+        ('daicam', 'daicam_neutral', "And I'm acing the push-ups. Chat says I'm a natural. Go get 'em!"),
+    ],
+    'instances': [
+        ('system', 'sys_boot', "SHELL BATCH 7 // 412 units awaiting engram. Template: KURO."),
+        ('hotaru', 'hotaru_neutral', "Four hundred of me. Waiting for somebody to move in."),
+        ('kuro', 'kuro_neutral', "They're not you. They're empty. You're the one who woke up."),
+        ('unknown', 'mukuro_neutral', "Unit H-0. You will not leave this hall."),
+    ],
+    'muk2': [
+        ('mukuro', 'mukuro_neutral', "Recompiled. Patched. I have studied your file."),
+        ('kuro', 'kuro_neutral', "He's faster. Kunai, dives, shadows. But he's still me, underneath."),
+        ('kuro', 'kuro_neutral', "There's a loyalty protocol locked on his core. Break him, and you can cut it."),
+    ],
+    'muk2b': [
+        ('mukuro', 'mukuro_neutral', "Loyalty: Kanshi. Loyalty: Kanshi. Loyalty..."),
+        ('hotaru', 'hotaru_angry', "Listen to yourself! That isn't you talking!"),
+    ],
+    'muk2_choice': [
+        ('mukuro', 'mukuro_neutral', "...Finish it. A broken unit is scrap."),
+        ('kuro', 'kuro_neutral', "Your call, Hotaru. Strike him down, or reach in and cut the protocol."),
+    ],
+    'muk2_freed': [
+        ('mukuro', 'mukuro_neutral', "...The voice is gone. It is quiet. Why did you do that?"),
+        ('hotaru', 'hotaru_visor_up', "Because somebody did it for me. Go find out who you are."),
+        ('kuro', 'kuro_neutral', "Look after yourself, brother."),
+        ('mukuro', 'mukuro_neutral', "...I will remember this, H-0. Hotaru."),
+    ],
+    'muk2_destroyed': [
+        ('hotaru', 'hotaru_neutral', "It's over. He's gone."),
+        ('kuro', 'kuro_neutral', "He was a copy that couldn't say no. Maybe this was kinder."),
+        ('kuro', 'kuro_neutral', "The Tenshu is above us. The Daimyo is waiting."),
+    ],
+    'shard7': [
+        ('kuro', 'kuro_neutral', "...The night before the upload. Tetsu said we should run. I said no."),
+        ('kuro', 'kuro_neutral', "I said I wanted to see the top of the Spire, just once."),
+        ('hotaru', 'hotaru_visor_up', "Then let's go see it. For both of us."),
+    ],
 }
 
 # Tutorial prompts: list of segments. ('k', costume) = key icon, ('t', text) = label.
@@ -330,6 +444,12 @@ HINTS = {
     'wind': [('t', 'Headwind pushes you back.'), ('n',), ('k', 'key_space'), ('t', 'Phase Step across wide gaps')],
     'posts': [('t', 'Signal posts sweep the roof.'), ('n',), ('k', 'key_up'), ('t', 'Jump or'), ('k', 'key_space'), ('t', 'Phase Step through')],
     'raijin': [('t', 'Deflect shells back at the core.'), ('n',), ('t', 'Strike the core while it vents')],
+    'glitch': [('t', 'Glitch blocks phase in and out.'), ('n',), ('t', 'They flicker just before they vanish')],
+    'possess': [('t', 'When the screen turns purple,'), ('n',), ('k', 'key_left'), ('k', 'key_right'), ('t', 'are swapped')],
+    'clash': [('t', 'When Kuro dashes at you,'), ('n',), ('k', 'key_space'), ('t', 'Phase Step through him to Clash')],
+    'shell': [('t', 'Shells dash in and throw kunai.'), ('n',), ('k', 'key_down'), ('t', 'Deflect, then counter')],
+    'muk2': [('t', 'Jump his shockwaves.'), ('n',), ('t', 'His shadow strikes from behind you')],
+    'choice': [('k', 'mouse_l'), ('t', 'Destroy him'), ('g',), ('k', 'key_e'), ('t', 'Sever the protocol')],
 }
 
 OPTION_LABELS = {
@@ -361,12 +481,12 @@ CONTROLS = [
 ]
 
 END_PAGE = [
-    ('b', 'END OF CHAPTER 4'),
-    ('t', 'MONORAIL ASCENT'),
+    ('b', 'END OF CHAPTER 6'),
+    ('t', 'THE ACADEMY'),
 ]
 
 END_NEXT = [
     ('t', "Hotaru's climb continues in"),
-    ('t', 'Chapter 5: Hollow Floor.'),
+    ('t', 'Chapter 7: The Tenshu.'),
     ('t', 'Thanks for playing!'),
 ]

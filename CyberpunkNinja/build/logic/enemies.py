@@ -433,6 +433,8 @@ if not (oi in dead_objs):
     if chapter == 4:
         skin = "g_"
         pkind = "bolt"
+    elif chapter == 5:
+        skin = "m_"
     add_ent("hannya", x, y, 10, 38, 6, 8, 1)
     find_bounds()
     st = "idle"
@@ -1776,6 +1778,15 @@ if not (oi in dead_objs):
     hit_t = 0
     nh = 1
     flash_t = 0
+    elite = 0
+    skin = ""
+    if O_TYPE[oi] == "shell":
+        elite = 1
+        skin = "s_"
+        ehp = 8
+        imax = 7
+    elif chapter == 5:
+        skin = "m_"
     is_clone = 1
     clone()
     is_clone = 0
@@ -1925,7 +1936,15 @@ def w_update():
         w_face()
         if acd > 0:
             acd -= 1
-        if abs(dx) > 40:
+        if elite == 1 and acd == 0 and abs(dx) > 100 and abs(py - y) < 60:
+            t = 0
+            if rand(1, 2) == 1:
+                st = "dashin"
+                sfxq.append("dash")
+            else:
+                st = "throw"
+                sfxq.append("windup")
+        elif abs(dx) > 40:
             fr += 0.3
             x = min(max(x + face * 1.8, xmin), xmax)
         if abs(dx) < 56 and acd == 0 and abs(py - y) < 60 and pst != "dead":
@@ -1937,6 +1956,23 @@ def w_update():
         if st == "combo" and ((nh == 1 and t >= 22) or t >= 36):
             st = "recover"
             t = 0
+    elif st == "dashin":
+        x = min(max(x + face * 9, xmin), xmax)
+        if t % 2 == 0:
+            mfx("afterimage", x, y, face)
+        if t >= 10 or abs(dx) < 44:
+            w_combo(1)
+    elif st == "throw":
+        if t == 12:
+            pq_t.append("bolt")
+            pq_x.append(x + face * 14)
+            pq_y.append(y + 22)
+            pq_vx.append(face * 7)
+            pq_vy.append(0)
+            sfxq.append("throw")
+        if t >= 24:
+            st = "walk"
+            acd = rand(16, 36)
     elif st == "heavy":
         if t == 24:
             sfxq.append("swing")
@@ -1945,9 +1981,9 @@ def w_update():
             st = "recover"
             t = 0
     elif st == "recover":
-        if t >= 22:
+        if t >= 22 - 6 * elite:
             st = "walk"
-            acd = rand(12, 36)
+            acd = rand(12, 36) - 8 * elite
             hitrow = 0
     elif st == "recoil":
         if t >= 22:
@@ -1991,18 +2027,18 @@ def w_draw():
     if st == "dead":
         if fr >= 8:
             delete_clone()
-        costume(join("death_", min(5, floor(fr))))
+        costume(join(join(skin, "death_"), min(5, floor(fr))))
         if fr > 6:
             effect("ghost", (fr - 6) * 50)
     elif guard_t > 0:
-        costume(join("deflect_", min(2, floor((8 - guard_t) / 3))))
+        costume(join(join(skin, "deflect_"), min(2, floor((8 - guard_t) / 3))))
     elif st == "idle":
-        costume(join("idle_", floor(fr) % 4))
+        costume(join(join(skin, "idle_"), floor(fr) % 4))
     elif st == "walk":
         if abs(px - x) <= 60:
-            costume("block_0")
+            costume(join(skin, "block_0"))
         else:
-            costume(join("run_", floor(fr) % 8))
+            costume(join(join(skin, "run_"), floor(fr) % 8))
     elif st == "combo":
         if t < 23:
             hf = t - 16
@@ -2018,23 +2054,27 @@ def w_draw():
             costume(join(an, 2))
         else:
             costume(join(an, 3))
+    elif st == "dashin":
+        costume(join(join(skin, "dash_"), min(3, floor(t / 3))))
+    elif st == "throw":
+        costume(join(join(skin, "attack2_"), min(3, floor(t / 4))))
     elif st == "heavy":
         if t < 8:
-            costume("heavy_0")
+            costume(join(skin, "heavy_0"))
         elif t < 15:
-            costume("heavy_1")
+            costume(join(skin, "heavy_1"))
         elif t < 21:
-            costume("heavy_2")
+            costume(join(skin, "heavy_2"))
         elif t < 24:
-            costume("heavy_3")
+            costume(join(skin, "heavy_3"))
         else:
-            costume(join("heavy_", min(5, 4 + floor((t - 24) / 4))))
+            costume(join(join(skin, "heavy_"), min(5, 4 + floor((t - 24) / 4))))
     elif st == "stagger":
-        costume(join("overheat_", floor(t / 5) % 4))
+        costume(join(join(skin, "overheat_"), floor(t / 5) % 4))
     elif st == "recover":
-        costume(join("idle_", floor(t / 5) % 4))
+        costume(join(join(skin, "idle_"), floor(t / 5) % 4))
     else:
-        costume(join("hurt_", min(1, floor(t / 5))))
+        costume(join(join(skin, "hurt_"), min(1, floor(t / 5))))
     if st == "stagger":
         goto(x + shx + (frame % 4 < 2) * 2 - 1, y + z + shy)
     else:
@@ -2064,7 +2104,10 @@ def w_draw():
 # punishing the recoveries. Mashing into his guard earns a counter, and so
 # does staying greedy in an opening.
 MUKURO = spawner('mukuro', '''
-if muk_dead == 0:
+mk2 = 0
+if O_A[oi] == 2:
+    mk2 = 1
+if (mk2 == 0 and muk_dead == 0) or (mk2 == 1 and muk2_dead == 0):
     x = O_X[oi]
     y = O_Y[oi]
     myobj = oi
@@ -2088,8 +2131,16 @@ if muk_dead == 0:
     rec_len = 30
     boss_hp = 20
     boss_int = 0
+    fy = y
+    sh_x = 999
+    if mk2 == 1:
+        muk_exit = 0
     is_clone = 1
+    role = "body"
     clone()
+    if mk2 == 1:
+        role = "shadow"
+        clone()
     is_clone = 0
     ui_slot.append(slot)
     ui_role.append("mark")
@@ -2097,14 +2148,95 @@ if muk_dead == 0:
 ''') + '''
 @on("t_world")
 def tick():
-    if is_clone == 1:
+    if is_clone == 1 and role == "body":
         m_update()
 
 
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        m_draw()
+        if role == "shadow":
+            sh_draw()
+        else:
+            m_draw()
+
+
+@proc
+def m2_pick(roll):
+    # Mukuro II: new tricks on top of his old strings
+    if phase == 1:
+        if roll <= 32:
+            set_combo("c3")
+        elif roll <= 52:
+            set_combo("c2h")
+        elif roll <= 76:
+            set_combo("kunai")
+        else:
+            set_combo("dive")
+    else:
+        if roll <= 18:
+            set_combo("c4")
+        elif roll <= 34:
+            set_combo("delay")
+        elif roll <= 52:
+            set_combo("kunai")
+        elif roll <= 72:
+            set_combo("dive")
+        else:
+            set_combo("shadow")
+
+
+@proc
+def m_kunai():
+    mx = x + face * 14
+    my = y + 24
+    ax = px - mx
+    ay = py + 18 - my
+    base = atan(ay / (abs(ax) + 0.01))
+    for k in range(3):
+        ang = base + (k - 1) * 12
+        pq_t.append("bolt")
+        pq_x.append(mx)
+        pq_y.append(my)
+        pq_vx.append(face * cos(ang) * 7)
+        pq_vy.append(sin(ang) * 7)
+    sfxq.append("throw")
+
+
+@proc
+def m_rec(n):
+    st = "recover"
+    t = 0
+    rec_len = n
+    hitrow = 0
+    sh_x = 999
+
+
+@proc
+def sh_draw():
+    if sh_x < 900:
+        hf = sh_t - 18
+        if hf < -6:
+            costume("attack1_0")
+        elif hf < 0:
+            costume("attack1_1")
+        elif hf < 3:
+            costume("attack1_2")
+        else:
+            costume("attack1_3")
+        effect("ghost", 40)
+        if sh_t >= 9 and sh_t <= 18:
+            effect("brightness", 100)
+        else:
+            effect("brightness", -40)
+        if sh_f == 1:
+            point(90)
+        else:
+            point(-90)
+        goto(sh_x + shx, fy + shy)
+        show()
+    else:
+        hide()
 
 
 @proc
@@ -2162,6 +2294,19 @@ def set_combo(kind):
     m_face()
     if kind != "lunge":
         sfxq.append("windup")
+    if kind == "kunai" or kind == "dive" or kind == "shadow":
+        st = kind
+        if kind == "dive":
+            sfxq.append("breach")
+        if kind == "shadow":
+            if x < px:
+                sh_x = min(px + 46, 215)
+                sh_f = -1
+            else:
+                sh_x = max(px - 46, -215)
+                sh_f = 1
+            sh_t = 0
+            sfxq.append("muk_warp")
 
 
 @proc
@@ -2223,6 +2368,26 @@ def m_strike():
 
 @proc
 def m_beaten():
+    if mk2 == 1 and st != "kneel":
+        # the last segment: Hotaru chooses to destroy him or free him
+        st = "kneel"
+        t = 0
+        ehp = 0
+        integ = 0
+        sh_x = 999
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+        ent_sev[slot] = 0
+        ent_stag[slot] = 0
+        ent_brk[slot] = 0
+        boss_hp = 0
+        boss_int = 0
+        sfxq.append("stagger")
+        shake = 12
+        shake_amp = 4
+        hitstop = 10
+        broadcast("ev_muk2_choice")
+        return
     st = "beaten"
     t = 0
     ehp = 0
@@ -2235,7 +2400,8 @@ def m_beaten():
     shake = 16
     shake_amp = 5
     hitstop = 12
-    broadcast("ev_muk_dead")
+    if mk2 == 0:
+        broadcast("ev_muk_dead")
 
 
 @proc
@@ -2248,6 +2414,36 @@ def m_open():
 @proc
 def m_update():
     t += 1
+    if st == "kneel":
+        ent_x[slot] = x
+        if ent_dmg[slot] > 0 and t < 20:
+            ent_dmg[slot] = 0
+            ent_idmg[slot] = 0
+        elif ent_dmg[slot] > 0 and mode == "play":
+            ent_dmg[slot] = 0
+            ent_idmg[slot] = 0
+            muk_freed = 0
+            st = "dead"
+            t = 0
+            ent_alive[slot] = 0
+            sfxq.append("oni_die")
+            shake = 12
+            shake_amp = 5
+            broadcast("ev_muk2_dead")
+        elif abs(px - x) < 54 and p_ground == 1 and mode == "play":
+            prompt_on = 1
+            prompt_x = x
+            prompt_y = y + 84
+            if pE == 1:
+                muk_freed = 1
+                st = "beaten"
+                t = 0
+                ent_alive[slot] = 0
+                sfxq.append("sync")
+                broadcast("ev_muk2_dead")
+        return
+    if st == "dead":
+        return
     if st == "beaten":
         if muk_exit == 1:
             st = "exit"
@@ -2330,13 +2526,18 @@ def m_update():
             acd -= 1
         ad = abs(dx)
         if ad > 150 and acd == 0:
-            set_combo("lunge")
+            if mk2 == 1 and rand(1, 2) == 1:
+                set_combo("kunai")
+            else:
+                set_combo("lunge")
         elif ad > 62:
             fr += 0.4
             x += face * (2 + 2 * (ad > 120))
         elif acd == 0 and pst != "dead":
             roll = rand(1, 100)
-            if phase == 1:
+            if mk2 == 1:
+                m2_pick(roll)
+            elif phase == 1:
                 if roll <= 58:
                     set_combo("c3")
                 else:
@@ -2373,6 +2574,57 @@ def m_update():
                 ent_brk[slot] = 1
             if t == ht:
                 m_strike()
+    elif st == "kunai":
+        if t == 14 or (phase == 2 and t == 30):
+            m_kunai()
+        if t >= 40 + 16 * (phase - 1):
+            m_rec(22 - 6 * (phase - 1))
+    elif st == "dive":
+        if t < 16:
+            y += 10 - t * 0.5
+        elif t < 36:
+            x += min(8, max(-8, px - x))
+            ent_brk[slot] = 1
+        else:
+            y -= 18
+            if y <= fy:
+                y = fy
+                sfxq.append("oni_slam")
+                cfx("shockwave", x, y, 0)
+                shake = 10
+                shake_amp = 5
+                for k in range(2):
+                    pq_t.append("wave")
+                    pq_x.append(x)
+                    pq_y.append(y)
+                    pq_vx.append(6 - 12 * k)
+                    pq_vy.append(0)
+                if abs(px - x) < 30 and py < y + 40:
+                    hit_player(3, 1, x)
+                m_rec(34)
+    elif st == "shadow":
+        sh_t = t
+        if t == 18:
+            sfxq.append("muk_slash")
+            if sh_f == 1:
+                p_overlap(sh_x - 6, sh_x + 48, y + 2, y + 40)
+            else:
+                p_overlap(sh_x - 48, sh_x + 6, y + 2, y + 40)
+            if ov == 1:
+                hit_player(2, 0, sh_x)
+                if res == "deflect":
+                    integ = min(imax, integ + 2)
+                    int_t = 0
+        elif t == 21:
+            m_face()
+        elif t == 30:
+            kk = "attack2"
+            bb = 0
+            ci = 1
+            n = 1
+            m_strike()
+        if t >= 40 and st == "shadow":
+            m_rec(22 - 6 * (phase - 1))
     elif st == "recover":
         if t >= rec_len:
             st = "move"
@@ -2380,7 +2632,7 @@ def m_update():
             hitrow = 0
             acd = rand(10, 30) - 8 * (phase - 1)
     elif st == "recoil":
-        if t >= 26:
+        if t >= 26 - 10 * mk2:
             st = "recover"
             t = 0
             rec_len = 10
@@ -2400,12 +2652,13 @@ def m_update():
                 x = min(max(x - face * 30, -205), 205)
     int_t += 1
     if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
-        integ -= 1
+        integ = max(0, integ - 1)
     hit_t += 1
     if hit_t > 40:
         guard_n = 0
     x = min(max(x, -205), 205)
     ent_x[slot] = x
+    ent_y[slot] = y
     ent_int[slot] = integ
     boss_hp = ehp
     boss_int = integ
@@ -2457,6 +2710,33 @@ def m_draw():
                 costume(join(kk, "_2"))
             else:
                 costume(join(kk, "_3"))
+    elif st == "kunai":
+        kt = t % 16
+        costume(join("attack2_", min(3, floor(kt / 4))))
+    elif st == "dive":
+        if t < 16:
+            costume(join("jump_", min(4, floor(t / 4))))
+        elif t < 36:
+            costume("jump_4")
+        else:
+            costume("heavy_4")
+    elif st == "shadow":
+        if t < 21:
+            costume("block_0")
+        else:
+            hf = t - 30
+            if hf < -6:
+                costume("attack2_0")
+            elif hf < 0:
+                costume("attack2_1")
+            elif hf < 3:
+                costume("attack2_2")
+            else:
+                costume("attack2_3")
+    elif st == "kneel":
+        costume(join("overheat_", floor(t / 6) % 4))
+    elif st == "dead":
+        costume(join("death_", min(5, floor(t / 5))))
     elif st == "broken":
         costume(join("overheat_", floor(t / 5) % 4))
     elif st == "recover":
@@ -2475,6 +2755,10 @@ def m_draw():
     if st == "combo":
         if t >= ht - 9 and t <= ht and ci > 0:
             tell = 1
+    if st == "kunai" and (t % 16) >= 5 and (t % 16) <= 14 and t < 32:
+        tell = 1
+    if st == "shadow" and t >= 21 and t <= 30:
+        tell = 1
     if tell == 1:
         effect("brightness", 100)
     elif flash_t > 0:
@@ -2914,4 +3198,471 @@ def draw():
             show()
         else:
             hide()
+'''
+
+WARDEN = WARDEN.replace('if O_TYPE[oi] == "warden":', 'if O_TYPE[oi] == "warden" or O_TYPE[oi] == "shell":')
+
+
+# Kuro, fought inside Hotaru's head. He mirrors her: her own 4-hit string,
+# blink strikes from behind, and a Breach Phase Cut that she can answer
+# with a Phase Step of her own (a Clash). In phase 2 he takes her controls
+# and sends echoes of himself rushing along the floor.
+KUROBOSS = spawner('kuro', '''
+if kuro_dead == 0:
+    x = O_X[oi]
+    y = O_Y[oi]
+    myobj = oi
+    add_ent("kuro", x, y, 10, 38, 20, 16, 1)
+    boss_slot = slot
+    st = "wait"
+    t = 0
+    ehp = 20
+    imax = 16
+    integ = 0
+    int_t = 0
+    fr = 0
+    face = -1
+    phase = 1
+    flash_t = 0
+    guard_t = 0
+    guard_n = 0
+    hit_t = 0
+    acd = 30
+    vis = 1
+    last = 0
+    flip_t = 0
+    ke1 = 999
+    ke2 = 999
+    boss_hp = 20
+    boss_int = 0
+    is_clone = 1
+    role = "body"
+    clone()
+    role = "echo1"
+    clone()
+    role = "echo2"
+    clone()
+    is_clone = 0
+    ui_slot.append(slot)
+    ui_role.append("mark")
+    clone("EnemyUI")
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1 and role == "body":
+        kr_update()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        kr_draw()
+
+
+@proc
+def kr_face():
+    if px > x:
+        face = 1
+    else:
+        face = -1
+
+
+@proc
+def kr_go(kind):
+    st = kind
+    t = 0
+    hitdone = 0
+    nb = 0
+    kr_face()
+    if kind == "combo":
+        sfxq.append("windup")
+    elif kind == "cut":
+        sfxq.append("breach")
+    elif kind == "blink":
+        sfxq.append("dash")
+        mfx("afterimage", x, y, face)
+    elif kind == "possess":
+        sfxq.append("kuro")
+        flip = 1
+        flip_t = 150
+        st = "combo"
+    elif kind == "echo":
+        ke1 = -228
+        ke2 = 228
+        e1hit = 0
+        e2hit = 0
+        sfxq.append("kuro")
+
+
+@proc
+def kr_strike(reach, dmg, last_hit):
+    if face == 1:
+        p_overlap(x - 6, x + reach, y + 2, y + 40)
+    else:
+        p_overlap(x - reach, x + 6, y + 2, y + 40)
+    sfxq.append("muk_slash")
+    if ov == 1:
+        hit_player(dmg, 0, x)
+        if res == "deflect":
+            integ = min(imax, integ + 2)
+            int_t = 0
+            x = min(max(x - face * 4, -205), 205)
+            if last_hit == 1:
+                st = "recoil"
+                t = 0
+
+
+@proc
+def kr_open():
+    ko = 0
+    if st == "recover" or st == "recoil" or st == "clashed" or st == "broken":
+        ko = 1
+
+
+@proc
+def kr_update():
+    t += 1
+    if flip_t > 0:
+        flip_t -= 1
+        if flip_t == 0:
+            flip = 0
+    if st == "beaten":
+        return
+    if st == "wait":
+        fr += 0.2
+        if boss_on == 1:
+            st = "move"
+            t = 0
+            acd = 40
+        return
+    # echoes rush along the floor (Breach: jump them or Phase Step through)
+    if ke1 < 900:
+        if st != "echo" or t >= 30:
+            ke1 += 15
+        if e1hit == 0 and abs(ke1 - px) < 14 and py < y + 30 and (st != "echo" or t >= 30):
+            e1hit = 1
+            hit_player(2, 1, ke1 - 20)
+        if ke1 > 270:
+            ke1 = 999
+    if ke2 < 900:
+        if st != "echo" or t >= 50:
+            ke2 -= 15
+        if e2hit == 0 and abs(ke2 - px) < 14 and py < y + 30 and (st != "echo" or t >= 50):
+            e2hit = 1
+            hit_player(2, 1, ke2 + 20)
+        if ke2 < -270:
+            ke2 = 999
+    if ent_sev[slot] == 1:
+        ent_sev[slot] = 0
+        seg = ceil(ehp / 5)
+        ehp = (seg - 1) * 5
+        integ = 0
+        ent_stag[slot] = 0
+        st = "stagger2"
+        t = 0
+        vis = 1
+        flash_t = 6
+        sfxq.append("oni_hurt")
+        if ehp <= 0:
+            kr_beaten()
+            return
+    if ent_dmg[slot] > 0:
+        kr_open()
+        if ko == 1:
+            ehp -= ent_dmg[slot]
+            flash_t = 3
+            sfxq.append("thug_hurt")
+            if st != "broken":
+                integ = min(imax, integ + ent_idmg[slot])
+        elif vis == 1:
+            sfxq.append("muk_guard")
+            cfx("deflect", x + face * 12, y + 26, 0 - face)
+            if ent_hk[slot] == "heavy":
+                integ = min(imax, integ + ent_idmg[slot] * 0.5)
+            if st == "move":
+                guard_t = 8
+                kr_face()
+                guard_n += 1
+                hit_t = 0
+                if guard_n >= 4:
+                    guard_n = 0
+                    kr_go("blink")
+        int_t = 0
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+        if ehp <= 0:
+            kr_beaten()
+            return
+    if ehp <= 10 and phase == 1:
+        phase = 2
+        broadcast("ev_kuro_phase2")
+    if integ >= imax and st != "broken" and st != "stagger2":
+        st = "broken"
+        t = 0
+        vis = 1
+        integ = imax
+        ent_stag[slot] = 1
+        flip = 0
+        flip_t = 0
+        sfxq.append("stagger")
+    if guard_t > 0:
+        guard_t -= 1
+    dx = px - x
+    ent_brk[slot] = 0
+    if st == "move":
+        kr_face()
+        if acd > 0:
+            acd -= 1
+        ad = abs(dx)
+        if acd == 0 and pst != "dead":
+            roll = rand(1, 3 + 2 * (phase - 1))
+            if roll == last:
+                roll = roll % (3 + 2 * (phase - 1)) + 1
+            if roll == 1 and ad > 70:
+                roll = 2
+            if roll == 4 and flip == 1:
+                roll = 2
+            last = roll
+            if roll == 1:
+                kr_go("combo")
+            elif roll == 2:
+                kr_go("blink")
+            elif roll == 3:
+                kr_go("cut")
+            elif roll == 4:
+                kr_go("possess")
+            else:
+                kr_go("echo")
+        elif ad > 64:
+            fr += 0.45
+            x += face * 3.5
+        elif ad < 34:
+            x -= face * 1.5
+    elif st == "combo":
+        # her own string: slash, slash, thrust, heavy
+        if t <= 16:
+            ht = 12
+            kk = "attack1"
+        elif t <= 28:
+            ht = 24
+            kk = "attack2"
+        elif t <= 40:
+            ht = 36
+            kk = "attack3"
+        else:
+            ht = 56
+            kk = "heavy"
+        if t == ht - 10:
+            kr_face()
+        if t >= ht - 8 and t < ht and abs(dx) > 40:
+            x += face * 3
+        if t == 12 or t == 24:
+            kr_strike(50, 2, 0)
+        elif t == 36:
+            kr_strike(64, 2, 0)
+        elif t == 56:
+            kr_strike(58, 3, 1)
+        if t >= 64 and st == "combo":
+            kr_recover()
+    elif st == "blink":
+        if t < 14:
+            vis = 0
+        elif t == 14:
+            vis = 1
+            x = min(max(px - pface * 44, -205), 205)
+            kr_face()
+            sfxq.append("dash")
+            mfx("afterimage", x, y, face)
+        elif t == 26:
+            kr_strike(50, 2, 1)
+        if t >= 34 and st == "blink":
+            if phase == 2 and nb == 0:
+                nb = 1
+                t = 0
+                mfx("afterimage", x, y, face)
+            else:
+                kr_recover()
+    elif st == "cut":
+        if t < 30:
+            ent_brk[slot] = 1
+            kr_face()
+            prel = px - x
+        else:
+            x += face * 16
+            mfx("afterimage", x, y, face)
+            rel = px - x
+            if hitdone == 0 and rel * prel <= 0 and abs(py - y) < 40:
+                hitdone = 1
+                if pdash == 1:
+                    # Clash: both Phase Step through each other
+                    st = "clashed"
+                    t = 0
+                    integ = min(imax, integ + 6)
+                    int_t = 0
+                    sfxq.append("deflect")
+                    sfxq.append("stagger")
+                    cfx("deflect", (x + px) / 2, y + 20, 0)
+                    hitstop = 8
+                    shake = 10
+                    shake_amp = 4
+                else:
+                    hit_player(3, 1, x - face * 10)
+            prel = rel
+            if (x <= -205 or x >= 205) and st == "cut":
+                x = min(max(x, -205), 205)
+                kr_recover()
+    elif st == "echo":
+        if t >= 100:
+            kr_recover()
+    elif st == "recover":
+        if t >= rec_len:
+            st = "move"
+            t = 0
+            acd = rand(10, 25) - 6 * (phase - 1)
+    elif st == "recoil":
+        if t >= 24:
+            st = "recover"
+            t = 0
+            rec_len = 8
+    elif st == "clashed":
+        if t >= 60:
+            st = "move"
+            t = 0
+            acd = 10
+    elif st == "broken":
+        if t >= 110:
+            st = "move"
+            t = 0
+            integ = 8
+            ent_stag[slot] = 0
+            acd = 6
+    elif st == "stagger2":
+        if t >= 36:
+            st = "move"
+            t = 0
+            acd = 16
+    int_t += 1
+    if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
+        integ = max(0, integ - 1)
+    hit_t += 1
+    if hit_t > 40:
+        guard_n = 0
+    x = min(max(x, -205), 205)
+    ent_x[slot] = x
+    ent_int[slot] = integ
+    boss_hp = ehp
+    boss_int = integ
+
+
+@proc
+def kr_recover():
+    st = "recover"
+    t = 0
+    vis = 1
+    rec_len = 28 - 6 * (phase - 1)
+
+
+@proc
+def kr_beaten():
+    st = "beaten"
+    t = 0
+    vis = 1
+    ehp = 0
+    flip = 0
+    flip_t = 0
+    ke1 = 999
+    ke2 = 999
+    ent_alive[slot] = 0
+    ent_stag[slot] = 0
+    ent_brk[slot] = 0
+    boss_hp = 0
+    boss_int = 0
+    sfxq.append("stagger")
+    shake = 16
+    shake_amp = 5
+    hitstop = 12
+    broadcast("ev_kuro_dead")
+
+
+@proc
+def kr_draw():
+    effect("ghost", 0)
+    effect("brightness", 0)
+    if role == "echo1" or role == "echo2":
+        if role == "echo1":
+            ex = ke1
+            point(90)
+        else:
+            ex = ke2
+            point(-90)
+        if ex < 900:
+            costume(join("dash_", 1 + floor(frame / 2) % 2))
+            effect("ghost", 45)
+            if st == "echo" and ((role == "echo1" and t < 30) or (role == "echo2" and t < 50)) and frame % 6 < 3:
+                effect("brightness", 100)
+            goto(ex + shx, y + shy)
+            show()
+        else:
+            hide()
+        return
+    if vis == 0:
+        hide()
+        return
+    if st == "beaten":
+        costume(join("overheat_", floor(t / 6) % 4))
+    elif guard_t > 0:
+        costume(join("deflect_", min(2, floor((8 - guard_t) / 3))))
+    elif st == "wait":
+        costume(join("idle_", floor(fr) % 4))
+    elif st == "move":
+        if abs(px - x) > 64:
+            costume(join("run_", floor(fr) % 8))
+        else:
+            costume("block_0")
+    elif st == "combo" or st == "blink":
+        if st == "blink":
+            ht = 26
+            kk = "attack2"
+        hf = t - ht
+        if kk == "heavy":
+            costume(join("heavy_", max(0, min(5, 3 + floor(hf / 4)))))
+        elif hf < -6:
+            costume(join(kk, "_0"))
+        elif hf < 0:
+            costume(join(kk, "_1"))
+        elif hf < 3:
+            costume(join(kk, "_2"))
+        else:
+            costume(join(kk, "_3"))
+    elif st == "cut":
+        if t < 30:
+            costume("dash_0")
+        else:
+            costume(join("dash_", 1 + floor(t / 2) % 3))
+    elif st == "echo":
+        costume("block_0")
+    elif st == "broken" or st == "clashed":
+        costume(join("overheat_", floor(t / 5) % 4))
+    elif st == "recover":
+        costume(join("idle_", floor(t / 5) % 4))
+    else:
+        costume(join("hurt_", floor(t / 5) % 2))
+    if st == "broken" or st == "clashed":
+        goto(x + shx + (frame % 4 < 2) * 2 - 1, y + shy)
+    else:
+        goto(x + shx, y + shy)
+    if face == 1:
+        point(90)
+    else:
+        point(-90)
+    tell = 0
+    if (st == "combo" or st == "blink") and t >= ht - 9 and t <= ht:
+        tell = 1
+    if tell == 1:
+        effect("brightness", 100)
+    elif flash_t > 0:
+        flash_t -= 1
+        effect("brightness", 60)
+    if st == "beaten" or vis == 1:
+        show()
 '''

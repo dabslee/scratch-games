@@ -723,6 +723,119 @@ def wind_loop():
     return loopify(x, d), d
 
 
+# ---------------------------------------------------------------------- hollow floor
+def song_hollow():
+    """Chapter 5: the title theme remembered wrong: slow, detuned, half-erased."""
+    s = Song(72, 8)
+    prog = [('A3', 'add9'), ('F3', 'M7'), ('D3', 'm7'), ('E3', 'sus4'),
+            ('A3', 'add9'), ('F3', 'M7'), ('G3', 'M'), ('E3', '7')]
+    bl = s.beat * 4
+    for i, (r, k) in enumerate(prog):
+        s.add(pad([m - 12 for m in chord(r, k)], bl + 1.0, 900, 0.5, 1.0, 1.0), i)
+        s.add(pad([m + 0.3 for m in chord(r, k)], bl + 1.0, 700, 0.18, 1.2, 1.0), i)
+        if i % 2 == 0:
+            s.add(lp(noise(0.5), 300) * expenv(0.5, 0.3) * 0.4, i, 0)
+        for j in range(4):
+            if (i + j) % 3 == 0:
+                s.add(glitch(0.06, 0.12), i, j + 0.75)
+    mel = [('A4', 0, 1.5), ('C5', 1.5, 0.5), ('B4', 2, 1), ('A4', 3, 1),
+           ('E5', 4, 1.5), ('F5', 5.5, 0.5), ('E5', 6, 2),
+           ('D5', 8, 1.5), ('C5', 9.5, 0.5), ('A4', 10, 2)]
+    for rep, sh in ((0, 0), (4, -12)):
+        for nm, b, d in mel:
+            s.add(koto(n2m(nm) + sh - 0.2, d * s.beat + 1.2, 0.3), rep, b)
+    return s.render((2.8, 0.4, 2200)), s.length
+
+
+def song_kuro(drums=False):
+    """Kuro: the title melody turned against her, fast and furious."""
+    s = Song(156, 8)
+    prog = [('A2', 'm'), ('F2', 'M'), ('D3', 'm'), ('E3', 'M'),
+            ('A2', 'm'), ('F2', 'M'), ('G2', 'M'), ('E2', '7')]
+    if drums:
+        for i in range(8):
+            for j in range(8):
+                acc = j in (0, 3, 6)
+                s.add(taiko(0.8 if acc else 0.3, 1.0 if acc else 1.3), i, j * 0.5)
+            s.add(glitch(0.08, 0.3), i, 3.5)
+        return s.render((0.8, 0.12, 2400)), s.length
+    k, sn, h = kick(1.0), snare(0.55), hat(False, 0.2)
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        root = n2m(r)
+        for j in range(8):
+            s.add(bass(root - 12 + (12 if j % 2 else 0), s.beat * 0.4, 0.55, 1100), i, j * 0.5)
+        for j in range(4):
+            s.add(k, i, j)
+            if j % 2:
+                s.add(sn, i, j)
+            s.add(h, i, j + 0.5)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl, 2400, 0.26, 0.05, 0.2), i)
+    mel = [('A5', 0, 1), ('C6', 1, 0.5), ('B5', 1.5, 0.5), ('A5', 2, 1), ('E6', 3, 1),
+           ('F6', 4, 1), ('E6', 5, 1), ('C6', 6, 1), ('B5', 7, 1)]
+    for rep in (0, 2, 4, 6):
+        for nm, b, d in mel:
+            s.add(lead(n2m(nm) - 12, d * s.beat, 0.22), rep, b)
+    return s.render((1.0, 0.16, 4000)), s.length
+
+
+# ---------------------------------------------------------------------- academy
+def song_academy():
+    """Chapter 6: disciplined taiko drills under a cold koto line."""
+    s = Song(104, 12)
+    prog = [('D3', 'm'), ('D3', 'm'), ('A#2', 'M'), ('A2', 'm'),
+            ('G2', 'm'), ('A#2', 'M'), ('C3', 'M'), ('A2', '7')]
+    bl = s.beat * 4
+    for i in range(12):
+        r, kd = prog[i % 8]
+        s.add(pad([m + 12 for m in chord(r, kd)], bl + 0.3, 1300, 0.3, 0.3, 0.5), i)
+        s.add(bass(n2m(r) - 12, s.beat * 1.8, 0.5, 600, pluck=False), i, 0)
+        s.add(bass(n2m(r) - 12, s.beat * 1.8, 0.4, 600, pluck=False), i, 2)
+        for j in (0, 1.5, 2, 3):
+            s.add(taiko(0.55 if j == 0 else 0.3, 1.0 if j == 0 else 1.2), i, j)
+        s.add(ka(0.25), i, 3.5)
+        s.add(hat(False, 0.1), i, 1)
+        s.add(hat(False, 0.1), i, 3)
+    line = [('D5', 0, 1), ('F5', 1, 0.5), ('G5', 1.5, 0.5), ('A5', 2, 2),
+            ('C6', 4, 1), ('A5', 5, 1), ('G5', 6, 1), ('F5', 7, 1)]
+    for rep in (2, 6, 10):
+        for nm, b, d in line:
+            s.add(koto(n2m(nm), d * s.beat + 0.6, 0.3), rep, b)
+    return s.render((1.8, 0.24, 3400)), s.length
+
+
+def song_mukuro2(drums=False):
+    """Mukuro II: his old theme, a step higher and harder, with taiko rolls."""
+    s = Song(146, 8)
+    prog = [('D3', 'm'), ('D3', 'm'), ('A#2', 'M'), ('C3', 'M'),
+            ('D3', 'm'), ('F3', 'M'), ('D#3', 'M'), ('A2', '7')]
+    if drums:
+        for i in range(8):
+            for j in range(16):
+                if j % 2 == 0 or j in (11, 15):
+                    s.add(taiko(0.7 if j % 4 == 0 else 0.3, 1.0 if j % 4 == 0 else 1.3), i, j * 0.25)
+        return s.render((0.8, 0.12, 2400)), s.length
+    k, sn, h = kick(1.0), snare(0.55), hat(False, 0.2)
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        root = n2m(r)
+        for j in range(8):
+            s.add(bass(root - 12 + (7 if j == 6 else 0), s.beat * 0.4, 0.62, 950), i, j * 0.5)
+        for j in range(4):
+            s.add(k, i, j)
+            if j % 2:
+                s.add(sn, i, j)
+            s.add(h, i, j + 0.5)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl, 1600, 0.3, 0.2, 0.3), i)
+    riff = [('D5', 0, 0.5), ('F5', 0.5, 0.5), ('A5', 1, 1), ('G5', 2, 0.5), ('F5', 2.5, 0.5),
+            ('E5', 3, 0.5), ('F5', 3.5, 0.5)]
+    for bar in range(8):
+        off = {2: -4, 3: -2, 6: -3, 7: -5}.get(bar, 0)
+        for nm, b, d in riff:
+            s.add(shamisen(n2m(nm) + off, d * s.beat + 0.2, 0.3), bar, b)
+    return s.render((1.0, 0.16, 3600)), s.length
+
+
 def rain_loop():
     d = 8.0
     x = lp(noise(d + 1), 3500) * 0.35 + hp(lp(noise(d + 1), 9000), 2500) * 0.25
@@ -923,6 +1036,7 @@ def build_sfx():
     S['arm'] = add(whoosh(0.6, 200, 2500, 1.0), metal(500, 0.6, 0.3))
     S['rj_hurt'] = add(metal(700, 0.5, 0.8), impact(0.4, 100, 0.6, 1.2))
     S['rj_die'] = cat(explosion(0.9, 1.0), explosion(1.2, 0.9))
+    S['phase'] = add(glitch(0.12, 0.35), sweep_tone(1200, 300, 0.12, 'square', 0.06))
     out = {}
     for k, v in S.items():
         v = np.asarray(v, dtype=float)
@@ -1001,13 +1115,15 @@ def build_all():
         SFX_NAMES.append(k)
     songs = {'title': song_title, 'sump': song_sump, 'alley': song_alley, 'boss': song_boss,
              'vaults': song_vaults, 'luck': song_luck, 'gardens': song_gardens, 'mukuro': song_mukuro,
-             'monorail': song_monorail, 'raijin': song_raijin}
+             'monorail': song_monorail, 'raijin': song_raijin, 'hollow': song_hollow, 'kuro': song_kuro,
+             'academy': song_academy, 'mukuro2': song_mukuro2}
     for name, fn in songs.items():
         x, length = fn()
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')
         MUSIC[name] = round(length, 4)
-    for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck), ('mukuro_drums', song_mukuro), ('raijin_drums', song_raijin)):
+    for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck), ('mukuro_drums', song_mukuro), ('raijin_drums', song_raijin), ('kuro_drums', song_kuro),
+                     ('mukuro2_drums', song_mukuro2)):
         x, length = fn(drums=True)
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')

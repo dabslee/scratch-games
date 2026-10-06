@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.join(HERE, 'logic'))
 import art_ch2  # noqa: E402
 import art_ch3  # noqa: E402
 import art_ch4  # noqa: E402
+import art_ch56  # noqa: E402
 import assets  # noqa: E402
 import dialogue  # noqa: E402
 import levels  # noqa: E402
@@ -152,6 +153,7 @@ first tstr pfr slash_fx slash_off dlg_t msel press_t chap_i
 luck_dead boss_name slot_state slot_t slot_sym daicam3_done cage_broken
 muk_dead muk_exit daicam4_done
 raijin_dead daicam5_done wind moving rj_bx rj_arm rj_plow rj_open
+kuro_dead muk2_dead muk_freed daicam6_done daicam7_done flip flip_warn gph ke1 ke2 sh_x sh_t sh_f
 '''.split()
 
 GLOBAL_LISTS = '''
@@ -161,7 +163,7 @@ ent_foe ent_obj ent_brk ent_sev hq_t hq_d hq_x cq_t cq_x cq_y cq_d mq_t mq_x mq_
 pq_t pq_x pq_y pq_vx pq_vy pk_x pk_y pz_x pz_y brk_hits sfxq ui_slot ui_role
 trig_x trig_ev trig_on dead_objs seen got_shards broken
 CONV_NAME CONV_START CONV_LEN DL_SPK DL_PORT DL_TEXT DL_NAME
-MI_KEY MI_X MI_Y MI_KIND HUD_ROLES DLG_ROLES FONT_W sl_q reel_q RZ R_WIND R_MOVE
+MI_KEY MI_X MI_Y MI_KIND HUD_ROLES DLG_ROLES FONT_W sl_q reel_q RZ R_WIND R_MOVE R_FLIP GL_I GL_T
 '''.split()
 
 for g in GLOBALS:
@@ -188,6 +190,7 @@ for d in 'LRUD':
     set_list('R_' + d, [RI[r.exits[d]] if d in r.exits else 0 for r in ROOMS])
 set_list('R_WIND', [r.wind for r in ROOMS])
 set_list('R_MOVE', [r.moving for r in ROOMS])
+set_list('R_FLIP', [r.flip for r in ROOMS])
 set_list('R_BOSS', [max(1, r.chapter) if 'boss' in r.flags else 0 for r in ROOMS])
 O_FIRST, O_NUM, OT, OX, OY, OA, OB = [], [], [], [], [], [], []
 for r in ROOMS:
@@ -213,11 +216,15 @@ a1_start = [o for o in levels.a1.objs if o['type'] == 'start'][0]
 b1_start = [o for o in levels.b1.objs if o['type'] == 'start'][0]
 c1_start = [o for o in levels.c1.objs if o['type'] == 'start'][0]
 d1_start = [o for o in levels.d1.objs if o['type'] == 'start'][0]
+e1_start = [o for o in levels.e1.objs if o['type'] == 'start'][0]
+f1_start = [o for o in levels.f1.objs if o['type'] == 'start'][0]
 C.update({
     'C_ROOM_P1': RI['p1'], 'C_ROOM_A1': RI['a1'], 'C_A1_X': a1_start['x'], 'C_A1_Y': a1_start['y'],
     'C_ROOM_B1': RI['b1'], 'C_B1_X': b1_start['x'], 'C_B1_Y': b1_start['y'],
     'C_ROOM_C1': RI['c1'], 'C_C1_X': c1_start['x'], 'C_C1_Y': c1_start['y'],
     'C_ROOM_D1': RI['d1'], 'C_D1_X': d1_start['x'], 'C_D1_Y': d1_start['y'],
+    'C_ROOM_E1': RI['e1'], 'C_E1_X': e1_start['x'], 'C_E1_Y': e1_start['y'],
+    'C_ROOM_F1': RI['f1'], 'C_F1_X': f1_start['x'], 'C_F1_Y': f1_start['y'],
     'C_LIFT_LOW': -200, 'C_LIFT_TOP': levels.top(19),
     'C_G': 1.5, 'C_JUMP': 16.5, 'C_WALLJUMP': 15, 'C_BOOST': 18, 'C_RUN': 6, 'C_MAXFALL': 13,
     'C_SLIDE': 3, 'C_DASHV': 21.3, 'C_DASHF': 6, 'C_HW': 7, 'C_PH': 34, 'C_COYOTE': 3,
@@ -437,6 +444,25 @@ def sprite(name, costumes, src, sounds=(), visible=False, x=0, y=0):
     return t
 
 
+MEM_RAMP = ['night2', 'purple1', 'purple2', 'purple3', 'white']
+
+
+def toned(sprite_name, ramp, prefix, suffix='', recolor_map=None):
+    out = []
+    for n, im, cx, cy in art_ch56.tone_costumes(sprite_name, ramp, prefix, suffix=suffix) if recolor_map is None else []:
+        out.append(make_costume(n, im, cx, cy, FILES))
+    return out
+
+
+def shell_costumes():
+    out = []
+    for c in ST.costumes('Hotaru'):
+        if c['name'].endswith('_g'):
+            im = art_ch2.recolor(ST.image('Hotaru', c['name']), art_ch56.SHELL_MAP)
+            out.append(make_costume('s_' + c['name'][:-2], im, c['rotationCenterX'], c['rotationCenterY'], FILES))
+    return out
+
+
 def recolored(sprite_name, mapping, prefix=''):
     return [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in art_ch2.recolor_costumes(sprite_name, mapping, prefix)]
 
@@ -485,15 +511,21 @@ stage = target('Stage', stage=True)
 stage.costumes = copy_costumes('Stage', names=['title_', 'sky_sump', 'sky_neon_alley', 'sky_server_gardens', 'black'])
 stage.costumes.append(make_costume('sky_vaults', up4(art_ch2.sky()), 480, 360, FILES))
 stage.costumes.append(make_costume('sky_rail', up4(art_ch4.sky()), 480, 360, FILES))
+stage.costumes.append(make_costume('sky_hollow', up4(art_ch56.hollow_sky()), 480, 360, FILES))
+stage.costumes.append(make_costume('sky_academy', up4(art_ch56.academy_sky()), 480, 360, FILES))
 stage.sounds = []
 scratchc.compile_sprite(stage, read_logic('stage.py'), C)
 
 PAR_FAR = sprite('Parallax_far', copy_costumes('Parallax_far', names=['sump', 'neon_alley', 'server_gardens'])
                  + [make_costume('vaults', up4(art_ch2.far()), 480, 360, FILES),
-                    make_costume('rail', up4(art_ch4.far()), 480, 360, FILES)], visuals.parallax(0.05, 1))
+                    make_costume('rail', up4(art_ch4.far()), 480, 360, FILES),
+                    make_costume('hollow', up4(art_ch56.hollow_far()), 480, 360, FILES),
+                    make_costume('academy', up4(art_ch56.academy_far()), 480, 360, FILES)], visuals.parallax(0.05, 1))
 PAR_MID = sprite('Parallax_mid', copy_costumes('Parallax_mid', names=['sump', 'neon_alley', 'server_gardens'])
                  + [make_costume('vaults', up4(art_ch2.mid()), 480, 360, FILES),
-                    make_costume('rail', up4(art_ch4.mid()), 480, 360, FILES)], visuals.parallax(0.12, 9))
+                    make_costume('rail', up4(art_ch4.mid()), 480, 360, FILES),
+                    make_costume('hollow', up4(art_ch56.hollow_mid()), 480, 360, FILES),
+                    make_costume('academy', up4(art_ch56.academy_mid()), 480, 360, FILES)], visuals.parallax(0.12, 9))
 sprite('Level', ROOM_COSTUMES, visuals.LEVEL)
 props = []
 props += copy_costumes('RamenCart', rename=lambda n: 'cart_' + n)
@@ -512,7 +544,11 @@ props += [costume_from(art_ch3.pod(i), 'pod_%d' % i, 7, 30) for i in range(2)]
 props += [costume_from(art_ch3.toro(i), 'toro_%d' % i, 6, 22) for i in range(2)]
 props.append(costume_from(art_ch3.bonsai(), 'bonsai', 7, 18))
 props.append(costume_from(art_ch4.seat(), 'seat', 9, 12))
+props.append(costume_from(art_ch56.dummy(), 'dummy', 7, 26))
 sprite('Props', props, CL + objects.PROPS)
+pb = [costume_from(art_ch56.phase_block(st_, h), '%s_%s' % ('hb' if h else 'gb', st_), 4, 4)
+      for h in (False, True) for st_ in ('on', 'warn', 'off')]
+sprite('PhaseBlock', pb, CL + objects.PHASEBLOCK)
 sprite('Mist', [costume_from(art_ch3.mist(i), 'mist_%d' % i, 8, 8) for i in range(art_ch3.MIST_FRAMES)], CL + objects.MIST)
 slot_cos = [costume_from(art_ch2.slot_machine(i), 'slot_%d' % i, 40, 38) for i in range(2)]
 sprite('SlotMachine', slot_cos, CL + enemies.SLOT_MACHINE)
@@ -542,11 +578,12 @@ sprite('CamDrone', copy_costumes('CamDrone'), CL + objects.CAMDRONE)
 sprite('Turret', copy_costumes('Turret'), CL + FX + EN + enemies.TURRET)
 sprite('SlotTurret', recolored('Turret', art_ch2.SLOT_TURRET_MAP), CL + FX + EN + enemies.SLOT_TURRET)
 sprite('Croupier', recolored('HannyaBoy', art_ch2.CROUPIER_MAP) + recolored('HannyaBoy', art_ch4.GUNNER_MAP, 'g_'), CL + FX + EN + enemies.CROUPIER)
-sprite('HannyaBoy', copy_costumes('HannyaBoy') + recolored('HannyaBoy', art_ch4.GUARD_MAP, 'g_'), CL + FX + EN + enemies.HANNYA)
+sprite('HannyaBoy', copy_costumes('HannyaBoy') + recolored('HannyaBoy', art_ch4.GUARD_MAP, 'g_') + toned('HannyaBoy', MEM_RAMP, 'm_'), CL + FX + EN + enemies.HANNYA)
 sprite('BigOni', copy_costumes('BigOni'), CL + FX + EN + enemies.ONI)
 sprite('ScavDrone', copy_costumes('ScavDrone'), CL + FX + EN + enemies.DRONE)
 sprite('LadyLuck', recolored('Mukuro', art_ch2.LUCK_MAP), CL + FX + EN + enemies.LUCK)
-sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP), CL + FX + EN + enemies.WARDEN)
+sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP) + toned('Mukuro', MEM_RAMP, 'm_') + shell_costumes(), CL + FX + EN + enemies.WARDEN)
+sprite('KuroBoss', copy_costumes('Kuro'), CL + FX + EN + enemies.KUROBOSS)
 sprite('Mukuro', copy_costumes('Mukuro'), CL + FX + EN + enemies.MUKURO)
 rj_cut = lambda im: im.crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT))
 rj = [costume_from(rj_cut(art_ch4.raijin('idle', i)), 'rj_idle_%d' % i, *art_ch4.RJ_CORE) for i in range(2)]
@@ -591,11 +628,12 @@ proj_costumes += [costume_from(art_ch4.shell(i, True), 'rshell_%d' % i, 4, 4) fo
 sprite('Projectiles', proj_costumes, CL + FX + EN + objects.PROJECTILES)
 sprite('MoveFX', copy_costumes('MoveFX'), CL + visuals.fx_sprite('mq', visuals.MOVE_FX))
 sprite('CombatFX', copy_costumes('CombatFX'), CL + visuals.fx_sprite('cq', visuals.COMBAT_FX))
-sprite('Rain', copy_costumes('Rain') + [make_costume('wind_%d' % i, up4(art_ch4.wind(i)), 480, 360, FILES) for i in range(4)], visuals.RAIN)
+sprite('Rain', copy_costumes('Rain') + [make_costume('wind_%d' % i, up4(art_ch4.wind(i)), 480, 360, FILES) for i in range(4)]
+       + [make_costume('possess', up4(art_ch56.possess()), 480, 360, FILES)], visuals.RAIN)
 sprite('Flash', FLASH_COSTUMES, visuals.FLASH)
 eui = copy_costumes('HUD', names=['enemy_int_']) + copy_costumes('CombatFX', names=['breach_', 'severance_'])
 sprite('EnemyUI', eui, CL + visuals.ENEMY_UI)
-hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin'])
+hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro'])
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])
 sprite('Hints', hint_cos, visuals.HINTS)
@@ -622,6 +660,9 @@ sprite('Music_mukuro_drums', [FADE_COSTUMES[0]], visuals.music('mukuro_drums', a
        sounds=['mukuro_drums'])
 sprite('Music_raijin_drums', [FADE_COSTUMES[0]], visuals.music('raijin_drums', audio.MUSIC['raijin'], drums=True, drums_for='raijin'),
        sounds=['raijin_drums'])
+for tr in ('kuro', 'mukuro2'):
+    sprite('Music_%s_drums' % tr, [FADE_COSTUMES[0]], visuals.music(tr + '_drums', audio.MUSIC[tr], drums=True, drums_for=tr),
+           sounds=[tr + '_drums'])
 sprite('Ambience', [FADE_COSTUMES[0]], visuals.AMBIENCE, sounds=['rain_loop', 'wind_loop'])
 
 # make sure the HUD/Hotaru-local name 'pfr' is shared: Hotaru writes it as a global

@@ -205,6 +205,7 @@ def draw():
 TETSU = spawner('tetsu', '''
 x = O_X[oi]
 y = O_Y[oi]
+tmode = O_A[oi]
 fr = 0
 is_clone = 1
 clone()
@@ -212,7 +213,7 @@ is_clone = 0
 ''') + '''
 @on("t_world")
 def tick():
-    if is_clone == 1:
+    if is_clone == 1 and tmode != "mem":
         if abs(px - x) < 44 and abs(py - y) < 24 and p_ground == 1 and pst == "move":
             prompt_on = 1
             prompt_x = x
@@ -234,6 +235,8 @@ def draw():
         else:
             fr += 0.17
             costume(join("idle_", floor(fr) % 4))
+        if tmode == "mem":
+            effect("ghost", 25 + (frame % 40 < 3) * 40)
         goto(x + shx, y + shy)
         point(-90)
         show()
@@ -252,6 +255,8 @@ if ddone == 0:
     st = "panic"
     if dmode == "cage":
         st = "caged"
+    if dmode == "echo" or dmode == "trainee":
+        st = "idle"
     t = 0
     cam_x = x
     cam_y = y + 70
@@ -275,6 +280,10 @@ def dc_done():
         ddone = daicam4_done
     elif dmode == "dine":
         ddone = daicam5_done
+    elif dmode == "echo":
+        ddone = daicam6_done
+    elif dmode == "trainee":
+        ddone = daicam7_done
 
 
 @proc
@@ -286,7 +295,14 @@ def dc_update():
         elif y > fy:
             y = max(fy, y - 7)
             t = 14
-    if st == "caged":
+    if st == "idle":
+        fr += 0.2
+        dc_done()
+        if ddone == 1:
+            st = "run"
+            t = 0
+            sfxq.append("cam_beep")
+    elif st == "caged":
         fr += 0.34
         if cage_broken == 1:
             st = "wait"
@@ -329,7 +345,14 @@ def dc_update():
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        if st == "talk" or st == "wait":
+        if dmode == "echo":
+            effect("ghost", 35 + (frame % 30 < 4) * 40)
+        if st == "idle":
+            if dlg_spk == "daicam":
+                costume(join("wave_", floor(fr) % 4))
+            else:
+                costume(join("idle_", floor(fr) % 4))
+        elif st == "talk" or st == "wait":
             if dlg_spk == "daicam" or st == "wait":
                 costume(join("wave_", floor(fr) % 4))
             else:
@@ -751,7 +774,7 @@ fr = 0
 is_clone = 1
 clone()
 is_clone = 0
-''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat":').replace(
+''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy":').replace(
     'kind = O_A[oi]', 'kind = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
 @on("t_draw")
 def draw():
@@ -775,6 +798,10 @@ def draw():
             costume("bonsai")
         elif kind == "seat":
             costume("seat")
+        elif kind == "dummy":
+            costume("dummy")
+        if chapter == 5:
+            effect("ghost", 35)
         else:
             fl_t -= 1
             if fl_t < 0:
@@ -857,6 +884,38 @@ def draw():
         else:
             effect("ghost", 25)
         costume(join("mist_", (floor(frame / 2) + seg * 3) % 8))
+        goto(x + shx, y + shy)
+        show()
+'''
+
+
+PHASEBLOCK = '''
+@on("spawn")
+def on_spawn():
+    if is_clone == 0:
+        for k in range(1, len(GL_I) + 1):
+            gi = GL_I[k]
+            x = -232 + 16 * ((gi - 1) % 30)
+            y = 172 - 16 * floor((gi - 1) / 30)
+            is_clone = 1
+            clone()
+            is_clone = 0
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        if chapter == 6:
+            pre = "hb_"
+        else:
+            pre = "gb_"
+        if grid[gi] == "#":
+            if frame % 100 >= 80 and frame % 6 < 3:
+                costume(join(pre, "warn"))
+            else:
+                costume(join(pre, "on"))
+        else:
+            costume(join(pre, "off"))
         goto(x + shx, y + shy)
         show()
 '''

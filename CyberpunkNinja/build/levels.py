@@ -10,6 +10,7 @@ Collision characters stored in the room grid string:
   ^  spikes (floor)   v  spikes (ceiling)
   B  breakable block (solid until broken)
   ~  cooling-mist updraft     %  pulsing updraft (on 70 of every 110 frames)
+  G  phasing block, solid in phase A    H  phasing block, solid in phase B
 Doors and laser barriers write their own cells at runtime.
 """
 
@@ -51,6 +52,7 @@ class Room:
         self.flags = []
         self.wind = 0                   # constant push on Hotaru (px per frame)
         self.moving = 0                 # 1 = the train is moving (background scrolls)
+        self.flip = 0                   # 1 = Kuro periodically swaps left and right
 
     # --- terrain -------------------------------------------------------
     def solid(self, c1, r1, c2, r2, ch='#'):
@@ -87,6 +89,12 @@ class Room:
                 if self.g[r][c] == '.':
                     self.g[r][c] = ch
         self.obj('mist', left(c1) + 16, bottom(r2), a=r2 - r1 + 1, b=1 if pulse else 0)
+        return self
+
+    def phase(self, c1, c2, r, ch='G'):
+        """A row of phasing blocks (G: solid in phase A, H: solid in phase B)."""
+        for c in range(c1, c2 + 1):
+            self.g[r][c] = ch
         return self
 
     def deco(self, ch, c1, r1, c2=None, r2=None):
@@ -775,6 +783,193 @@ d8.obj('trig', cx(4), 0, a='raijin_start')
 d8.flags.append('boss')
 d8.moving = 1
 
+
+# =====================================================================
+# CHAPTER 5: HOLLOW FLOOR (inside Hotaru's head)
+# =====================================================================
+
+# E1 Static -----------------------------------------------------------
+e1 = room('e1', 5, 'Static')
+e1.solid(0, 19, 9, 22).solid(20, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 18).solid(29, 3, 29, 13)
+e1.phase(10, 13, 18, 'G').phase(14, 16, 18, 'H').phase(17, 19, 18, 'G')
+e1.obj('start', cx(3), bottom(18))
+e1.obj('trig', -999, 0, a='ch5_start')
+e1.obj('trig', cx(7), 0, a='glitch')
+
+# E2 Memory: the Sump -------------------------------------------------
+e2 = room('e2', 5, 'Memory: The Sump')
+e2.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+e2.solid(9, 16, 13, 18).solid(10, 14, 12, 15).solid(20, 15, 25, 18)
+e2.phase(15, 18, 12, 'G').plat(3, 6, 14)
+e2.obj('laser', cx(17), bottom(18), b=1)
+e2.obj('drone', cx(8), top(9))
+e2.obj('hannya', cx(23), bottom(14), a=0)
+e2.obj('trig', cx(3), 0, a='sump_mem')
+
+# E3 Memory: Tetsu's roof ---------------------------------------------
+e3 = room('e3', 5, "Memory: Tetsu's Roof")
+e3.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+e3.solid(18, 17, 29, 18).deco('z', 18, 17, 29, 17)
+e3.obj('shrine', cx(4), bottom(18))
+e3.obj('cart', cx(22), bottom(16))
+e3.obj('tetsu', cx(26), bottom(16), a='mem')
+e3.obj('lantern', cx(21), top(3))
+e3.obj('trig', cx(14), 0, a='tetsu_mem')
+
+# E4 Memory: the Academy (climb on phasing blocks) --------------------
+e4 = room('e4', 5, 'Memory: The Academy')
+e4.solid(0, 19, 29, 22).solid(0, 0, 21, 1).solid(26, 0, 29, 1)
+e4.solid(0, 2, 0, 13).solid(0, 17, 0, 18).solid(28, 2, 29, 18)
+e4.phase(4, 8, 15, 'G').phase(10, 14, 12, 'H').phase(4, 8, 9, 'G').phase(10, 14, 6, 'H')
+e4.plat(16, 19, 4).plat(22, 25, 2)
+e4.obj('warden', cx(18), bottom(18), a=0)
+e4.obj('drone', cx(22), top(10))
+
+# E5 Possession -------------------------------------------------------
+e5 = room('e5', 5, 'Possession')
+e5.solid(0, 19, 7, 22).solid(8, 21, 21, 22).solid(26, 19, 29, 22).solid(0, 0, 3, 1).solid(8, 0, 29, 1)
+e5.plat(22, 25, 19)
+e5.solid(0, 2, 0, 18).solid(29, 2, 29, 13)
+e5.spikes(8, 21, 20)
+e5.plat(9, 12, 16).plat(16, 20, 16).plat(1, 3, 14).plat(4, 7, 10).plat(3, 6, 5)
+e5.obj('drone', cx(14), top(10))
+e5.obj('trig', cx(4), 0, a='possess')
+e5.flip = 1
+
+# E5s Locked memory (Memory Shard challenge) ---------------------------
+e5s = room('e5s', 5, 'Locked Memory')
+e5s.solid(0, 0, 29, 2).solid(0, 0, 1, 22).solid(28, 0, 29, 22)
+e5s.solid(0, 19, 3, 22).solid(8, 19, 29, 22).plat(4, 7, 19)
+e5s.phase(12, 16, 14, 'G').phase(18, 22, 10, 'H')
+e5s.obj('warden', cx(12), bottom(18), a=1)
+e5s.obj('warden', cx(22), bottom(18), a=0)
+e5s.obj('shard', cx(20) + 8, top(7), a=6)
+e5s.flags.append('challenge')
+
+# E6 The white room ---------------------------------------------------
+e6 = room('e6', 5, 'The White Room')
+e6.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+e6.deco('g', 1, 3, 28, 3)
+e6.obj('shrine', cx(4), bottom(18))
+e6.obj('pod', cx(14), bottom(18))
+e6.obj('pod', cx(16), bottom(18))
+e6.obj('daicam', cx(23), bottom(18), a='echo')
+e6.obj('hannya', cx(10), bottom(18), a=0)
+e6.obj('warden', cx(20), bottom(18), a=0)
+e6.obj('trig', cx(12), 0, a='white_room')
+e6.obj('trig', cx(19), 0, a='daicam6')
+
+# E7 Threshold --------------------------------------------------------
+e7 = room('e7', 5, 'Threshold')
+e7.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+e7.phase(9, 12, 16, 'G').phase(17, 20, 16, 'H')
+e7.obj('trig', cx(12), 0, a='kuro_gate')
+
+# E8 Hollow floor (Kuro) ------------------------------------------------
+e8 = room('e8', 5, 'Hollow Floor')
+e8.solid(0, 19, 29, 22).solid(0, 0, 29, 1).solid(0, 2, 0, 13).solid(29, 2, 29, 18)
+e8.phase(4, 8, 14, 'G').phase(21, 25, 14, 'H')
+e8.obj('door', left(0) + 8, bottom(18), a='ambush')
+e8.obj('kuro', cx(22), bottom(18))
+e8.obj('trig', cx(4), 0, a='kuro_start')
+e8.flags.append('boss')
+
+
+# =====================================================================
+# CHAPTER 6: THE ACADEMY
+# =====================================================================
+
+# F1 Academy gate -----------------------------------------------------
+f1 = room('f1', 6, 'Academy Gate')
+f1.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 18).solid(29, 3, 29, 13)
+f1.deco('y', 1, 19, 28, 19)
+f1.obj('start', cx(3), bottom(18))
+f1.obj('shrine', cx(6), bottom(18))
+for c in (13, 17, 21):
+    f1.obj('dummy', cx(c), bottom(18))
+f1.obj('lantern', cx(10), top(3))
+f1.obj('lantern', cx(24), top(3))
+f1.obj('trig', -999, 0, a='ch6_start')
+
+# F2 Kata hall --------------------------------------------------------
+f2 = room('f2', 6, 'Kata Hall')
+f2.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+f2.plat(4, 9, 14).plat(20, 25, 14).deco('y', 1, 19, 28, 19)
+f2.obj('dummy', cx(5), bottom(18))
+f2.obj('dummy', cx(8), bottom(18))
+f2.obj('shell', cx(20), bottom(18), a=0)
+f2.obj('trig', cx(10), 0, a='shell')
+
+# F3 Laser drill ------------------------------------------------------
+f3 = room('f3', 6, 'Laser Drill')
+f3.solid(0, 19, 6, 22).solid(7, 21, 22, 22).solid(23, 19, 29, 22).solid(0, 0, 29, 2)
+f3.solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+f3.spikes(7, 22, 20)
+f3.phase(8, 11, 17, 'G').phase(13, 16, 17, 'H').phase(18, 21, 17, 'G')
+f3.obj('laser', cx(12), bottom(16), b=75)
+f3.obj('laser', cx(17), bottom(16), b=75)
+f3.obj('turret', left(29), top(9) - 8, a=-90)
+f3.obj('trig', cx(3), 0, a='holo')
+
+# F4 Climbing wall (exit up) ------------------------------------------
+f4 = room('f4', 6, 'Climbing Wall')
+f4.solid(0, 19, 29, 22).solid(0, 0, 19, 1).solid(25, 0, 29, 1)
+f4.solid(0, 2, 0, 13).solid(28, 2, 29, 18)
+f4.solid(13, 6, 14, 15).spikes(16, 20, 18)
+f4.phase(2, 5, 15, 'G').phase(7, 10, 12, 'H').phase(2, 5, 9, 'G')
+f4.plat(7, 11, 6).plat(16, 20, 5).plat(21, 24, 2)
+f4.obj('drone', cx(22), top(12))
+f4.obj('shell', cx(22), bottom(18), a=1)
+
+# F5 Sparring ring (ambush; up to the loft) ---------------------------
+f5 = room('f5', 6, 'Sparring Ring')
+f5.solid(0, 19, 19, 22).solid(25, 19, 29, 22).plat(20, 24, 19).solid(0, 0, 3, 2).solid(8, 0, 29, 2)
+f5.solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+f5.plat(4, 7, 15).plat(4, 7, 10).plat(4, 7, 5).deco('r', 9, 19, 26, 19)
+f5.obj('shell', cx(14), bottom(18), a=0)
+f5.obj('shell', cx(23), bottom(18), a=1)
+f5.obj('drone', cx(18), top(9))
+f5.obj('door', left(29), bottom(18), a='lock')
+f5.obj('trig', cx(9), 0, a='spar')
+
+# F5s Instructor's loft (Memory Shard challenge) -----------------------
+f5s = room('f5s', 6, "Instructor's Loft")
+f5s.solid(0, 0, 29, 2).solid(0, 0, 1, 22).solid(28, 0, 29, 22)
+f5s.solid(0, 19, 3, 22).solid(8, 19, 29, 22).plat(4, 7, 19)
+f5s.plat(12, 17, 14).plat(20, 25, 10)
+f5s.obj('shell', cx(15), bottom(18), a=1)
+f5s.obj('turret', left(28), top(6) - 8, a=-90)
+f5s.obj('shard', cx(22) + 8, top(8), a=7)
+f5s.flags.append('challenge')
+
+# F6 Barracks ---------------------------------------------------------
+f6 = room('f6', 6, 'Barracks')
+f6.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+f6.deco('y', 1, 19, 28, 19)
+f6.obj('shrine', cx(4), bottom(18))
+f6.obj('daicam', cx(18), bottom(18), a='trainee')
+f6.obj('dummy', cx(22), bottom(18))
+f6.obj('dummy', cx(25), bottom(18))
+f6.obj('trig', cx(12), 0, a='daicam7')
+
+# F7 Hall of instances ------------------------------------------------
+f7 = room('f7', 6, 'Hall of Instances')
+f7.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+for c in range(3, 28, 3):
+    f7.obj('pod', cx(c), bottom(18))
+f7.obj('post', 0, top(19), a=170, b=40)
+f7.obj('shell', cx(24), bottom(18), a=1)
+f7.obj('trig', cx(8), 0, a='instances')
+
+# F8 Mukuro's ring (Mukuro II) ------------------------------------------
+f8 = room('f8', 6, "Mukuro's Ring")
+f8.solid(0, 19, 29, 22).solid(0, 0, 29, 1).solid(0, 2, 0, 13).solid(29, 2, 29, 18)
+f8.plat(3, 7, 14).plat(22, 26, 14).deco('r', 1, 19, 28, 19)
+f8.obj('door', left(0) + 8, bottom(18), a='ambush')
+f8.obj('mukuro', cx(22), bottom(18), a=2)
+f8.obj('trig', cx(4), 0, a='muk2_start')
+f8.flags.append('boss')
+
 # --- connections --------------------------------------------------------
 link(p1, 'R', p2)
 link(p2, 'U', p3)
@@ -821,6 +1016,22 @@ link(d4, 'R', d5s)
 link(d5, 'R', d6)
 link(d6, 'R', d7)
 link(d7, 'R', d8)
+link(e1, 'R', e2)
+link(e2, 'R', e3)
+link(e3, 'R', e4)
+link(e4, 'U', e5)
+link(e5, 'U', e5s)
+link(e5, 'R', e6)
+link(e6, 'R', e7)
+link(e7, 'R', e8)
+link(f1, 'R', f2)
+link(f2, 'R', f3)
+link(f3, 'R', f4)
+link(f4, 'U', f5)
+link(f5, 'U', f5s)
+link(f5, 'R', f6)
+link(f6, 'R', f7)
+link(f7, 'R', f8)
 
 ROOM_INDEX = {r.key: i + 1 for i, r in enumerate(ROOMS)}
 
