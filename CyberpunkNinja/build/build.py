@@ -62,6 +62,12 @@ def costume_from(im_1x, name, cx1, cy1):
     return make_costume(name, up4(im_1x), int(cx1 * 4), int(cy1 * 4), FILES)
 
 
+def costume_small(im_1x, name, cx1, cy1):
+    """Like costume_from, but drawn at 1.5 stage pixels per art pixel so a figure
+    stands as tall as Hotaru."""
+    return make_costume(name, im_1x.resize((im_1x.width * 3, im_1x.height * 3), Image.NEAREST), int(cx1 * 3), int(cy1 * 3), FILES)
+
+
 def rgba(name, a=255):
     return P[name] + (a,)
 
@@ -157,8 +163,10 @@ muk_dead muk_exit daicam4_done
 raijin_dead daicam5_done wind moving rj_bx rj_arm rj_plow rj_open
 kuro_dead kbranch kb_last kuro_in daicam6_done daicam7_done flip flip_warn gph ke1 ke2 sh_x sh_t sh_f
 daicam8_done daimyo_dead dm_ph dm_vul eye_x eye_y eye_st mk_x mk_y mk_st ally_x ally_st
-dobu_dead daicam2_done harm_dead tide_y tide_hi tide_force tide_lvl
+dobu_dead daicam2_done harm_dead tide_y tide_hi tide_force tide_lvl tide_t tide_warn
 dobu_cut dobu_gen dobu_ph dobu_open dobu_turn
+walk_to muk_bx muk_carry
+ally_hp ally_lives ally_rev ally_inv ally_def ally_dash ally_shot fy_floor exo_x dm_st dm_t dm_fc dm_tell dm_fl
 '''.split()
 
 GLOBAL_LISTS = '''
@@ -166,7 +174,7 @@ grid R_GRID R_LEVEL R_CH R_L R_R R_U R_D R_BOSS O_FIRST O_NUM O_TYPE O_X O_Y O_A
 ent_type ent_x ent_y ent_w ent_h ent_hp ent_int ent_imax ent_alive ent_stag ent_dmg ent_idmg ent_kb ent_hk
 ent_foe ent_obj ent_brk ent_sev hq_t hq_d hq_x cq_t cq_x cq_y cq_d mq_t mq_x mq_y mq_d
 pq_t pq_x pq_y pq_vx pq_vy pk_x pk_y pz_x pz_y brk_hits sfxq ui_slot ui_role
-trig_x trig_ev trig_on dead_objs seen got_shards broken
+trig_x trig_ev trig_on dead_objs seen got_shards broken dm_hits
 CONV_NAME CONV_START CONV_LEN DL_SPK DL_PORT DL_TEXT DL_NAME
 MI_KEY MI_X MI_Y MI_KIND HUD_ROLES DLG_ROLES FONT_W sl_q reel_q RZ R_WIND R_MOVE R_FLIP R_TIDE GL_I GL_T
 '''.split()
@@ -238,7 +246,7 @@ C.update({
     'C_ROOM_D1': RI['d1'], 'C_D1_X': d1_start['x'], 'C_D1_Y': d1_start['y'],
     'C_ROOM_E1': RI['e1'], 'C_E1_X': e1_start['x'], 'C_E1_Y': e1_start['y'],
     'C_ROOM_F1': RI['f1'], 'C_F1_X': f1_start['x'], 'C_F1_Y': f1_start['y'],
-    'C_ROOM_G1': RI['g1'], 'C_G1_X': g1_start['x'], 'C_G1_Y': g1_start['y'], 'C_ROOM_EP': RI['ep'],
+    'C_ROOM_G1': RI['g1'], 'C_G1_X': g1_start['x'], 'C_G1_Y': g1_start['y'], 'C_ROOM_EP': RI['ep'], 'C_ROOM_F9': RI['f9'], 'C_ROOM_G5': RI['g5'], 'C_ROOM_F7': RI['f7'],
     'C_LIFT_LOW': -200, 'C_LIFT_TOP': levels.top(19),
     'C_G': 1.5, 'C_JUMP': 16.5, 'C_WALLJUMP': 15, 'C_BOOST': 18, 'C_RUN': 6, 'C_MAXFALL': 13,
     'C_SLIDE': 3, 'C_DASHV': 21.3, 'C_DASHF': 6, 'C_HW': 7, 'C_PH': 34, 'C_COYOTE': 3,
@@ -255,12 +263,14 @@ for cname, lines in dialogue.CONVERSATIONS.items():
     CONV_START.append(len(DL_SPK) + 1)
     n = 0
     for spk, who, port, text in lines:
-        wrapped = REG.wrap(text, 178)
+        # dialogue text is drawn at 3/4 of the usual pixel scale so more fits in the box
+        wrapped = REG.wrap(text, 234)
         for i in range(0, len(wrapped), 3):
             page = wrapped[i:i + 3]
             page_no += 1
             name = 'txt_%d' % page_no
-            DLG_COSTUMES.append(costume_from(text_image(page, width=178), name, 0, 0))
+            tim = text_image(page, width=234)
+            DLG_COSTUMES.append(make_costume(name, tim.resize((tim.width * 3, tim.height * 3), Image.NEAREST), 0, 0, FILES))
             DL_SPK.append(who)
             DL_PORT.append(port)
             DL_TEXT.append(name)
@@ -289,6 +299,8 @@ def hint_image(segs):
             rows[-1].append(('img', keycap(s[1])))
         elif s[0] == 't':
             rows[-1].append(('img', text_image([s[1]], shadow=P['ink'])))
+        elif s[0] == 'h':
+            rows[-1].append(('img', text_image([s[1]], BOLD, P['mag3'], shadow=P['ink'])))
         else:
             rows[-1].append(('gap', 6))
     widths = [sum(p[1].width if p[0] == 'img' else p[1] for p in r) + 3 * (len(r) - 1) for r in rows]
@@ -528,6 +540,10 @@ for ch in range(10):
         k = PACK_BG[ch]
         stage.costumes += copy_costumes('Stage', names=['sky_' + k], rename=lambda n, ch=ch: 'sky_%d' % ch)
         for li, layer in ((1, 'Parallax_far'), (2, 'Parallax_mid')):
+            if ch == 4 and li == 2:
+                # the gardens' front layer: a thick band of blossoming trees
+                PAR[li].append(make_costume('ch4', up4(art_v2.garden_trees(ST.image_1x(layer, k))), 480, 360, FILES))
+                continue
             PAR[li] += copy_costumes(layer, names=[k], rename=lambda n, ch=ch: 'ch%d' % ch)
     else:
         sky, far, mid = NEW_BG[ch]
@@ -539,7 +555,37 @@ scratchc.compile_sprite(stage, read_logic('stage.py'), C)
 
 PAR_FAR = sprite('Parallax_far', PAR[1], visuals.parallax(0.05, 1))
 PAR_MID = sprite('Parallax_mid', PAR[2], visuals.parallax(0.12, 9))
+def ranks_image():
+    # rows of hollowed soldiers, blacked out: the army waiting in the dark behind the hall
+    fig = ST.image_1x('Mukuro', 'idle_0')
+    bb = fig.getbbox()
+    fig = fig.crop(bb)
+    W, H = 280, 40
+    im = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    for row, (col, lift, off) in enumerate(((P['night2'], 7, 6), (P['night1'], 3, 0), (P['ink'], 0, 3))):
+        sil = Image.new('RGBA', fig.size, col + (255,))
+        sil.putalpha(fig.getchannel('A'))
+        for x in range(-4 + off, W, 13):
+            im.alpha_composite(sil, (x, H - fig.height - lift))
+    return im
+
+
+sprite('Ranks', [costume_from(ranks_image(), 'ranks', 140, 40)], visuals.RANKS)
+sprite('GlitchBG', [costume_from(art_v2.glitch_piece(i), 'glitch_%d' % i, art_v2.glitch_piece(i).width / 2, art_v2.glitch_piece(i).height / 2) for i in range(12)], visuals.GLITCHBG)
 sprite('Level', ROOM_COSTUMES, visuals.LEVEL)
+def mk_slump(name='slump'):
+    # the last kneeling frame of Mukuro's death, held solid, with his visor lights gone out
+    c = ST.costume('Mukuro', 'death_2')
+    im = ST.image('Mukuro', 'death_2').convert('RGBA')
+    px = im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            if a and r > 150 and g < 140:
+                px[x, y] = P['red1'] + (a,)
+    return make_costume(name, im, c['rotationCenterX'], c['rotationCenterY'], FILES)
+
+
 props = []
 props += copy_costumes('RamenCart', rename=lambda n: 'cart_' + n)
 props += copy_costumes('Lantern', rename=lambda n: 'lantern_' + n)
@@ -563,12 +609,21 @@ props.append(costume_from(art_v2.herbs(), 'herbs', 7, 30))
 props += [costume_from(art_v2.price_board(i), 'board_%d' % i, 38, 0) for i in range(2)]
 props += [costume_from(art_v2.debtor(i), 'debtor_%d' % i, 5, 30) for i in range(2)]
 props.append(costume_from(art_v2.soldier(), 'soldier', 7, 36))
+
+
 for k in range(4):
     c = ST.costume('Mukuro', 'idle_%d' % k)
     im = ST.image('Mukuro', 'idle_%d' % k).transpose(Image.FLIP_LEFT_RIGHT)
     props.append(make_costume('mk_idle_%d' % k, im, im.width - c['rotationCenterX'], c['rotationCenterY'], FILES))
-c = ST.costume('Mukuro', 'death_5')
-props.append(make_costume('mk_lie', ST.image('Mukuro', 'death_5'), c['rotationCenterX'], c['rotationCenterY'], FILES))
+props.append(mk_slump('mk_lie'))
+for k in range(4):
+    c = ST.costume('Mukuro', 'idle_%d' % k)
+    props.append(make_costume('mk_idr_%d' % k, ST.image('Mukuro', 'idle_%d' % k), c['rotationCenterX'], c['rotationCenterY'], FILES))
+for k in range(8):
+    c = ST.costume('Mukuro', 'run_%d' % k)
+    im = ST.image('Mukuro', 'run_%d' % k)
+    props.append(make_costume('mk_runr_%d' % k, im, c['rotationCenterX'], c['rotationCenterY'], FILES))
+    props.append(make_costume('mk_runl_%d' % k, im.transpose(Image.FLIP_LEFT_RIGHT), im.width - c['rotationCenterX'], c['rotationCenterY'], FILES))
 sprite('Props', props, CL + objects.PROPS)
 pb = [costume_from(art_ch56.phase_block(st_, h), '%s_%s' % ('hb' if h else 'gb', st_), 4, 4)
       for h in (False, True) for st_ in ('on', 'warn', 'soon', 'off')]
@@ -620,16 +675,17 @@ dm = []
 for pose in art_ch7.POSES:
     for fr in range(2 if pose in ('idle', 'walk') else 1):
         dm.append(costume_from(art_ch7.exo(pose, fr), 'exo_%s_%d' % (pose, fr), *art_ch7.EXO_ANCHOR))
-for p in list(art_v2.MAN_POSES) + ['dead']:
+for p in art_v2.MAN_POSES:
     if p in ('idle', 'walk'):
-        dm += [costume_from(art_v2.daimyo_man(p, i), 'man_%s_%d' % (p, i), *art_v2.MAN_FOOT) for i in range(2)]
+        dm += [costume_small(art_v2.daimyo_man(p, i), 'man_%s_%d' % (p, i), *art_v2.MAN_FOOT) for i in range(2)]
     else:
-        dm.append(costume_from(art_v2.daimyo_man(p), 'man_' + p, *art_v2.MAN_FOOT))
+        dm.append(costume_small(art_v2.daimyo_man(p), 'man_' + p, *art_v2.MAN_FOOT))
+dm.append(costume_small(art_v2.daimyo_man('dead'), 'man_dead', 22, 15))
 dm.append(costume_from(art_v2.cable(), 'cable', 3, 110))
 dm += copy_costumes('Turret', names=['idle_0'], rename=lambda n: 'turret')
-dm += copy_costumes('Mukuro', prefix='mk_', names=['idle_', 'run_', 'attack1_'])
-_c = ST.costume('Mukuro', 'death_5')
-dm.append(make_costume('mk_lie', ST.image('Mukuro', 'death_5'), _c['rotationCenterX'], _c['rotationCenterY'], FILES))
+dm += copy_costumes('Mukuro', prefix='mk_', names=['idle_', 'run_', 'attack1_', 'attack2_', 'attack3_', 'heavy_', 'deflect_', 'dash_', 'hurt_'])
+dm += copy_costumes('MemoryShard', names=['spin_'], rename=lambda n: n.replace('spin_', 'shard_'))
+dm.append(mk_slump('mk_lie'))
 sprite('Daimyo', dm, CL + FX + EN + enemies.DAIMYO)
 dobu_cos = [costume_from(art_v2.dobu_body('idle', i), 'dobu_idle_%d' % i, art_v2.DOBU_W / 2, art_v2.DOBU_H) for i in range(2)]
 dobu_cos += [costume_from(art_v2.dobu_body('open', i), 'dobu_open_%d' % i, art_v2.DOBU_W / 2, art_v2.DOBU_H) for i in range(2)]
@@ -641,13 +697,13 @@ sprite('Dobunushi', dobu_cos, CL + FX + EN + enemies.DOBU)
 harm_cos = []
 for j, pre in ((False, 'harm_'), (True, 'harmj_')):
     for p in art_v2.HARM_POSES:
-        if p in ('idle', 'walk'):
-            harm_cos += [costume_from(art_v2.harmacist(p, i, j), '%s%s_%d' % (pre, p, i), *art_v2.HARM_FOOT) for i in range(2)]
+        if p in ('idle', 'walk', 'limp'):
+            harm_cos += [costume_small(art_v2.harmacist(p, i, j), '%s%s_%d' % (pre, p, i), *art_v2.HARM_FOOT) for i in range(2)]
         else:
-            harm_cos.append(costume_from(art_v2.harmacist(p, 0, j), pre + p, *art_v2.HARM_FOOT))
-harm_cos.append(costume_from(art_v2.harmacist('dead'), 'harm_dead', *art_v2.HARM_FOOT))
+            harm_cos.append(costume_small(art_v2.harmacist(p, 0, j), pre + p, *art_v2.HARM_FOOT))
+harm_cos.append(costume_small(art_v2.harmacist('dead'), 'harm_dead', *art_v2.HARM_FOOT))
 sprite('Harmacist', harm_cos, CL + FX + EN + enemies.HARM)
-sprite('Mukuro', copy_costumes('Mukuro'), CL + FX + EN + enemies.MUKURO)
+sprite('Mukuro', copy_costumes('Mukuro') + [mk_slump()], CL + FX + EN + enemies.MUKURO)
 rj_cut = lambda im: im.crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT))
 rj = [costume_from(rj_cut(art_ch4.raijin('idle', i)), 'rj_idle_%d' % i, *art_ch4.RJ_CORE) for i in range(2)]
 rj += [costume_from(rj_cut(art_ch4.raijin('vent', i)), 'rj_vent_%d' % i, *art_ch4.RJ_CORE) for i in range(2)]
@@ -658,7 +714,7 @@ rj += [costume_from(art_ch4.plow(i), 'plow_%d' % i, 22, 14) for i in range(2)]
 rj += [costume_from(art_ch4.zap(False, i), 'zapw_%d' % i, 30, 10) for i in range(2)]
 rj += [costume_from(art_ch4.zap(True, i), 'zapl_%d' % i, 30, 10) for i in range(3)]
 sprite('Raijin', rj, CL + FX + EN + enemies.RAIJIN)
-sprite('TrackPost', [costume_from(art_ch4.post(), 'post', 5, 22)] + [costume_from(art_ch4.warn(i), 'warn_%d' % i, 7, 7) for i in range(2)],
+sprite('TrackPost', [costume_from(art_v2.robo_crow(i), 'crow_%d' % i, 12, 7) for i in range(2)] + [costume_from(art_ch4.warn(i), 'warn_%d' % i, 7, 7) for i in range(2)],
        CL + EN + enemies.TRACKPOST)
 sprite('SweepLaser', copy_costumes('LaserBarrier', names=['on_']), CL + EN + enemies.SWEEP)
 sprite('Kuro', copy_costumes('Kuro', names=['idle_']), visuals.KURO)
@@ -694,7 +750,22 @@ proj_costumes += [costume_from(art_v2.vial(i), 'vial_%d' % i, 4, 4) for i in ran
 proj_costumes += [costume_from(art_v2.cloud(i), 'cloud_%d' % i, 16, 22) for i in range(2)]
 proj_costumes += [costume_from(art_v2.cloud(i, True), 'cloudb_%d' % i, 24, 28) for i in range(2)]
 # the sludge tide draws over the fighters (they wade in it), under the effects and HUD
-sprite('Sludge', [costume_from(art_v2.tide_surface(i), 'tide_%d' % i, 122, 0) for i in range(4)], objects.SLUDGE)
+def tide_warn(on):
+    # the visual half of the pump gurgle: a hazard plate with rising arrows
+    tim = text_image(['TIDE RISING'], BOLD, P['yellow'] if on else P['orange'], shadow=P['ink'])
+    w = tim.width + 36
+    im = panel_image(w, 17, fill='ink', alpha=220, border='yellow' if on else 'orange', accent=None)
+    im.alpha_composite(tim, (18, 3))
+    d = ImageDraw.Draw(im)
+    col = P['lime'] if on else P['green2']
+    for x0 in (5, w - 14):
+        for k, dy in enumerate((0, 5)):
+            d.polygon([(x0 + 4, 3 + dy), (x0 + 8, 7 + dy), (x0, 7 + dy)], fill=col)
+    return im
+
+
+sprite('Sludge', [costume_from(art_v2.tide_surface(i), 'tide_%d' % i, 122, 0) for i in range(4)]
+       + [costume_from(tide_warn(k), 'tide_warn_%d' % k, tide_warn(k).width / 2, 8) for k in range(2)], objects.SLUDGE)
 sprite('Projectiles', proj_costumes, CL + FX + EN + objects.PROJECTILES)
 sprite('MoveFX', copy_costumes('MoveFX'), CL + visuals.fx_sprite('mq', visuals.MOVE_FX))
 sprite('CombatFX', copy_costumes('CombatFX'), CL + visuals.fx_sprite('cq', visuals.COMBAT_FX))
@@ -703,7 +774,17 @@ sprite('Rain', copy_costumes('Rain') + [make_costume('wind_%d' % i, up4(art_ch4.
 sprite('Flash', FLASH_COSTUMES, visuals.FLASH)
 eui = copy_costumes('HUD', names=['enemy_int_']) + copy_costumes('CombatFX', names=['breach_', 'severance_'])
 sprite('EnemyUI', eui, CL + visuals.ENEMY_UI)
-hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro', 'boss_the_daimyo'])
+def snug_hp(name):
+    # the pack's bar has room for 12 segments; close it up around Hotaru's 10
+    im = ST.image_1x('HUD', name)
+    out = Image.new('RGBA', (im.width - 8, im.height), (0, 0, 0, 0))
+    out.paste(im.crop((0, 0, 52, im.height)), (0, 0))
+    out.paste(im.crop((60, 0, im.width, im.height)), (52, 0))
+    return costume_from(out, name, 0, 0)
+
+
+hud = [snug_hp('hp_%02d' % k) for k in range(11)]
+hud += copy_costumes('HUD', names=['dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro', 'boss_the_daimyo'])
 hud += [costume_from(art_v2.boss_plate(t), 'boss_' + k, 0, 0) for k, t in (('dobunushi', 'DOBUNUSHI'), ('the_harmacist', 'THE HARMACIST'))]
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])

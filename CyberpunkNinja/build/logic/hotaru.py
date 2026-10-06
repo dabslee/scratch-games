@@ -81,7 +81,9 @@ def p_enter():
             pst = "cut"
             anim_force("death")
             pfr = 5.5
-    lift_ride = 0
+    # a lift ride carries over so the arriving lift can bring Hotaru up
+    if enter_dir != "B":
+        lift_ride = 0
     safe_x = px
     safe_y = py
     if enter_dir == "L" or enter_dir == "R":
@@ -573,6 +575,10 @@ def do_sever():
     shake_amp = 6
     sfxq.append("severance")
     banner_flash("execution")
+    # an Execution steadies Hotaru and refills a gourd charge
+    heat = 0
+    if has_gourd == 1:
+        gourd = min(gmax, gourd + 1)
     cfx("hit_enemy", ent_x[sev_slot], ent_y[sev_slot] + 30, pface)
     cfx("explosion", ent_x[sev_slot], ent_y[sev_slot] + 30, pface)
 
@@ -723,6 +729,8 @@ def proc_hits():
             take_hit(hq_d[hi], hq_x[hi])
         elif ht == "hazard":
             hazard(hq_d[hi])
+        elif ht == "sting":
+            sting(hq_d[hi])
     hq_t.clear()
     hq_d.clear()
     hq_x.clear()
@@ -787,6 +795,21 @@ def take_hit(dmg, sx):
     shake = 6
     shake_amp = 4
     hitstop = 3
+    if hp <= 0:
+        die()
+
+
+@proc
+def sting(dmg):
+    if pst == "dead" or pinv > 0:
+        return
+    if opt_god == 0:
+        hp -= dmg
+    pinv = 12
+    sfxq.append("zap")
+    cfx("hit", px, py + 18, 0)
+    shake = 3
+    shake_amp = 2
     if hp <= 0:
         die()
 

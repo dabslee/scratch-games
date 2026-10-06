@@ -325,12 +325,12 @@ def draw():
             costume(card)
             if ct < 12:
                 goto(-500 + ct * 42, 40)
-            elif ct < 80:
+            elif ct < 62:
                 goto(0, 40)
             else:
-                goto((ct - 80) * 42, 40)
+                goto((ct - 62) * 42, 40)
             show()
-            if ct > 94:
+            if ct > 75:
                 card = ""
                 cshown = ""
         else:
@@ -414,24 +414,24 @@ def d_draw():
         return
     if role == "box":
         costume("box")
-        goto(0, -124)
+        goto(0, 128)
     elif role == "port":
         costume(dlg_port)
-        goto(-190, -123)
+        goto(-190, 129)
         if dlg_spk == "kuro":
             effect("ghost", rand(0, 25))
         else:
             effect("ghost", 0)
     elif role == "name":
         costume(dlg_nm)
-        goto(-140, -64)
+        goto(-136, 170)
     elif role == "text":
         costume(dlg_txt)
-        goto(-136, -88)
+        goto(-136, 145)
         effect("ghost", max(0, 80 - dlg_t * 20))
     elif role == "arrow":
         costume(join("next_", floor(frame / 8) % 2))
-        goto(220, -160)
+        goto(218, 92)
     show()
 '''
 
@@ -560,10 +560,17 @@ def draw():
     if ingame == 1 and (mode != "menu" or menu == "pause"):
         costume(join("ch", chapter))
         po = (0 - px * %s - frame * %s * moving) %% 480
-        if is_clone == 1:
-            goto(po - 480, 0)
+        gj = 0
+        if chapter == 6 and frame %% 70 < 3:
+            # Hollow Floor's memory skips like a bad tape
+            gj = rand(-10, 10)
+            effect("color", rand(-40, 40))
         else:
-            goto(po, 0)
+            effect("color", 0)
+        if is_clone == 1:
+            goto(po - 480 + gj, 0)
+        else:
+            goto(po + gj, 0)
         show()
     else:
         hide()
@@ -675,4 +682,64 @@ def amb_go():
             wait(C_WIND_LEN)
     else:
         volume(0)
+'''
+
+
+# Hollow Floor is a memory coming apart: glitch pieces flicker behind the rooms.
+GLITCHBG = '''
+@flag
+def g_init():
+    hide()
+    is_clone = 0
+
+
+@on("boot")
+def g_boot():
+    if is_clone == 0:
+        for k in range(5):
+            is_clone = 1
+            gt = k * 9
+            clone()
+        is_clone = 0
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 0:
+        return
+    if ingame == 1 and chapter == 6 and (mode != "menu" or menu == "pause"):
+        gt -= 1
+        if gt <= 0:
+            gt = rand(4, 40)
+            gon = rand(2, 7)
+            costume(join("glitch_", rand(0, 11)))
+            gx = rand(-220, 220)
+            gy = rand(-60, 170)
+        if gon > 0:
+            gon -= 1
+            goto(gx + rand(-3, 3), gy)
+            effect("ghost", rand(10, 50))
+            show()
+        else:
+            hide()
+    else:
+        hide()
+'''
+
+
+# The Extraction and Muster Halls: the hollowed army stands in silhouette behind the room.
+RANKS = '''
+@flag
+def r_init():
+    hide()
+
+
+@on("t_draw")
+def draw():
+    if ingame == 1 and (room == C_ROOM_G5 or room == C_ROOM_F7) and (mode != "menu" or menu == "pause"):
+        costume("ranks")
+        goto(0 - px * 0.08, -124)
+        show()
+    else:
+        hide()
 '''

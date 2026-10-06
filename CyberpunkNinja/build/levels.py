@@ -226,7 +226,7 @@ p6.obj('sign', cx(10), bottom(10), a='NeonSign_Ramen')
 p6.obj('lantern', cx(13), bottom(10))
 p6.obj('lantern', cx(9) + 6, bottom(10))
 p6.obj('shrine', cx(22), bottom(18))
-p6.obj('trig', cx(5), 0, a='tetsu_seen')
+p6.obj('trig', -999, 0, a='tetsu_seen')
 
 # P7 Gauntlet ---------------------------------------------------------
 p7 = room('p7', 0, 'Gauntlet')
@@ -337,7 +337,7 @@ a4.obj('daicam', cx(25), bottom(18))
 a4.obj('hannya', cx(16), bottom(18), a=0)
 a4.obj('hannya', cx(21), bottom(18), a=0)
 a4.obj('door', left(29), bottom(18), a='lock')
-a4.obj('trig', cx(4), 0, a='daicam_start')
+a4.obj('trig', -999, 0, a='daicam_start')
 
 # A5 Crate alley ------------------------------------------------------
 a5 = room('a5', 1, 'Crate Alley')
@@ -414,8 +414,8 @@ a10.solid(28, 0, 29, 13)
 a10.solid(0, 0, 0, 13)
 a10.deco('z', 28, 0, 28, 13).deco('m', 0, 19, 29, 19)
 a10.obj('door', left(29), bottom(18), a='lock')
-a10.obj('puddle', cx(3), bottom(18))
-a10.obj('puddle', cx(26), bottom(18))
+a10.obj('puddle', cx(10), bottom(18))
+a10.obj('puddle', cx(19), bottom(18))
 a10.obj('door', left(0) + 8, bottom(18), a='ambush')
 a10.obj('oni', cx(21), bottom(18))
 a10.obj('sign', cx(6), top(2), a='NeonSign_Ninja')
@@ -444,7 +444,7 @@ w2.solid(0, 19, 6, 22).toxic(7, 11, 20).solid(12, 19, 16, 22).toxic(17, 22, 20).
 w2.plat(8, 10, 15).plat(18, 21, 15)
 w2.deco('g', 1, 3, 28, 3).deco('i', 14, 4, 14, 18).deco('v', 2, 6, 3, 6).deco('v', 25, 6, 26, 6)
 w2.obj('drone', cx(19), top(11))
-w2.obj('trig', cx(3), 0, a='toxic')
+w2.obj('trig', -999, 0, a='toxic')
 
 # W3 Sludge falls (first Drainlings) ----------------------------------
 w3 = room('w3', 2, 'Sludge Falls')
@@ -455,7 +455,7 @@ w3.deco('g', 1, 3, 9, 3).deco('g', 20, 3, 28, 3).deco('i', 4, 4, 4, 12)
 w3.obj('falls', cx(15), top(3), a=16)
 w3.obj('drainling', cx(6), bottom(18))
 w3.obj('drainling', cx(25), bottom(18))
-w3.obj('trig', cx(4), 0, a='drainling')
+w3.obj('trig', -999, 0, a='drainling')
 
 # W4 Pump station (the sludge tide) -----------------------------------
 w4 = room('w4', 2, 'Pump Station')
@@ -466,14 +466,13 @@ w4.plat(3, 7, 12).plat(13, 17, 12).plat(21, 25, 12).plat(9, 12, 8).plat(12, 15, 
 w4.deco('i', 19, 2, 19, 11).deco('i', 26, 2, 26, 11).deco('z', 1, 18, 8, 18).deco('z', 12, 18, 28, 18)
 w4.obj('drainling', cx(5), bottom(18))
 w4.obj('drainling', cx(24), bottom(18))
-w4.obj('trig', cx(3), 0, a='tide')
+w4.obj('trig', -999, 0, a='tide')
 w4.tide = 13
 
 # W4s Overflow cistern (Memory Shard challenge) ------------------------
 w4s = room('w4s', 2, 'Overflow Cistern')
 w4s.solid(0, 0, 29, 2).solid(0, 0, 1, 22).solid(28, 0, 29, 22)
 w4s.solid(0, 19, 11, 22).solid(16, 19, 29, 22).plat(12, 15, 19)
-w4s.toxic(3, 8, 18, 18).toxic(20, 25, 18, 18)
 w4s.plat(4, 9, 14).plat(20, 25, 14).plat(11, 18, 9)
 w4s.deco('g', 2, 3, 27, 3)
 w4s.obj('drainling', cx(10), bottom(18))
@@ -494,7 +493,7 @@ w5.obj('daicam', cx(25), bottom(18), a='lost')
 w5.obj('drainling', cx(9), bottom(18))
 w5.obj('drainling', cx(20), bottom(18))
 w5.obj('drainling', cx(24), bottom(13))
-w5.obj('trig', cx(4), 0, a='daicam_sewer')
+w5.obj('trig', -999, 0, a='daicam_sewer')
 
 # W6 Lock gate ------------------------------------------------------------
 w6 = room('w6', 2, 'Lock Gate')
@@ -503,7 +502,6 @@ w6.solid(13, 3, 16, 12).deco('z', 13, 12, 16, 12).deco('g', 13, 5, 16, 5).deco('
 w6.plat(4, 8, 14).plat(21, 25, 14)
 w6.deco('i', 3, 4, 3, 18).deco('i', 26, 4, 26, 18)
 w6.obj('drainling', cx(21), bottom(18))
-w6.obj('trig', cx(12), 0, a='dobu_gate')
 
 # W7 Maintenance shrine ---------------------------------------------------
 w7 = room('w7', 2, 'Maintenance Shrine')
@@ -512,6 +510,7 @@ w7.solid(0, 19, 8, 22).toxic(9, 11, 20).solid(12, 19, 29, 22)
 w7.plat(8, 12, 15)
 w7.deco('g', 1, 3, 28, 3).deco('c', 13, 12, 22, 12)
 w7.obj('shrine', cx(18), bottom(18))
+w7.obj('trig', cx(14), 0, a='dobu_gate')
 w7.obj('lantern', cx(14), top(3))
 w7.obj('lantern', cx(21), top(3))
 
@@ -558,7 +557,7 @@ b2.obj('laser', cx(19), bottom(18), b=50)
 b2.obj('hannya', cx(14), bottom(18), a=0)
 b2.obj('croupier', cx(25), bottom(18), a=0)
 b2.obj('door', left(29), bottom(18), a='lock')
-b2.obj('trig', cx(3), 0, a='lasers')
+b2.obj('trig', -999, 0, a='lasers')
 
 # B3 Slot floor -------------------------------------------------------
 b3 = room('b3', 3, 'Slot Floor')
@@ -602,7 +601,7 @@ b5.obj('croupier', cx(20), bottom(13), a=0)
 b5.obj('hannya', cx(16), bottom(18), a=1)
 b5.obj('door', left(29), bottom(18), a='lock')
 b5.obj('sign', cx(15), top(3), a='NeonSign_Jackpot')
-b5.obj('trig', cx(4), 0, a='rollers')
+b5.obj('trig', -999, 0, a='rollers')
 
 # B5s Shard room -------------------------------------------------------
 b5s = room('b5s', 3, 'Back Room')
@@ -680,7 +679,7 @@ c2.solid(22, 14, 27, 18).deco('g', 22, 14, 27, 14)
 c2.obj('drone', cx(20), top(10))
 c2.obj('toro', cx(24), bottom(13))
 c2.obj('bonsai', cx(10), bottom(8))
-c2.obj('trig', cx(3), 0, a='vents')
+c2.obj('trig', -999, 0, a='vents')
 
 # C3 Herb rows ------------------------------------------------------
 c3 = room('c3', 4, 'Herb Rows')
@@ -702,16 +701,16 @@ c4.solid(0, 19, 8, 22).solid(9, 21, 20, 22).solid(21, 13, 29, 22).solid(0, 0, 29
 c4.solid(0, 3, 0, 13)
 c4.spikes(9, 20, 20)
 c4.mist(15, 6, 19, pulse=True).deco('v', 15, 20, 16, 20)
-c4.plat(3, 7, 13).plat(10, 12, 16)
+c4.plat(3, 7, 13)
 c4.deco('g', 21, 13, 29, 13)
 c4.obj('turret', left(1), top(8) - 8, a=90)
 c4.obj('drone', cx(10), top(11))
 c4.obj('toro', cx(24), bottom(12))
 c4.obj('bonsai', cx(27), bottom(12))
 c4.obj('warden', cx(23), bottom(12), a=0)
-c4.obj('warden', cx(28), bottom(12), a=1)
+c4.obj('warden', cx(5), bottom(12), a=1)
 c4.obj('daicam', cx(26), bottom(12), a='sponsor')
-c4.obj('trig', cx(4), 0, a='pulse')
+c4.obj('trig', -999, 0, a='pulse')
 c4.obj('trig', cx(13), 0, a='daicam4')
 
 # C5 Drying lofts (down the shaft; heat vent up to the seed vault) -----
@@ -815,7 +814,7 @@ d2.plat(8, 11, 19).plat(20, 24, 19)
 d2.obj('drone', cx(10), top(9))
 d2.obj('drone', cx(22), top(8))
 d2.obj('hannya', cx(16), bottom(14), a=0)
-d2.obj('trig', cx(2), 0, a='wind')
+d2.obj('trig', -999, 0, a='wind')
 d2.wind, d2.moving = -1.3, 1
 
 # D3 Signal line -------------------------------------------------------
@@ -828,7 +827,7 @@ d3.plat(10, 12, 19).plat(22, 24, 19)
 d3.obj('post', 0, top(ROOF), a=150, b=0)
 d3.obj('hannya', cx(14), bottom(14), a=1)
 d3.obj('croupier', cx(27), bottom(14), a=0)
-d3.obj('trig', cx(2), 0, a='posts')
+d3.obj('trig', -999, 0, a='posts')
 d3.wind, d3.moving = -1.3, 1
 
 # D4 Spiral junction (climb to the upper line; side door to the bay) ----
@@ -841,7 +840,7 @@ for r in range(3, 15, 3):
 d4.deco('l', 25, 4, 25, 18)
 d4.plat(12, 16, 12).plat(18, 22, 9).plat(13, 17, 6).plat(20, 24, 3)
 d4.obj('shrine', cx(14), bottom(18))
-d4.obj('trig', cx(4), 0, a='junction')
+d4.obj('trig', -999, 0, a='junction')
 
 # D5 Upper line --------------------------------------------------------
 d5 = room('d5', 5, 'Upper Line')
@@ -921,7 +920,7 @@ e2.phase(15, 18, 12, 'G').plat(3, 6, 14)
 e2.obj('laser', cx(17), bottom(18), b=1)
 e2.obj('drone', cx(8), top(9))
 e2.obj('hannya', cx(23), bottom(14), a=0)
-e2.obj('trig', cx(3), 0, a='sump_mem')
+e2.obj('trig', -999, 0, a='sump_mem')
 
 # E3 Memory: Tetsu's roof ---------------------------------------------
 e3 = room('e3', 6, "Memory: Tetsu's Roof")
@@ -941,7 +940,7 @@ e4.phase(4, 8, 15, 'G').phase(10, 14, 12, 'H').phase(4, 8, 9, 'G').phase(10, 14,
 e4.plat(16, 19, 5).plat(22, 25, 3)
 e4.obj('warden', cx(18), bottom(18), a=0)
 e4.obj('drone', cx(22), top(10))
-e4.obj('trig', cx(5), 0, a='academy_mem')
+e4.obj('trig', -999, 0, a='academy_mem')
 
 # E5 Possession -------------------------------------------------------
 e5 = room('e5', 6, 'Possession')
@@ -951,7 +950,7 @@ e5.solid(0, 2, 0, 18).solid(29, 2, 29, 13)
 e5.spikes(8, 21, 20)
 e5.plat(9, 12, 16).plat(16, 20, 16).plat(1, 3, 14).plat(4, 7, 10).plat(3, 6, 5)
 e5.obj('drone', cx(14), top(10))
-e5.obj('trig', cx(4), 0, a='possess')
+e5.obj('trig', -999, 0, a='possess')
 e5.flip = 1
 
 # E5s Locked memory (Memory Shard challenge) ---------------------------
@@ -1027,7 +1026,7 @@ f3.phase(8, 11, 17, 'G').phase(13, 16, 17, 'H').phase(18, 21, 17, 'G')
 f3.obj('laser', cx(12), bottom(16), b=75)
 f3.obj('laser', cx(17), bottom(16), b=75)
 f3.obj('turret', left(29), top(9) - 8, a=-90)
-f3.obj('trig', cx(3), 0, a='holo')
+f3.obj('trig', -999, 0, a='holo')
 
 # F4 Climbing wall (exit up) ------------------------------------------
 f4 = room('f4', 7, 'Climbing Wall')
@@ -1075,9 +1074,8 @@ f6.obj('trig', cx(10), 0, a='intake')
 
 # F7 Extraction hall ---------------------------------------------------
 f7 = room('f7', 7, 'Extraction Hall')
+f7.flags.append('ranks')
 f7.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
-for c in range(3, 28, 3):
-    f7.obj('soldier', cx(c), bottom(18))
 f7.obj('post', 0, top(19), a=170, b=40)
 f7.obj('shell', cx(24), bottom(18), a=1)
 f7.obj('trig', cx(8), 0, a='extraction')
@@ -1091,6 +1089,16 @@ f8.obj('mukuro', cx(22), bottom(18), a=2)
 f8.obj('trig', cx(4), 0, a='muk_start')
 f8.flags.append('boss')
 
+# F9 Spire lift (the ride up to the Tenshu) ------------------------------
+f9 = room('f9', 7, 'Spire Lift')
+f9.solid(0, 19, 8, 22).solid(13, 19, 29, 22).solid(9, 21, 12, 22)
+f9.solid(0, 0, 8, 7).solid(13, 0, 29, 7).solid(0, 8, 0, 18).solid(29, 8, 29, 18)
+f9.deco('g', 1, 7, 7, 7).deco('g', 14, 7, 28, 7).deco('z', 8, 0, 8, 7).deco('z', 13, 0, 13, 7)
+f9.obj('start', cx(4), bottom(18))
+f9.obj('lift', left(9), top(19), a='up')
+f9.obj('lantern', cx(4), top(8))
+f9.obj('lantern', cx(20), top(8))
+
 
 # =====================================================================
 # CHAPTER 8: THE TENSHU
@@ -1098,8 +1106,9 @@ f8.flags.append('boss')
 
 # G1 Cloud gate -------------------------------------------------------
 g1 = room('g1', 8, 'Cloud Gate')
-g1.solid(0, 19, 29, 22).solid(0, 0, 0, 18).solid(29, 0, 29, 13)
-g1.deco('y', 1, 19, 28, 19)
+g1.solid(0, 19, 8, 22).solid(13, 19, 29, 22).solid(0, 0, 0, 18).solid(29, 0, 29, 13)
+g1.obj('lift', left(9), top(19), a='arrive')
+g1.deco('y', 1, 19, 8, 19).deco('y', 13, 19, 28, 19)
 g1.obj('start', cx(3), bottom(18))
 g1.obj('shrine', cx(6), bottom(18))
 g1.obj('lantern', cx(12), top(4))
@@ -1114,7 +1123,7 @@ g2.plat(8, 10, 17).plat(19, 21, 17).plat(13, 16, 11)
 g2.obj('shell', cx(15), bottom(15), a=1)
 g2.obj('drone', cx(9), top(8))
 g2.obj('drone', cx(21), top(7))
-g2.obj('trig', cx(3), 0, a='bailey')
+g2.obj('trig', -999, 0, a='bailey')
 g2.wind = -1.0
 
 # G3 Castle tiers (climb; exit up) --------------------------------------
@@ -1151,14 +1160,13 @@ g4s.flags.append('challenge')
 
 # G5 Muster hall ------------------------------------------------------
 g5 = room('g5', 8, 'Muster Hall')
+g5.flags.append('ranks')     # the waiting army stands in silhouette behind the hall
 g5.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
-for c in range(3, 28, 2):
-    g5.obj('soldier', cx(c), bottom(18))
 g5.obj('daicam', cx(25), bottom(18), a='stream')
 g5.obj('shell', cx(14), bottom(18), a=0)
 g5.obj('warden', cx(22), bottom(18), a=1)
 g5.obj('door', left(29), bottom(18), a='lock')
-g5.obj('trig', cx(6), 0, a='muster')
+g5.obj('trig', -999, 0, a='muster')
 
 # G6 Last shrine ------------------------------------------------------
 g6 = room('g6', 8, 'Last Shrine')
@@ -1272,6 +1280,7 @@ link(f5, 'U', f5s)
 link(f5, 'R', f6)
 link(f6, 'R', f7)
 link(f7, 'R', f8)
+link(f9, 'U', g1)
 link(g1, 'R', g2)
 link(g2, 'R', g3)
 link(g3, 'U', g4)

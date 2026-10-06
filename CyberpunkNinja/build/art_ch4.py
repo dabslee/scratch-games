@@ -43,21 +43,16 @@ def rail_atlas():
 
 # ------------------------------------------------------------------ backgrounds
 def sky():
-    """Dusk above the cloud layer, 240x180."""
+    """Night above the cloud layer, 240x180: stars over the city's violet glow."""
     im = Image.new('RGBA', (240, 180), C('ink'))
-    gradient(im, 0, 50, 'ink', 'night2')
-    gradient(im, 50, 100, 'night2', 'purple1')
-    gradient(im, 100, 140, 'purple1', 'mag1')
-    gradient(im, 140, 180, 'mag1', 'red2')
+    gradient(im, 0, 60, 'ink', 'night2')
+    gradient(im, 60, 110, 'night2', 'night3')
+    gradient(im, 110, 150, 'night3', 'purple1')
+    gradient(im, 150, 180, 'purple1', 'mag1')
     rng = random.Random(41)
-    for _ in range(40):
-        x, y = rng.randrange(240), rng.randrange(0, 70)
+    for _ in range(60):
+        x, y = rng.randrange(240), rng.randrange(0, 95)
         im.putpixel((x, y), C(rng.choice(['white', 'steel', 'purple3'])))
-    # a low, hazy sun sinking into the clouds (tiles every 240 px)
-    d = ImageDraw.Draw(im)
-    d.ellipse([150, 128, 190, 168], fill=C('orange'))
-    for y in range(132, 168, 4):
-        d.line([148, y, 192, y], fill=C('red2'))
     return im
 
 

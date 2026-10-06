@@ -2428,6 +2428,7 @@ def m_strike():
 def m_beaten():
     st = "beaten"
     t = 0
+    muk_bx = x
     ehp = 0
     sh_x = 999
     ent_alive[slot] = 0
@@ -2655,7 +2656,14 @@ def m_update():
 def m_draw():
     effect("ghost", 0)
     if st == "beaten":
-        costume(join("death_", min(5, floor(t / 6))))
+        # he slumps and stays down, unless Hotaru carries him off
+        if muk_carry == 1:
+            hide()
+            return
+        if t < 18:
+            costume(join("death_", floor(t / 6)))
+        else:
+            costume("slump")
     elif guard_t > 0:
         costume(join("deflect_", min(2, floor((8 - guard_t) / 3))))
     elif st == "wait":
@@ -3157,7 +3165,8 @@ def tick():
             x = 262 - (ph - 30) * 14
             if x < -262:
                 x = 999
-            elif abs(x - px) < 12 and py < y + 42 and py + 34 > y:
+            elif abs(x - px) < 14 and py < y + 21 and py + 30 > y + 7:
+                # a Kanshi crow skimming the roof: jump it or Phase Step through
                 hit_player(2, 1, x + 30)
 
 
@@ -3170,8 +3179,8 @@ def draw():
             goto(222, y + 64)
             show()
         elif x < 900 and ph >= 30:
-            costume("post")
-            goto(x + shx, y + shy)
+            costume(join("crow_", floor(frame / 3) % 2))
+            goto(x + shx, y + 14 + shy + sin(frame * 40) * 2)
             show()
         else:
             hide()
@@ -3715,6 +3724,21 @@ if daimyo_dead == 0:
     mk_st = "hidden"
     ally_x = 999
     ally_st = "fight"
+    ally_hp = 4
+    ally_lives = shards
+    ally_rev = 0
+    ally_inv = 0
+    ally_def = 0
+    ally_dash = 0
+    exo_x = x
+    exo_dark = 0
+    ally_shot = 0
+    fy_floor = fy
+    dm_st = "wait"
+    dm_t = 0
+    dm_fc = -1
+    dm_tell = 0
+    dm_fl = 0
     if kbranch == 1 and kuro_in == 1:
         ally_x = -150
     boss_hp = 20
@@ -3732,6 +3756,12 @@ if daimyo_dead == 0:
     clone()
     role = "ally"
     at = 0
+    ast = ""
+    act_t = 0
+    acool = 30
+    aface = 1
+    clone()
+    role = "shard"
     clone()
     is_clone = 0
     ui_slot.append(slot)
@@ -3802,9 +3832,48 @@ def dm_slash(reach, dmg, last_hit, gain):
                 st = "recoil"
                 t = 0
     elif ally_x < 900 and abs(ally_x - x) < reach + 10 and (ally_x - x) * face > 0:
-        # Kuro takes the blow on his blade
-        sfxq.append("muk_guard")
+        ally_hit(0)
+
+
+@proc
+def ally_hit(breach):
+    # Kuro fights like Hotaru: he deflects most cuts and Phase Steps most Breaches
+    if ally_inv > 0 or ally_dash > 0 or ally_st == "down" or ally_st == "fall" or ally_x > 900:
+        return
+    if breach == 0 and rand(1, 10) <= 6:
+        sfxq.append("deflect")
         cfx("deflect", ally_x, fy + 30, 0 - face)
+        integ = min(imax, integ + 2)
+        int_t = 0
+        ally_def = 9
+        return
+    if breach == 1 and rand(1, 10) <= 5:
+        ally_dash = 8
+        sfxq.append("dash")
+        return
+    ally_hurt()
+
+
+@proc
+def ally_hurt():
+    if ally_inv > 0 or ally_st == "down" or ally_st == "fall":
+        return
+    ally_hp -= 1
+    ally_inv = 30
+    sfxq.append("thug_hurt")
+    cfx("hit", ally_x, fy + 30, 0)
+    if ally_hp <= 0:
+        if ally_lives > 0:
+            # a Memory Shard burns to put him back on his feet
+            ally_lives -= 1
+            ally_hp = 4
+            ally_rev = 50
+            ally_inv = 50
+            sfxq.append("sync")
+            cfx("sync", ally_x, fy + 30, 0)
+        else:
+            ally_st = "down"
+            sfxq.append("stagger")
 
 
 @proc
@@ -3849,9 +3918,10 @@ def dm_next_phase():
     elif dm_ph == 2:
         dm_ph = 3
         st = "emerge"
-        mk_x = eye_x
+        exo_x = min(max(eye_x, -170), 170)
+        mk_x = exo_x
         mk_st = "man"
-        x = eye_x
+        x = exo_x
         if ally_x < 900:
             ally_st = "fall"
             broadcast("ev_kuro_falls")
@@ -3890,6 +3960,9 @@ def dm_update():
             t = 0
         else:
             dm_rec(30)
+    if ally_shot > 0:
+        ally_shot = 0
+        ally_hurt()
     dm_vul = 0
     if st == "recover" or st == "recoil" or st == "broken" or st == "descend":
         dm_vul = 1
@@ -3918,24 +3991,69 @@ def dm_update():
     if int_t > 80 and integ > 0 and st != "broken" and t % 20 == 0:
         integ = max(0, integ - 1)
     x = min(max(x, -200), 200)
+    # hitboxes cover the whole figure: the armor stands about 170 tall, the man about 64
     if dm_ph == 1:
         ent_x[slot] = x
         ent_y[slot] = y
-        ent_w[slot] = 16
-        ent_h[slot] = 80
+        ent_w[slot] = 26
+        ent_h[slot] = 170
     elif dm_ph == 2:
         ent_x[slot] = eye_x
         ent_y[slot] = eye_y
-        ent_w[slot] = 16
-        ent_h[slot] = 80
+        ent_w[slot] = 26
+        ent_h[slot] = 170
     else:
         ent_x[slot] = x
         ent_y[slot] = fy
-        ent_w[slot] = 10
-        ent_h[slot] = 34
+        ent_w[slot] = 11
+        ent_h[slot] = 50
+        if flash_t > 0:
+            flash_t -= 1
     ent_int[slot] = integ
+    dm_publish()
     boss_hp = ceil(ehp)
     boss_int = integ
+
+
+@proc
+def dm_publish():
+    # the man, the turrets and the cable are other clones: they draw from these
+    dm_st = st
+    dm_t = t
+    dm_fc = face
+    dm_fl = flash_t
+    dm_tell = 0
+    if dm_ph == 3:
+        if (st == "draw" and t >= 7 and t < 16) or (st == "feint" and ((t >= 6 and t < 9) or (t >= 21 and t < 30))):
+            dm_tell = 1
+        if st == "cut3" and t % 12 >= 3 and t < 37:
+            dm_tell = 1
+        if (st == "storm" or st == "rend") and hi <= len(dm_hits):
+            if dm_hits[hi] - t >= 1 and dm_hits[hi] - t <= 8:
+                dm_tell = 1
+
+
+@proc
+def dm_combo(kind):
+    # a long string to deflect in rhythm; the last cut is heavy and, deflected, staggers him
+    dm_go(kind)
+    sfxq.append("windup")
+    hi = 1
+    dm_hits.clear()
+    if kind == "storm":
+        dm_hits.append(18)
+        dm_hits.append(28)
+        dm_hits.append(38)
+        dm_hits.append(58)
+        dm_hits.append(66)
+        dm_hits.append(74)
+        dm_hits.append(100)
+    else:
+        dm_hits.append(20)
+        dm_hits.append(44)
+        dm_hits.append(68)
+        dm_hits.append(80)
+        dm_hits.append(104)
 
 
 @proc
@@ -3946,7 +4064,7 @@ def dm_exo():
         if acd > 0:
             acd -= 1
         ad = abs(dx)
-        if acd == 0 and pst != "dead" and ally_x < 900 and ally_st != "fall" and rand(1, 4) == 1:
+        if acd == 0 and pst != "dead" and ally_x < 900 and ally_st != "fall" and ally_st != "down" and rand(1, 3) == 1:
             # he turns on Kuro: his swings land on the other side, an opening for Hotaru
             dm_go("iaido")
             if ally_x > x:
@@ -4003,6 +4121,8 @@ def dm_exo():
                 pq_vy.append(0)
             if abs(dx) < 54 and py < fy + 30:
                 hit_player(3, 1, x)
+            if abs(ally_x - x) < 70:
+                ally_hit(1)
         if t >= 46:
             dm_rec(30)
     elif st == "charge":
@@ -4019,6 +4139,8 @@ def dm_exo():
                 hitdone = 1
                 hit_player(3, 1, x - face * 10)
             prel = rel
+            if ally_x < 900 and abs(ally_x - x) < 16:
+                ally_hit(1)
             if (x <= -200 or x >= 200) and st == "charge":
                 shake = 8
                 shake_amp = 4
@@ -4072,9 +4194,15 @@ def dm_plug():
             tsx = 224
             if nshot % 2 == 1:
                 tsx = -224
+            # every other volley goes for Kuro while he stands
+            tgx = px
+            tgy = py + 18
+            if nshot % 2 == 0 and ally_x < 900 and ally_st != "down" and ally_st != "fall":
+                tgx = ally_x
+                tgy = fy + 30
             for k in range(3):
-                ax = px - tsx
-                ay = py + 18 - 30
+                ax = tgx - tsx
+                ay = tgy - 30
                 dd = sqrt(ax * ax + ay * ay) + 0.01
                 ang = (k - 1) * 8
                 vx0 = ax / dd * 6
@@ -4116,20 +4244,28 @@ def dm_plug():
 def dm_man():
     # phase 3: the Daimyo in person, with Tamakiri
     if st == "emerge":
-        if t >= 50:
+        # the armor crashes to the floor where it hung, and he steps out of it
+        eye_y = max(fy, eye_y - 8)
+        if t == 30:
+            x = exo_x + 26
+            sfxq.append("vent")
+        mk_x = x
+        if t >= 60:
             st = "move"
             t = 0
             acd = 30
         return
+    eye_y = fy
+    exo_dark = min(45, exo_dark + 1)
     if st == "move":
         dm_face()
         if acd > 0:
             acd -= 1
         ad = abs(dx)
         if acd == 0 and pst != "dead":
-            roll = rand(1, 4)
+            roll = rand(1, 6)
             if roll == last:
-                roll = roll % 4 + 1
+                roll = roll % 6 + 1
             last = roll
             if roll == 1:
                 dm_go("draw")
@@ -4137,10 +4273,37 @@ def dm_man():
                 dm_go("feint")
             elif roll == 3 and ad < 120:
                 dm_go("cut3")
-            else:
+            elif roll == 4:
                 dm_go("grab")
+            elif roll == 5:
+                dm_combo("storm")
+            else:
+                dm_combo("rend")
         elif ad > 70:
             x += face * 2.4
+    elif st == "storm" or st == "rend":
+        if hi <= len(dm_hits):
+            nh = dm_hits[hi]
+            if nh - t > 7:
+                dm_face()
+                if abs(px - x) > 46:
+                    x += face * 3.2
+            if st == "rend" and hi > 1 and nh - t == 12:
+                # he blinks to Hotaru's other side between cuts
+                mfx("afterimage", x, fy + 30, face)
+                x = min(max(px + face * 40, -200), 200)
+                sfxq.append("dash")
+                dm_face()
+            if t == nh:
+                lh = 0
+                dd = 2
+                if hi == len(dm_hits):
+                    lh = 1
+                    dd = 3
+                dm_slash(66, dd, lh, 2)
+                hi += 1
+        elif t >= dm_hits[len(dm_hits)] + 14 and (st == "storm" or st == "rend"):
+            dm_rec(40)
     elif st == "draw":
         # iaido: a dash-cut along the floor
         if t < 16:
@@ -4210,27 +4373,74 @@ def dm_man():
 
 @proc
 def al_update():
-    # Kuro, wearing his own body again: he fights the armor beside Hotaru
+    # Kuro, wearing his own body again, fights the armor the way Hotaru does
     at += 1
     if ally_x > 900:
         return
-    if ally_st == "fall" or dm_ph >= 3:
+    if dm_ph >= 3:
         ally_st = "fall"
         return
-    if boss_on == 0:
+    if ally_st == "down" or boss_on == 0:
+        return
+    if ally_inv > 0:
+        ally_inv -= 1
+    if ally_rev > 0:
+        ally_rev -= 1
+    if ally_def > 0:
+        ally_def -= 1
+    if ally_dash > 0:
+        ally_dash -= 1
+        ally_x = min(max(ally_x + aface * 7, -205), 205)
+        if ally_dash % 2 == 0:
+            mfx("afterimage", ally_x, fy + 30, aface)
         return
     bx2 = ent_x[boss_slot]
-    want = bx2 - 50
+    reach_ok = abs(ent_y[boss_slot] - fy) < 40
+    if ast == "atk":
+        # a three-cut string into an opening
+        act_t += 1
+        if act_t == 6 or act_t == 18:
+            sfxq.append("muk_slash")
+            if abs(bx2 - ally_x) < 64 and reach_ok:
+                ent_dmg[boss_slot] = ent_dmg[boss_slot] + 0.5
+                ent_idmg[boss_slot] = ent_idmg[boss_slot] + 1
+                ent_hk[boss_slot] = "ally"
+                cfx("hit_enemy", bx2 - aface * 6, fy + 50, aface)
+        if act_t >= 28:
+            ast = ""
+            acool = 30
+        return
+    if ast == "heavy":
+        # Phase Step in, then a Heavy Strike into the guard to build Stance
+        act_t += 1
+        if act_t < 8:
+            ally_x = min(max(ally_x + aface * 6, -205), 205)
+            if act_t % 2 == 0:
+                mfx("afterimage", ally_x, fy + 30, aface)
+        if act_t == 12:
+            sfxq.append("muk_slash")
+            if abs(bx2 - ally_x) < 70 and reach_ok:
+                ent_dmg[boss_slot] = ent_dmg[boss_slot] + 0.5
+                ent_idmg[boss_slot] = ent_idmg[boss_slot] + 3
+                ent_hk[boss_slot] = "heavy"
+                cfx("hit_enemy", bx2 - aface * 6, fy + 50, aface)
+        if act_t >= 26:
+            ast = ""
+            acool = 40
+        return
+    # flank: take the side away from Hotaru so the armor has to split its attention
     if px < bx2:
         want = bx2 + 50
-    if dm_ph == 2 and dm_vul == 0:
-        want = min(max(want, -190), 190)
+    else:
+        want = bx2 - 50
+    if want > 200 or want < -200:
+        want = bx2 * 2 - want
     if abs(want - ally_x) > 6:
         if want > ally_x:
-            ally_x += 2.6
+            ally_x += 3
             aface = 1
         else:
-            ally_x -= 2.6
+            ally_x -= 3
             aface = -1
         ally_st = "run"
     else:
@@ -4239,13 +4449,14 @@ def al_update():
             aface = 1
         else:
             aface = -1
-        if at % 70 == 10 and abs(ent_y[boss_slot] - fy) < 40:
-            sfxq.append("muk_slash")
-            if dm_vul == 1:
-                ent_dmg[boss_slot] = ent_dmg[boss_slot] + 1
-                ent_idmg[boss_slot] = ent_idmg[boss_slot] + 1
-                ent_hk[boss_slot] = "ally"
-                cfx("hit_enemy", bx2, fy + 40, aface)
+        if acool > 0:
+            acool -= 1
+        elif reach_ok and dm_vul == 1:
+            ast = "atk"
+            act_t = 0
+        elif reach_ok and rand(1, 150) == 1:
+            ast = "heavy"
+            act_t = 0
 
 
 @proc
@@ -4258,8 +4469,9 @@ def dm_draw():
         elif dm_ph == 2:
             costume("exo_broken_0")
         elif dm_ph == 3:
+            # the empty armor stays where he left it, going dark behind the duel
             costume("exo_broken_0")
-            effect("ghost", 45)
+            effect("brightness", -20 - exo_dark)
         elif st == "iaido":
             if t < 26:
                 costume("exo_wind_0")
@@ -4305,7 +4517,8 @@ def dm_draw():
         if dm_ph == 2:
             goto(eye_x + shx, eye_y + shy)
         elif dm_ph == 3:
-            goto(mk_x + 30 + shx, fy + shy)
+            point(90)
+            goto(exo_x + shx, eye_y + shy)
         elif st == "broken":
             goto(x + shx + (frame % 4 < 2) * 2 - 1, y + shy)
         else:
@@ -4336,70 +4549,100 @@ def dm_draw():
         if mk_st == "man" or mk_st == "dead":
             if mk_st == "dead":
                 costume("man_dead")
-            elif st == "emerge":
+            elif dm_st == "emerge":
+                if dm_t < 30:
+                    hide()
+                    return
                 costume("man_idle_0")
-                effect("ghost", max(0, 100 - t * 3))
-            elif st == "draw":
-                if t < 16:
+                effect("ghost", max(0, 100 - (dm_t - 30) * 5))
+            elif dm_st == "draw":
+                if dm_t < 16:
                     costume("man_wind")
                 else:
                     costume("man_cut")
-            elif st == "feint":
-                if t < 14:
+            elif dm_st == "feint":
+                if dm_t < 14:
                     costume("man_feint")
-                elif t < 30:
+                elif dm_t < 30:
                     costume("man_wind")
                 else:
                     costume("man_cut")
-            elif st == "cut3":
-                if t % 12 < 9:
+            elif dm_st == "cut3":
+                if dm_t % 12 < 9:
                     costume("man_wind")
                 else:
                     costume("man_cut")
-            elif st == "grab":
-                if t < 24:
+            elif dm_st == "storm" or dm_st == "rend":
+                if dm_tell == 1:
+                    costume("man_wind")
+                elif dm_t > 4:
+                    costume("man_cut")
+                else:
+                    costume("man_feint")
+            elif dm_st == "grab":
+                if dm_t < 24:
                     costume("man_grab0")
                 else:
                     costume("man_grab1")
-            elif st == "broken" or st == "recoil":
+            elif dm_st == "broken" or dm_st == "recoil":
                 costume("man_hurt")
-            elif st == "move" and abs(px - x) > 70:
+            elif dm_st == "move" and abs(px - mk_x) > 70:
                 costume(join("man_walk_", floor(frame / 8) % 2))
             else:
                 costume(join("man_idle_", floor(frame / 12) % 2))
-            tell = 0
-            if (st == "draw" and t >= 7 and t < 16) or (st == "feint" and ((t >= 6 and t < 9) or (t >= 21 and t <= 30))):
-                tell = 1
-            if st == "cut3" and t % 12 >= 3 and t % 12 < 12 and t < 37:
-                tell = 1
-            if tell == 1:
+            if mk_st == "dead":
+                effect("brightness", 0)
+            elif dm_tell == 1:
                 effect("brightness", 100)
-            elif flash_t > 0 and dm_ph == 3:
-                flash_t -= 1
+            elif dm_fl > 0:
                 effect("brightness", 60)
-            if face == 1:
+            elif dm_st == "grab" and dm_t < 24:
+                effect("brightness", 40 * (frame % 6 < 3))
+            if dm_fc == 1:
                 point(90)
             else:
                 point(-90)
-            if st == "broken":
+            if dm_st == "broken":
                 goto(mk_x + shx + (frame % 4 < 2) * 2 - 1, fy + shy)
             else:
                 goto(mk_x + shx, fy + shy)
             show()
         else:
             hide()
+    elif role == "shard":
+        # a Memory Shard burning away over Kuro as it puts him back on his feet
+        if ally_rev > 0 and ally_x < 900:
+            costume(join("shard_", floor(frame / 3) % 6))
+            goto(ally_x + shx, fy + 76 + (50 - ally_rev) * 1.2 + shy)
+            effect("ghost", max(0, 60 - ally_rev * 2))
+            effect("brightness", 30)
+            show()
+        else:
+            hide()
     else:
         # Kuro, in Mukuro's body
         if ally_x < 900 and kuro_in == 1:
-            if ally_st == "fall":
+            if ally_st == "fall" or ally_st == "down":
                 costume("mk_lie")
+            elif ally_dash > 0 or (ast == "heavy" and act_t < 8):
+                costume(join("mk_dash_", min(3, floor(frame / 2) % 4)))
+            elif ast == "heavy":
+                costume(join("mk_heavy_", min(5, floor((act_t - 8) / 3))))
+            elif ast == "atk":
+                costume(join(join("mk_attack", min(3, floor(act_t / 10) + 1)), join("_", min(3, floor((act_t % 10) / 3)))))
+            elif ally_def > 0:
+                costume(join("mk_deflect_", min(2, floor((9 - ally_def) / 3))))
+            elif ally_inv > 20 and ally_rev == 0:
+                costume(join("mk_hurt_", floor(frame / 4) % 2))
             elif ally_st == "run":
                 costume(join("mk_run_", floor(frame / 3) % 8))
-            elif at % 70 >= 4 and at % 70 < 20:
-                costume(join("mk_attack1_", min(3, floor((at % 70 - 4) / 4))))
             else:
                 costume(join("mk_idle_", floor(frame / 8) % 4))
             effect("color", 160)
+            if ally_rev > 0:
+                effect("brightness", 50 * (frame % 6 < 3))
+            elif ally_inv > 0:
+                effect("ghost", 40 * (frame % 4 < 2))
             if aface == 1:
                 point(90)
             else:
@@ -4846,7 +5089,7 @@ if harm_dead == 0:
     x = O_X[oi]
     y = O_Y[oi]
     myobj = oi
-    add_ent("harm", x, y, 10, 34, 20, 16, 1)
+    add_ent("harm", x, y, 9, 48, 20, 16, 1)
     boss_slot = slot
     st = "wait"
     t = 0
@@ -4907,10 +5150,10 @@ def hm_go(s2):
 def hm_vial(tt):
     # an arc that lands on Hotaru in about tt frames
     vx = (px - x) / tt
-    vy = (py + 14 - (y + 30) + 0.15 * tt * tt) / tt
+    vy = (py + 14 - (y + 24) + 0.15 * tt * tt) / tt
     pq_t.append("vial")
-    pq_x.append(x + face * 8)
-    pq_y.append(y + 30)
+    pq_x.append(x + face * 6)
+    pq_y.append(y + 24)
     pq_vx.append(vx)
     pq_vy.append(vy)
 
@@ -4936,6 +5179,22 @@ def hm_beaten():
 def hm_update():
     t += 1
     if st == "beaten":
+        if harm_dead == 2:
+            # she gets up and limps off, away from Hotaru
+            st = "limp"
+            t = 0
+            if px > x:
+                face = -1
+            else:
+                face = 1
+        return
+    if st == "limp":
+        fr += 0.07
+        x += face * 0.9
+        if abs(x) > 280:
+            st = "gone"
+        return
+    if st == "gone":
         return
     if st == "wait":
         fr += 0.15
@@ -5128,7 +5387,7 @@ def hm_update():
             ent_stag[slot] = 0
             acd = 10
     int_t += 1
-    if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
+    if int_t > 150 and integ > 0 and st != "broken" and t % 45 == 0:
         integ = max(0, integ - 1)
     hit_t += 1
     if hit_t > 40:
@@ -5147,8 +5406,13 @@ def hm_draw():
     pre = "harm_"
     if juiced == 1:
         pre = "harmj_"
+    if st == "gone":
+        hide()
+        return
     if st == "beaten":
         costume("harm_dead")
+    elif st == "limp":
+        costume(join("harm_limp_", floor(fr) % 2))
     elif st == "throw":
         if t < 18:
             costume(join(pre, "throw0"))

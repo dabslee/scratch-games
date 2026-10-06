@@ -120,6 +120,22 @@ def pr_update():
                 t = 0
             elif res != "miss":
                 delete_clone()
+        elif kind == "bullet" and chapter == 8 and ally_x < 900 and ally_st != "down" and ally_st != "fall" and abs(ally_x - x) < 9 and y > fy_floor and y < fy_floor + 50:
+            # turret fire aimed at Kuro: he deflects most of it back into the armor
+            if rand(1, 10) <= 6:
+                sfxq.append("deflect")
+                cfx("deflect", x, y, 0)
+                ally_def = 9
+                ddx = ent_x[boss_slot] - x
+                ddy = ent_y[boss_slot] + 14 - y
+                dd = sqrt(ddx * ddx + ddy * ddy) + 0.01
+                vx = ddx / dd * 11
+                vy = ddy / dd * 11
+                owner = "p"
+                t = 0
+            else:
+                ally_shot += 1
+                delete_clone()
     else:
         for ei in range(1, len(ent_type) + 1):
             if ent_alive[ei] == 1 and ent_x[ei] + ent_w[ei] + 4 > x and ent_x[ei] - ent_w[ei] - 4 < x:
@@ -156,8 +172,11 @@ def pr_cloud():
         cr = 22
         if kind == "burst":
             cr = 70
-        if abs(px - x) < cr and py < y + 22 and py + 34 > y - 4 and pdash == 0:
-            hit_player(1, 1, x)
+        if abs(px - x) < cr and py < y + 22 and py + 34 > y - 4 and pdash == 0 and pinv == 0:
+            # lingering poison only stings: damage, no stagger
+            hq_t.append("sting")
+            hq_d.append(1)
+            hq_x.append(x)
     if t > 120 or (kind == "cloud" and t > 100):
         delete_clone()
 
@@ -648,17 +667,32 @@ def tick():
     if is_clone == 1:
         t += 1
         if st == "rest" and lmode == "up":
+            # it cycles up and down the shaft, so a missed ride comes back
             if p_onplat == 1:
                 ride_t += 1
-                if ride_t > 12:
-                    st = "up"
-                    sfxq.append("lift")
             else:
                 ride_t = 0
+            if ride_t > 12 or t > 90:
+                st = "up"
+                t = 0
+                sfxq.append("lift")
         elif st == "up":
             y += 2.6
             if t % 25 == 0:
                 sfxq.append("lift")
+            if y > C_LIFT_TOP + 150 and p_onplat == 0:
+                st = "down"
+                t = 0
+        elif st == "down":
+            y -= 2.6
+            if t % 25 == 0:
+                sfxq.append("lift")
+            if y <= C_LIFT_TOP:
+                y = C_LIFT_TOP
+                st = "rest"
+                t = 0
+                ride_t = 0
+                sfxq.append("land")
         elif st == "in":
             y += 2.6
             if y >= C_LIFT_TOP:
@@ -836,6 +870,8 @@ y = O_Y[oi]
 kind = O_A[oi]
 fl_t = rand(30, 200)
 fr = 0
+fr2 = 0
+nface = 1
 is_clone = 1
 clone()
 is_clone = 0
@@ -883,8 +919,30 @@ def draw():
             if kuro_in == 0:
                 costume("mk_lie")
             else:
+                # Kuro in his own body: he keeps at Hotaru's back and looks where she looks
+                mv = 0
+                if mode == "play":
+                    tx = min(max(px - pface * 34, -220), 220)
+                    if abs(tx - x) > 8:
+                        mv = 1
+                        if tx > x:
+                            nface = 1
+                        else:
+                            nface = -1
+                        x += nface * min(3.4, abs(tx - x) * 0.2)
+                    else:
+                        nface = pface
+                if mv == 1:
+                    fr2 += 0.35
+                    if nface == 1:
+                        costume(join("mk_runr_", floor(fr2) % 8))
+                    else:
+                        costume(join("mk_runl_", floor(fr2) % 8))
+                elif nface == -1:
+                    costume(join("mk_idle_", floor(frame / 8) % 4))
+                else:
+                    costume(join("mk_idr_", floor(frame / 8) % 4))
                 # Kuro's soul shows through as a violet cast
-                costume(join("mk_idle_", floor(frame / 8) % 4))
                 effect("color", 160)
         if chapter == 6:
             effect("ghost", 35)
@@ -996,13 +1054,32 @@ SLUDGE = '''
 @flag
 def s_init():
     hide()
+    is_clone = 0
+    role = "tide"
+
+
+@on("boot")
+def s_boot():
+    if is_clone == 0:
+        role = "warn"
+        is_clone = 1
+        clone()
+        is_clone = 0
+        role = "tide"
 
 
 @on("t_draw")
 def draw():
-    if tide_y != 0 and ingame == 1:
+    if role == "warn":
+        if tide_warn == 1 and ingame == 1 and (mode == "play" or mode == "dead"):
+            costume(join("tide_warn_", floor(frame / 5) % 2))
+            goto(shx, -140 + abs(sin(frame * 12)) * 6)
+            show()
+        else:
+            hide()
+    elif tide_y != 0 and ingame == 1:
         costume(join("tide_", floor(frame / 3) % 4))
-        goto(shx, tide_y + shy)
+        goto(shx, tide_y + shy + (tide_warn == 1) * (22 + 4 * sin(frame * 30)))
         show()
     else:
         hide()

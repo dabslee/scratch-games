@@ -47,13 +47,13 @@ EXPRESSION = {
     ('raijin', 2): 'kuro_smirk', ('record', 7): 'hotaru_angry', ('ch6', 3): 'kuro_smirk',
     ('ch6', 4): 'hotaru_angry', ('glitch', 0): 'kuro_smirk', ('tetsu_mem', 6): 'hotaru_visor_up',
     ('possess', 0): 'kuro_smirk', ('possess', 1): 'hotaru_angry', ('shard7', 2): 'hotaru_angry',
-    ('white_room', 3): 'hotaru_visor_up', ('daicam6', 3): 'hotaru_angry', ('kuro_gate', 1): 'kuro_smirk',
+    ('white_room', 3): 'hotaru_visor_up', ('daicam6', 3): 'hotaru_angry',
     ('kuro_fight', 1): 'hotaru_angry', ('kuro2', 1): 'hotaru_angry', ('kuro2', 2): 'hotaru_angry',
     ('kuro_spared', 3): 'hotaru_visor_up', ('kuro_spared', 4): 'kuro_smirk',
     ('kuro_spared', 5): 'hotaru_visor_up', ('kuro_destroyed', 0): 'hotaru_angry', ('ch7', 1): 'kuro_smirk',
     ('ch7_alone', 0): 'hotaru_visor_up', ('trainee', 2): 'hotaru_visor_up', ('spar', 0): 'kuro_smirk',
     ('shard8', 2): 'hotaru_visor_up', ('shard8', 3): 'kuro_smirk', ('intake', 3): 'hotaru_angry',
-    ('extraction', 4): 'kuro_smirk', ('mukuro', 2): 'kuro_smirk', ('muk_dead', 6): 'hotaru_visor_up',
+    ('mukuro', 1): 'kuro_smirk', ('mukuro', 4): 'kuro_smirk', ('muk_dead', 6): 'hotaru_visor_up',
     ('ch8', 0): 'hotaru_visor_up', ('ch8', 3): 'kuro_smirk', ('ch8_alone', 0): 'hotaru_visor_up',
     ('shard9', 2): 'hotaru_visor_up', ('shard9', 4): 'kuro_smirk', ('shard9_alone', 1): 'hotaru_visor_up',
     ('muster', 1): 'hotaru_angry', ('transfer', 6): 'kuro_smirk', ('throne', 4): 'hotaru_angry',
@@ -115,7 +115,7 @@ HINTS = {
     'warden': [('t', 'Wardens guard your attacks.'), ('n',), ('k', 'key_down'), ('t', 'Deflect their strikes, then counter')],
     'duel': [('t', 'Mukuro guards everything.'), ('n',), ('k', 'key_down'), ('t', 'Deflect to break him, then strike')],
     'wind': [('t', 'Headwind pushes you back.'), ('n',), ('k', 'key_space'), ('t', 'Phase Step across wide gaps')],
-    'posts': [('t', 'Signal posts sweep the roof.'), ('n',), ('k', 'key_up'), ('t', 'Jump or'), ('k', 'key_space'), ('t', 'Phase Step through')],
+    'posts': [('t', 'Patrol crows skim the roof.'), ('n',), ('k', 'key_up'), ('t', 'Jump or'), ('k', 'key_space'), ('t', 'Phase Step through')],
     'raijin': [('t', 'Deflect shells back at the core.'), ('n',), ('t', 'Strike the core while it vents')],
     'glitch': [('t', 'Glitch blocks phase in and out.'), ('n',), ('t', 'They flicker just before they vanish')],
     'possess': [('t', 'When the screen turns purple,'), ('n',), ('k', 'key_left'), ('k', 'key_right'), ('t', 'are swapped')],
@@ -127,6 +127,12 @@ HINTS = {
     'eye': [('k', 'key_down'), ('t', 'Deflect turret fire into the armor.'), ('n',), ('t', 'Strike it when it drops')],
     'mask': [('k', 'key_down'), ('t', 'Deflect his cuts.'), ('n',), ('k', 'key_space'), ('t', 'Phase Step through the soul grab')],
 }
+# pre-boss tips: the same advice, labeled for the fight in the next room
+for _k, _src, _boss in (('gate_oni', 'heavy', 'BIG ONI'), ('gate_dobu', 'dobu', 'DOBUNUSHI'),
+                        ('gate_luck', 'reels', 'LADY LUCK'), ('gate_harm', 'harm', 'THE HARMACIST'),
+                        ('gate_raijin', 'raijin', 'RAIJIN'), ('gate_kuro', 'clash', 'KURO'),
+                        ('gate_muk', 'duel', 'MUKURO'), ('gate_dm', 'exo', 'THE DAIMYO')):
+    HINTS[_k] = [('h', 'NEXT ROOM BOSS: ' + _boss), ('n',)] + HINTS[_src]
 
 OPTION_LABELS = {
     'wide': 'Wide deflect window',

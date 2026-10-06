@@ -18,6 +18,8 @@ def boot():
     flash = 0
     want_room = 0
     want_respawn = 0
+    walk_to = 999
+    muk_carry = 0
     dlg_req = ""
     banner = ""
     card = ""
@@ -179,8 +181,13 @@ def phase_step():
     # the sludge tide: low, rising, high, falling (a boss can drive tide_lvl itself)
     if R_TIDE[room] != 0:
         tide_hi = R_TIDE[room]
+        tide_warn = 0
         if tide_force == 0:
-            tcyc = frame % 300
+            # each visit starts at low tide
+            tide_t += 1
+            tcyc = tide_t % 300
+            if tcyc >= 95 and tcyc < 150:
+                tide_warn = 1
             if tcyc < 150:
                 tide_lvl = 0
             elif tcyc < 200:
@@ -189,8 +196,10 @@ def phase_step():
                 tide_lvl = 1
             else:
                 tide_lvl = 1 - (tcyc - 260) / 40
-            if tcyc == 110 and mode == "play":
+            if tcyc == 95 and mode == "play":
                 sfxq.append("gurgle")
+                shake = 20
+                shake_amp = 2
         tide_y = -200 + (tide_hi + 200) * tide_lvl
         if tide_y == 0:
             tide_y = 1
@@ -238,6 +247,16 @@ def read_input():
     kN = key("enter")
     kP = key("p")
     kAny = key("any") or mouse_down()
+    if walk_to != 999:
+        # a scripted walk: Hotaru crosses to walk_to on her own
+        kL = px > walk_to + 3
+        kR = px < walk_to - 3
+        kU = 0
+        kD = 0
+        kA = 0
+        kZ = 0
+        kS = 0
+        kH = 0
     pU = 0
     pD = 0
     pL = 0
@@ -363,6 +382,8 @@ def load_room(r):
     tide_force = 0
     tide_lvl = 0
     tide_y = 0
+    tide_t = 0
+    tide_warn = 0
     GL_I.clear()
     GL_T.clear()
     if chapter == 6 or chapter == 7:
@@ -625,7 +646,9 @@ def chapter_open(c, x, y, scene):
     once(join("ch", c))
     if first == 1:
         card = join("ch", c)
-        wait(2.5)
+        # hold Hotaru still under the chapter card, then go straight into the scene
+        mode = "dlg"
+        wait_until(card == "")
         say(scene)
 
 
@@ -796,7 +819,7 @@ def ev_ambush():
 def ev_boss_gate():
     if boss_dead == 0:
         say_once("boss_gate")
-        hint = "heavy"
+        hint = "gate_oni"
 
 
 @on("ev_boss_start")
@@ -868,7 +891,7 @@ def ev_daicam2_end():
 def ev_dobu_gate():
     if dobu_dead == 0:
         say_once("dobu_gate")
-        hint = "dobu"
+        hint = "gate_dobu"
 
 
 @on("ev_dobu_start")
@@ -939,7 +962,7 @@ def ev_daicam3_free():
 def ev_luck_gate():
     if luck_dead == 0:
         say_once("luck_gate")
-        hint = "reels"
+        hint = "gate_luck"
 
 
 @on("ev_luck_start")
@@ -1009,7 +1032,7 @@ def ev_pricing():
 def ev_harm_gate():
     if harm_dead == 0:
         say_once("harm_gate")
-        hint = "harm"
+        hint = "gate_harm"
 
 
 @on("ev_harm_start")
@@ -1026,8 +1049,14 @@ def ev_harm_phase2():
 @on("ev_harm_dead")
 def ev_harm_dead():
     harm_dead = 1
-    boss_down(1.4)
+    music_want = "none"
+    wait(0.9)
     say("harm_dead")
+    wait_until(mode == "play")
+    harm_dead = 2
+    wait(2.6)
+    boss_down(0)
+    say("harm_dead2")
     wait_until(mode == "play")
     if chapter == 4:
         music_want = "gardens"
@@ -1079,7 +1108,7 @@ def ev_raijin_gate():
             say("raijin_gate")
             wait_until(mode == "play")
             sfxq.append("horn")
-        hint = "raijin"
+        hint = "gate_raijin"
 
 
 @on("ev_raijin_start")
@@ -1160,7 +1189,7 @@ def ev_daicam6():
 def ev_kuro_gate():
     if kuro_dead == 0:
         say_once("kuro_gate")
-        hint = "clash"
+        hint = "gate_kuro"
 
 
 @on("ev_kuro_start")
@@ -1253,7 +1282,7 @@ def ev_extraction():
         if first == 1:
             say_b("extraction")
             wait_until(mode == "play")
-        hint = "duel"
+        hint = "gate_muk"
 
 
 @on("ev_muk_start")
@@ -1278,16 +1307,30 @@ def ev_muk_phase2():
 def ev_muk_dead():
     muk_dead = 1
     hint = ""
+    muk_carry = 0
     boss_down(1.4)
     say_b("muk_dead")
     wait_until(mode == "play")
+    if kbranch == 1:
+        # Hotaru shoulders the body: Kuro will need it at the top
+        walk_to = muk_bx - 14
+        wtt = 0
+        while abs(px - walk_to) > 5 and wtt < 120:
+            wtt += 1
+            wait(0)
+        walk_to = 999
+        sfxq.append("pickup")
+        muk_carry = 1
+        wait(0.6)
     wait(0.5)
-    chapter_jump(C_ROOM_G1)
+    chapter_jump(C_ROOM_F9)
 
 
 # ------------------------------------------------------------ chapter 8: the tenshu
 @on("ev_ch8_start")
 def ev_ch8_start():
+    # riding up from the Spire Lift: let it arrive before the chapter card
+    wait_until(py > C_LIFT_TOP - 4 or lift_ride == 0)
     if kbranch == 2:
         chapter_open(8, C_G1_X, C_G1_Y, "ch8_alone")
     else:
@@ -1333,7 +1376,7 @@ def ev_throne():
         if first == 1:
             say_b("throne")
             wait_until(mode == "play")
-        hint = "exo"
+        hint = "gate_dm"
 
 
 @on("ev_daimyo_start")

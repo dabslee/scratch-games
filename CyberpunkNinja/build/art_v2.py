@@ -431,23 +431,71 @@ def banner_word(word):
 
 # ------------------------------------------------------------------ Drainlings
 DRAIN_MAP = {
-    'red2': 'green1', 'mag1': 'night2', 'skin2': 'green2', 'skin1': 'green1', 'red1': 'slate1',
-    'white': 'lime', 'yellow': 'lime', 'gold': 'green2', 'steel': 'slate3', 'night3': 'slate1',
-    'mag3': 'lime', 'slate3': 'slate2',
+    # a rotting, irradiated body: ashen gray skin, rags, a rusted pipe
+    'red2': 'slate3', 'red1': 'lime', 'yellow': 'slate3', 'skin2': 'slate3', 'skin1': 'slate2',
+    'night3': 'night2', 'mag1': 'slate1', 'gold': 'brown', 'slate1': 'night1', 'slate2': 'slate1',
+    'steel': 'skin1', 'slate3': 'brown', 'mag2': 'green2', 'mag3': 'lime',
 }
 
 
 def drainling_frame(im1x, seed):
-    """A Hannya Boy re-dyed as a sewer mutant, with runoff dripping off him."""
+    """A Hannya Boy turned sewer zombie: no mask or horns, ashen skin, radioactive pustules."""
     from art_ch2 import recolor
-    im = recolor(im1x, DRAIN_MAP)
+    src = im1x.convert('RGBA')
+    sp = src.load()
+    w, h = src.size
+    white, ink = P['white'], P['ink']
+
+    def colored(p):
+        return p[3] and p[:3] not in (white, ink)
+    # the mask's horns are white pixels touching nothing but outline: cut them and their outline
+    horn = set()
+    for y in range(h):
+        for x in range(w):
+            if sp[x, y][3] and sp[x, y][:3] == white:
+                nb = [sp[x + dx, y + dy] for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+                      if 0 <= x + dx < w and 0 <= y + dy < h and (dx or dy)]
+                if not any(colored(p) for p in nb):
+                    horn.add((x, y))
+    for x, y in horn:
+        sp[x, y] = (0, 0, 0, 0)
+    for y in range(h):
+        for x in range(w):
+            if sp[x, y][3] and sp[x, y][:3] == ink:
+                nb = [sp[x + dx, y + dy] for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+                      if 0 <= x + dx < w and 0 <= y + dy < h and (dx or dy)]
+                if not any(colored(p) or (p[3] and p[:3] == white) for p in nb):
+                    sp[x, y] = (0, 0, 0, 0)
+    im = recolor(src, dict(DRAIN_MAP, white='slate1'))
     px = im.load()
-    rng = random.Random(seed)
-    w, h = im.size
-    greens = {P['green1'], P['green2']}
+    rng = random.Random(11)
+    skin, rag = P['slate3'], P['night2']
+
+    def inside(x, y):
+        return all(0 <= x + dx < w and 0 <= y + dy < h and px[x + dx, y + dy][3] and px[x + dx, y + dy][:3] != ink
+                   for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1)))
+    cand = [(x, y) for y in range(h - 1) for x in range(w - 1)
+            if px[x, y][3] and px[x, y][:3] in (skin, rag, P['slate1'], P['night1']) and inside(x, y)]
+    # pustules: glowing lime and yellow bulbs scattered over skin and rags
+    taken = []
+    for x, y in rng.sample(cand, len(cand)):
+        if len(taken) >= 9:
+            break
+        if any(abs(x - tx) < 3 and abs(y - ty) < 3 for tx, ty in taken):
+            continue
+        taken.append((x, y))
+        big = len(taken) % 3 != 0
+        px[x, y] = C('yellow') if len(taken) % 4 == 1 else C('lime')
+        if big:
+            for dx, dy, col in ((1, 0, 'lime'), (0, 1, 'green2'), (1, 1, 'green1')):
+                if inside(x + dx, y + dy) or px[x + dx, y + dy][3]:
+                    px[x + dx, y + dy] = C(col)
+    # runoff dripping off the lower edges
+    greens = {P['lime'], P['green2'], P['night2'], P['slate1']}
     spots = [(x, y) for y in range(h - 1) for x in range(w)
              if px[x, y][3] and px[x, y][:3] in greens and not px[x, y + 1][3]]
-    for x, y in rng.sample(spots, min(5, len(spots))):
+    rng = random.Random(seed)
+    for x, y in rng.sample(spots, min(3, len(spots))):
         for k in range(1, rng.randint(2, 4)):
             if y + k < h and not px[x, y + k][3]:
                 px[x, y + k] = C('green2' if k < 2 else 'lime')
@@ -567,6 +615,64 @@ def dobu_arm(frame=0, stump=False):
     return im
 
 
+# ------------------------------------------------------------------ hand-placed pixel grids
+KEY = {'k': 'ink', 'n': 'night1', 'N': 'night2', 'w': 'white', 's': 'steel', 'S': 'slate3', 'D': 'slate2',
+       '1': 'skin3', '2': 'skin2', '3': 'skin1', 'b': 'brown', 'l': 'lime', 'm': 'mag3', 'g': 'green2', 'G': 'green1',
+       'r': 'red2', 'R': 'red1', 'o': 'gold', 'c': 'cyan4', 'p': 'purple3', 'P': 'purple2', 'y': 'yellow'}
+def pix_grid(rows, w, h):
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    top = h - len(rows)
+    for j, r in enumerate(rows):
+        for i, ch in enumerate(r):
+            if ch != '.':
+                im.putpixel((i, top + j), C(KEY[ch]))
+    return im
+HARM_DOWN = [
+"...........o......................",
+"............okk...................",
+"...........kNNNkk.................",
+"...........kNNNNNk................",
+"............kNNNNNk...............",
+".............kN111lk..............",
+".............k1111lk..............",
+"..............k111k...............",
+"...............k1rk...............",
+"...........kkkkk11kk..............",
+"..........kwwwwbwwwwk.............",
+".........kwwwwwwbwwwwk............",
+".........kwswwwwwlbwwwk...........",
+"........kwwswwwwwwmbwwwk..........",
+"........kwwsww11wwwwgbkwk.........",
+"........kwwswww11wwwwwkwwk........",
+".......kwwwwswwwwwwwwk..kwk.......",
+".......kwwwwswwwwwwwnk...kwk......",
+"......kwwwwwwswwwwnnnnk...kwk.....",
+"......kwwwwwwswwwnnnnnnk...kwk....",
+".....kwwwwwwwwswwkknnnnk...k1k....",
+".....kwwwwwwwwswk..knnnk..k111k...",
+"....kwwwwwwwwwswk...knnk..k111k.kl",
+"....kkkkkkkkkkkkk...kbbk...kkk.lgl",
+]
+DM_DEAD = [
+"...............................................p",
+".......................................p........",
+"...........................................p....",
+"....................................kk..........",
+"..................................kk22k.........",
+"................................kk222222kk......",
+"...............................kS2kk222222kss...",
+"..........................kkkkkSS2222222222ksss.",
+"...........kkkkkkkkkkkkkkNNNNrrkSS2222222kkssk..",
+".....kk...knnnnnnnnnnnnkNNNNNNNrkkk22222k.kk....",
+"....kbbk.knnnknnnnnnnkkoooNNoNNNNNkkkkkk........",
+"....kbbkknnnnnknnnnnnnkoooNoNoNNNNk.............",
+"....kbbknnnnnnnknnnnnnkoooNNoNNNNk22k...........",
+".....kkknnnnnnnnnnnnnnkoooNNNNNNk.k22k..........",
+".......kkkkkkkkkkkkkkkkkkkkkkkkkk..k22kobkDDSSSc",
+"...........................RRRRRRRRRRRRRR.......",
+]
+
+
 # ------------------------------------------------------------------ The Harmacist
 HARM_W, HARM_H = 34, 36
 HARM_FOOT = (15, 35)
@@ -582,6 +688,7 @@ HARM_POSES = {
     'stim1': ((14, 15), (16, 15), 1, 2, 'stim'),
     'burst': ((23, 24), (7, 24), 0, 5, 'vial'),
     'hurt': ((19, 23), (9, 23), -2, 1, None),
+    'limp': ((18, 25), (14, 21), -1, 3, None),
 }
 
 
@@ -590,20 +697,15 @@ def harmacist(pose='idle', frame=0, juiced=False):
     im = Image.new('RGBA', (HARM_W, HARM_H), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     if pose == 'dead':
-        d.polygon([(3, 35), (6, 31), (26, 31), (29, 35)], fill=C('white'), outline=C('ink'))
-        d.ellipse([24, 29, 30, 35], fill=C('skin3'), outline=C('ink'))
-        d.ellipse([26, 27, 31, 31], fill=C('night2'))
-        for k in range(3):
-            d.point((9 + k * 5, 33), fill=C(['lime', 'mag3', 'green2'][k]))
-        return im
+        return pix_grid(HARM_DOWN, HARM_W, HARM_H)
     arm, back, lean, step, item = HARM_POSES[pose]
-    bob = frame % 2 if pose in ('idle', 'walk') else 0
+    bob = frame % 2 if pose in ('idle', 'walk', 'limp') else 0
     hx0 = 15 + lean
     top = 9 + bob
     # legs and heels
-    d.line([13, 27, 13 - (step if pose == 'walk' and frame % 2 else 0), 34], fill=C('night1'), width=2)
+    d.line([13, 27, 13 - (step if pose in ('walk', 'limp') and frame % 2 else 0), 34], fill=C('night1'), width=2)
     d.line([17, 27, 17 + step, 34], fill=C('night1'), width=2)
-    d.point([(12 - (step if pose == 'walk' and frame % 2 else 0), 34), (18 + step, 34)], fill=C('ink'))
+    d.point([(12 - (step if pose in ('walk', 'limp') and frame % 2 else 0), 34), (18 + step, 34)], fill=C('ink'))
     # back arm
     d.line([hx0 - 3, top + 4, back[0], back[1]], fill=C('steel'), width=2)
     # long lab coat, split at the back
@@ -689,14 +791,10 @@ MAN_POSES = {
 
 def daimyo_man(pose='idle', frame=0):
     """The Daimyo out of his armor: an old man in black and gold with Tamakiri. Faces right."""
+    if pose == 'dead':
+        return pix_grid(DM_DEAD, 48, 16)
     im = Image.new('RGBA', (MAN_W, MAN_H), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    if pose == 'dead':
-        d.polygon([(4, 35), (8, 30), (30, 30), (33, 35)], fill=C('night1'), outline=C('ink'))
-        d.line([9, 31, 29, 31], fill=C('gold'))
-        d.ellipse([29, 28, 35, 34], fill=C('skin2'), outline=C('ink'))
-        d.line([2, 34, 14, 33], fill=C('cyan2'))
-        return im
     (hx, hy, ang), lean, step, grab = MAN_POSES[pose]
     bob = frame % 2 if pose in ('idle', 'walk') else 0
     cx0 = 17 + lean
@@ -742,4 +840,163 @@ def cable():
         d.line([x, 0, x, 109], fill=C(col))
     for y in range(4, 110, 13):
         d.point((2, y), fill=C('red3'))
+    return im
+
+
+# ------------------------------------------------------------------ Physic Gardens: front parallax
+def garden_trees(base):
+    """Paint a thick band of cloud-pruned Japanese trees, dotted with blossoms, over the
+    gardens' mid parallax layer (240x180, wraps horizontally)."""
+    im = base.copy().convert('RGBA')
+    W, H = im.size
+    rng = random.Random(44)
+    layer = Image.new('RGBA', (W * 3, H), (0, 0, 0, 0))   # draw 3 tiles wide, fold back to wrap
+    d = ImageDraw.Draw(layer)
+
+    def tree(x0, ground, height, back):
+        trunk = C('night1') if back else C('ink')
+        bark = C('night2') if back else C('brown')
+        leaf, lit = (C('night1'), C('night2')) if back else (C('slate1'), C('green1'))
+        # a leaning, slightly crooked trunk
+        lean = rng.choice((-1, 1)) * rng.uniform(0.15, 0.4)
+        pts = []
+        for k in range(0, height + 1, 4):
+            pts.append((x0 + lean * k + math.sin(k * 0.21 + x0) * 2, ground - k))
+        for wdt, col in ((5 if not back else 4, trunk), (2, bark)):
+            d.line(pts, fill=col, width=wdt)
+        top = pts[-1]
+        pads = [top]
+        # branches sweep out sideways and end in flat foliage pads
+        for b in range(rng.randint(2, 4)):
+            k = rng.randint(len(pts) // 3, len(pts) - 1)
+            sx, sy = pts[k]
+            side = rng.choice((-1, 1))
+            ex, ey = sx + side * rng.randint(12, 24), sy - rng.randint(2, 10)
+            d.line([(sx, sy), ((sx + ex) / 2, sy - 1), (ex, ey)], fill=trunk, width=2)
+            pads.append((ex, ey))
+        for (px0, py0) in pads:
+            for c in range(rng.randint(2, 3)):
+                rx, ry = rng.randint(9, 16), rng.randint(4, 7)
+                cx0, cy0 = px0 + rng.randint(-6, 6), py0 - rng.randint(0, 5)
+                d.ellipse([cx0 - rx, cy0 - ry, cx0 + rx, cy0 + ry], fill=leaf)
+                d.chord([cx0 - rx + 2, cy0 - ry, cx0 + rx - 2, cy0 + ry - 3], 180, 360, fill=lit)
+
+    for back in (True, False):
+        n = 9 if back else 7
+        for i in range(n):
+            x0 = W + i * W / n + rng.uniform(-8, 8) + (14 if back else 0)
+            ground = H + 4
+            height = rng.randint(70, 100) if back else rng.randint(45, 80)
+            tree(x0, ground, height, back)
+            for extra in (-W, W):
+                pass
+    # fold the 3-wide canvas into one wrapping tile
+    tile = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    for k in range(3):
+        tile.alpha_composite(layer.crop((k * W, 0, (k + 1) * W, H)))
+    # blossoms: pink dots over the foliage, a few petals drifting below
+    tp = tile.load()
+    for _ in range(900):
+        x, y = rng.randrange(W - 2), rng.randrange(H - 2)
+        if tp[x, y][3] and tp[x, y][:3] in (P['slate1'], P['green1'], P['night1'], P['night2']):
+            back = tp[x, y][:3] in (P['night1'], P['night2'])
+            col, hi = (C('mag1'), C('mag2')) if back else (C('mag3'), C('mag4'))
+            for dx, dy in ((0, 0), (1, 0), (0, 1)):
+                if tp[x + dx, y + dy][3]:
+                    tp[x + dx, y + dy] = col
+            tp[x, y] = hi
+    for _ in range(30):
+        x, y = rng.randrange(W), rng.randrange(60, H)
+        if not tp[x, y][3]:
+            tp[x, y] = C('mag4' if rng.random() < 0.5 else 'mag3')
+    im.alpha_composite(tile)
+    return im
+
+
+# ------------------------------------------------------------------ monorail: robotic crows
+CROW = [[
+"..........kkk...........",
+".........kSSSk..........",
+"........kSssSSk.........",
+"..kkk..kSsssSSSk........",
+".kSSDk.kSsssSSSSk.......",
+"kDSDDDkkkSsSSSSSSk......",
+".kkDDDDDSSDDDDDDDSkk....",
+"kyrkDDDDDDDDDDDDDDDDkkk.",
+"kkkkkDDDDDDDDDDDDDDkDDDk",
+"...kkkkDDDDDDDDDkkkk.kkk",
+"......kkkkkDkkkkk.......",
+"..........kok...........",
+"..........k.k...........",
+"........................",
+], [
+"........................",
+"........................",
+"........................",
+"..kkk...................",
+".kSSDk..................",
+"kDSDDDk.................",
+".kkDDDDkkkkkkkkkkkk.....",
+"kyrkDDDDDDDDDDDDDDDkkkk.",
+"kkkkkDDDDSSSDDDDDDDkDDDk",
+"...kkkkDDSsssSDDDkkk.kkk",
+"......kkkSsssSSkkk......",
+".........kSssSk.........",
+"..........kSSk..........",
+"...........kk...........",
+]]
+
+
+def robo_crow(frame):
+    """A Kanshi surveillance crow, 24x14, flying left, red eye and a signal light."""
+    return pix_grid(CROW[frame % 2], 24, 14)
+
+
+# ------------------------------------------------------------------ Hollow Floor: background glitches
+def glitch_piece(i):
+    """Torn scanlines, RGB-split blocks and corrupted glyph rows that flicker behind
+    Hollow Floor's rooms. Returns a 1x image (center anchored)."""
+    rng = random.Random(900 + i)
+    kind = i % 4
+    if kind == 0:
+        # a horizontal tear: stacked scanlines sliding apart
+        w, h = rng.randint(90, 160), rng.randint(6, 12)
+        im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        for y in range(0, h, 2):
+            x0 = rng.randint(0, w // 4)
+            x1 = rng.randint(w * 3 // 4, w - 1)
+            d.line([x0, y, x1, y], fill=C(rng.choice(('cyan2', 'purple2', 'mag2', 'indigo')), 200))
+    elif kind == 1:
+        # an RGB-split block
+        w, h = rng.randint(20, 46), rng.randint(14, 30)
+        im = Image.new('RGBA', (w + 6, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rectangle([0, 0, w - 1, h - 1], fill=C('mag2', 150))
+        d.rectangle([6, 0, w + 5, h - 1], fill=C('cyan2', 150))
+        d.rectangle([6, 0, w - 1, h - 1], fill=C('purple3', 170))
+        for y in range(1, h, 3):
+            d.line([0, y, w + 5, y], fill=C('night1', 120))
+    elif kind == 2:
+        # a row of corrupted glyph blocks
+        w, h = rng.randint(60, 110), 7
+        im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        px = im.load()
+        x = 0
+        while x < w - 4:
+            col = C(rng.choice(('cyan3', 'purple3', 'mag3', 'white')), 220)
+            for yy in range(5):
+                for xx in range(3):
+                    if rng.random() < 0.55:
+                        px[x + xx, 1 + yy] = col
+            x += rng.randint(4, 7)
+    else:
+        # a dithered dead-pixel patch
+        w, h = rng.randint(30, 60), rng.randint(20, 40)
+        im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        px = im.load()
+        for y in range(h):
+            for x in range(w):
+                if (x + y) % 2 == 0 and rng.random() < 0.6 - abs(y - h / 2) / h:
+                    px[x, y] = C(rng.choice(('purple1', 'purple2', 'indigo', 'cyan1')), 190)
     return im

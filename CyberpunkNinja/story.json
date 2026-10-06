@@ -182,7 +182,7 @@
       "Toxic pools and rising sludge tides (Sewers).",
       "Laser grids pulse on and off (Vaults, Castle).",
       "Greenhouse heat vents carry you upward; some vents pulse (Physic Gardens).",
-      "Headwind, bottomless gaps between cars, and sweeping signal posts (Monorail).",
+      "Headwind, bottomless gaps between cars, and Kanshi patrol crows skimming the roofs (Monorail).",
       "Phasing blocks: two sets alternate being solid every few seconds; the incoming set lights up and turns solid just before the other vanishes (Hollow Floor, Academy).",
       "Possession: Kuro periodically swaps left and right (Hollow Floor)."
     ],
@@ -231,7 +231,7 @@
           "lines": [
             {
               "speaker": "System",
-              "text": "KANSHI DYNAMICS // HTR-0 'HOTARU'. Shinobi frame, prototype. Status: SCRAPPED."
+              "text": "KANSHI DYNAMICS // HTR-0. Shinobi frame, prototype. Status: SCRAPPED."
             },
             {
               "speaker": "System",
@@ -1415,7 +1415,7 @@
         {
           "id": "harm_dead",
           "room": "The Apothecary",
-          "trigger": "The Harmacist defeated",
+          "trigger": "The Harmacist falls",
           "lines": [
             {
               "speaker": "The Harmacist",
@@ -1424,7 +1424,14 @@
             {
               "speaker": "Hotaru",
               "text": "We'll leave the garden. Just not the prices."
-            },
+            }
+          ]
+        },
+        {
+          "id": "harm_dead2",
+          "room": "The Apothecary",
+          "trigger": "After she limps out of the Apothecary",
+          "lines": [
             {
               "speaker": "Hotaru",
               "text": "Her ledger has the same stamp as Big Oni's. Unpaid accounts go to the Academy."
@@ -1496,11 +1503,11 @@
         {
           "id": "posts",
           "room": "Signal Line",
-          "trigger": "Signal posts ahead",
+          "trigger": "Patrol crows ahead",
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "Signal posts coming up along the track. Watch for the warning on your right."
+              "text": "Kanshi patrol crows. They skim the roofs, fast and low. Watch for the warning on your right."
             },
             {
               "speaker": "Kuro",
@@ -1607,6 +1614,11 @@
             {
               "speaker": "The Daimyo",
               "text": "I made you. Then I unmade you. You should have faded like everyone else."
+            },
+            {
+              "speaker": "???",
+              "actually": "Mukuro",
+              "text": "Shall I collect them, my lord?"
             },
             {
               "speaker": "Hotaru",
@@ -1971,10 +1983,6 @@
             {
               "speaker": "Kuro",
               "text": "Last floor. Nothing below it but me. Come on, then."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "When I Phase Step at you, Phase Step back. If we cross, we clash."
             }
           ]
         },
@@ -2306,15 +2314,6 @@
             {
               "speaker": "Kuro",
               "text": "And at dawn they march on the city. Everyone who's left. Tetsu. DaiCam's chat. Everyone."
-            },
-            {
-              "speaker": "???",
-              "text": "Captain Kuro. You are not authorized to be here.",
-              "actually": "Mukuro"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...Hello, me."
             }
           ]
         },
@@ -2331,11 +2330,6 @@
             {
               "speaker": "Hotaru",
               "text": "At dawn they march on the city. Everyone who's left."
-            },
-            {
-              "speaker": "???",
-              "text": "Unit HTR-0. You are not authorized to be here.",
-              "actually": "Mukuro"
             }
           ]
         },
@@ -2345,6 +2339,15 @@
           "trigger": "Boss fight starts",
           "condition": "branch: kuro_spared",
           "lines": [
+            {
+              "speaker": "???",
+              "text": "Captain Kuro. You are not authorized to be here.",
+              "actually": "Mukuro"
+            },
+            {
+              "speaker": "Kuro",
+              "text": "...Hello, me."
+            },
             {
               "speaker": "Mukuro",
               "text": "Captain of the Guard. Loyalty: the Daimyo. Draw."
@@ -2365,6 +2368,11 @@
           "trigger": "Boss fight starts",
           "condition": "branch: kuro_destroyed",
           "lines": [
+            {
+              "speaker": "???",
+              "text": "Unit HTR-0. You are not authorized to be here.",
+              "actually": "Mukuro"
+            },
             {
               "speaker": "Mukuro",
               "text": "Captain of the Guard. Loyalty: the Daimyo. Draw."
