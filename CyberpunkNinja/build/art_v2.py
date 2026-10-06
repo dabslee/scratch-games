@@ -565,3 +565,181 @@ def dobu_arm(frame=0, stump=False):
         d.polygon([(hx + 3, 11 + dy), (hx + 9, 9 + dy + k), (hx + 4, 13 + dy)], fill=C('steel'), outline=C('ink'))
     d.point([(hx - 2, 8), (hx - 1, 14)], fill=C('lime'))
     return im
+
+
+# ------------------------------------------------------------------ The Harmacist
+HARM_W, HARM_H = 34, 36
+HARM_FOOT = (15, 35)
+HARM_POSES = {
+    # front hand (x, y), back hand (x, y), lean, stride, held item
+    'idle': ((20, 20), (10, 21), 0, 2, None),
+    'walk': ((19, 20), (11, 20), 1, 4, None),
+    'throw0': ((10, 9), (9, 21), -1, 3, 'vial'),
+    'throw1': ((25, 14), (9, 21), 1, 4, None),
+    'slash0': ((9, 17), (10, 21), -1, 2, 'scalpel'),
+    'slash1': ((27, 19), (9, 20), 2, 5, 'scalpel'),
+    'stim0': ((18, 12), (11, 21), 0, 2, 'stim'),
+    'stim1': ((14, 15), (16, 15), 1, 2, 'stim'),
+    'burst': ((23, 24), (7, 24), 0, 5, 'vial'),
+    'hurt': ((19, 23), (9, 23), -2, 1, None),
+}
+
+
+def harmacist(pose='idle', frame=0, juiced=False):
+    """The Harmacist, facing right, 34x36, feet at HARM_FOOT."""
+    im = Image.new('RGBA', (HARM_W, HARM_H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    if pose == 'dead':
+        d.polygon([(3, 35), (6, 31), (26, 31), (29, 35)], fill=C('white'), outline=C('ink'))
+        d.ellipse([24, 29, 30, 35], fill=C('skin3'), outline=C('ink'))
+        d.ellipse([26, 27, 31, 31], fill=C('night2'))
+        for k in range(3):
+            d.point((9 + k * 5, 33), fill=C(['lime', 'mag3', 'green2'][k]))
+        return im
+    arm, back, lean, step, item = HARM_POSES[pose]
+    bob = frame % 2 if pose in ('idle', 'walk') else 0
+    hx0 = 15 + lean
+    top = 9 + bob
+    # legs and heels
+    d.line([13, 27, 13 - (step if pose == 'walk' and frame % 2 else 0), 34], fill=C('night1'), width=2)
+    d.line([17, 27, 17 + step, 34], fill=C('night1'), width=2)
+    d.point([(12 - (step if pose == 'walk' and frame % 2 else 0), 34), (18 + step, 34)], fill=C('ink'))
+    # back arm
+    d.line([hx0 - 3, top + 4, back[0], back[1]], fill=C('steel'), width=2)
+    # long lab coat, split at the back
+    d.polygon([(hx0 - 5, top + 2), (hx0 + 5, top + 2), (hx0 + 6, 29), (hx0 + 1, 28), (hx0 - 1, 30), (hx0 - 7, 29)],
+              fill=C('white'), outline=C('ink'))
+    d.line([hx0, top + 3, hx0 + 1, 28], fill=C('steel'))
+    # vial bandolier
+    d.line([hx0 - 4, top + 3, hx0 + 5, top + 13], fill=C('brown'))
+    for k, col in enumerate(('lime', 'mag3', 'green2')):
+        d.point((hx0 - 2 + k * 3, top + 6 + k * 3), fill=C(col))
+        d.point((hx0 - 2 + k * 3, top + 5 + k * 3), fill=C(col))
+    # head: skin, dark bun with a gold pin, green goggles
+    d.ellipse([hx0 - 3, top - 7, hx0 + 4, top + 1], fill=C('skin3'), outline=C('ink'))
+    d.pieslice([hx0 - 4, top - 8, hx0 + 4, top], 170, 350, fill=C('night2'))
+    d.ellipse([hx0 - 7, top - 9, hx0 - 2, top - 4], fill=C('night2'), outline=C('ink'))
+    d.line([hx0 - 8, top - 9, hx0 - 2, top - 5], fill=C('gold'))
+    d.line([hx0 + 1, top - 4, hx0 + 4, top - 4], fill=C('red3') if juiced else C('lime'))
+    d.point((hx0 + 2, top - 1), fill=C('red2'))
+    # front arm (coat sleeve) and whatever she holds
+    d.line([hx0 + 2, top + 4, arm[0], arm[1]], fill=C('white'), width=2)
+    d.point(arm, fill=C('skin3'))
+    if item == 'vial':
+        d.rectangle([arm[0] - 1, arm[1] - 3, arm[0], arm[1] - 1], fill=C('lime'))
+    elif item == 'scalpel':
+        d.line([arm[0], arm[1], arm[0] + 5, arm[1] - 2], fill=C('cyan4'))
+    elif item == 'stim':
+        d.line([arm[0] - 2, arm[1] + 2, arm[0] + 3, arm[1] - 2], fill=C('steel'))
+        d.point((arm[0] + 1, arm[1]), fill=C('mag3'))
+    if juiced:
+        for k in range(3):
+            d.point((hx0 - 6 + k * 6, top + 2 + (frame + k) % 5), fill=C('red3'))
+    return im
+
+
+def vial(frame):
+    im = Image.new('RGBA', (8, 8), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rectangle([3, 1, 4, 6], fill=C('lime'), outline=C('green1'))
+    d.point((3 + frame, 0), fill=C('steel'))
+    return im
+
+
+def cloud(frame, big=False):
+    """A lingering poison cloud, 32x24 (bottom-center)."""
+    w, h = (48, 32) if big else (32, 24)
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    rng = random.Random(frame * 3 + big)
+    for _ in range(9 if big else 6):
+        rx = rng.randint(6, 10)
+        cx0 = rng.randint(rx, w - rx)
+        cy0 = rng.randint(h // 2, h - rx)
+        d.ellipse([cx0 - rx, cy0 - rx, cx0 + rx, cy0 + rx], fill=C('green2', 120), outline=C('green1', 150))
+    for _ in range(5):
+        im.putpixel((rng.randrange(w), rng.randrange(h // 2, h)), C('lime'))
+    return im
+
+
+# ------------------------------------------------------------------ hollowed fighters (Mukuro's rig)
+# Kuro's former students in their training gi; the Tenshu's hollowed soldiers in lacquered armor.
+# Either way the eyes are blank white.
+TRAINEE_MAP = {'night1': 'slate1', 'night2': 'slate2', 'night3': 'slate3', 'indigo': 'steel',
+               'red2': 'white', 'red3': 'red2', 'slate2': 'steel', 'slate3': 'white'}
+SOLDIER_MAP = {'night3': 'indigo', 'indigo': 'slate3', 'red2': 'white', 'red3': 'red2',
+               'slate2': 'slate1', 'slate3': 'slate2', 'yellow': 'gold'}
+
+
+# ------------------------------------------------------------------ the Daimyo, in person
+MAN_W, MAN_H = 40, 36
+MAN_FOOT = (17, 35)
+MAN_POSES = {
+    # blade (hilt x, y, angle), lean, stride, hand open (soul grab)
+    'idle': ((22, 22, -40), 0, 2, False),
+    'walk': ((22, 22, -35), 1, 4, False),
+    'wind': ((10, 22, 200), -1, 3, False),
+    'cut': ((24, 18, 5), 3, 7, False),
+    'feint': ((12, 20, 150), 0, 3, False),
+    'grab0': ((10, 24, 210), -1, 3, True),
+    'grab1': ((10, 24, 210), 3, 8, True),
+    'hurt': ((20, 26, -70), -2, 1, False),
+}
+
+
+def daimyo_man(pose='idle', frame=0):
+    """The Daimyo out of his armor: an old man in black and gold with Tamakiri. Faces right."""
+    im = Image.new('RGBA', (MAN_W, MAN_H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    if pose == 'dead':
+        d.polygon([(4, 35), (8, 30), (30, 30), (33, 35)], fill=C('night1'), outline=C('ink'))
+        d.line([9, 31, 29, 31], fill=C('gold'))
+        d.ellipse([29, 28, 35, 34], fill=C('skin2'), outline=C('ink'))
+        d.line([2, 34, 14, 33], fill=C('cyan2'))
+        return im
+    (hx, hy, ang), lean, step, grab = MAN_POSES[pose]
+    bob = frame % 2 if pose in ('idle', 'walk') else 0
+    cx0 = 17 + lean
+    top = 10 + bob
+    # hakama (wide trousers) and sandals
+    d.polygon([(cx0 - 5, 24), (cx0 + 5, 24), (cx0 + 5 + step // 2, 34), (cx0 - 6 - step // 2, 34)],
+              fill=C('night1'), outline=C('ink'))
+    d.line([cx0, 25, cx0, 33], fill=C('ink'))
+    d.point([(cx0 - 6 - step // 2, 35), (cx0 + 5 + step // 2, 35)], fill=C('brown'))
+    # black kimono with a gold mon and red under-collar
+    d.polygon([(cx0 - 5, top + 3), (cx0 + 5, top + 3), (cx0 + 6, 25), (cx0 - 6, 25)], fill=C('night2'),
+              outline=C('ink'))
+    d.line([cx0 - 2, top + 3, cx0 + 2, top + 9], fill=C('red2'))
+    d.rectangle([cx0 - 5, 22, cx0 + 6, 23], fill=C('gold'))
+    d.ellipse([cx0 - 3, top + 8, cx0, top + 11], outline=C('gold'))
+    # head: shaved, gray topknot, hard eyes, a thin beard
+    d.ellipse([cx0 - 3, top - 7, cx0 + 4, top + 2], fill=C('skin2'), outline=C('ink'))
+    d.rectangle([cx0 - 2, top - 9, cx0, top - 7], fill=C('steel'))
+    d.line([cx0 + 1, top - 3, cx0 + 3, top - 3], fill=C('ink'))
+    d.line([cx0 + 1, top + 1, cx0 + 3, top + 2], fill=C('slate3'))
+    # Tamakiri: a long blade that glows like a cut in the air
+    a = math.radians(ang)
+    tip = (hx + math.cos(a) * 17, hy - math.sin(a) * 17)
+    d.line([cx0 + 2, top + 5, hx, hy], fill=C('night2'), width=2)
+    d.line([(hx, hy), (hx - math.cos(a) * 3, hy + math.sin(a) * 3)], fill=C('gold'), width=2)
+    d.line([(hx, hy), tip], fill=C('cyan4'))
+    d.line([(hx + math.cos(a) * 3, hy - math.sin(a) * 3), tip], fill=C('purple3'))
+    if grab:
+        # the free hand reaches out, glowing: the soul grab
+        gx = cx0 + 8 + (6 if pose == 'grab1' else 0)
+        d.line([cx0 + 3, top + 5, gx, top + 6], fill=C('night2'), width=2)
+        for k in range(3):
+            d.point((gx + 1, top + 4 + k * 2), fill=C('skin2'))
+        d.ellipse([gx - 1, top + 2, gx + 5, top + 10], outline=C('purple3'))
+    return im
+
+
+def cable():
+    """A bundle of Tenshu cables, 6x110 (bottom-center), hanging from the ceiling."""
+    im = Image.new('RGBA', (6, 110), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    for x, col in ((1, 'night2'), (3, 'slate1'), (4, 'night2')):
+        d.line([x, 0, x, 109], fill=C(col))
+    for y in range(4, 110, 13):
+        d.point((2, y), fill=C('red3'))
+    return im

@@ -1187,6 +1187,7 @@ def build_sfx():
     S['banner'] = impact(0.5, 55, 0.5, 0.6) + metal(1600, 0.5, 0.15)
     S['card'] = np.concatenate([whoosh(0.3, 400, 3000, 0.6), taiko(0.6)[:int(0.9 * SR)]])
     S['blip'] = blip(1320, 0.04, 'square', 0.18)
+    S['glass'] = add(hp(noise(0.12), 3500) * expenv(0.12, 0.03) * 0.6, chime([96, 101, 93], 0.025, 0.25, 0.35))
     S['gurgle'] = cat(*[lp(noise(0.06), 500 + 200 * i) * expenv(0.06, 0.03) * 0.8 for i in range(5)])
     S['kvoice'] = glitch(0.09, 0.35) + blip(330, 0.09, 'square', 0.12)
     S['cam_beep'] = np.concatenate([blip(1800, 0.06, 'sine', 0.4), silence(0.04), blip(2400, 0.08, 'sine', 0.4)])

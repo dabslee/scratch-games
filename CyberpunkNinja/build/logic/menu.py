@@ -422,7 +422,7 @@ def t_write():
     if is_clone == 0:
         write_line(join("TIME   ", tstr), -116, 34)
         write_line(join("DEATHS   ", deaths), -116, 10)
-        write_line(join("MEMORY SHARDS   ", shards, " / 8"), -116, -14)
+        write_line(join("MEMORY SHARDS   ", shards, " / 9"), -116, -14)
 
 
 @proc

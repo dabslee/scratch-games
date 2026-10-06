@@ -25,8 +25,11 @@ def pr_spawn():
         vx = pq_vx[qi]
         vy = pq_vy[qi]
         t = 0
-        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell" or kind == "orb" or kind == "spit":
+        hd = 0
+        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell" or kind == "orb" or kind == "spit" or kind == "vial":
             owner = "e"
+        elif kind == "burst":
+            owner = "c"
         elif kind == "wave":
             owner = "w"
         else:
@@ -44,9 +47,12 @@ def pr_spawn():
 @proc
 def pr_update():
     t += 1
+    if kind == "burst" or kind == "cloud":
+        pr_cloud()
+        return
     if kind == "shell":
         vy -= 0.35
-    elif kind == "spit" and owner == "e":
+    elif (kind == "spit" or kind == "vial") and owner == "e":
         vy -= 0.3
     x += vx
     y += vy
@@ -66,7 +72,22 @@ def pr_update():
                 delete_clone()
         return
     cell(x, y)
-    if cc == "#" or cc == "B" or cc == "D":
+    if cc == "=" and (kind != "vial" or vy >= 0):
+        cc = "."
+    if cc == "#" or cc == "B" or cc == "D" or cc == "=":
+        if kind == "vial":
+            # the Harmacist's vials shatter into a lingering poison cloud
+            sfxq.append("glass")
+            kind = "cloud"
+            owner = "c"
+            t = 0
+            if vy < 0:
+                y = 180 - ccy * 16
+            else:
+                x -= vx
+            vx = 0
+            vy = 0
+            return
         if kind == "shell":
             cfx("explosion", x, y, 0)
             sfxq.append("explode")
@@ -82,9 +103,11 @@ def pr_update():
             else:
                 hit_player(1, 0, x - vx * 3)
             if res == "deflect":
-                if kind == "shell":
+                if kind == "shell" or (kind == "bullet" and chapter == 8 and dm_ph == 2 and boss_on == 1):
                     # a deflected shell flies straight back into Raijin's core
-                    kind = "rshell"
+                    # (and a turret round straight back into the Daimyo's armor)
+                    if kind == "shell":
+                        kind = "rshell"
                     ddx = ent_x[boss_slot] - x
                     ddy = ent_y[boss_slot] + 14 - y
                     dd = sqrt(ddx * ddx + ddy * ddy) + 0.01
@@ -120,6 +143,26 @@ def pr_update():
 
 
 @proc
+def pr_cloud():
+    # poison: a burst expands once as a Breach, then both kinds linger and sting
+    if kind == "burst" and t <= 24:
+        cr = 16 + t * 3
+        if t == 1:
+            sfxq.append("explode")
+        if hd == 0 and abs(px - x) < cr and py < y + cr * 0.6 and py + 34 > y - 8:
+            hd = 1
+            hit_player(2, 1, x)
+    elif t % 10 == 0:
+        cr = 22
+        if kind == "burst":
+            cr = 70
+        if abs(px - x) < cr and py < y + 22 and py + 34 > y - 4 and pdash == 0:
+            hit_player(1, 1, x)
+    if t > 120 or (kind == "cloud" and t > 100):
+        delete_clone()
+
+
+@proc
 def pr_draw():
     # enemy shots flash white for the last 0.3 s (9 frames) before reaching Hotaru
     tell = 0
@@ -147,6 +190,18 @@ def pr_draw():
         costume(join("orb_", floor(t / 3) % 2))
     elif kind == "spit":
         costume(join("spit_", floor(t / 3) % 2))
+    elif kind == "vial":
+        costume(join("vial_", floor(t / 3) % 2))
+    elif kind == "cloud" or kind == "burst":
+        if kind == "burst":
+            costume(join("cloudb_", floor(t / 6) % 2))
+            size(min(240, 60 + t * 8))
+        else:
+            costume(join("cloud_", floor(t / 6) % 2))
+        effect("ghost", max(0, t - 80) * 4)
+        goto(x + shx, y + shy)
+        show()
+        return
     else:
         costume(join("bullet_", floor(t / 4) % 2))
     goto(x + shx, y + shy)
@@ -828,7 +883,9 @@ def draw():
             if kuro_in == 0:
                 costume("mk_lie")
             else:
+                # Kuro's soul shows through as a violet cast
                 costume(join("mk_idle_", floor(frame / 8) % 4))
+                effect("color", 160)
         if chapter == 6:
             effect("ghost", 35)
         else:

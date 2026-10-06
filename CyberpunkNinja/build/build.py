@@ -156,8 +156,9 @@ luck_dead boss_name slot_state slot_t slot_sym daicam3_done cage_broken
 muk_dead muk_exit daicam4_done
 raijin_dead daicam5_done wind moving rj_bx rj_arm rj_plow rj_open
 kuro_dead kbranch kb_last kuro_in daicam6_done daicam7_done flip flip_warn gph ke1 ke2 sh_x sh_t sh_f
-daicam8_done daimyo_dead dm_ph eye_x eye_y eye_st mk_x mk_y mk_st ally_x
+daicam8_done daimyo_dead dm_ph dm_vul eye_x eye_y eye_st mk_x mk_y mk_st ally_x ally_st
 dobu_dead daicam2_done harm_dead tide_y tide_hi tide_force tide_lvl
+dobu_cut dobu_gen dobu_ph dobu_open dobu_turn
 '''.split()
 
 GLOBAL_LISTS = '''
@@ -468,15 +469,6 @@ def toned(sprite_name, ramp, prefix, suffix='', recolor_map=None):
     return out
 
 
-def shell_costumes():
-    out = []
-    for c in ST.costumes('Hotaru'):
-        if c['name'].endswith('_g'):
-            im = art_ch2.recolor(ST.image('Hotaru', c['name']), art_ch56.SHELL_MAP)
-            out.append(make_costume('s_' + c['name'][:-2], im, c['rotationCenterX'], c['rotationCenterY'], FILES))
-    return out
-
-
 def recolored(sprite_name, mapping, prefix=''):
     return [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in art_ch2.recolor_costumes(sprite_name, mapping, prefix)]
 
@@ -618,19 +610,43 @@ for i, c in enumerate(ST.costumes('HannyaBoy')):
 sprite('HannyaBoy', copy_costumes('HannyaBoy') + recolored('HannyaBoy', art_ch4.GUARD_MAP, 'g_') + toned('HannyaBoy', MEM_RAMP, 'm_')
        + drain_cos, CL + FX + EN + enemies.HANNYA)
 sprite('BigOni', copy_costumes('BigOni'), CL + FX + EN + enemies.ONI)
-sprite('ScavDrone', copy_costumes('ScavDrone'), CL + FX + EN + enemies.DRONE)
+SPRAYER_MAP = {'slate3': 'white', 'slate2': 'steel', 'steel': 'green2', 'slate1': 'green1', 'red3': 'lime'}
+sprite('ScavDrone', copy_costumes('ScavDrone') + recolored('ScavDrone', SPRAYER_MAP, 'p_'), CL + FX + EN + enemies.DRONE)
 sprite('LadyLuck', recolored('Mukuro', art_ch2.LUCK_MAP), CL + FX + EN + enemies.LUCK)
-sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP) + toned('Mukuro', MEM_RAMP, 'm_') + shell_costumes(), CL + FX + EN + enemies.WARDEN)
+sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP) + toned('Mukuro', MEM_RAMP, 'm_') + recolored('Mukuro', art_v2.TRAINEE_MAP, 's_')
+       + recolored('Mukuro', art_v2.SOLDIER_MAP, 'h_'), CL + FX + EN + enemies.WARDEN)
 sprite('KuroBoss', copy_costumes('Kuro'), CL + FX + EN + enemies.KUROBOSS)
 dm = []
 for pose in art_ch7.POSES:
     for fr in range(2 if pose in ('idle', 'walk') else 1):
         dm.append(costume_from(art_ch7.exo(pose, fr), 'exo_%s_%d' % (pose, fr), *art_ch7.EXO_ANCHOR))
-dm += [costume_from(art_ch7.eye(stt, i), 'eye_' + stt, 24, 24) for i, stt in enumerate(('idle', 'charge', 'open', 'dead'))]
-dm += [costume_from(art_ch7.mask('idle', i), 'mask_%d' % i, 24, 24) for i in range(2)]
-dm.append(costume_from(art_ch7.mask('pin', 0), 'mask_pin', 24, 24))
-dm += copy_costumes('Kuro', prefix='k_', names=['attack1_'])
+for p in list(art_v2.MAN_POSES) + ['dead']:
+    if p in ('idle', 'walk'):
+        dm += [costume_from(art_v2.daimyo_man(p, i), 'man_%s_%d' % (p, i), *art_v2.MAN_FOOT) for i in range(2)]
+    else:
+        dm.append(costume_from(art_v2.daimyo_man(p), 'man_' + p, *art_v2.MAN_FOOT))
+dm.append(costume_from(art_v2.cable(), 'cable', 3, 110))
+dm += copy_costumes('Turret', names=['idle_0'], rename=lambda n: 'turret')
+dm += copy_costumes('Mukuro', prefix='mk_', names=['idle_', 'run_', 'attack1_'])
+_c = ST.costume('Mukuro', 'death_5')
+dm.append(make_costume('mk_lie', ST.image('Mukuro', 'death_5'), _c['rotationCenterX'], _c['rotationCenterY'], FILES))
 sprite('Daimyo', dm, CL + FX + EN + enemies.DAIMYO)
+dobu_cos = [costume_from(art_v2.dobu_body('idle', i), 'dobu_idle_%d' % i, art_v2.DOBU_W / 2, art_v2.DOBU_H) for i in range(2)]
+dobu_cos += [costume_from(art_v2.dobu_body('open', i), 'dobu_open_%d' % i, art_v2.DOBU_W / 2, art_v2.DOBU_H) for i in range(2)]
+dobu_cos += [costume_from(art_v2.dobu_body('spew', 0), 'dobu_spew', art_v2.DOBU_W / 2, art_v2.DOBU_H)]
+dobu_cos += [costume_from(art_v2.dobu_body('dead', i), 'dobu_dead_%d' % i, art_v2.DOBU_W / 2, art_v2.DOBU_H) for i in range(4)]
+dobu_cos += [costume_from(art_v2.dobu_arm(i), 'dobu_arm_%d' % i, 0, 11) for i in range(2)]
+dobu_cos.append(costume_from(art_v2.dobu_arm(0, True), 'dobu_stump', 0, 11))
+sprite('Dobunushi', dobu_cos, CL + FX + EN + enemies.DOBU)
+harm_cos = []
+for j, pre in ((False, 'harm_'), (True, 'harmj_')):
+    for p in art_v2.HARM_POSES:
+        if p in ('idle', 'walk'):
+            harm_cos += [costume_from(art_v2.harmacist(p, i, j), '%s%s_%d' % (pre, p, i), *art_v2.HARM_FOOT) for i in range(2)]
+        else:
+            harm_cos.append(costume_from(art_v2.harmacist(p, 0, j), pre + p, *art_v2.HARM_FOOT))
+harm_cos.append(costume_from(art_v2.harmacist('dead'), 'harm_dead', *art_v2.HARM_FOOT))
+sprite('Harmacist', harm_cos, CL + FX + EN + enemies.HARM)
 sprite('Mukuro', copy_costumes('Mukuro'), CL + FX + EN + enemies.MUKURO)
 rj_cut = lambda im: im.crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT))
 rj = [costume_from(rj_cut(art_ch4.raijin('idle', i)), 'rj_idle_%d' % i, *art_ch4.RJ_CORE) for i in range(2)]
@@ -674,6 +690,9 @@ proj_costumes += [costume_from(art_ch4.shell(i), 'shell_%d' % i, 4, 4) for i in 
 proj_costumes += [costume_from(art_ch4.shell(i, True), 'rshell_%d' % i, 4, 4) for i in range(2)]
 proj_costumes += [costume_from(art_ch7.orb(i), 'orb_%d' % i, 4, 4) for i in range(2)]
 proj_costumes += [costume_from(art_v2.spit(i), 'spit_%d' % i, 4, 4) for i in range(2)]
+proj_costumes += [costume_from(art_v2.vial(i), 'vial_%d' % i, 4, 4) for i in range(2)]
+proj_costumes += [costume_from(art_v2.cloud(i), 'cloud_%d' % i, 16, 22) for i in range(2)]
+proj_costumes += [costume_from(art_v2.cloud(i, True), 'cloudb_%d' % i, 24, 28) for i in range(2)]
 # the sludge tide draws over the fighters (they wade in it), under the effects and HUD
 sprite('Sludge', [costume_from(art_v2.tide_surface(i), 'tide_%d' % i, 122, 0) for i in range(4)], objects.SLUDGE)
 sprite('Projectiles', proj_costumes, CL + FX + EN + objects.PROJECTILES)

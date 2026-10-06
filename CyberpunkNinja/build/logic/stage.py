@@ -69,6 +69,7 @@ def reset_run():
     raijin_dead = 0
     kuro_dead = 0
     kbranch = 0
+    kuro_in = 0
     daicam6_done = 0
     daicam7_done = 0
     daicam8_done = 0
@@ -1390,6 +1391,7 @@ def ev_dm_dead():
             cq_d.append(0)
             wait(0.25)
         flash = 100
+        kuro_in = 2
         wait_until(mode == "play")
     wait(0.6)
     chapter_jump(C_ROOM_EP)
