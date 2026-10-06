@@ -69,6 +69,8 @@ def reset_run():
     muk_freed = 0
     daicam6_done = 0
     daicam7_done = 0
+    daicam8_done = 0
+    daimyo_dead = 0
     wind = 0
     moving = 0
     flip = 0
@@ -400,10 +402,16 @@ def load_room(r):
     elif chapter == 5:
         backdrop("sky_hollow")
         music_want = "hollow"
-    else:
+    elif chapter == 6:
         backdrop("sky_academy")
         music_want = "academy"
-    if (R_BOSS[r] == 1 and boss_dead == 0) or (R_BOSS[r] == 2 and luck_dead == 0) or (R_BOSS[r] == 3 and muk_dead == 0) or (R_BOSS[r] == 4 and raijin_dead == 0) or (R_BOSS[r] == 5 and kuro_dead == 0) or (R_BOSS[r] == 6 and muk2_dead == 0):
+    elif chapter == 7:
+        backdrop("sky_tenshu")
+        music_want = "tenshu"
+    else:
+        backdrop("sky_sump")
+        music_want = "epilogue"
+    if (R_BOSS[r] == 1 and boss_dead == 0) or (R_BOSS[r] == 2 and luck_dead == 0) or (R_BOSS[r] == 3 and muk_dead == 0) or (R_BOSS[r] == 4 and raijin_dead == 0) or (R_BOSS[r] == 5 and kuro_dead == 0) or (R_BOSS[r] == 6 and muk2_dead == 0) or (R_BOSS[r] == 7 and daimyo_dead == 0):
         music_want = "none"
     broadcast("clear")
     broadcast("spawn")
@@ -558,6 +566,10 @@ def late_run(c):
     if c >= 6:
         kuro_dead = 1
         daicam6_done = 1
+    if c >= 7:
+        muk2_dead = 1
+        muk_freed = 1
+        daicam7_done = 1
     seen.append("tetsu")
 
 
@@ -585,6 +597,21 @@ def start_ch6():
     late_run(6)
     enter_dir = "S"
     load_room(C_ROOM_F1)
+    wait(0)
+    fade_to = 0
+    wait_until(fade < 50)
+    mode = "play"
+
+
+@on("start_ch7")
+def start_ch7():
+    mode = "trans"
+    broadcast("menu_close")
+    fade_to = 100
+    wait_until(fade > 99)
+    late_run(7)
+    enter_dir = "S"
+    load_room(C_ROOM_G1)
     wait(0)
     fade_to = 0
     wait_until(fade < 50)
@@ -1387,6 +1414,159 @@ def ev_muk2_dead():
         say("muk2_destroyed")
         wait_until(mode == "play")
     wait(0.5)
+    chapter_jump(C_ROOM_G1)
+
+
+# ------------------------------------------------------------ chapter 7
+@on("ev_ch7_start")
+def ev_ch7_start():
+    cp_room = room
+    cp_x = C_G1_X
+    cp_y = C_G1_Y
+    once("ch7")
+    if first == 1:
+        card = "ch7"
+        wait(2.5)
+        say("ch7")
+
+
+@on("ev_mukuro_gate")
+def ev_mukuro_gate():
+    if muk_freed == 1:
+        once("mukuro_ally")
+        if first == 1:
+            say("mukuro_ally")
+
+
+@on("ev_bailey")
+def ev_bailey():
+    once("bailey")
+    if first == 1:
+        say("bailey")
+
+
+@on("ev_grid")
+def ev_grid():
+    once("grid")
+    if first == 1:
+        say("grid")
+
+
+@on("ev_harvest")
+def ev_harvest():
+    once("harvest")
+    if first == 1:
+        say("harvest")
+
+
+@on("ev_daicam8")
+def ev_daicam8():
+    if daicam8_done == 0:
+        say("daicam8")
+        wait_until(mode == "play")
+        daicam8_done = 1
+
+
+@on("ev_throne")
+def ev_throne():
+    if daimyo_dead == 0:
+        once("throne")
+        if first == 1:
+            say("throne")
+            wait_until(mode == "play")
+        hint = "exo"
+
+
+@on("ev_daimyo_start")
+def ev_daimyo_start():
+    if daimyo_dead == 0:
+        hint = ""
+        ambush_on = 1
+        boss_on = 1
+        boss_phase = 1
+        boss_name = "the_daimyo"
+        music_want = "daimyo"
+        once("daimyo")
+        if first == 1:
+            say("daimyo_fight")
+
+
+@on("ev_dm_phase2")
+def ev_dm_phase2():
+    boss_phase = 2
+    broadcast("drums")
+    hint = "eye"
+    once("dm2")
+    if first == 1:
+        wait(1.2)
+        say("dm2")
+
+
+@on("ev_dm_phase3")
+def ev_dm_phase3():
+    music_want = "engram"
+    hint = "mask"
+    once("dm3")
+    if first == 1:
+        wait(1.2)
+        say("dm3")
+
+
+@on("ev_dm_pin")
+def ev_dm_pin():
+    once("dm_pin")
+    if first == 1:
+        say("dm_pin")
+
+
+@on("ev_dm_dead")
+def ev_dm_dead():
+    hint = ""
+    music_want = "none"
+    wait(1.6)
+    banner = "victory"
+    sfxq.append("victory")
+    wait(3)
+    banner = ""
+    boss_on = 0
+    say("ending")
+    wait_until(mode == "play")
+    sfxq.append("sync")
+    for k in range(6):
+        cq_t.append("sync")
+        cq_x.append(rand(-200, 200))
+        cq_y.append(rand(-100, 120))
+        cq_d.append(0)
+        wait(0.25)
+    flash = 100
+    say("ending2")
+    wait_until(mode == "play")
+    chapter_jump(C_ROOM_EP)
+
+
+# ------------------------------------------------------------ epilogue
+@on("ev_epilogue")
+def ev_epilogue():
+    cp_room = room
+    card = "epi"
+    wait(3)
+    say("epilogue")
+    wait_until(mode == "play")
+    if muk_freed == 1:
+        say("ep_mukuro")
+        wait_until(mode == "play")
+    say("epilogue2")
+    wait_until(mode == "play")
+    wait(0.8)
+    # the scarf flickers once in Kuro's color
+    dash_ch = 1
+    sfxq.append("kuro")
+    wait(0.35)
+    dash_ch = 2
+    wait(0.8)
+    say("epilogue3")
+    wait_until(mode == "play")
+    wait(1.5)
     mode = "trans"
     fade_to = 100
     wait_until(fade > 99)

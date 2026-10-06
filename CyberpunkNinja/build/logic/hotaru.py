@@ -437,7 +437,15 @@ def start_atk(a):
             pface = 1
         else:
             pface = -1
+        ox = px
         px = ent_x[sev_slot] - pface * 26
+        # never snap into a wall (an enemy standing against one)
+        cell(px - C_HW, py + 10)
+        if cc == "#":
+            px = ox
+        cell(px + C_HW, py + 10)
+        if cc == "#":
+            px = ox
         pvx = 0
 
 

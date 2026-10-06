@@ -25,7 +25,7 @@ def pr_spawn():
         vx = pq_vx[qi]
         vy = pq_vy[qi]
         t = 0
-        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell":
+        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell" or kind == "orb":
             owner = "e"
         elif kind == "wave":
             owner = "w"
@@ -141,6 +141,8 @@ def pr_draw():
         costume(join("shell_", floor(t / 3) % 2))
     elif kind == "rshell":
         costume(join("rshell_", floor(t / 3) % 2))
+    elif kind == "orb":
+        costume(join("orb_", floor(t / 3) % 2))
     else:
         costume(join("bullet_", floor(t / 4) % 2))
     goto(x + shx, y + shy)
@@ -213,7 +215,7 @@ is_clone = 0
 ''') + '''
 @on("t_world")
 def tick():
-    if is_clone == 1 and tmode != "mem":
+    if is_clone == 1 and tmode == "":
         if abs(px - x) < 44 and abs(py - y) < 24 and p_ground == 1 and pst == "move":
             prompt_on = 1
             prompt_x = x
@@ -255,7 +257,7 @@ if ddone == 0:
     st = "panic"
     if dmode == "cage":
         st = "caged"
-    if dmode == "echo" or dmode == "trainee":
+    if dmode == "echo" or dmode == "trainee" or dmode == "stream" or dmode == "ep":
         st = "idle"
     t = 0
     cam_x = x
@@ -284,6 +286,10 @@ def dc_done():
         ddone = daicam6_done
     elif dmode == "trainee":
         ddone = daicam7_done
+    elif dmode == "stream":
+        ddone = daicam8_done
+    elif dmode == "ep":
+        ddone = 0
 
 
 @proc
@@ -774,7 +780,7 @@ fr = 0
 is_clone = 1
 clone()
 is_clone = 0
-''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy":').replace(
+''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy" or O_TYPE[oi] == "mknpc":').replace(
     'kind = O_A[oi]', 'kind = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
 @on("t_draw")
 def draw():
@@ -800,6 +806,11 @@ def draw():
             costume("seat")
         elif kind == "dummy":
             costume("dummy")
+        elif kind == "mknpc":
+            costume(join("mk_idle_", floor(frame / 8) % 4))
+            if muk_freed == 0:
+                hide()
+                return
         if chapter == 5:
             effect("ghost", 35)
         else:
@@ -905,7 +916,7 @@ def on_spawn():
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        if chapter == 6:
+        if chapter >= 6:
             pre = "hb_"
         else:
             pre = "gb_"

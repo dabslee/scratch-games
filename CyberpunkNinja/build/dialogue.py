@@ -416,6 +416,88 @@ CONVERSATIONS = {
         ('kuro', 'kuro_neutral', "I said I wanted to see the top of the Spire, just once."),
         ('hotaru', 'hotaru_visor_up', "Then let's go see it. For both of us."),
     ],
+    'ch7': [
+        ('hotaru', 'hotaru_neutral', "Above the clouds. There's a moon up here. It's... painted on."),
+        ('kuro', 'kuro_neutral', "The Tenshu. The Daimyo built his own sky so he'd never have to look at ours."),
+        ('kuro', 'kuro_smirk', "Last climb, partner. Let's go knock on his door."),
+    ],
+    'mukuro_ally': [
+        ('mukuro', 'mukuro_neutral', "H-0. Hotaru. The Tenshu guard answers to me tonight. They will be... delayed."),
+        ('hotaru', 'hotaru_visor_up', "Mukuro? You came."),
+        ('mukuro', 'mukuro_neutral', "You cut my strings. I am choosing where to stand. Go."),
+    ],
+    'bailey': [
+        ('kuro', 'kuro_neutral', "Rooftops over nothing. The wind up here doesn't care who you are."),
+    ],
+    'grid': [
+        ('kuro', 'kuro_neutral', "Castle defenses. Lasers, beams, turrets. Every trick you've already beaten."),
+    ],
+    'harvest': [
+        ('system', 'sys_boot', "HARVEST HALL // 1,203,551 engrams online. Feed: TENSHU CORE."),
+        ('hotaru', 'hotaru_neutral', "Every mind in the city, piped up here to think for one man."),
+        ('kuro', 'kuro_neutral', "Break the core and they all go home. That's the job."),
+    ],
+    'daicam8': [
+        ('daicam', 'daicam_neutral', "HOTARU! The Daimyo's castle! Chat is at two million! Say hi!"),
+        ('hotaru', 'hotaru_visor_up', "...Hi."),
+        ('daicam', 'daicam_neutral', "She said hi!! Okay. Okay. Go win. I'll keep the camera rolling."),
+    ],
+    'throne': [
+        ('daimyo', 'daimyo_neutral', "Instance three. You climbed all this way to return my property in person."),
+        ('kuro', 'kuro_neutral', "We came to take back what you stole."),
+        ('daimyo', 'daimyo_neutral', "Then come in. My armor has been waiting."),
+    ],
+    'daimyo_fight': [
+        ('daimyo', 'daimyo_neutral', "I am the Spire. Its body, its castle, its mind. Kneel."),
+        ('hotaru', 'hotaru_angry', "No."),
+    ],
+    'dm2': [
+        ('daimyo', 'daimyo_neutral', "A shell for a shell. Very well. The castle itself will finish you."),
+        ('kuro', 'kuro_neutral', "Its guns are yours if you deflect them. Send them back up!"),
+    ],
+    'dm3': [
+        ('daimyo', 'daimyo_neutral', "You cannot cut what has no body. I am in every wire of this tower."),
+        ('kuro', 'kuro_smirk', "So am I. I'll grab him. You hit him."),
+    ],
+    'dm_pin': [
+        ('kuro', 'kuro_smirk', "Got him! NOW, Hotaru!"),
+    ],
+    'ending': [
+        ('daimyo', 'daimyo_neutral', "The core... will not hold... without a mind to anchor it..."),
+        ('system', 'sys_boot', "CORE INTEGRITY FAILING. Release requires an anchor engram."),
+        ('kuro', 'kuro_neutral', "That's me. Somebody has to hold the door open while they all go home."),
+        ('hotaru', 'hotaru_angry', "No. There has to be another way. We climb together, remember?"),
+        ('kuro', 'kuro_neutral', "We did climb together. All the way up. I've been dead a long time, Hotaru."),
+        ('kuro', 'kuro_neutral', "You were never a copy. You're the part of me that kept going."),
+        ('kuro', 'kuro_smirk', "Go see the sunrise for me. The real one. Then go get some ramen."),
+    ],
+    'ending2': [
+        ('system', 'sys_boot', "ANCHOR ACCEPTED. RELEASING 1,203,551 ENGRAMS."),
+        ('hotaru', 'hotaru_neutral', "...Kuro?"),
+    ],
+    'epilogue': [
+        ('tetsu', 'tetsu_neutral', "Eat up, kid. Nobody climbs a tower on an empty stomach. Or comes back down."),
+        ('daicam', 'daicam_neutral', "Chat! Forty million! They're calling it 'The Firefly Climb'!"),
+        ('hotaru', 'hotaru_visor_up', "Please don't call it that."),
+    ],
+    'ep_mukuro': [
+        ('mukuro', 'mukuro_neutral', "...The noodles are acceptable."),
+        ('tetsu', 'tetsu_neutral', "High praise from a ninja. Have another bowl."),
+    ],
+    'epilogue2': [
+        ('tetsu', 'tetsu_neutral', "He'd have liked that you came back here. Kuro always came back here."),
+        ('hotaru', 'hotaru_neutral', "He told me to. Ramen, he said. In the rain."),
+    ],
+    'epilogue3': [
+        ('tetsu', 'tetsu_neutral', "Something wrong, kid?"),
+        ('hotaru', 'hotaru_visor_up', "...No. Nothing's wrong at all."),
+    ],
+    'shard8': [
+        ('kuro', 'kuro_neutral', "...My mother, pinning a little lantern charm to my scarf. A firefly."),
+        ('kuro', 'kuro_neutral', "'So you can always find your way home,' she said."),
+        ('hotaru', 'hotaru_visor_up', "Hotaru. Firefly. You named me after that."),
+        ('kuro', 'kuro_smirk', "Don't tell anyone. I have a reputation."),
+    ],
 }
 
 # Tutorial prompts: list of segments. ('k', costume) = key icon, ('t', text) = label.
@@ -450,6 +532,9 @@ HINTS = {
     'shell': [('t', 'Shells dash in and throw kunai.'), ('n',), ('k', 'key_down'), ('t', 'Deflect, then counter')],
     'muk2': [('t', 'Jump his shockwaves.'), ('n',), ('t', 'His shadow strikes from behind you')],
     'choice': [('k', 'mouse_l'), ('t', 'Destroy him'), ('g',), ('k', 'key_e'), ('t', 'Sever the protocol')],
+    'exo': [('t', 'Deflect the nodachi. Jump the stomp.'), ('n',), ('t', 'Strike when the armor recovers')],
+    'eye': [('k', 'key_down'), ('t', 'Deflect bullets back at the eye.'), ('n',), ('t', 'Strike it when it descends')],
+    'mask': [('t', 'Deflect the orbs back.'), ('n',), ('t', 'Strike while Kuro holds the mask down')],
 }
 
 OPTION_LABELS = {
@@ -481,12 +566,12 @@ CONTROLS = [
 ]
 
 END_PAGE = [
-    ('b', 'END OF CHAPTER 6'),
-    ('t', 'THE ACADEMY'),
+    ('b', 'THE END'),
+    ('t', 'CYBERPUNK NINJA'),
 ]
 
 END_NEXT = [
-    ('t', "Hotaru's climb continues in"),
-    ('t', 'Chapter 7: The Tenshu.'),
+    ('t', 'Hotaru climbed the Spire'),
+    ('t', 'and came home as her own person.'),
     ('t', 'Thanks for playing!'),
 ]

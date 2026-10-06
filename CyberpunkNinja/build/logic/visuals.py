@@ -252,7 +252,10 @@ def draw():
             hide()
         else:
             costume(join("hint_", shown))
-            goto(0, 104)
+            if boss_on == 1 and boss_hp > 0:
+                goto(0, 64)
+            else:
+                goto(0, 104)
             effect("ghost", 100 - alpha)
             show()
 '''
@@ -517,7 +520,7 @@ def draw():
         else:
             effect("ghost", 30 + (frame % 6 < 3) * 50)
         show()
-    elif live == 1 and chapter < 2:
+    elif live == 1 and (chapter < 2 or chapter == 8):
         costume(join("rain_", floor(frame / 3) % 4))
         goto(0, 0)
         effect("ghost", 15)
@@ -563,8 +566,12 @@ def draw():
             costume("rail")
         elif chapter == 5:
             costume("hollow")
-        else:
+        elif chapter == 6:
             costume("academy")
+        elif chapter == 7:
+            costume("tenshu")
+        else:
+            costume("sump")
         po = (0 - px * %s - frame * %s * moving) %% 480
         if is_clone == 1:
             goto(po - 480, 0)
@@ -658,7 +665,7 @@ def a_init():
 @on("t_draw")
 def draw():
     want = 0
-    if ingame == 1 and mode != "menu" and chapter < 2:
+    if ingame == 1 and mode != "menu" and (chapter < 2 or chapter == 8):
         want = 1
     if ingame == 1 and mode != "menu" and chapter == 4 and moving == 1:
         want = 2

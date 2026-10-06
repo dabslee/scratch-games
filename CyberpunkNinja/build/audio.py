@@ -836,6 +836,111 @@ def song_mukuro2(drums=False):
     return s.render((1.0, 0.16, 3600)), s.length
 
 
+# ---------------------------------------------------------------------- tenshu
+def song_tenshu():
+    """Chapter 7: a stately court theme under a fake moon."""
+    s = Song(88, 12)
+    prog = [('C3', 'm9'), ('G#2', 'M7'), ('A#2', 'M'), ('G2', 'sus4'),
+            ('C3', 'm9'), ('D#3', 'M7'), ('F3', 'm7'), ('G2', '7')]
+    bl = s.beat * 4
+    for i in range(12):
+        r, kd = prog[i % 8]
+        s.add(pad([m + 12 for m in chord(r, kd)], bl + 0.8, 1500, 0.4, 0.6, 0.8), i)
+        s.add(bass(n2m(r) - 12, bl * 0.9, 0.45, 500, pluck=False), i)
+        s.add(taiko(0.5), i, 0)
+        s.add(taiko(0.3, 1.2), i, 2.5)
+        s.add(ka(0.18), i, 3.5)
+        if i % 4 == 3:
+            s.add(chime([n2m(r) + 24, n2m(r) + 31, n2m(r) + 36], 0.08, 0.6, 0.15), i, 3)
+    line = [('C5', 0, 1.5), ('D#5', 1.5, 0.5), ('G5', 2, 2), ('G#5', 4, 1), ('G5', 5, 1), ('F5', 6, 2),
+            ('D#5', 8, 1.5), ('D5', 9.5, 0.5), ('C5', 10, 2)]
+    for rep in (0, 4, 8):
+        for nm, b, d in line:
+            s.add(shamisen(n2m(nm), d * s.beat + 0.4, 0.32), rep, b)
+    return s.render((2.0, 0.3, 3000)), s.length
+
+
+def song_daimyo(drums=False):
+    """The Daimyo: a heavy, grinding march; taiko storm from phase 2."""
+    s = Song(132, 8)
+    prog = [('C3', 'm'), ('C3', 'm'), ('G#2', 'M'), ('A#2', 'M'),
+            ('C3', 'm'), ('D#3', 'M'), ('F3', 'm'), ('G2', '7')]
+    if drums:
+        for i in range(8):
+            for j in range(16):
+                if j % 2 == 0 or j in (7, 15):
+                    s.add(taiko(0.85 if j % 4 == 0 else 0.35, 0.85 if j % 4 == 0 else 1.25), i, j * 0.25)
+        return s.render((0.9, 0.12, 2200)), s.length
+    k, sn = kick(1.0), snare(0.6)
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        root = n2m(r)
+        for j in range(8):
+            s.add(dist(bass(root - 12, s.beat * 0.45, 0.55, 650), 2.5), i, j * 0.5)
+        for j in range(4):
+            s.add(k, i, j)
+            if j % 2:
+                s.add(sn, i, j)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl, 1300, 0.32, 0.05, 0.2), i)
+        s.add(metal(600, 0.8, 0.15), i, 0)
+    riff = [('C5', 0, 0.5), ('D#5', 0.5, 0.5), ('G5', 1, 0.75), ('F#5', 1.75, 0.25), ('G5', 2, 1),
+            ('A#5', 3, 0.5), ('G#5', 3.5, 0.5)]
+    for bar in range(8):
+        off = {2: -4, 3: -2, 5: 3, 6: 5, 7: -5}.get(bar, 0)
+        for nm, b, d in riff:
+            s.add(shamisen(n2m(nm) + off, d * s.beat + 0.2, 0.32), bar, b)
+    return s.render((1.0, 0.16, 3200)), s.length
+
+
+def song_engram():
+    """Phase 3: inside the core. Ethereal and urgent."""
+    s = Song(150, 8)
+    prog = [('A2', 'm9'), ('F2', 'M7'), ('C3', 'M'), ('G2', 'M'),
+            ('A2', 'm9'), ('F2', 'M7'), ('D3', 'm7'), ('E2', '7')]
+    k, h = kick(0.9), hat(False, 0.16)
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        root = n2m(r)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl + 0.3, 2600, 0.36, 0.2, 0.4), i)
+        for j in range(16):
+            notes = chord(r, kd, 1)
+            s.add(arp_note(notes[j % len(notes)] + 12, s.beat * 0.22, 0.09), i, j * 0.25)
+        for j in range(4):
+            s.add(k, i, j)
+            s.add(h, i, j + 0.5)
+        s.add(bass(root - 12, bl * 0.9, 0.5, 700, pluck=False), i)
+    mel = [('A5', 0, 1), ('C6', 1, 0.5), ('B5', 1.5, 0.5), ('A5', 2, 1), ('E6', 3, 1),
+           ('F6', 4, 1.5), ('E6', 5.5, 0.5), ('C6', 6, 2)]
+    for rep in (2, 6):
+        for nm, b, d in mel:
+            s.add(lead(n2m(nm) - 12, d * s.beat + 0.1, 0.2), rep, b)
+    return s.render((1.6, 0.25, 4200)), s.length
+
+
+def song_epilogue():
+    """Epilogue: the title melody in a major key, by Tetsu's cart in the rain."""
+    s = Song(80, 8)
+    prog = [('C3', 'add9'), ('A2', 'm7'), ('F2', 'M7'), ('G2', 'sus4'),
+            ('C3', 'add9'), ('A2', 'm7'), ('F2', 'M7'), ('G2', 'M')]
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        s.add(pad(chord(r, kd, 1), bl + 0.8, 1400, 0.45, 0.6, 0.8), i)
+        s.add(bass(n2m(r) - 12, bl * 0.9, 0.4, 450, pluck=False), i)
+        if i % 2 == 0:
+            s.add(taiko(0.25), i, 0)
+    mel = [('C5', 0, 1.5), ('E5', 1.5, 0.5), ('D5', 2, 1), ('C5', 3, 1),
+           ('G5', 4, 1.5), ('A5', 5.5, 0.5), ('G5', 6, 1), ('E5', 7, 1),
+           ('F5', 8, 1.5), ('E5', 9.5, 0.5), ('C5', 10, 2),
+           ('D5', 12, 1), ('G5', 13, 1), ('G4', 14, 2),
+           ('C5', 16, 1.5), ('E5', 17.5, 0.5), ('G5', 18, 1), ('A5', 19, 1),
+           ('G5', 20, 1.5), ('E5', 21.5, 0.5), ('C5', 22, 2),
+           ('D5', 24, 1), ('E5', 25, 1), ('F5', 26, 2),
+           ('D5', 28, 1), ('B4', 29, 1), ('C5', 30, 2)]
+    for nm, b, d in mel:
+        s.add(shamisen(n2m(nm), d * s.beat + 0.5, 0.38), 0, b)
+    return s.render((2.2, 0.3, 3000)), s.length
+
+
 def rain_loop():
     d = 8.0
     x = lp(noise(d + 1), 3500) * 0.35 + hp(lp(noise(d + 1), 9000), 2500) * 0.25
@@ -1116,14 +1221,15 @@ def build_all():
     songs = {'title': song_title, 'sump': song_sump, 'alley': song_alley, 'boss': song_boss,
              'vaults': song_vaults, 'luck': song_luck, 'gardens': song_gardens, 'mukuro': song_mukuro,
              'monorail': song_monorail, 'raijin': song_raijin, 'hollow': song_hollow, 'kuro': song_kuro,
-             'academy': song_academy, 'mukuro2': song_mukuro2}
+             'academy': song_academy, 'mukuro2': song_mukuro2, 'tenshu': song_tenshu, 'daimyo': song_daimyo,
+             'engram': song_engram, 'epilogue': song_epilogue}
     for name, fn in songs.items():
         x, length = fn()
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')
         MUSIC[name] = round(length, 4)
     for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck), ('mukuro_drums', song_mukuro), ('raijin_drums', song_raijin), ('kuro_drums', song_kuro),
-                     ('mukuro2_drums', song_mukuro2)):
+                     ('mukuro2_drums', song_mukuro2), ('daimyo_drums', song_daimyo)):
         x, length = fn(drums=True)
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')

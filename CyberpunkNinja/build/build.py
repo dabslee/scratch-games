@@ -21,6 +21,7 @@ import art_ch2  # noqa: E402
 import art_ch3  # noqa: E402
 import art_ch4  # noqa: E402
 import art_ch56  # noqa: E402
+import art_ch7  # noqa: E402
 import assets  # noqa: E402
 import dialogue  # noqa: E402
 import levels  # noqa: E402
@@ -154,6 +155,7 @@ luck_dead boss_name slot_state slot_t slot_sym daicam3_done cage_broken
 muk_dead muk_exit daicam4_done
 raijin_dead daicam5_done wind moving rj_bx rj_arm rj_plow rj_open
 kuro_dead muk2_dead muk_freed daicam6_done daicam7_done flip flip_warn gph ke1 ke2 sh_x sh_t sh_f
+daicam8_done daimyo_dead dm_ph eye_x eye_y eye_st mk_x mk_y mk_st ally_x
 '''.split()
 
 GLOBAL_LISTS = '''
@@ -218,6 +220,7 @@ c1_start = [o for o in levels.c1.objs if o['type'] == 'start'][0]
 d1_start = [o for o in levels.d1.objs if o['type'] == 'start'][0]
 e1_start = [o for o in levels.e1.objs if o['type'] == 'start'][0]
 f1_start = [o for o in levels.f1.objs if o['type'] == 'start'][0]
+g1_start = [o for o in levels.g1.objs if o['type'] == 'start'][0]
 C.update({
     'C_ROOM_P1': RI['p1'], 'C_ROOM_A1': RI['a1'], 'C_A1_X': a1_start['x'], 'C_A1_Y': a1_start['y'],
     'C_ROOM_B1': RI['b1'], 'C_B1_X': b1_start['x'], 'C_B1_Y': b1_start['y'],
@@ -225,6 +228,7 @@ C.update({
     'C_ROOM_D1': RI['d1'], 'C_D1_X': d1_start['x'], 'C_D1_Y': d1_start['y'],
     'C_ROOM_E1': RI['e1'], 'C_E1_X': e1_start['x'], 'C_E1_Y': e1_start['y'],
     'C_ROOM_F1': RI['f1'], 'C_F1_X': f1_start['x'], 'C_F1_Y': f1_start['y'],
+    'C_ROOM_G1': RI['g1'], 'C_G1_X': g1_start['x'], 'C_G1_Y': g1_start['y'], 'C_ROOM_EP': RI['ep'],
     'C_LIFT_LOW': -200, 'C_LIFT_TOP': levels.top(19),
     'C_G': 1.5, 'C_JUMP': 16.5, 'C_WALLJUMP': 15, 'C_BOOST': 18, 'C_RUN': 6, 'C_MAXFALL': 13,
     'C_SLIDE': 3, 'C_DASHV': 21.3, 'C_DASHF': 6, 'C_HW': 7, 'C_PH': 34, 'C_COYOTE': 3,
@@ -508,7 +512,7 @@ def atk_info_src():
 
 # Stage
 stage = target('Stage', stage=True)
-stage.costumes = copy_costumes('Stage', names=['title_', 'sky_sump', 'sky_neon_alley', 'sky_server_gardens', 'black'])
+stage.costumes = copy_costumes('Stage', names=['title_', 'sky_sump', 'sky_neon_alley', 'sky_server_gardens', 'sky_tenshu', 'black'])
 stage.costumes.append(make_costume('sky_vaults', up4(art_ch2.sky()), 480, 360, FILES))
 stage.costumes.append(make_costume('sky_rail', up4(art_ch4.sky()), 480, 360, FILES))
 stage.costumes.append(make_costume('sky_hollow', up4(art_ch56.hollow_sky()), 480, 360, FILES))
@@ -516,12 +520,12 @@ stage.costumes.append(make_costume('sky_academy', up4(art_ch56.academy_sky()), 4
 stage.sounds = []
 scratchc.compile_sprite(stage, read_logic('stage.py'), C)
 
-PAR_FAR = sprite('Parallax_far', copy_costumes('Parallax_far', names=['sump', 'neon_alley', 'server_gardens'])
+PAR_FAR = sprite('Parallax_far', copy_costumes('Parallax_far', names=['sump', 'neon_alley', 'server_gardens', 'tenshu'])
                  + [make_costume('vaults', up4(art_ch2.far()), 480, 360, FILES),
                     make_costume('rail', up4(art_ch4.far()), 480, 360, FILES),
                     make_costume('hollow', up4(art_ch56.hollow_far()), 480, 360, FILES),
                     make_costume('academy', up4(art_ch56.academy_far()), 480, 360, FILES)], visuals.parallax(0.05, 1))
-PAR_MID = sprite('Parallax_mid', copy_costumes('Parallax_mid', names=['sump', 'neon_alley', 'server_gardens'])
+PAR_MID = sprite('Parallax_mid', copy_costumes('Parallax_mid', names=['sump', 'neon_alley', 'server_gardens', 'tenshu'])
                  + [make_costume('vaults', up4(art_ch2.mid()), 480, 360, FILES),
                     make_costume('rail', up4(art_ch4.mid()), 480, 360, FILES),
                     make_costume('hollow', up4(art_ch56.hollow_mid()), 480, 360, FILES),
@@ -545,6 +549,10 @@ props += [costume_from(art_ch3.toro(i), 'toro_%d' % i, 6, 22) for i in range(2)]
 props.append(costume_from(art_ch3.bonsai(), 'bonsai', 7, 18))
 props.append(costume_from(art_ch4.seat(), 'seat', 9, 12))
 props.append(costume_from(art_ch56.dummy(), 'dummy', 7, 26))
+for k in range(4):
+    c = ST.costume('Mukuro', 'idle_%d' % k)
+    im = ST.image('Mukuro', 'idle_%d' % k).transpose(Image.FLIP_LEFT_RIGHT)
+    props.append(make_costume('mk_idle_%d' % k, im, im.width - c['rotationCenterX'], c['rotationCenterY'], FILES))
 sprite('Props', props, CL + objects.PROPS)
 pb = [costume_from(art_ch56.phase_block(st_, h), '%s_%s' % ('hb' if h else 'gb', st_), 4, 4)
       for h in (False, True) for st_ in ('on', 'warn', 'off')]
@@ -584,6 +592,15 @@ sprite('ScavDrone', copy_costumes('ScavDrone'), CL + FX + EN + enemies.DRONE)
 sprite('LadyLuck', recolored('Mukuro', art_ch2.LUCK_MAP), CL + FX + EN + enemies.LUCK)
 sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP) + toned('Mukuro', MEM_RAMP, 'm_') + shell_costumes(), CL + FX + EN + enemies.WARDEN)
 sprite('KuroBoss', copy_costumes('Kuro'), CL + FX + EN + enemies.KUROBOSS)
+dm = []
+for pose in art_ch7.POSES:
+    for fr in range(2 if pose in ('idle', 'walk') else 1):
+        dm.append(costume_from(art_ch7.exo(pose, fr), 'exo_%s_%d' % (pose, fr), *art_ch7.EXO_ANCHOR))
+dm += [costume_from(art_ch7.eye(stt, i), 'eye_' + stt, 24, 24) for i, stt in enumerate(('idle', 'charge', 'open', 'dead'))]
+dm += [costume_from(art_ch7.mask('idle', i), 'mask_%d' % i, 24, 24) for i in range(2)]
+dm.append(costume_from(art_ch7.mask('pin', 0), 'mask_pin', 24, 24))
+dm += copy_costumes('Kuro', prefix='k_', names=['attack1_'])
+sprite('Daimyo', dm, CL + FX + EN + enemies.DAIMYO)
 sprite('Mukuro', copy_costumes('Mukuro'), CL + FX + EN + enemies.MUKURO)
 rj_cut = lambda im: im.crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT))
 rj = [costume_from(rj_cut(art_ch4.raijin('idle', i)), 'rj_idle_%d' % i, *art_ch4.RJ_CORE) for i in range(2)]
@@ -625,6 +642,7 @@ proj_costumes = copy_costumes('Projectiles', names=['bullet_']) + WAVE_COSTUMES
 proj_costumes += [costume_from(f, 'card_%d' % i, 4.5, 4.5) for i, f in enumerate(art_ch2.card_frames())]
 proj_costumes += [costume_from(art_ch4.shell(i), 'shell_%d' % i, 4, 4) for i in range(2)]
 proj_costumes += [costume_from(art_ch4.shell(i, True), 'rshell_%d' % i, 4, 4) for i in range(2)]
+proj_costumes += [costume_from(art_ch7.orb(i), 'orb_%d' % i, 4, 4) for i in range(2)]
 sprite('Projectiles', proj_costumes, CL + FX + EN + objects.PROJECTILES)
 sprite('MoveFX', copy_costumes('MoveFX'), CL + visuals.fx_sprite('mq', visuals.MOVE_FX))
 sprite('CombatFX', copy_costumes('CombatFX'), CL + visuals.fx_sprite('cq', visuals.COMBAT_FX))
@@ -633,11 +651,16 @@ sprite('Rain', copy_costumes('Rain') + [make_costume('wind_%d' % i, up4(art_ch4.
 sprite('Flash', FLASH_COSTUMES, visuals.FLASH)
 eui = copy_costumes('HUD', names=['enemy_int_']) + copy_costumes('CombatFX', names=['breach_', 'severance_'])
 sprite('EnemyUI', eui, CL + visuals.ENEMY_UI)
-hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro'])
+hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro', 'boss_the_daimyo'])
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])
 sprite('Hints', hint_cos, visuals.HINTS)
 ban = copy_costumes('Banners') + copy_costumes('ChapterCards')
+epi = panel_image(200, 44, border='mag3', accent='cyan3')
+REG.draw(epi, 10, 6, 'THE END OF THE CLIMB', P['mag3'], P['ink'])
+et = text_image(['EPILOGUE'], BOLD, P['cyan3'], shadow=P['mag2'])
+epi.alpha_composite(et.resize((et.width * 2, et.height * 2), Image.NEAREST), (10, 18))
+ban.append(costume_from(epi, 'epi', 100, 22))
 sprite('Banners', ban, visuals.BANNERS)
 dlg = (copy_costumes('Dialogue') + copy_costumes('Portraits') + copy_costumes('NamePlates', names=['name_'])
        + DLG_COSTUMES)
@@ -660,7 +683,7 @@ sprite('Music_mukuro_drums', [FADE_COSTUMES[0]], visuals.music('mukuro_drums', a
        sounds=['mukuro_drums'])
 sprite('Music_raijin_drums', [FADE_COSTUMES[0]], visuals.music('raijin_drums', audio.MUSIC['raijin'], drums=True, drums_for='raijin'),
        sounds=['raijin_drums'])
-for tr in ('kuro', 'mukuro2'):
+for tr in ('kuro', 'mukuro2', 'daimyo'):
     sprite('Music_%s_drums' % tr, [FADE_COSTUMES[0]], visuals.music(tr + '_drums', audio.MUSIC[tr], drums=True, drums_for=tr),
            sounds=[tr + '_drums'])
 sprite('Ambience', [FADE_COSTUMES[0]], visuals.AMBIENCE, sounds=['rain_loop', 'wind_loop'])

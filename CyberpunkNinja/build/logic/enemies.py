@@ -3666,3 +3666,583 @@ def kr_draw():
     if st == "beaten" or vis == 1:
         show()
 '''
+
+
+# The Daimyo, in three forms. One sprite, four clone roles: the samurai
+# exoskeleton (which also runs the brain for every phase), the Tenshu's
+# defense-AI eye, the engram mask, and Kuro's ghost, who fights beside
+# Hotaru in the last phase. The boss hitbox follows whichever form is live.
+DAIMYO = spawner('daimyo', '''
+if daimyo_dead == 0:
+    x = O_X[oi]
+    y = O_Y[oi]
+    fy = y
+    myobj = oi
+    add_ent("daimyo", x, y, 16, 80, 20, 16, 1)
+    boss_slot = slot
+    st = "wait"
+    t = 0
+    ehp = 20
+    imax = 16
+    integ = 0
+    int_t = 0
+    face = -1
+    flash_t = 0
+    guard_t = 0
+    acd = 30
+    cnt = 0
+    dm_ph = 1
+    eye_x = 0
+    eye_y = 300
+    eye_st = "idle"
+    mk_x = 0
+    mk_y = 300
+    mk_st = "idle"
+    ally_x = 999
+    boss_hp = 20
+    boss_int = 0
+    is_clone = 1
+    role = "body"
+    clone()
+    role = "eye"
+    clone()
+    role = "mask"
+    clone()
+    role = "ally"
+    clone()
+    is_clone = 0
+    ui_slot.append(slot)
+    ui_role.append("mark")
+    clone("EnemyUI")
+''') + '''
+@on("t_world")
+def tick():
+    if is_clone == 1 and role == "body":
+        dm_update()
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        dm_draw()
+
+
+@proc
+def dm_face():
+    if px > x:
+        face = 1
+    else:
+        face = -1
+
+
+@proc
+def dm_go(kind):
+    st = kind
+    t = 0
+    hitdone = 0
+    nshot = 0
+    prel = px - x
+    dm_face()
+    if kind == "stomp" or kind == "charge" or kind == "swoop":
+        sfxq.append("breach")
+    elif kind == "iaido" or kind == "combo":
+        sfxq.append("windup")
+    elif kind == "lasers":
+        sl_q.append(-230)
+        sl_q.append(230)
+        sfxq.append("zap_warn")
+    elif kind == "pin":
+        ally_x = mk_x - 34
+        sfxq.append("kuro")
+        if cnt < 2:
+            broadcast("ev_dm_pin")
+
+
+@proc
+def dm_rec(n):
+    st = "recover"
+    t = 0
+    rec_len = n
+
+
+@proc
+def dm_slash(reach, dmg, last_hit, gain):
+    if face == 1:
+        p_overlap(x - 10, x + reach, y, y + 70)
+    else:
+        p_overlap(x - reach, x + 10, y, y + 70)
+    sfxq.append("oni_swing")
+    if ov == 1:
+        hit_player(dmg, 0, x)
+        if res == "deflect":
+            integ = min(imax, integ + gain)
+            int_t = 0
+            if last_hit == 1:
+                st = "recoil"
+                t = 0
+
+
+@proc
+def dm_hurt():
+    # damage, guard and posture for whichever form is live
+    hk = ent_hk[slot]
+    dm_open = 0
+    if st == "recover" or st == "recoil" or st == "broken" or st == "descend" or st == "pin":
+        dm_open = 1
+    if dm_open == 1 or hk == "projectile":
+        ehp -= ent_dmg[slot]
+        flash_t = 3
+        if dm_ph == 1:
+            sfxq.append("rj_hurt")
+        else:
+            sfxq.append("thug_hurt")
+        if st != "broken":
+            integ = min(imax, integ + ent_idmg[slot])
+    else:
+        sfxq.append("muk_guard")
+        cfx("deflect", ent_x[slot] + face * 14, ent_y[slot] + 30, 0 - face)
+        if hk == "heavy":
+            integ = min(imax, integ + ent_idmg[slot] * 0.5)
+        if dm_ph == 1:
+            guard_t = 8
+    int_t = 0
+    ent_dmg[slot] = 0
+    ent_idmg[slot] = 0
+
+
+@proc
+def dm_next_phase():
+    integ = 0
+    ent_stag[slot] = 0
+    ent_brk[slot] = 0
+    t = 0
+    ehp = 20
+    sfxq.append("rj_die")
+    shake = 24
+    shake_amp = 6
+    hitstop = 14
+    if dm_ph == 1:
+        dm_ph = 2
+        st = "rise"
+        eye_y = 300
+        broadcast("ev_dm_phase2")
+    elif dm_ph == 2:
+        dm_ph = 3
+        st = "rise"
+        eye_st = "dead"
+        mk_y = 300
+        broadcast("ev_dm_phase3")
+    else:
+        st = "end"
+        ehp = 0
+        ally_x = 999
+        mk_st = "pin"
+        ent_alive[slot] = 0
+        daimyo_dead = 1
+        boss_hp = 0
+        boss_int = 0
+        broadcast("ev_dm_dead")
+
+
+@proc
+def dm_update():
+    t += 1
+    if st == "end":
+        return
+    if st == "wait":
+        if boss_on == 1:
+            st = "move"
+            t = 0
+            acd = 40
+        return
+    if eye_st == "dead" and eye_y > -300:
+        eye_y -= 6
+    if ent_sev[slot] == 1:
+        ent_sev[slot] = 0
+        seg = ceil(ehp / 5)
+        ehp = (seg - 1) * 5
+        integ = 0
+        ent_stag[slot] = 0
+        flash_t = 6
+        sfxq.append("oni_hurt")
+        if dm_ph == 1:
+            dm_rec(30)
+        elif dm_ph == 2:
+            st = "climb"
+            t = 0
+        else:
+            st = "float"
+            t = 0
+            ally_x = 999
+    if ent_dmg[slot] > 0:
+        dm_hurt()
+    if ehp <= 0 and st != "rise":
+        dm_next_phase()
+        return
+    if integ >= imax and st != "broken":
+        st = "broken"
+        t = 0
+        integ = imax
+        ent_stag[slot] = 1
+        sfxq.append("stagger")
+    if guard_t > 0:
+        guard_t -= 1
+    dx = px - x
+    ent_brk[slot] = 0
+    if dm_ph == 1:
+        dm_exo()
+    elif dm_ph == 2:
+        dm_eye()
+    else:
+        dm_mask()
+    int_t += 1
+    if int_t > 80 and integ > 0 and st != "broken" and t % 20 == 0:
+        integ = max(0, integ - 1)
+    x = min(max(x, -200), 200)
+    if dm_ph == 1:
+        ent_x[slot] = x
+        ent_y[slot] = y
+        ent_w[slot] = 16
+        ent_h[slot] = 80
+    elif dm_ph == 2:
+        ent_x[slot] = eye_x
+        ent_y[slot] = eye_y - 22
+        ent_w[slot] = 22
+        ent_h[slot] = 44
+    else:
+        ent_x[slot] = mk_x
+        ent_y[slot] = mk_y - 20
+        ent_w[slot] = 20
+        ent_h[slot] = 40
+    ent_int[slot] = integ
+    boss_hp = ceil(ehp)
+    boss_int = integ
+
+
+@proc
+def dm_exo():
+    # phase 1: the samurai exoskeleton
+    if st == "move":
+        dm_face()
+        if acd > 0:
+            acd -= 1
+        ad = abs(dx)
+        if acd == 0 and pst != "dead":
+            roll = rand(1, 4)
+            if roll == last:
+                roll = roll % 4 + 1
+            last = roll
+            if ad > 120 and roll == 2:
+                roll = 1
+            if roll == 1:
+                dm_go("iaido")
+            elif roll == 2:
+                dm_go("combo")
+            elif roll == 3:
+                dm_go("stomp")
+            else:
+                dm_go("charge")
+        elif ad > 90:
+            x += face * 1.6
+    elif st == "iaido":
+        if t == 26:
+            dm_slash(130, 3, 1, 3)
+        if t >= 40 and st == "iaido":
+            dm_rec(30)
+    elif st == "combo":
+        if t == 4 or t == 20 or t == 36:
+            dm_face()
+        if (t > 4 and t < 14) or (t > 20 and t < 30) or (t > 36 and t < 46):
+            if abs(dx) > 50:
+                x += face * 2.5
+        if t == 14 or t == 30:
+            dm_slash(84, 2, 0, 2)
+        elif t == 46:
+            dm_slash(84, 2, 1, 2)
+        if t >= 56 and st == "combo":
+            dm_rec(24)
+    elif st == "stomp":
+        if t < 30:
+            ent_brk[slot] = 1
+        if t == 30:
+            sfxq.append("oni_slam")
+            cfx("shockwave", x, fy, 0)
+            shake = 12
+            shake_amp = 5
+            for k in range(2):
+                pq_t.append("wave")
+                pq_x.append(x)
+                pq_y.append(fy)
+                pq_vx.append(7 - 14 * k)
+                pq_vy.append(0)
+            if abs(dx) < 54 and py < fy + 30:
+                hit_player(3, 1, x)
+        if t >= 46:
+            dm_rec(30)
+    elif st == "charge":
+        if t < 30:
+            ent_brk[slot] = 1
+            dm_face()
+            prel = px - x
+        else:
+            x += face * 14
+            if t % 2 == 0:
+                mfx("afterimage", x, y + 30, face)
+            rel = px - x
+            if hitdone == 0 and rel * prel <= 0 and py < y + 70:
+                hitdone = 1
+                hit_player(3, 1, x - face * 10)
+            prel = rel
+            if (x <= -200 or x >= 200) and st == "charge":
+                shake = 8
+                shake_amp = 4
+                sfxq.append("oni_slam")
+                dm_rec(34)
+    elif st == "recover":
+        if t >= rec_len:
+            st = "move"
+            t = 0
+            acd = rand(8, 24)
+    elif st == "recoil":
+        if t >= 28:
+            dm_rec(8)
+    elif st == "broken":
+        if t >= 110:
+            st = "move"
+            t = 0
+            integ = 8
+            ent_stag[slot] = 0
+            acd = 8
+
+
+@proc
+def dm_eye():
+    # phase 2: the castle's defense AI looks down from above
+    if st == "rise":
+        eye_y = max(110, eye_y - 4)
+        if eye_y <= 110 and t > 60:
+            st = "float"
+            t = 0
+            cnt = 0
+        return
+    if st == "float" or st == "barrage" or st == "lasers":
+        eye_x = sin(frame * 1.6) * 150
+        eye_y = 110 + sin(frame * 5) * 6
+    if st == "float":
+        eye_st = "idle"
+        if t >= 40:
+            cnt += 1
+            if cnt % 4 == 0:
+                st = "descend"
+                t = 0
+                sfxq.append("vent")
+            elif cnt % 4 == 2:
+                dm_go("lasers")
+            else:
+                dm_go("barrage")
+    elif st == "barrage":
+        eye_st = "charge"
+        if t % 16 == 10 and nshot < 3:
+            nshot += 1
+            for k in range(5):
+                ax = px - eye_x
+                ay = py + 18 - eye_y
+                dd = sqrt(ax * ax + ay * ay) + 0.01
+                ang = (k - 2) * 9
+                vx0 = ax / dd * 6
+                vy0 = ay / dd * 6
+                pq_t.append("bullet")
+                pq_x.append(eye_x)
+                pq_y.append(eye_y - 10)
+                pq_vx.append(vx0 * cos(ang) - vy0 * sin(ang))
+                pq_vy.append(vx0 * sin(ang) + vy0 * cos(ang))
+            sfxq.append("turret_fire")
+        if t >= 60:
+            st = "float"
+            t = 0
+    elif st == "lasers":
+        if t >= 150:
+            st = "float"
+            t = 0
+    elif st == "descend":
+        eye_st = "open"
+        eye_y = max(-70, eye_y - 6)
+        if t >= 120:
+            st = "climb"
+            t = 0
+    elif st == "broken":
+        eye_st = "open"
+        eye_y = max(-70, eye_y - 6)
+        if t >= 120:
+            ent_stag[slot] = 0
+            integ = 6
+            st = "climb"
+            t = 0
+    elif st == "climb":
+        eye_st = "idle"
+        eye_y = min(110, eye_y + 5)
+        if eye_y >= 110:
+            st = "float"
+            t = 0
+
+
+@proc
+def dm_mask():
+    # phase 3: the Daimyo's engram, held down by Kuro
+    if st == "rise":
+        mk_y = max(70, mk_y - 4)
+        if mk_y <= 70 and t > 60:
+            st = "float"
+            t = 0
+            cnt = 0
+        return
+    if st == "float" or st == "orbs":
+        mk_x = sin(frame * 1.4) * 140
+        mk_y = 70 + sin(frame * 4) * 18
+    if st == "float":
+        mk_st = "idle"
+        if t >= 36:
+            cnt += 1
+            if cnt % 3 == 0:
+                dm_go("pin")
+            elif cnt % 3 == 2:
+                tx = px
+                ty = py + 16
+                dm_go("swoop")
+            else:
+                dm_go("orbs")
+    elif st == "orbs":
+        if t == 12 or t == 40:
+            for k in range(8):
+                pq_t.append("orb")
+                pq_x.append(mk_x)
+                pq_y.append(mk_y)
+                pq_vx.append(cos(k * 45 + t) * 4)
+                pq_vy.append(sin(k * 45 + t) * 4)
+            sfxq.append("kuro")
+        if t >= 56:
+            st = "float"
+            t = 0
+    elif st == "swoop":
+        if t < 24:
+            ent_brk[slot] = 1
+        elif t < 60:
+            ddx = tx - mk_x
+            ddy = ty - mk_y
+            dd = sqrt(ddx * ddx + ddy * ddy)
+            if dd > 12:
+                mk_x += ddx / dd * 12
+                mk_y += ddy / dd * 12
+            if hitdone == 0 and abs(px - mk_x) < 18 and abs(py + 18 - mk_y) < 26:
+                hitdone = 1
+                hit_player(3, 1, mk_x)
+        else:
+            mk_y = min(70, mk_y + 6)
+            if mk_y >= 70:
+                st = "float"
+                t = 0
+    elif st == "pin" or st == "broken":
+        # Kuro grabs the mask and drags it to the floor
+        mk_st = "pin"
+        mk_y = max(fy + 24, mk_y - 6)
+        ally_x = mk_x - 30
+        if t >= 110 + 30 * (st == "broken"):
+            ally_x = 999
+            ent_stag[slot] = 0
+            if st == "broken":
+                integ = 6
+            st = "float"
+            t = 0
+
+
+@proc
+def dm_draw():
+    effect("ghost", 0)
+    effect("brightness", 0)
+    if role == "body":
+        if st == "wait" and boss_on == 0:
+            costume("exo_idle_0")
+        elif dm_ph >= 2:
+            costume("exo_broken_0")
+            effect("ghost", 20)
+        elif st == "iaido":
+            if t < 26:
+                costume("exo_wind_0")
+            else:
+                costume("exo_slash_0")
+        elif st == "combo":
+            if (t > 4 and t < 14) or (t > 20 and t < 30) or (t > 36 and t < 46):
+                costume("exo_wind_0")
+            else:
+                costume("exo_slash_0")
+        elif st == "stomp":
+            if t < 30:
+                costume("exo_stomp_0")
+            else:
+                costume("exo_low_0")
+        elif st == "charge":
+            costume("exo_dash_0")
+        elif st == "broken" or st == "recoil":
+            costume("exo_hurt_0")
+        elif guard_t > 0:
+            costume("exo_low_0")
+        elif st == "move" and abs(px - x) > 90:
+            costume(join("exo_walk_", floor(frame / 8) % 2))
+        else:
+            costume(join("exo_idle_", floor(frame / 12) % 2))
+        tell = 0
+        if dm_ph == 1:
+            if st == "iaido" and t >= 17 and t <= 26:
+                tell = 1
+            if st == "combo" and ((t >= 5 and t <= 14) or (t >= 21 and t <= 30) or (t >= 37 and t <= 46)):
+                tell = 1
+        if tell == 1:
+            effect("brightness", 100)
+        elif flash_t > 0 and dm_ph == 1:
+            flash_t -= 1
+            effect("brightness", 60)
+        if face == 1:
+            point(90)
+        else:
+            point(-90)
+        if st == "broken" and dm_ph == 1:
+            goto(x + shx + (frame % 4 < 2) * 2 - 1, y + shy)
+        else:
+            goto(x + shx, y + shy)
+        show()
+    elif role == "eye":
+        if eye_y < 260 and eye_y > -280:
+            costume(join("eye_", eye_st))
+            if dm_ph == 2 and flash_t > 0:
+                flash_t -= 1
+                effect("brightness", 60)
+            goto(eye_x + shx, eye_y + shy)
+            show()
+        else:
+            hide()
+    elif role == "mask":
+        if dm_ph == 3 or st == "end":
+            if mk_st == "pin":
+                costume("mask_pin")
+            else:
+                costume(join("mask_", floor(frame / 4) % 2))
+            effect("ghost", 15)
+            if dm_ph == 3 and flash_t > 0:
+                flash_t -= 1
+                effect("brightness", 60)
+            if st == "end":
+                effect("ghost", min(100, t * 1.5))
+            goto(mk_x + shx, mk_y + shy)
+            show()
+        else:
+            hide()
+    else:
+        if ally_x < 900:
+            costume(join("k_attack1_", min(3, floor(frame / 6) % 4)))
+            effect("ghost", 30)
+            point(90)
+            goto(ally_x + shx, fy + shy)
+            show()
+        else:
+            hide()
+'''

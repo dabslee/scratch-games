@@ -970,6 +970,115 @@ f8.obj('mukuro', cx(22), bottom(18), a=2)
 f8.obj('trig', cx(4), 0, a='muk2_start')
 f8.flags.append('boss')
 
+
+# =====================================================================
+# CHAPTER 7: THE TENSHU
+# =====================================================================
+
+# G1 Cloud gate -------------------------------------------------------
+g1 = room('g1', 7, 'Cloud Gate')
+g1.solid(0, 19, 29, 22).solid(0, 0, 0, 18).solid(29, 0, 29, 13)
+g1.deco('y', 1, 19, 28, 19)
+g1.obj('start', cx(3), bottom(18))
+g1.obj('shrine', cx(6), bottom(18))
+g1.obj('lantern', cx(12), top(4))
+g1.obj('lantern', cx(20), top(4))
+g1.obj('trig', -999, 0, a='ch7_start')
+g1.obj('trig', cx(14), 0, a='mukuro_gate')
+
+# G2 Outer bailey (rooftops above the clouds) ----------------------------
+g2 = room('g2', 7, 'Outer Bailey')
+g2.solid(0, 19, 7, 22).solid(11, 16, 18, 22).solid(22, 13, 29, 22).solid(29, 0, 29, 7).solid(0, 0, 0, 13)
+g2.deco('y', 0, 19, 7, 19).deco('y', 11, 16, 18, 16).deco('y', 22, 13, 29, 13)
+g2.plat(8, 10, 17).plat(19, 21, 17).plat(13, 16, 11)
+g2.obj('shell', cx(15), bottom(15), a=1)
+g2.obj('drone', cx(9), top(8))
+g2.obj('drone', cx(21), top(7))
+g2.obj('trig', cx(3), 0, a='bailey')
+g2.wind = -1.0
+
+# G3 Castle tiers (climb; exit up) --------------------------------------
+g3 = room('g3', 7, 'Castle Tiers')
+g3.solid(0, 19, 29, 22).solid(0, 0, 21, 1).solid(26, 0, 29, 1)
+g3.solid(0, 2, 0, 7).solid(0, 13, 3, 18).solid(28, 2, 29, 18)
+g3.solid(8, 15, 12, 18).solid(16, 11, 20, 18).spikes(13, 15, 18)
+g3.plat(4, 7, 11).plat(10, 13, 8).plat(17, 20, 6).plat(22, 25, 3)
+g3.phase(13, 15, 13, 'G')
+g3.obj('turret', left(28), top(9) - 8, a=-90)
+g3.obj('warden', cx(18), bottom(10), a=1)
+
+# G4 Defense grid -----------------------------------------------------
+g4 = room('g4', 7, 'Defense Grid')
+g4.solid(0, 19, 21, 22).solid(26, 19, 29, 22).plat(22, 25, 19).solid(0, 0, 3, 2).solid(8, 0, 29, 2)
+g4.solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+g4.plat(4, 7, 15).plat(4, 7, 10).plat(4, 7, 5)
+g4.obj('laser', cx(11), bottom(18), b=1)
+g4.obj('laser', cx(19), bottom(18), b=50)
+g4.obj('post', 0, top(19), a=160, b=0)
+g4.obj('shell', cx(15), bottom(18), a=0)
+g4.obj('turret', left(29), top(8) - 8, a=-90)
+g4.obj('trig', cx(9), 0, a='grid')
+
+# G4s Daimyo's study (Memory Shard challenge) -------------------------
+g4s = room('g4s', 7, "Daimyo's Study")
+g4s.solid(0, 0, 29, 2).solid(0, 0, 1, 22).solid(28, 0, 29, 22)
+g4s.solid(0, 19, 3, 22).solid(8, 19, 29, 22).plat(4, 7, 19)
+g4s.plat(12, 17, 14).plat(20, 25, 10)
+g4s.obj('shell', cx(14), bottom(18), a=1)
+g4s.obj('warden', cx(22), bottom(18), a=1)
+g4s.obj('shard', cx(22) + 8, top(8), a=8)
+g4s.flags.append('challenge')
+
+# G5 Harvest hall -----------------------------------------------------
+g5 = room('g5', 7, 'Harvest Hall')
+g5.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+for c in range(3, 28, 2):
+    g5.obj('pod', cx(c), bottom(18))
+g5.obj('shell', cx(14), bottom(18), a=0)
+g5.obj('warden', cx(22), bottom(18), a=1)
+g5.obj('door', left(29), bottom(18), a='lock')
+g5.obj('trig', cx(6), 0, a='harvest')
+
+# G6 Last shrine ------------------------------------------------------
+g6 = room('g6', 7, 'Last Shrine')
+g6.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+g6.deco('y', 1, 19, 28, 19)
+g6.obj('shrine', cx(5), bottom(18))
+g6.obj('daicam', cx(20), bottom(18), a='stream')
+g6.obj('lantern', cx(10), top(3))
+g6.obj('lantern', cx(16), top(3))
+g6.obj('trig', cx(13), 0, a='daicam8')
+
+# G7 Throne gate ------------------------------------------------------
+g7 = room('g7', 7, 'Throne Gate')
+g7.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+g7.deco('y', 1, 19, 28, 19)
+g7.obj('trig', cx(12), 0, a='throne')
+
+# G8 Tenshu core (the Daimyo) --------------------------------------------
+g8 = room('g8', 7, 'Tenshu Core')
+g8.solid(0, 19, 29, 22).solid(0, 0, 29, 1).solid(0, 2, 0, 13).solid(29, 2, 29, 18)
+g8.plat(3, 7, 14).plat(22, 26, 14).deco('y', 1, 19, 28, 19)
+g8.obj('door', left(0) + 8, bottom(18), a='ambush')
+g8.obj('daimyo', cx(21), bottom(18))
+g8.obj('trig', cx(4), 0, a='daimyo_start')
+g8.flags.append('boss')
+
+
+# =====================================================================
+# EPILOGUE: RAMEN IN THE RAIN
+# =====================================================================
+ep = room('ep', 8, "Tetsu's Cart")
+ep.solid(0, 19, 29, 22).solid(0, 0, 0, 18).solid(29, 0, 29, 18)
+ep.deco('g', 1, 19, 28, 19)
+ep.obj('start', cx(4), bottom(18))
+ep.obj('cart', cx(15), bottom(18))
+ep.obj('tetsu', cx(19), bottom(18), a='mem')
+ep.obj('daicam', cx(10), bottom(18), a='ep')
+ep.obj('mknpc', cx(23), bottom(18))
+ep.obj('sign', cx(15), top(5), a='NeonSign_Ramen')
+ep.obj('trig', -999, 0, a='epilogue')
+
 # --- connections --------------------------------------------------------
 link(p1, 'R', p2)
 link(p2, 'U', p3)
@@ -1032,6 +1141,14 @@ link(f5, 'U', f5s)
 link(f5, 'R', f6)
 link(f6, 'R', f7)
 link(f7, 'R', f8)
+link(g1, 'R', g2)
+link(g2, 'R', g3)
+link(g3, 'U', g4)
+link(g4, 'U', g4s)
+link(g4, 'R', g5)
+link(g5, 'R', g6)
+link(g6, 'R', g7)
+link(g7, 'R', g8)
 
 ROOM_INDEX = {r.key: i + 1 for i, r in enumerate(ROOMS)}
 
