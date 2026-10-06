@@ -61,9 +61,10 @@
       "who": "Head of the Physic Gardens, armed with a vial bandolier and a stim injector.",
       "mechanics": [
         "Throws vials in arcs: deflect them back at her.",
-        "Poison clouds linger where vials break: leave the cloud or Phase Step through it.",
+        "Poison clouds linger where vials break: they sting (damage without staggering), so leave the cloud or Phase Step through it.",
         "When she pulls out a stim to heal, interrupt her with a Heavy Strike.",
-        "Phase 2: she injects herself, gets faster, and her poison cloud burst becomes a Breach."
+        "Phase 2: she injects herself, gets faster, and her poison cloud burst becomes a Breach.",
+        "Defeated, she kneels and pleads her case, then limps out of the Apothecary once Hotaru answers."
       ]
     },
     "Raijin": {
@@ -103,16 +104,16 @@
         {
           "name": "Samurai exoskeleton",
           "mechanics": "Deflect the iaido draw and 3-slash nodachi strings, jump the stomp shockwaves, Phase Step through the thruster charge, and strike while the armor recovers.",
-          "ally": "kuro_spared: Kuro (in Mukuro's body) fights beside Hotaru and draws some attacks."
+          "ally": "kuro_spared: Kuro (in Mukuro's body) fights like Hotaru: he flanks the armor, deflects, Phase Steps Breaches, cuts into its openings and Heavy Strikes its guard. He has 4 hidden HP and gets back up once per Memory Shard collected (a shard burns above him)."
         },
         {
           "name": "Castle defenses",
           "mechanics": "The damaged exoskeleton plugs into the Tenshu. Turrets fire bullet barrages: deflect them back into the exoskeleton and strike when it drops to recharge.",
-          "ally": "kuro_spared: Kuro keeps fighting until the end of this phase, then collapses."
+          "ally": "kuro_spared: Kuro keeps fighting (every other turret volley targets him; he deflects most of it back into the armor) until the end of this phase, then collapses."
         },
         {
           "name": "The Daimyo, in person",
-          "mechanics": "He steps out of the armor for a one-on-one duel with Tamakiri. Fast iaido cuts, feints, and a soul-grab Breach that fills Hotaru's Stance if it connects: Phase Step through it.",
+          "mechanics": "The armor crashes to the floor and stays there, going dark, as he steps out to duel with Tamakiri. Iaido dash-cuts, feints, 3-cut strings, two long parry strings (a 7-cut rhythm, and a 5-cut string where he blinks behind Hotaru between cuts; deflecting the heavy last cut staggers him), and a soul-grab Breach that fills Hotaru's Stance if it connects: Phase Step through it. He flashes white before every cut.",
           "ally": "None in either branch."
         }
       ]
@@ -170,7 +171,7 @@
       "Phase Step (Space): an invincible, aimable dash with 2 charges (shown by the scarf color). Passes through lasers and attacks; refills on landing or a perfect deflect.",
       "Heavy Strike: attack during or right after a Phase Step. Breaks guards and builds a lot of enemy Stance.",
       "Deflect: press Down right before a hit lands (enemies flash white just before). A perfect deflect builds the attacker's Stance. Holding Down blocks, but blocking builds Hotaru's Stance.",
-      "Stance: every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure, then slowly settles. When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution (instant kill for regular enemies, a whole health segment for bosses). When Hotaru's Stance breaks, she overheats and staggers.",
+      "Stance: every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure, then slowly settles. When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution (instant kill for regular enemies, a whole health segment for bosses). Every Execution also refills one gourd charge and clears Hotaru's Stance. When Hotaru's Stance breaks, she overheats and staggers.",
       "Breach: a red diamond marks an attack that cannot be blocked or deflected. Phase Step through it or jump it."
     ],
     "survival": [
@@ -179,7 +180,8 @@
     ],
     "traversal": [
       "Wall cling and wall jump; jump up through thin platforms, double-tap Down (or Phase Step down) to drop through.",
-      "Toxic pools and rising sludge tides (Sewers).",
+      "Lifts: the Scrapyard lift cycles up and down; the Spire Lift carries Hotaru from Mukuro's Ring up into the Tenshu.",
+      "Toxic pools and rising sludge tides (Sewers). Each room starts at low tide; a TIDE RISING warning flashes and the pumps gurgle before each rise.",
       "Laser grids pulse on and off (Vaults, Castle).",
       "Greenhouse heat vents carry you upward; some vents pulse (Physic Gardens).",
       "Headwind, bottomless gaps between cars, and Kanshi patrol crows skimming the roofs (Monorail).",
@@ -189,7 +191,7 @@
     "enemies": [
       "Scavenger drones and wall turrets (Prologue).",
       "Hannya Boys gang members (Neon Alley).",
-      "Drainlings: mutants twisted by Kanshi waste who lunge and spit sludge (Sewers).",
+      "Drainlings: irradiated zombies covered in glowing pustules who lunge and spit sludge (Sewers).",
       "Croupier dealers who throw card-blades, and slot turrets (Pachinko Vaults).",
       "Garden Wardens: guarded duelists you must deflect to break, and sprayer drones (Physic Gardens).",
       "Kanshi Line guards (Monorail).",
