@@ -1,504 +1,90 @@
 """
-Conversations for the vertical slice. Each line is (speaker, portrait, text).
-Speaker keys pick the name plate; long lines are wrapped and split into
-3-line pages automatically when the text costumes are rendered.
+Dialogue, tutorial prompts and menu text. Long dialogue lines are wrapped and
+split into 3-line pages automatically when the text costumes are rendered.
 """
 
+import json
+import os
+
+# The story (every conversation, in play order) lives in ../story.json; edit it there
+# and rebuild. Each scene's lines become one conversation, keyed by the scene id.
+STORY = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'story.json')))
+
+SPEAKER_KEY = {
+    'Hotaru': 'hotaru', 'Kuro': 'kuro', 'Tetsu': 'tetsu', 'DaiCam': 'daicam', 'Lady Luck': 'luck',
+    'System': 'system', 'Mukuro': 'mukuro', 'The Daimyo': 'daimyo', 'Big Oni': 'oni',
+    'The Harmacist': 'harm', '???': 'unknown',
+}
 NAMEPLATE = {
     'hotaru': 'name_hotaru', 'kuro': 'name_kuro', 'tetsu': 'name_tetsu',
     'daicam': 'name_daicam', 'unknown': 'name_unknown', 'luck': 'name_lady_luck', 'system': 'name_system',
-    'mukuro': 'name_mukuro', 'daimyo': 'name_the_daimyo',
+    'mukuro': 'name_mukuro', 'daimyo': 'name_the_daimyo', 'oni': 'name_big_oni', 'harm': 'name_the_harmacist',
+}
+PORTRAIT = {
+    'hotaru': 'hotaru_neutral', 'kuro': 'kuro_neutral', 'tetsu': 'tetsu_neutral', 'daicam': 'daicam_neutral',
+    'luck': 'luck_neutral', 'system': 'sys_boot', 'mukuro': 'mukuro_neutral', 'daimyo': 'daimyo_neutral',
+    'oni': 'oni_neutral', 'harm': 'harm_neutral',
+}
+# (scene id, line index) -> portrait, where the speaker's default expression doesn't fit
+EXPRESSION = {
+    ('boot', 2): 'kuro_smirk', ('boot', 3): 'hotaru_visor_up', ('boot', 4): 'kuro_smirk', ('boot', 5): 'hotaru_angry',
+    ('boot', 7): 'hotaru_angry', ('boot', 13): 'kuro_smirk', ('boot', 14): 'hotaru_visor_up',
+    ('boot', 16): 'kuro_smirk', ('drones', 1): 'kuro_smirk', ('turret', 1): 'kuro_smirk',
+    ('turret', 2): 'hotaru_visor_up', ('turret', 3): 'kuro_smirk', ('barrier', 1): 'hotaru_angry',
+    ('barrier', 2): 'kuro_smirk', ('tetsu', 5): 'hotaru_visor_up', ('tetsu', 8): 'kuro_smirk',
+    ('tetsu', 9): 'hotaru_visor_up', ('tetsu', 10): 'kuro_smirk', ('shard1', 2): 'hotaru_visor_up',
+    ('ch1', 3): 'hotaru_angry', ('ch1', 4): 'kuro_smirk', ('daicam1', 2): 'kuro_smirk',
+    ('daicam2', 2): 'hotaru_angry', ('shard2', 2): 'hotaru_visor_up', ('boss_gate', 3): 'kuro_smirk',
+    ('oni2', 1): 'kuro_smirk', ('oni_dead', 1): 'hotaru_visor_up', ('drainling', 0): 'hotaru_visor_up',
+    ('daicam_sewer', 2): 'hotaru_angry', ('dobu_dead', 3): 'kuro_smirk', ('ch3', 2): 'kuro_smirk',
+    ('slots', 1): 'kuro_smirk', ('debtors', 1): 'hotaru_angry', ('daicam3b', 1): 'hotaru_angry',
+    ('luck_gate', 3): 'kuro_smirk', ('luck', 1): 'hotaru_angry', ('luck', 3): 'hotaru_angry',
+    ('luck_dead', 1): 'hotaru_visor_up', ('luck_dead', 3): 'hotaru_angry', ('ch4', 0): 'hotaru_visor_up',
+    ('warden', 1): 'kuro_smirk', ('pricing', 1): 'hotaru_angry', ('pricing', 3): 'hotaru_angry',
+    ('daicam4', 1): 'hotaru_visor_up', ('harm_gate', 1): 'hotaru_angry', ('harm', 1): 'hotaru_angry',
+    ('harm_dead', 1): 'hotaru_angry', ('ch5', 1): 'hotaru_angry', ('ch5', 3): 'kuro_smirk',
+    ('wind', 1): 'kuro_smirk', ('posts', 1): 'kuro_smirk', ('daicam5', 1): 'hotaru_angry',
+    ('raijin', 2): 'kuro_smirk', ('record', 7): 'hotaru_angry', ('ch6', 3): 'kuro_smirk',
+    ('ch6', 4): 'hotaru_angry', ('glitch', 0): 'kuro_smirk', ('tetsu_mem', 6): 'hotaru_visor_up',
+    ('possess', 0): 'kuro_smirk', ('possess', 1): 'hotaru_angry', ('shard7', 2): 'hotaru_angry',
+    ('white_room', 3): 'hotaru_visor_up', ('daicam6', 3): 'hotaru_angry', ('kuro_gate', 1): 'kuro_smirk',
+    ('kuro_fight', 1): 'hotaru_angry', ('kuro2', 1): 'hotaru_angry', ('kuro2', 2): 'hotaru_angry',
+    ('kuro_spared', 3): 'hotaru_visor_up', ('kuro_spared', 4): 'kuro_smirk',
+    ('kuro_spared', 5): 'hotaru_visor_up', ('kuro_destroyed', 0): 'hotaru_angry', ('ch7', 1): 'kuro_smirk',
+    ('ch7_alone', 0): 'hotaru_visor_up', ('trainee', 2): 'hotaru_visor_up', ('spar', 0): 'kuro_smirk',
+    ('shard8', 2): 'hotaru_visor_up', ('shard8', 3): 'kuro_smirk', ('intake', 3): 'hotaru_angry',
+    ('extraction', 4): 'kuro_smirk', ('mukuro', 2): 'kuro_smirk', ('muk_dead', 6): 'hotaru_visor_up',
+    ('ch8', 0): 'hotaru_visor_up', ('ch8', 3): 'kuro_smirk', ('ch8_alone', 0): 'hotaru_visor_up',
+    ('shard9', 2): 'hotaru_visor_up', ('shard9', 4): 'kuro_smirk', ('shard9_alone', 1): 'hotaru_visor_up',
+    ('muster', 1): 'hotaru_angry', ('transfer', 6): 'kuro_smirk', ('throne', 4): 'hotaru_angry',
+    ('throne_alone', 1): 'hotaru_angry', ('daimyo_fight', 2): 'hotaru_angry',
+    ('daimyo_fight', 4): 'hotaru_angry', ('dm_ally', 0): 'kuro_smirk', ('kuro_falls', 1): 'hotaru_angry',
+    ('dm3', 2): 'hotaru_angry', ('dm_dead', 1): 'hotaru_angry', ('ending', 2): 'hotaru_angry',
+    ('ending', 6): 'kuro_smirk', ('ending_alone', 1): 'hotaru_visor_up', ('epilogue', 2): 'hotaru_visor_up',
+    ('ep_spared', 5): 'hotaru_visor_up', ('ep_spared2', 1): 'hotaru_visor_up',
+    ('ep_destroyed', 3): 'hotaru_visor_up',
 }
 
-CONVERSATIONS = {
-    'boot0': [
-        ('system', 'sys_boot', "KANSHI DYNAMICS // SHINOBI UNIT. Status: DECOMMISSIONED. Dumped in Sump Scrapyard 9."),
-        ('system', 'sys_boot', "Emergency reboot... Motor control: OK. Visor: OK. Memory index: NOT FOUND."),
-    ],
-    'boot': [
-        ('hotaru', 'hotaru_neutral', "...Rain. Cold. Scrap metal everywhere. Where am I?"),
-        ('hotaru', 'hotaru_neutral', "My name is Hotaru. I know that much. Everything before tonight is just... static."),
-        ('unknown', 'kuro_smirk', "Good. You're awake. Try not to die before I figure out whose body this is."),
-        ('hotaru', 'hotaru_neutral', "Mine."),
-        ('unknown', 'kuro_smirk', "We'll see."),
-        ('hotaru', 'hotaru_angry', "Who said that? There's no one here."),
-        ('kuro', 'kuro_neutral', "Not out there. In here. I'm wired into your combat software. A voice in your audio feed."),
-        ('hotaru', 'hotaru_angry', "And the purple ghost flickering at the edge of my visor?"),
-        ('kuro', 'kuro_smirk', "Also me. Call me Kuro. Somebody filed my engram under 'scrap'. Same as you."),
-        ('hotaru', 'hotaru_visor_up', "I'm not scrap. I'm a person. Somebody rebuilt me with chrome, that's all."),
-        ('kuro', 'kuro_neutral', "Then let's find out who. See that tower? The Kanshi Spire. Sump to sky, Kanshi owns it all."),
-        ('kuro', 'kuro_smirk', "Whatever they took out of your head is up there. So are my answers. Up it is."),
-    ],
-    'drones': [
-        ('kuro', 'kuro_neutral', "Scavenger drones. They strip anything that stops moving."),
-        ('kuro', 'kuro_smirk', "So don't stop moving. Cut them down before they dive."),
-    ],
-    'turret': [
-        ('kuro', 'kuro_neutral', "Wall turret. You can't reach it from here."),
-        ('kuro', 'kuro_smirk', "Catch the round on your blade at the last instant and send it home."),
-    ],
-    'barrier': [
-        ('kuro', 'kuro_neutral', "Kanshi laser fence. Solid to meat. But you're not all meat, are you?"),
-        ('hotaru', 'hotaru_angry', "I'm human."),
-        ('kuro', 'kuro_smirk', "Sure. Phase through it anyway."),
-    ],
-    'tetsu': [
-        ('tetsu', 'tetsu_neutral', "Well, look what the storm dragged in."),
-        ('tetsu', 'tetsu_neutral', "Gourd's topped up, kid. Same price as always: you come back down here in one piece."),
-        ('hotaru', 'hotaru_neutral', "I've never been here before."),
-        ('tetsu', 'tetsu_neutral', "Sure you haven't."),
-        ('tetsu', 'tetsu_neutral', "That vending machine's a Shrine. Hacked it myself. Rest there and it'll remember you, even if the Spire won't."),
-        ('kuro', 'kuro_smirk', "Nice old man. He's lying about something."),
-        ('hotaru', 'hotaru_visor_up', "So are you."),
-    ],
-    'tetsu2': [
-        ('tetsu', 'tetsu_neutral', "Freight lift's past the scrap drones. Ride it up to Neon Alley."),
-        ('tetsu', 'tetsu_neutral', "And kid... eat something when you get back."),
-    ],
-    'lift': [
-        ('kuro', 'kuro_neutral', "Freight lift to the market tiers. Step on and ride it up."),
-        ('hotaru', 'hotaru_neutral', "And then?"),
-        ('kuro', 'kuro_smirk', "Then we keep climbing until somebody tells us the truth."),
-    ],
-    'ch1': [
-        ('kuro', 'kuro_neutral', "Neon Alley. The Hannya Boys run these floors. Oni masks, steel pipes, bad manners."),
-        ('hotaru', 'hotaru_neutral', "They'll move."),
-        ('kuro', 'kuro_smirk', "Ha. Now you sound like me."),
-    ],
-    'integrity': [
-        ('kuro', 'kuro_neutral', "See the bar over his head? That's his Integrity."),
-        ('kuro', 'kuro_neutral', "Deflect his swings and hit him hard. When he cracks, a reticle shows. Click it and finish him."),
-    ],
-    'daicam1': [
-        ('daicam', 'daicam_neutral', "Okay chat, okay, this is fine. This is content."),
-        ('daicam', 'daicam_neutral', "Guys? Guys, we can talk about this! I have a very large audience!"),
-        ('kuro', 'kuro_smirk', "Let's give him something to film."),
-    ],
-    'daicam2': [
-        ('daicam', 'daicam_neutral', "Chat, we have a NINJA. Say hi to the chat."),
-        ('daicam', 'daicam_neutral', "Okay, she's not saying hi. Chat, she's walking away."),
-        ('hotaru', 'hotaru_neutral', "Get off this floor. It isn't safe."),
-        ('daicam', 'daicam_neutral', "Nothing about the Spire is safe! That's the brand! Smash that follow, ninja lady!"),
-    ],
-    'breach': [
-        ('kuro', 'kuro_neutral', "That one's got a red diamond over him. That's a Breach."),
-        ('kuro', 'kuro_neutral', "You can't block it and you can't deflect it. Phase Step straight through him."),
-    ],
-    'ambush': [
-        ('kuro', 'kuro_neutral', "Three of them, and they've locked the doors. Use the platforms. Don't get surrounded."),
-    ],
-    'boss_gate': [
-        ('kuro', 'kuro_neutral', "Big one up ahead. Slow, though."),
-        ('kuro', 'kuro_neutral', "When he lifts that club over his head, you hit him hard or you get out of the way."),
-        ('hotaru', 'hotaru_neutral', "Hit him hard. Got it."),
-        ('kuro', 'kuro_smirk', "Rest at the Shrine first. I'd hate to lose this body. I'm just getting used to it."),
-    ],
-    'oni': [
-        ('kuro', 'kuro_neutral', "That's the gang boss. Big Oni. Deflect the club swings."),
-        ('kuro', 'kuro_neutral', "Heavy Strikes stagger him: Phase Step, then attack. Fill his Integrity and sever him."),
-    ],
-    'oni2': [
-        ('kuro', 'kuro_neutral', "He's angry now. Watch the overhead slam. It's a Breach, and it shakes the whole roof."),
-        ('kuro', 'kuro_smirk', "Jump the shockwave or phase through it."),
-    ],
-    'oni_dead': [
-        ('kuro', 'kuro_smirk', "Ha! Severed. The Hannya Boys will be telling that story for years."),
-        ('hotaru', 'hotaru_visor_up', "He had a Kanshi chip in his neck. Same as the drones."),
-        ('kuro', 'kuro_neutral', "Everything up here is Kanshi. And everything up here bleeds. Keep climbing."),
-        ('hotaru', 'hotaru_neutral', "Kuro. Whose memories are these? The fighting. The way my hands know where to go."),
-        ('kuro', 'kuro_neutral', "Mine. I think. Ask me again at the top."),
-        ('daicam', 'daicam_neutral', "...and CUT. Chat, did everybody clip that?! Ninja lady just took down Big Oni! We're trending!"),
-    ],
-    'shard1': [
-        ('kuro', 'kuro_neutral', "...A courtyard. Rain on a tiled roof. Someone is teaching me to hold a blade."),
-        ('kuro', 'kuro_neutral', "A woman. She's laughing at me."),
-        ('hotaru', 'hotaru_visor_up', "That's your memory?"),
-        ('kuro', 'kuro_smirk', "It was. Now it's ours, I suppose."),
-    ],
-    'shard2': [
-        ('kuro', 'kuro_neutral', "...An office at the top of the Spire. The Daimyo, before he was a machine."),
-        ('kuro', 'kuro_neutral', "He's shaking my hand. Thanking me for my service."),
-        ('kuro', 'kuro_neutral', "Then the lights go out."),
-        ('hotaru', 'hotaru_angry', "He did this to you."),
-        ('kuro', 'kuro_neutral', "To us. Keep climbing."),
-    ],
-    'ch2': [
-        ('kuro', 'kuro_neutral', "The Pachinko Vaults. Every floor up here is a casino, and the house always wins."),
-        ('hotaru', 'hotaru_neutral', "Then we don't play."),
-        ('kuro', 'kuro_smirk', "Everybody plays. The lasers decide when."),
-    ],
-    'lasers': [
-        ('kuro', 'kuro_neutral', "Laser grid. It pulses on and off, and Kanshi stations dealers behind it."),
-        ('kuro', 'kuro_neutral', "Wait for a gap, or Phase Step straight through it. Mid-fight, if you have to."),
-    ],
-    'slots': [
-        ('kuro', 'kuro_neutral', "Slot turrets. Three card-blades at a time."),
-        ('kuro', 'kuro_smirk', "Deflect the one coming at you and it goes straight back to whoever threw it."),
-    ],
-    'rollers': [
-        ('kuro', 'kuro_neutral', "High rollers' lounge. The dealers here throw from the balconies. Get up there with them."),
-    ],
-    'daicam3': [
-        ('daicam', 'daicam_neutral', "Chat, I am currently being held as collateral. My debt is... unclear."),
-        ('daicam', 'daicam_neutral', "Ninja lady! You came back for me! For the content!"),
-        ('hotaru', 'hotaru_neutral', "I came for the elevator."),
-        ('daicam', 'daicam_neutral', "Same thing! Hit the cage! Hit it with the sword!"),
-    ],
-    'daicam3b': [
-        ('daicam', 'daicam_neutral', "FREEDOM! Chat, she freed me. I'm calling this episode 'Jackpot'."),
-        ('hotaru', 'hotaru_visor_up', "Stop following me."),
-        ('daicam', 'daicam_neutral', "I'm not following you, I'm documenting you. Totally different. Byeee!"),
-    ],
-    'luck_gate': [
-        ('kuro', 'kuro_neutral', "Lady Luck runs every table on this tier. The machine behind her picks her moves."),
-        ('kuro', 'kuro_neutral', "Watch the reels. Spades, sevens, cherries... and if they land on skulls, get off the floor."),
-        ('hotaru', 'hotaru_neutral', "And if it hits the jackpot?"),
-        ('kuro', 'kuro_smirk', "Then we find out how fast you are."),
-    ],
-    'luck': [
-        ('luck', 'luck_neutral', "A scrapped Shinobi unit at my table. The house is feeling generous tonight."),
-        ('luck', 'luck_neutral', "Place your bet, little firefly. Everything you have."),
-        ('hotaru', 'hotaru_angry', "Deal."),
-    ],
-    'luck2': [
-        ('luck', 'luck_neutral', "Double or nothing!"),
-        ('kuro', 'kuro_neutral', "Jackpot means lasers. Phase Step through them!"),
-    ],
-    'luck_dead': [
-        ('luck', 'luck_neutral', "The house... doesn't... lose..."),
-        ('kuro', 'kuro_smirk', "It does now."),
-        ('hotaru', 'hotaru_visor_up', "Those reels weren't random. Something upstairs was picking her moves."),
-        ('kuro', 'kuro_neutral', "Something upstairs is picking everybody's moves. The Server Gardens are next."),
-        ('kuro', 'kuro_neutral', "Whatever runs this tower lives up there."),
-        ('daicam', 'daicam_neutral', "Chat, the ninja just broke the bank. Literally. Somebody clip the reels!"),
-    ],
-    'shard3': [
-        ('kuro', 'kuro_neutral', "...The Academy. Rows of us, practicing the same cut a thousand times."),
-        ('kuro', 'kuro_neutral', "Mukuro was there, before they emptied him out."),
-        ('hotaru', 'hotaru_neutral', "Mukuro?"),
-        ('kuro', 'kuro_neutral', "You'll meet him. I'm sorry in advance."),
-    ],
-    'ch3': [
-        ('hotaru', 'hotaru_neutral', "It's quiet up here. Gravel, bonsai, mist. Somebody built a garden on the roof."),
-        ('kuro', 'kuro_neutral', "On top of a server farm. Listen to the fans under the stones."),
-        ('kuro', 'kuro_neutral', "Kanshi's brain is up here somewhere. Keep your blade low and your eyes open."),
-    ],
-    'mist': [
-        ('kuro', 'kuro_neutral', "Coolant vents. That mist is hot air rising off the racks below."),
-        ('kuro', 'kuro_smirk', "Strong enough to carry you. Step in and ride it up."),
-    ],
-    'racks': [
-        ('system', 'sys_boot', "RACK 7 // 4,096 ENGRAMS. Status: HARVESTING. Thought yield: 98.2%."),
-        ('hotaru', 'hotaru_neutral', "Those glowing things in the tanks... are those people?"),
-        ('kuro', 'kuro_neutral', "Minds. Copied out of the city below and put to work. Every thought is a calculation."),
-        ('kuro', 'kuro_neutral', "That's what runs the Spire. Not electricity. Them."),
-        ('hotaru', 'hotaru_angry', "Is that what I was going to be? Another tank on a shelf?"),
-        ('kuro', 'kuro_neutral', "...Maybe. Keep climbing. We'll find out."),
-    ],
-    'warden': [
-        ('kuro', 'kuro_neutral', "A Garden Warden. Kanshi duelist. It'll block anything you throw at it."),
-        ('kuro', 'kuro_smirk', "So let it swing first. Deflect, break its guard, then cut."),
-    ],
-    'daicam4': [
-        ('daicam', 'daicam_neutral', "Chat, update: my drone's fan is jammed on HOVER and the mist is doing the rest."),
-        ('daicam', 'daicam_neutral', "I've been up here forty minutes. The view is incredible. Also please help."),
-        ('kuro', 'kuro_smirk', "Clear the Wardens first. He's not going anywhere."),
-    ],
-    'daicam4b': [
-        ('daicam', 'daicam_neutral', "Solid ground! I'm never hovering again. Okay, maybe for the thumbnail."),
-        ('hotaru', 'hotaru_visor_up', "How are you even getting this high?"),
-        ('daicam', 'daicam_neutral', "Elevator. There's an elevator. You didn't know about the elevator?"),
-    ],
-    'muk_gate': [
-        ('kuro', 'kuro_neutral', "Wait. Do you hear that? Someone breathing on our channel."),
-        ('unknown', 'mukuro_neutral', "Unit H-0. Decommissioned. You are not authorized to be awake."),
-        ('kuro', 'kuro_neutral', "...That's my voice."),
-    ],
-    'mukuro': [
-        ('mukuro', 'mukuro_neutral', "Kuro engram, copy two. Personality pruned. Loyalty: Kanshi Dynamics."),
-        ('kuro', 'kuro_neutral', "They copied me. Stripped out everything that ever said no."),
-        ('hotaru', 'hotaru_angry', "So you're the copy that said yes."),
-        ('mukuro', 'mukuro_neutral', "I am the copy that works. Draw."),
-    ],
-    'mukuro2': [
-        ('mukuro', 'mukuro_neutral', "Adapting."),
-        ('kuro', 'kuro_neutral', "He fights like me. He waits for you to swing first. So don't."),
-        ('kuro', 'kuro_smirk', "Watch the rhythm. He'll hold a strike to bait your deflect."),
-    ],
-    'muk_dead': [
-        ('mukuro', 'mukuro_neutral', "Integrity... compromised. This unit will... recompile."),
-        ('hotaru', 'hotaru_angry', "Who sent you? Who's running this tower?"),
-        ('mukuro', 'mukuro_neutral', "The Daimyo sees every thought in this garden. Including yours."),
-    ],
-    'muk_gone': [
-        ('hotaru', 'hotaru_neutral', "He's gone. Teleported, or uploaded, or whatever ghosts do."),
-        ('kuro', 'kuro_neutral', "He'll be back. Better. That's what I'd do."),
-        ('hotaru', 'hotaru_visor_up', "Then so will we. Up it is."),
-    ],
-    'shard4': [
-        ('kuro', 'kuro_neutral', "...A white room. A man in a samurai mask asking me to hold still."),
-        ('kuro', 'kuro_neutral', "He said it wouldn't hurt. He said I'd live forever, in a way."),
-        ('hotaru', 'hotaru_neutral', "Did it hurt?"),
-        ('kuro', 'kuro_neutral', "I don't remember. Which I think is the answer."),
-    ],
-    'ch4': [
-        ('hotaru', 'hotaru_neutral', "A train station? This high up?"),
-        ('kuro', 'kuro_neutral', "The monorail spirals around the outside of the Spire, all the way to the top."),
-        ('kuro', 'kuro_smirk', "Hop on the roof. Kanshi doesn't sell tickets to people like us."),
-        ('hotaru', 'hotaru_visor_up', "DaiCam said there was an elevator."),
-        ('kuro', 'kuro_neutral', "DaiCam says a lot of things."),
-    ],
-    'wind': [
-        ('kuro', 'kuro_neutral', "Headwind. It'll shove you back toward the last car. Keep pushing forward."),
-        ('kuro', 'kuro_smirk', "And mind the gaps. If you slip, the couplers below can catch you."),
-    ],
-    'posts': [
-        ('kuro', 'kuro_neutral', "Signal posts coming up along the track. Watch for the warning on your right."),
-        ('kuro', 'kuro_smirk', "Jump them, Phase Step through them, or stand on something tall."),
-    ],
-    'junction': [
-        ('hotaru', 'hotaru_neutral', "The track splits. The upper line climbs higher up the tower."),
-        ('kuro', 'kuro_neutral', "Up it is. There's a maintenance door in the tower wall too, if you're curious."),
-    ],
-    'daicam5': [
-        ('daicam', 'daicam_neutral', "Hotaru! First class! They have little towels! Chat, she's here!"),
-        ('hotaru', 'hotaru_angry', "You're in a train full of Kanshi guards."),
-        ('daicam', 'daicam_neutral', "Yes, and they would like me to leave. Could you, maybe, make them stop?"),
-    ],
-    'daicam5b': [
-        ('daicam', 'daicam_neutral', "Okay, chat, that was a lot. My ticket did not cover being saved by a ninja."),
-        ('daicam', 'daicam_neutral', "I'm getting off at the next stop. Stay safe! Like and subscribe!"),
-    ],
-    'raijin_gate': [
-        ('hotaru', 'hotaru_neutral', "There's something coming up the other track. Fast."),
-        ('unknown', 'daimyo_neutral', "Unit H-0. You have wandered a long way from your shelf."),
-        ('kuro', 'kuro_neutral', "That voice... the man in the samurai mask. From my memory."),
-    ],
-    'raijin': [
-        ('daimyo', 'daimyo_neutral', "Meet Raijin. He carries my freight up the Spire, and he does not stop for strays."),
-        ('kuro', 'kuro_neutral', "The core on its nose is shuttered. Wait for it to vent, then hit it."),
-        ('kuro', 'kuro_smirk', "Deflect its shells and they fly right back into it."),
-    ],
-    'raijin2': [
-        ('daimyo', 'daimyo_neutral', "You are a recording, little unit. Recordings do not get to argue."),
-        ('kuro', 'kuro_neutral', "It's going to ram us. When you hear the horn, get off the roof."),
-    ],
-    'raijin_dead': [
-        ('hotaru', 'hotaru_neutral', "It's coming apart. Something just fell out of the cab. A black box."),
-        ('kuro', 'kuro_neutral', "Freight manifest. Let's see what Kanshi ships up the tower."),
-    ],
-    'record': [
-        ('system', 'sys_boot', "MANUFACTURING RECORD // UNIT H-0 'HOTARU'. Shinobi shell, grown 14 months ago."),
-        ('system', 'sys_boot', "Engram source: KURO (original subject). Instance 3 of 3. Status: DECOMMISSIONED."),
-        ('hotaru', 'hotaru_neutral', "Instance three. Grown. I was never... I was never a person."),
-        ('kuro', 'kuro_neutral', "...I didn't know. I swear I didn't know. I thought they'd put me in you."),
-        ('hotaru', 'hotaru_angry', "They didn't put you in me. They made me out of you. You're the real one."),
-        ('kuro', 'kuro_neutral', "Hotaru. Listen to me. Your head is about to..."),
-        ('system', 'sys_boot', "WARNING: engram conflict. Identity partition failing. Opening HOLLOW FLOOR."),
-    ],
-    'shard5': [
-        ('kuro', 'kuro_neutral', "...A rooftop in the Sump. Rain. Somebody laughing next to me, sharing noodles."),
-        ('kuro', 'kuro_neutral', "Big guy. Two arms back then. He called me 'kid'."),
-        ('hotaru', 'hotaru_visor_up', "Tetsu? You knew Tetsu?"),
-        ('kuro', 'kuro_neutral', "I think he was my best friend. I think he's been waiting a long time."),
-    ],
-    'ch5': [
-        ('hotaru', 'hotaru_neutral', "Where... This is the Sump. No. It's purple. Everything's wrong."),
-        ('kuro', 'kuro_neutral', "You're in your head, Hotaru. In mine, really. These are my memories."),
-        ('kuro', 'kuro_neutral', "And since you're just a copy of me, I think it's time I took my body back."),
-        ('hotaru', 'hotaru_angry', "Kuro? Don't you dare."),
-    ],
-    'glitch': [
-        ('kuro', 'kuro_smirk', "Memories don't hold still. Those blocks flicker in and out. Watch the rhythm."),
-    ],
-    'sump_mem': [
-        ('hotaru', 'hotaru_neutral', "The scrapyard. But the scrap is new. This is from before it rusted."),
-        ('kuro', 'kuro_neutral', "I grew up down here. Long before Kanshi built the Spire on top of us."),
-    ],
-    'tetsu_mem': [
-        ('tetsu', 'tetsu_neutral', "Eat up, kid. Nobody climbs that tower on an empty stomach."),
-        ('kuro', 'kuro_neutral', "...Tetsu. With both arms. He lost one pulling me out of a Kanshi raid."),
-        ('hotaru', 'hotaru_visor_up', "You remember him. Really remember him."),
-        ('kuro', 'kuro_neutral', "Of course I do. That's what being real feels like. Not that you'd know."),
-    ],
-    'possess': [
-        ('kuro', 'kuro_smirk', "Let me drive for a bit. Left is right, right is left. You'll get used to it."),
-        ('hotaru', 'hotaru_angry', "Get out of my legs!"),
-    ],
-    'white_room': [
-        ('system', 'sys_boot', "ENGRAM CAPTURE // SUBJECT: KURO. Upload 34%. Subject resisting."),
-        ('kuro', 'kuro_neutral', "This is where they did it. The man in the mask held my head still."),
-        ('kuro', 'kuro_neutral', "Everything after this room is a copy. Mukuro. You. Me, even."),
-    ],
-    'daicam6': [
-        ('daicam', 'daicam_neutral', "H-hey chat... wait. Where's chat? Why is everything purple?"),
-        ('hotaru', 'hotaru_neutral', "You're not really here. You're just a memory. Mine."),
-        ('daicam', 'daicam_neutral', "Honored, honestly. Top five memories? Don't answer that. Bye!"),
-    ],
-    'kuro_gate': [
-        ('kuro', 'kuro_neutral', "Last floor. Nothing below it but me. Come on, then."),
-        ('kuro', 'kuro_smirk', "When I Phase Step at you, Phase Step back. If we cross, we clash."),
-    ],
-    'kuro_fight': [
-        ('kuro', 'kuro_neutral', "I know every move you have. I taught them to you."),
-        ('hotaru', 'hotaru_angry', "Then you know what comes next."),
-    ],
-    'kuro2': [
-        ('kuro', 'kuro_neutral', "Why won't you just let go? You were never supposed to be a person!"),
-        ('hotaru', 'hotaru_angry', "Too late. I already am one."),
-    ],
-    'kuro_dead': [
-        ('kuro', 'kuro_neutral', "...I'm tired, Hotaru. I've been dead for years and I didn't notice."),
-        ('kuro', 'kuro_neutral', "Without you I'm a file nobody opens. I need you more than you need me."),
-        ('hotaru', 'hotaru_visor_up', "Then stop trying to drive. Ride along. We'll climb together."),
-        ('kuro', 'kuro_smirk', "Together. ...Fine. But I'm still telling you when you're wrong."),
-        ('hotaru', 'hotaru_neutral', "I'd be worried if you stopped."),
-    ],
-    'shard6': [
-        ('kuro', 'kuro_neutral', "...A girl at the Academy, two rows over. Quick hands. She always beat me."),
-        ('kuro', 'kuro_neutral', "They called her Hotaru. Firefly. I think you got her name from me."),
-        ('hotaru', 'hotaru_neutral', "Where is she now?"),
-        ('kuro', 'kuro_neutral', "Somewhere in a server rack, probably. Like the rest of us."),
-    ],
-    'ch6': [
-        ('hotaru', 'hotaru_neutral', "We're out. Kuro? Are you there?"),
-        ('kuro', 'kuro_smirk', "Riding along. Like you said. Welcome to the Academy, partner."),
-        ('kuro', 'kuro_neutral', "Kanshi's ninja school. I trained here. So did Mukuro. Stay sharp."),
-    ],
-    'shell': [
-        ('hotaru', 'hotaru_neutral', "That one looks like... me. Gray, empty, but me."),
-        ('kuro', 'kuro_neutral', "Shinobi shells. Unfinished instances. They fight like you, so fight smarter."),
-        ('kuro', 'kuro_smirk', "They dash in and throw kunai. Deflect them back."),
-    ],
-    'holo': [
-        ('kuro', 'kuro_neutral', "Training holograms. Same trick as in your head. Watch them flicker."),
-    ],
-    'spar': [
-        ('kuro', 'kuro_neutral', "The sparring ring. Doors seal until someone stops moving."),
-    ],
-    'daicam7': [
-        ('daicam', 'daicam_neutral', "Hotaru! I enrolled! The uniform is free, and they don't check IDs!"),
-        ('hotaru', 'hotaru_angry', "DaiCam, this is a school for assassins."),
-        ('daicam', 'daicam_neutral', "And I'm acing the push-ups. Chat says I'm a natural. Go get 'em!"),
-    ],
-    'instances': [
-        ('system', 'sys_boot', "SHELL BATCH 7 // 412 units awaiting engram. Template: KURO."),
-        ('hotaru', 'hotaru_neutral', "Four hundred of me. Waiting for somebody to move in."),
-        ('kuro', 'kuro_neutral', "They're not you. They're empty. You're the one who woke up."),
-        ('unknown', 'mukuro_neutral', "Unit H-0. You will not leave this hall."),
-    ],
-    'muk2': [
-        ('mukuro', 'mukuro_neutral', "Recompiled. Patched. I have studied your file."),
-        ('kuro', 'kuro_neutral', "He's faster. Kunai, dives, shadows. But he's still me, underneath."),
-        ('kuro', 'kuro_neutral', "There's a loyalty protocol locked on his core. Break him, and you can cut it."),
-    ],
-    'muk2b': [
-        ('mukuro', 'mukuro_neutral', "Loyalty: Kanshi. Loyalty: Kanshi. Loyalty..."),
-        ('hotaru', 'hotaru_angry', "Listen to yourself! That isn't you talking!"),
-    ],
-    'muk2_choice': [
-        ('mukuro', 'mukuro_neutral', "...Finish it. A broken unit is scrap."),
-        ('kuro', 'kuro_neutral', "Your call, Hotaru. Strike him down, or reach in and cut the protocol."),
-    ],
-    'muk2_freed': [
-        ('mukuro', 'mukuro_neutral', "...The voice is gone. It is quiet. Why did you do that?"),
-        ('hotaru', 'hotaru_visor_up', "Because somebody did it for me. Go find out who you are."),
-        ('kuro', 'kuro_neutral', "Look after yourself, brother."),
-        ('mukuro', 'mukuro_neutral', "...I will remember this, H-0. Hotaru."),
-    ],
-    'muk2_destroyed': [
-        ('hotaru', 'hotaru_neutral', "It's over. He's gone."),
-        ('kuro', 'kuro_neutral', "He was a copy that couldn't say no. Maybe this was kinder."),
-        ('kuro', 'kuro_neutral', "The Tenshu is above us. The Daimyo is waiting."),
-    ],
-    'shard7': [
-        ('kuro', 'kuro_neutral', "...The night before the upload. Tetsu said we should run. I said no."),
-        ('kuro', 'kuro_neutral', "I said I wanted to see the top of the Spire, just once."),
-        ('hotaru', 'hotaru_visor_up', "Then let's go see it. For both of us."),
-    ],
-    'ch7': [
-        ('hotaru', 'hotaru_neutral', "Above the clouds. There's a moon up here. It's... painted on."),
-        ('kuro', 'kuro_neutral', "The Tenshu. The Daimyo built his own sky so he'd never have to look at ours."),
-        ('kuro', 'kuro_smirk', "Last climb, partner. Let's go knock on his door."),
-    ],
-    'mukuro_ally': [
-        ('mukuro', 'mukuro_neutral', "H-0. Hotaru. The Tenshu guard answers to me tonight. They will be... delayed."),
-        ('hotaru', 'hotaru_visor_up', "Mukuro? You came."),
-        ('mukuro', 'mukuro_neutral', "You cut my strings. I am choosing where to stand. Go."),
-    ],
-    'bailey': [
-        ('kuro', 'kuro_neutral', "Rooftops over nothing. The wind up here doesn't care who you are."),
-    ],
-    'grid': [
-        ('kuro', 'kuro_neutral', "Castle defenses. Lasers, beams, turrets. Every trick you've already beaten."),
-    ],
-    'harvest': [
-        ('system', 'sys_boot', "HARVEST HALL // 1,203,551 engrams online. Feed: TENSHU CORE."),
-        ('hotaru', 'hotaru_neutral', "Every mind in the city, piped up here to think for one man."),
-        ('kuro', 'kuro_neutral', "Break the core and they all go home. That's the job."),
-    ],
-    'daicam8': [
-        ('daicam', 'daicam_neutral', "HOTARU! The Daimyo's castle! Chat is at two million! Say hi!"),
-        ('hotaru', 'hotaru_visor_up', "...Hi."),
-        ('daicam', 'daicam_neutral', "She said hi!! Okay. Okay. Go win. I'll keep the camera rolling."),
-    ],
-    'throne': [
-        ('daimyo', 'daimyo_neutral', "Instance three. You climbed all this way to return my property in person."),
-        ('kuro', 'kuro_neutral', "We came to take back what you stole."),
-        ('daimyo', 'daimyo_neutral', "Then come in. My armor has been waiting."),
-    ],
-    'daimyo_fight': [
-        ('daimyo', 'daimyo_neutral', "I am the Spire. Its body, its castle, its mind. Kneel."),
-        ('hotaru', 'hotaru_angry', "No."),
-    ],
-    'dm2': [
-        ('daimyo', 'daimyo_neutral', "A shell for a shell. Very well. The castle itself will finish you."),
-        ('kuro', 'kuro_neutral', "Its guns are yours if you deflect them. Send them back up!"),
-    ],
-    'dm3': [
-        ('daimyo', 'daimyo_neutral', "You cannot cut what has no body. I am in every wire of this tower."),
-        ('kuro', 'kuro_smirk', "So am I. I'll grab him. You hit him."),
-    ],
-    'dm_pin': [
-        ('kuro', 'kuro_smirk', "Got him! NOW, Hotaru!"),
-    ],
-    'ending': [
-        ('daimyo', 'daimyo_neutral', "The core... will not hold... without a mind to anchor it..."),
-        ('system', 'sys_boot', "CORE INTEGRITY FAILING. Release requires an anchor engram."),
-        ('kuro', 'kuro_neutral', "That's me. Somebody has to hold the door open while they all go home."),
-        ('hotaru', 'hotaru_angry', "No. There has to be another way. We climb together, remember?"),
-        ('kuro', 'kuro_neutral', "We did climb together. All the way up. I've been dead a long time, Hotaru."),
-        ('kuro', 'kuro_neutral', "You were never a copy. You're the part of me that kept going."),
-        ('kuro', 'kuro_smirk', "Go see the sunrise for me. The real one. Then go get some ramen."),
-    ],
-    'ending2': [
-        ('system', 'sys_boot', "ANCHOR ACCEPTED. RELEASING 1,203,551 ENGRAMS."),
-        ('hotaru', 'hotaru_neutral', "...Kuro?"),
-    ],
-    'epilogue': [
-        ('tetsu', 'tetsu_neutral', "Eat up, kid. Nobody climbs a tower on an empty stomach. Or comes back down."),
-        ('daicam', 'daicam_neutral', "Chat! Forty million! They're calling it 'The Firefly Climb'!"),
-        ('hotaru', 'hotaru_visor_up', "Please don't call it that."),
-    ],
-    'ep_mukuro': [
-        ('mukuro', 'mukuro_neutral', "...The noodles are acceptable."),
-        ('tetsu', 'tetsu_neutral', "High praise from a ninja. Have another bowl."),
-    ],
-    'epilogue2': [
-        ('tetsu', 'tetsu_neutral', "He'd have liked that you came back here. Kuro always came back here."),
-        ('hotaru', 'hotaru_neutral', "He told me to. Ramen, he said. In the rain."),
-    ],
-    'epilogue3': [
-        ('tetsu', 'tetsu_neutral', "Something wrong, kid?"),
-        ('hotaru', 'hotaru_visor_up', "...No. Nothing's wrong at all."),
-    ],
-    'shard8': [
-        ('kuro', 'kuro_neutral', "...My mother, pinning a little lantern charm to my scarf. A firefly."),
-        ('kuro', 'kuro_neutral', "'So you can always find your way home,' she said."),
-        ('hotaru', 'hotaru_visor_up', "Hotaru. Firefly. You named me after that."),
-        ('kuro', 'kuro_smirk', "Don't tell anyone. I have a reputation."),
-    ],
-}
+
+def _conversations():
+    out = {}
+    for ch in STORY['chapters']:
+        for sc in ch['scenes']:
+            lines = []
+            for i, ln in enumerate(sc['lines']):
+                spk = SPEAKER_KEY[ln['speaker']]
+                who = SPEAKER_KEY[ln['actually']] if spk == 'unknown' else spk
+                port = EXPRESSION.get((sc['id'], i)) or PORTRAIT[who]
+                if spk == 'unknown' and who == 'kuro' and (sc['id'], i) not in EXPRESSION:
+                    port = 'kuro_smirk'
+                lines.append((spk, who, port, ln['text']))
+            assert sc['id'] not in out, 'duplicate scene id %s' % sc['id']
+            out[sc['id']] = lines
+    return out
+
+
+# scene id -> [(name plate key, real speaker, portrait, text)]
+CONVERSATIONS = _conversations()
 
 # Tutorial prompts: list of segments. ('k', costume) = key icon, ('t', text) = label.
 HINTS = {
@@ -506,21 +92,26 @@ HINTS = {
     'jump': [('k', 'key_down'), ('k', 'key_down'), ('t', 'or'), ('k', 'key_down'), ('t', '+'), ('k', 'key_space'), ('t', 'drop through platforms')],
     'cling': [('t', 'Jump into a wall to cling to it'), ('n',), ('k', 'key_up'), ('t', 'while clinging: wall jump')],
     'attack': [('k', 'mouse_l'), ('t', '/'), ('k', 'key_x'), ('t', 'Attack'), ('n',), ('t', 'Keep pressing to chain a 4-hit combo')],
-    'deflect': [('k', 'key_down'), ('t', 'Deflect right before a hit lands'), ('n',), ('t', 'Hold to block (blocking builds Heat)')],
+    'deflect': [('k', 'key_down'), ('t', 'Deflect right before a hit lands'), ('n',), ('t', 'Hold to block (it builds your Stance)')],
     'dash': [('k', 'key_space'), ('t', 'Phase Step: an invincible dash'), ('n',), ('t', 'Passes through lasers and attacks')],
     'talk': [('k', 'key_e'), ('t', 'Talk')],
     'heal': [('k', 'key_r'), ('t', 'Drink from the Nano-Gourd'), ('n',), ('k', 'key_e'), ('t', 'Rest at a Shrine to refill everything')],
-    'integrity': [('t', "Fill an enemy's INTEGRITY bar,"), ('n',), ('t', 'then'), ('k', 'mouse_l'), ('t', 'near the red reticle to SEVER')],
-    'heavy': [('k', 'key_space'), ('t', 'then'), ('k', 'mouse_l'), ('t', 'Heavy Strike'), ('n',), ('t', 'Breaks guards. Big Integrity damage')],
+    'integrity': [('t', "Fill an enemy's STANCE bar,"), ('n',), ('t', 'then'), ('k', 'mouse_l'), ('t', 'near the red reticle to EXECUTE')],
+    'heavy': [('k', 'key_space'), ('t', 'then'), ('k', 'mouse_l'), ('t', 'Heavy Strike'), ('n',), ('t', 'Breaks guards. Big Stance damage')],
     'breach': [('t', 'Red diamond = BREACH attack'), ('n',), ('t', "Can't block it:"), ('k', 'key_space'), ('t', 'Phase Step through')],
     'launch': [('k', 'key_up'), ('t', '+'), ('k', 'mouse_l'), ('t', 'Launcher: pops enemies into the air')],
     'upgrade': [('t', 'NANO-GOURD UPGRADED: now holds 4 charges')],
     'lasergrid': [('t', 'Laser grids pulse on and off.'), ('n',), ('t', 'Wait for a gap, or'), ('k', 'key_space'), ('t', 'Phase Step through')],
-    'cards': [('k', 'key_down'), ('t', 'Deflect a card-blade to send it back'), ('n',), ('t', 'Returned cards hurt and crack Integrity')],
+    'cards': [('k', 'key_down'), ('t', 'Deflect a card-blade to send it back'), ('n',), ('t', 'Returned cards hurt and build Stance')],
     'cage': [('k', 'mouse_l'), ('t', 'Attack the cage to free DaiCam')],
     'reels': [('t', 'Watch the reels: they pick her next move.'), ('n',), ('t', 'SHOCKWAVE is a Breach. Jump or Phase Step')],
-    'mist': [('t', 'Step into the mist to ride the updraft'), ('n',), ('k', 'key_left'), ('k', 'key_right'), ('t', 'steer while rising')],
-    'pulse': [('t', 'This vent pulses on and off.'), ('n',), ('t', 'Ride it while the mist is thick')],
+    'mist': [('t', 'Step into the heat vent to ride it up'), ('n',), ('k', 'key_left'), ('k', 'key_right'), ('t', 'steer while rising')],
+    'toxic': [('t', 'Glowing runoff burns.'), ('n',), ('t', 'Jump it, or'), ('k', 'key_space'), ('t', 'Phase Step across')],
+    'drainling': [('t', 'Drainlings lunge and spit sludge.'), ('n',), ('k', 'key_down'), ('t', 'Deflect the spit back')],
+    'tide': [('t', 'When the pumps gurgle, the tide rises.'), ('n',), ('t', 'Get up high and wait it out')],
+    'dobu': [('t', 'Deflect an arm slam, then cut the arm.'), ('n',), ('t', 'With both arms gone, strike the core')],
+    'harm': [('k', 'key_down'), ('t', 'Deflect vials back at her.'), ('n',), ('t', 'Heavy Strike to stop her healing')],
+    'pulse': [('t', 'This vent pulses on and off.'), ('n',), ('t', 'Ride it while the heat is strong')],
     'warden': [('t', 'Wardens guard your attacks.'), ('n',), ('k', 'key_down'), ('t', 'Deflect their strikes, then counter')],
     'duel': [('t', 'Mukuro guards everything.'), ('n',), ('k', 'key_down'), ('t', 'Deflect to break him, then strike')],
     'wind': [('t', 'Headwind pushes you back.'), ('n',), ('k', 'key_space'), ('t', 'Phase Step across wide gaps')],
@@ -529,18 +120,18 @@ HINTS = {
     'glitch': [('t', 'Glitch blocks phase in and out.'), ('n',), ('t', 'They flicker just before they vanish')],
     'possess': [('t', 'When the screen turns purple,'), ('n',), ('k', 'key_left'), ('k', 'key_right'), ('t', 'are swapped')],
     'clash': [('t', 'When Kuro dashes at you,'), ('n',), ('k', 'key_space'), ('t', 'Phase Step through him to Clash')],
-    'shell': [('t', 'Shells dash in and throw kunai.'), ('n',), ('k', 'key_down'), ('t', 'Deflect, then counter')],
+    'shell': [('t', 'Trainees dash in and throw kunai.'), ('n',), ('k', 'key_down'), ('t', 'Deflect, then counter')],
     'muk2': [('t', 'Jump his shockwaves.'), ('n',), ('t', 'His shadow strikes from behind you')],
-    'choice': [('k', 'mouse_l'), ('t', 'Destroy him'), ('g',), ('k', 'key_e'), ('t', 'Sever the protocol')],
+    'choice': [('k', 'key_e'), ('t', 'Reach out'), ('g',), ('k', 'mouse_l'), ('t', 'Destroy his mind')],
     'exo': [('t', 'Deflect the nodachi. Jump the stomp.'), ('n',), ('t', 'Strike when the armor recovers')],
-    'eye': [('k', 'key_down'), ('t', 'Deflect bullets back at the eye.'), ('n',), ('t', 'Strike it when it descends')],
-    'mask': [('t', 'Deflect the orbs back.'), ('n',), ('t', 'Strike while Kuro holds the mask down')],
+    'eye': [('k', 'key_down'), ('t', 'Deflect turret fire into the armor.'), ('n',), ('t', 'Strike it when it drops')],
+    'mask': [('k', 'key_down'), ('t', 'Deflect his cuts.'), ('n',), ('k', 'key_space'), ('t', 'Phase Step through the soul grab')],
 }
 
 OPTION_LABELS = {
     'wide': 'Wide deflect window',
     'slow': 'Slower game speed',
-    'heat': 'Slower Heat buildup',
+    'heat': 'Slower Stance buildup',
     'gourd': 'Infinite Nano-Gourd',
     'god': 'Invincibility',
     'music': 'Music volume',
@@ -565,13 +156,8 @@ CONTROLS = [
     ('n', "(Scratch can't read Shift or Esc)"),
 ]
 
-END_PAGE = [
-    ('b', 'THE END'),
-    ('t', 'CYBERPUNK NINJA'),
-]
-
-END_NEXT = [
-    ('t', 'Hotaru climbed the Spire'),
-    ('t', 'and came home as her own person.'),
-    ('t', 'Thanks for playing!'),
-]
+# The end card: the first two lines of story.json's end_card are the title, the rest
+# is the closing text, which differs by branch.
+END_PAGE = [('b', STORY['end_card']['kuro_spared'][0]), ('t', STORY['end_card']['kuro_spared'][1])]
+END_NEXT = [('t', t) for t in STORY['end_card']['kuro_spared'][2:]]
+END_NEXT_ALONE = [('t', t) for t in STORY['end_card']['kuro_destroyed'][2:]]

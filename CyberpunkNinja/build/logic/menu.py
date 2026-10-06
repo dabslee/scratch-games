@@ -82,7 +82,10 @@ def build():
         add_btn("back", 0, -146)
     elif menu == "end":
         add_deco("end_page", 0, 118)
-        add_deco("end_next", 0, -84)
+        if kbranch == 2:
+            add_deco("end_next_alone", 0, -84)
+        else:
+            add_deco("end_next", 0, -84)
         add_deco("press_any_key", 0, -150)
         end_stats()
     if len(MI_KEY) > 0:
@@ -272,7 +275,7 @@ def change_opt(k, dv):
 
 @proc
 def change_chap(dv):
-    chap_i = (chap_i + dv) % 8
+    chap_i = (chap_i + dv) % 9
     sfxq.append("menu_move")
 
 
@@ -300,22 +303,8 @@ def activate(k):
     elif k == "card":
         if chap_i == 0:
             broadcast("new_game")
-        elif chap_i == 1:
-            broadcast("start_ch1")
-        elif chap_i == 2:
-            broadcast("start_ch2")
-        elif chap_i == 3:
-            broadcast("start_ch3")
-        elif chap_i == 4:
-            broadcast("start_ch4")
-        elif chap_i == 5:
-            broadcast("start_ch5")
-        elif chap_i == 6:
-            broadcast("start_ch6")
-        elif chap_i == 7:
-            broadcast("start_ch7")
         else:
-            sfxq.append("empty")
+            broadcast(join("start_ch", chap_i))
     elif k == "back":
         sfxq.append("menu_back")
         if menu == "pause_options":
@@ -391,14 +380,14 @@ def m_draw():
     elif ckind == "card":
         costume(join("ch", chap_i))
         size(88)
-        if chap_i > 7:
+        if chap_i > 8:
             effect("brightness", -55)
         elif msel == cidx and frame % 30 < 15:
             effect("brightness", 15)
         else:
             effect("brightness", 0)
     elif ccos == "chap_label":
-        if chap_i < 8:
+        if chap_i < 9:
             costume("lbl_play")
         else:
             costume("lbl_locked")

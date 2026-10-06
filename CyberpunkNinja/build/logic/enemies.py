@@ -430,17 +430,23 @@ if not (oi in dead_objs):
     myobj = oi
     skin = ""
     pkind = "card"
-    if chapter == 4:
+    dr = 0
+    ehp = 6
+    imax = 8
+    if O_TYPE[oi] == "drainling":
+        dr = 1
+        skin = "d_"
+        ehp = 5
+        imax = 6
+    elif chapter == 5:
         skin = "g_"
         pkind = "bolt"
-    elif chapter == 5:
+    elif chapter == 6:
         skin = "m_"
-    add_ent("hannya", x, y, 10, 38, 6, 8, 1)
+    add_ent("hannya", x, y, 10, 38, ehp, imax, 1)
     find_bounds()
     st = "idle"
     t = 0
-    ehp = 6
-    imax = 8
     integ = 0
     int_t = 0
     z = 0
@@ -591,9 +597,54 @@ def h_update():
         if acd > 0:
             acd -= 1
         if abs(dx) > 42:
-            x = min(max(x + face * 1.8, xmin), xmax)
-        if abs(dx) < 54 and acd == 0 and abs(py - y) < 60 and pst != "dead":
+            x = min(max(x + face * (1.8 - 0.5 * dr), xmin), xmax)
+        if dr == 1 and acd == 0 and pst != "dead" and (abs(dx) >= 70 or abs(py - y) >= 40):
+            # Drainlings leap at mid range and spit sludge from afar
+            t = 0
+            hitdone = 0
+            if abs(dx) < 150 and abs(py - y) < 40:
+                st = "crouch"
+                sfxq.append("windup")
+            elif abs(dx) < 280:
+                st = "spitw"
+                sfxq.append("windup")
+        elif abs(dx) < 54 and acd == 0 and abs(py - y) < 60 and pst != "dead":
             start_wind()
+    elif st == "crouch":
+        if t > 16:
+            st = "leap"
+            t = 0
+            vz = 7
+            sfxq.append("dash")
+    elif st == "leap":
+        x = min(max(x + face * 6, xmin), xmax)
+        z += vz
+        vz -= 1
+        if hitdone == 0:
+            p_overlap(x - 14, x + 14, y + z, y + z + 34)
+            if ov == 1:
+                hitdone = 1
+                hit_player(2, 0, x)
+                if res == "deflect":
+                    integ = min(imax, integ + 2)
+                    int_t = 0
+                    vz = min(vz, 0)
+                    x = min(max(x - face * 10, xmin), xmax)
+        if z <= 0:
+            z = 0
+            st = "recover"
+            t = 0
+    elif st == "spitw":
+        if t == 18:
+            pq_t.append("spit")
+            pq_x.append(x + face * 10)
+            pq_y.append(y + 28)
+            pq_vx.append(face * min(7, max(3, abs(dx) / 32)))
+            pq_vy.append(min(8, max(2, 4 + (py - y) / 30)))
+            sfxq.append("throw")
+        if t >= 26:
+            st = "recover"
+            t = 0
     elif st == "wind":
         if t == 1 and breach == 0:
             pass
@@ -622,7 +673,7 @@ def h_update():
     elif st == "recover":
         if t >= 14:
             st = "walk"
-            acd = rand(15, 40)
+            acd = rand(15, 40) + 20 * dr
     elif st == "recoil":
         if t >= 18:
             st = "walk"
@@ -688,6 +739,13 @@ def h_draw():
             costume(join(skin, "attack_4"))
     elif st == "recover":
         costume(join(skin, "attack_5"))
+    elif st == "crouch" or st == "spitw":
+        if t < 10:
+            costume(join(skin, "attack_1"))
+        else:
+            costume(join(skin, "attack_2"))
+    elif st == "leap":
+        costume(join(skin, "attack_3"))
     elif st == "stagger":
         costume(join(skin, "hurt_1"))
     else:
@@ -701,7 +759,7 @@ def h_draw():
     else:
         point(-90)
     tell = 0
-    if (st == "wind" and t >= 15) or (st == "swing" and t <= 1):
+    if (st == "wind" and t >= 15) or (st == "swing" and t <= 1) or (st == "crouch" and t >= 8) or (st == "spitw" and t >= 10 and t <= 18):
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -712,6 +770,8 @@ def h_draw():
         effect("brightness", 0)
     show()
 '''
+
+HANNYA = HANNYA.replace('if O_TYPE[oi] == "hannya":', 'if O_TYPE[oi] == "hannya" or O_TYPE[oi] == "drainling":', 1)
 
 
 ONI = spawner('oni', '''
@@ -1016,7 +1076,7 @@ if not (oi in dead_objs):
     myobj = oi
     skin = ""
     pkind = "card"
-    if chapter == 4:
+    if chapter == 5:
         skin = "g_"
         pkind = "bolt"
     add_ent("croupier", x, y, 10, 38, 5, 6, 1)
@@ -1785,7 +1845,7 @@ if not (oi in dead_objs):
         skin = "s_"
         ehp = 8
         imax = 7
-    elif chapter == 5:
+    elif chapter == 6:
         skin = "m_"
     is_clone = 1
     clone()
@@ -2099,15 +2159,13 @@ def w_draw():
 '''
 
 
-# Mukuro I: a pure deflect duel. He guards every blow outside his openings,
-# so the way through is deflecting his strings to fill his Integrity, then
-# punishing the recoveries. Mashing into his guard earns a counter, and so
-# does staying greedy in an opening.
+# Mukuro: Kuro's hollowed body. A pure deflect duel: he guards every blow
+# outside his openings, so the way through is deflecting his strings to drain
+# his Integrity, then punishing the recoveries. Mashing into his guard earns a
+# counter, and so does staying greedy in an opening. Phase 1 baits early
+# deflects with held strikes; phase 2 adds kunai, a diving slam and a shadow.
 MUKURO = spawner('mukuro', '''
-mk2 = 0
-if O_A[oi] == 2:
-    mk2 = 1
-if (mk2 == 0 and muk_dead == 0) or (mk2 == 1 and muk2_dead == 0):
+if muk_dead == 0:
     x = O_X[oi]
     y = O_Y[oi]
     myobj = oi
@@ -2133,14 +2191,11 @@ if (mk2 == 0 and muk_dead == 0) or (mk2 == 1 and muk2_dead == 0):
     boss_int = 0
     fy = y
     sh_x = 999
-    if mk2 == 1:
-        muk_exit = 0
     is_clone = 1
     role = "body"
     clone()
-    if mk2 == 1:
-        role = "shadow"
-        clone()
+    role = "shadow"
+    clone()
     is_clone = 0
     ui_slot.append(slot)
     ui_role.append("mark")
@@ -2162,17 +2217,14 @@ def draw():
 
 
 @proc
-def m2_pick(roll):
-    # Mukuro II: new tricks on top of his old strings
+def m_pick(roll):
     if phase == 1:
-        if roll <= 32:
+        if roll <= 45:
             set_combo("c3")
-        elif roll <= 52:
+        elif roll <= 72:
             set_combo("c2h")
-        elif roll <= 76:
-            set_combo("kunai")
         else:
-            set_combo("dive")
+            set_combo("delay")
     else:
         if roll <= 18:
             set_combo("c4")
@@ -2368,29 +2420,10 @@ def m_strike():
 
 @proc
 def m_beaten():
-    if mk2 == 1 and st != "kneel":
-        # the last segment: Hotaru chooses to destroy him or free him
-        st = "kneel"
-        t = 0
-        ehp = 0
-        integ = 0
-        sh_x = 999
-        ent_dmg[slot] = 0
-        ent_idmg[slot] = 0
-        ent_sev[slot] = 0
-        ent_stag[slot] = 0
-        ent_brk[slot] = 0
-        boss_hp = 0
-        boss_int = 0
-        sfxq.append("stagger")
-        shake = 12
-        shake_amp = 4
-        hitstop = 10
-        broadcast("ev_muk2_choice")
-        return
     st = "beaten"
     t = 0
     ehp = 0
+    sh_x = 999
     ent_alive[slot] = 0
     ent_stag[slot] = 0
     ent_brk[slot] = 0
@@ -2400,8 +2433,7 @@ def m_beaten():
     shake = 16
     shake_amp = 5
     hitstop = 12
-    if mk2 == 0:
-        broadcast("ev_muk_dead")
+    broadcast("ev_muk_dead")
 
 
 @proc
@@ -2414,42 +2446,7 @@ def m_open():
 @proc
 def m_update():
     t += 1
-    if st == "kneel":
-        ent_x[slot] = x
-        if ent_dmg[slot] > 0 and t < 20:
-            ent_dmg[slot] = 0
-            ent_idmg[slot] = 0
-        elif ent_dmg[slot] > 0 and mode == "play":
-            ent_dmg[slot] = 0
-            ent_idmg[slot] = 0
-            muk_freed = 0
-            st = "dead"
-            t = 0
-            ent_alive[slot] = 0
-            sfxq.append("oni_die")
-            shake = 12
-            shake_amp = 5
-            broadcast("ev_muk2_dead")
-        elif abs(px - x) < 54 and p_ground == 1 and mode == "play":
-            prompt_on = 1
-            prompt_x = x
-            prompt_y = y + 84
-            if pE == 1:
-                muk_freed = 1
-                st = "beaten"
-                t = 0
-                ent_alive[slot] = 0
-                sfxq.append("sync")
-                broadcast("ev_muk2_dead")
-        return
-    if st == "dead":
-        return
     if st == "beaten":
-        if muk_exit == 1:
-            st = "exit"
-            t = 0
-        return
-    if st == "exit":
         return
     if st == "wait":
         fr += 0.2
@@ -2526,7 +2523,7 @@ def m_update():
             acd -= 1
         ad = abs(dx)
         if ad > 150 and acd == 0:
-            if mk2 == 1 and rand(1, 2) == 1:
+            if phase == 2 and rand(1, 2) == 1:
                 set_combo("kunai")
             else:
                 set_combo("lunge")
@@ -2534,23 +2531,7 @@ def m_update():
             fr += 0.4
             x += face * (2 + 2 * (ad > 120))
         elif acd == 0 and pst != "dead":
-            roll = rand(1, 100)
-            if mk2 == 1:
-                m2_pick(roll)
-            elif phase == 1:
-                if roll <= 58:
-                    set_combo("c3")
-                else:
-                    set_combo("c2h")
-            else:
-                if roll <= 28:
-                    set_combo("c3")
-                elif roll <= 54:
-                    set_combo("delay")
-                elif roll <= 80:
-                    set_combo("c4")
-                else:
-                    set_combo("c2h")
+            m_pick(rand(1, 100))
         elif ad < 36:
             x -= face * 1.5
     elif st == "combo":
@@ -2632,7 +2613,7 @@ def m_update():
             hitrow = 0
             acd = rand(10, 30) - 8 * (phase - 1)
     elif st == "recoil":
-        if t >= 26 - 10 * mk2:
+        if t >= 26 - 10 * (phase - 1):
             st = "recover"
             t = 0
             rec_len = 10
@@ -2668,13 +2649,7 @@ def m_update():
 def m_draw():
     effect("ghost", 0)
     if st == "beaten":
-        costume(join("overheat_", floor(t / 6) % 4))
-    elif st == "exit":
-        costume("dash_1")
-        effect("ghost", min(100, t * 5))
-        if t > 22:
-            hide()
-            return
+        costume(join("death_", min(5, floor(t / 6))))
     elif guard_t > 0:
         costume(join("deflect_", min(2, floor((8 - guard_t) / 3))))
     elif st == "wait":
@@ -2733,17 +2708,13 @@ def m_draw():
                 costume("attack2_2")
             else:
                 costume("attack2_3")
-    elif st == "kneel":
-        costume(join("overheat_", floor(t / 6) % 4))
-    elif st == "dead":
-        costume(join("death_", min(5, floor(t / 5))))
     elif st == "broken":
         costume(join("overheat_", floor(t / 5) % 4))
     elif st == "recover":
         costume(join("idle_", floor(t / 5) % 4))
     else:
         costume(join("hurt_", floor(t / 5) % 2))
-    if st == "broken" or st == "exit":
+    if st == "broken":
         goto(x + shx + (frame % 4 < 2) * 2 - 1, y + shy)
     else:
         goto(x + shx, y + shy)

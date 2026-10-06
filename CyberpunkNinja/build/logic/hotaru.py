@@ -572,7 +572,7 @@ def do_sever():
     shake = 10
     shake_amp = 6
     sfxq.append("severance")
-    banner_flash("severance")
+    banner_flash("execution")
     cfx("hit_enemy", ent_x[sev_slot], ent_y[sev_slot] + 30, pface)
     cfx("explosion", ent_x[sev_slot], ent_y[sev_slot] + 30, pface)
 
@@ -817,6 +817,25 @@ def hazard(dmg):
 
 
 @proc
+def tide_hit():
+    # the sludge tide: a burn and a bounce back up, no teleport
+    if opt_god == 0:
+        hp -= 1
+    pvy = 17
+    py = tide_y - 4
+    pinv = 24
+    pdash = 0
+    pblock = 0
+    anim_force("hurt")
+    sfxq.append("zap")
+    cfx("hit", px, py + 10, 0)
+    shake = 4
+    shake_amp = 3
+    if hp <= 0:
+        die()
+
+
+@proc
 def die():
     hp = 0
     pst = "dead"
@@ -1009,13 +1028,15 @@ def post():
             py = 180 - ccy * 16
             pvy = 0
     cell(px, py + 5)
-    if cc == "^" or cc == "v":
+    if cc == "^" or cc == "v" or cc == "w":
         hazard(2)
         return
     cell(px, py + 28)
     if cc == "^" or cc == "v":
         hazard(2)
         return
+    if tide_y != 0 and py < tide_y - 6 and pinv == 0 and pst != "dead":
+        tide_hit()
     if py < -215 and exD == 0:
         hazard(2)
         return
@@ -1043,7 +1064,7 @@ def post():
             cell(px - 22, py + 5)
             sb = cc
             cell(px + 22, py + 5)
-            if sb != "^" and cc != "^":
+            if sb != "^" and cc != "^" and sb != "w" and cc != "w" and (tide_y == 0 or py > tide_hi + 8):
                 safe_x = px
                 safe_y = py
 

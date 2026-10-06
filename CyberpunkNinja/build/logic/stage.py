@@ -56,17 +56,19 @@ def reset_run():
     deaths = 0
     play_time = 0
     boss_dead = 0
+    dobu_dead = 0
     luck_dead = 0
+    harm_dead = 0
     muk_dead = 0
     muk_exit = 0
     daicam_done = 0
+    daicam2_done = 0
     daicam3_done = 0
     daicam4_done = 0
     daicam5_done = 0
     raijin_dead = 0
     kuro_dead = 0
-    muk2_dead = 0
-    muk_freed = 0
+    kbranch = 0
     daicam6_done = 0
     daicam7_done = 0
     daicam8_done = 0
@@ -173,6 +175,26 @@ def phase_step():
         apply_phase()
         if gph % 2 == 1:
             sfxq.append("phase")
+    # the sludge tide: low, rising, high, falling (a boss can drive tide_lvl itself)
+    if R_TIDE[room] != 0:
+        tide_hi = R_TIDE[room]
+        if tide_force == 0:
+            tcyc = frame % 300
+            if tcyc < 150:
+                tide_lvl = 0
+            elif tcyc < 200:
+                tide_lvl = (tcyc - 150) / 50
+            elif tcyc < 260:
+                tide_lvl = 1
+            else:
+                tide_lvl = 1 - (tcyc - 260) / 40
+            if tcyc == 110 and mode == "play":
+                sfxq.append("gurgle")
+        tide_y = -200 + (tide_hi + 200) * tide_lvl
+        if tide_y == 0:
+            tide_y = 1
+    else:
+        tide_y = 0
     # Kuro periodically takes the controls in possessed rooms
     if R_FLIP[room] == 1:
         cyc = frame % 330
@@ -337,9 +359,12 @@ def load_room(r):
     moving = R_MOVE[r]
     flip = 0
     flip_warn = 0
+    tide_force = 0
+    tide_lvl = 0
+    tide_y = 0
     GL_I.clear()
     GL_T.clear()
-    if chapter >= 5:
+    if chapter == 6 or chapter == 7:
         for gi in range(1, 691):
             if grid[gi] == "G" or grid[gi] == "H":
                 GL_I.append(gi)
@@ -386,34 +411,10 @@ def load_room(r):
     hitstop = 0
     cage_broken = 0
     slot_state = "idle"
-    if chapter == 0:
-        backdrop("sky_sump")
-        music_want = "sump"
-    elif chapter == 1:
-        backdrop("sky_neon_alley")
-        music_want = "alley"
-    elif chapter == 2:
-        backdrop("sky_vaults")
-        music_want = "vaults"
-    elif chapter == 3:
-        backdrop("sky_server_gardens")
-        music_want = "gardens"
-    elif chapter == 4:
-        backdrop("sky_rail")
-        music_want = "monorail"
-    elif chapter == 5:
-        backdrop("sky_hollow")
-        music_want = "hollow"
-    elif chapter == 6:
-        backdrop("sky_academy")
-        music_want = "academy"
-    elif chapter == 7:
-        backdrop("sky_tenshu")
-        music_want = "tenshu"
-    else:
-        backdrop("sky_sump")
-        music_want = "epilogue"
-    if (R_BOSS[r] == 1 and boss_dead == 0) or (R_BOSS[r] == 2 and luck_dead == 0) or (R_BOSS[r] == 3 and muk_dead == 0) or (R_BOSS[r] == 4 and raijin_dead == 0) or (R_BOSS[r] == 5 and kuro_dead == 0) or (R_BOSS[r] == 6 and muk2_dead == 0) or (R_BOSS[r] == 7 and daimyo_dead == 0):
+    backdrop(join("sky_", chapter))
+    music_want = CH_MUSIC[chapter + 1]
+    bk = R_BOSS[r]
+    if (bk == 1 and boss_dead == 0) or (bk == 2 and dobu_dead == 0) or (bk == 3 and luck_dead == 0) or (bk == 4 and harm_dead == 0) or (bk == 5 and raijin_dead == 0) or (bk == 6 and kuro_dead == 0) or (bk == 7 and muk_dead == 0) or (bk == 8 and daimyo_dead == 0):
         music_want = "none"
     broadcast("clear")
     broadcast("spawn")
@@ -481,139 +482,50 @@ def new_game():
     mode = "play"
 
 
-@on("start_ch2")
-def start_ch2():
-    mode = "trans"
-    broadcast("menu_close")
-    fade_to = 100
-    wait_until(fade > 99)
-    reset_run()
-    has_gourd = 1
-    gmax = 4
-    gourd = 4
-    boss_dead = 1
-    daicam_done = 1
-    seen.append("tetsu")
-    enter_dir = "S"
-    load_room(C_ROOM_B1)
-    wait(0)
-    fade_to = 0
-    wait_until(fade < 50)
-    mode = "play"
-
-
-@on("start_ch3")
-def start_ch3():
-    mode = "trans"
-    broadcast("menu_close")
-    fade_to = 100
-    wait_until(fade > 99)
-    reset_run()
-    has_gourd = 1
-    gmax = 4
-    gourd = 4
-    boss_dead = 1
-    luck_dead = 1
-    daicam_done = 1
-    daicam3_done = 1
-    seen.append("tetsu")
-    enter_dir = "S"
-    load_room(C_ROOM_C1)
-    wait(0)
-    fade_to = 0
-    wait_until(fade < 50)
-    mode = "play"
-
-
-@on("start_ch4")
-def start_ch4():
-    mode = "trans"
-    broadcast("menu_close")
-    fade_to = 100
-    wait_until(fade > 99)
-    reset_run()
-    has_gourd = 1
-    gmax = 4
-    gourd = 4
-    boss_dead = 1
-    luck_dead = 1
-    muk_dead = 1
-    daicam_done = 1
-    daicam3_done = 1
-    daicam4_done = 1
-    seen.append("tetsu")
-    enter_dir = "S"
-    load_room(C_ROOM_D1)
-    wait(0)
-    fade_to = 0
-    wait_until(fade < 50)
-    mode = "play"
-
-
 @proc
 def late_run(c):
     # state for starting at a later chapter from the chapter select
     reset_run()
     has_gourd = 1
-    gmax = 4
-    gourd = 4
-    boss_dead = 1
-    luck_dead = 1
-    muk_dead = 1
-    daicam_done = 1
-    daicam3_done = 1
-    daicam4_done = 1
-    daicam5_done = 1
-    raijin_dead = 1
+    gourd = 3
+    seen.append("tetsu")
+    if c >= 2:
+        gmax = 4
+        gourd = 4
+        boss_dead = 1
+        daicam_done = 1
+    if c >= 3:
+        dobu_dead = 1
+        daicam2_done = 1
+    if c >= 4:
+        luck_dead = 1
+        daicam3_done = 1
+    if c >= 5:
+        harm_dead = 1
+        daicam4_done = 1
     if c >= 6:
+        raijin_dead = 1
+        daicam5_done = 1
+    if c >= 7:
         kuro_dead = 1
         daicam6_done = 1
-    if c >= 7:
-        muk2_dead = 1
-        muk_freed = 1
+        kbranch = kb_last
+        if kbranch == 0:
+            kbranch = 1
+    if c >= 8:
+        muk_dead = 1
         daicam7_done = 1
-    seen.append("tetsu")
 
 
-@on("start_ch5")
-def start_ch5():
+@proc_yield
+def start_at(c):
     mode = "trans"
     broadcast("menu_close")
     fade_to = 100
     wait_until(fade > 99)
-    late_run(5)
+    late_run(c)
     enter_dir = "S"
-    load_room(C_ROOM_E1)
-    wait(0)
-    fade_to = 0
-    wait_until(fade < 50)
-    mode = "play"
-
-
-@on("start_ch6")
-def start_ch6():
-    mode = "trans"
-    broadcast("menu_close")
-    fade_to = 100
-    wait_until(fade > 99)
-    late_run(6)
-    enter_dir = "S"
-    load_room(C_ROOM_F1)
-    wait(0)
-    fade_to = 0
-    wait_until(fade < 50)
-    mode = "play"
-
-
-@on("start_ch7")
-def start_ch7():
-    mode = "trans"
-    broadcast("menu_close")
-    fade_to = 100
-    wait_until(fade > 99)
-    late_run(7)
-    enter_dir = "S"
-    load_room(C_ROOM_G1)
+    load_room(CH_ROOM[c + 1])
     wait(0)
     fade_to = 0
     wait_until(fade < 50)
@@ -622,20 +534,42 @@ def start_ch7():
 
 @on("start_ch1")
 def start_ch1():
-    mode = "trans"
-    broadcast("menu_close")
-    fade_to = 100
-    wait_until(fade > 99)
-    reset_run()
-    has_gourd = 1
-    gourd = 3
-    seen.append("tetsu")
-    enter_dir = "S"
-    load_room(C_ROOM_A1)
-    wait(0)
-    fade_to = 0
-    wait_until(fade < 50)
-    mode = "play"
+    start_at(1)
+
+
+@on("start_ch2")
+def start_ch2():
+    start_at(2)
+
+
+@on("start_ch3")
+def start_ch3():
+    start_at(3)
+
+
+@on("start_ch4")
+def start_ch4():
+    start_at(4)
+
+
+@on("start_ch5")
+def start_ch5():
+    start_at(5)
+
+
+@on("start_ch6")
+def start_ch6():
+    start_at(6)
+
+
+@on("start_ch7")
+def start_ch7():
+    start_at(7)
+
+
+@on("start_ch8")
+def start_ch8():
+    start_at(8)
 
 
 @on("continue_game")
@@ -664,6 +598,85 @@ def quit_to_title():
 
 
 # ------------------------------------------------------------ story events
+# Scene names are scene ids in story.json. kbranch: 0 undecided, 1 Kuro spared, 2 Kuro destroyed.
+@proc
+def say_b(name):
+    # the branch variant of a scene ("<name>_alone" when Kuro was destroyed)
+    if kbranch == 2:
+        say(join(name, "_alone"))
+    else:
+        say(name)
+
+
+@proc_yield
+def say_once(name):
+    once(name)
+    if first == 1:
+        say(name)
+        wait_until(mode == "play")
+
+
+@proc_yield
+def chapter_open(c, x, y, scene):
+    cp_room = room
+    cp_x = x
+    cp_y = y
+    once(join("ch", c))
+    if first == 1:
+        card = join("ch", c)
+        wait(2.5)
+        say(scene)
+
+
+@proc_yield
+def boss_open(name, track, scene):
+    hint = ""
+    ambush_on = 1
+    boss_on = 1
+    boss_phase = 1
+    boss_name = name
+    music_want = track
+    once(scene)
+    if first == 1:
+        say(scene)
+
+
+@proc_yield
+def boss_phase2(scene):
+    boss_phase = 2
+    broadcast("drums")
+    once(scene)
+    if first == 1:
+        say(scene)
+
+
+@proc_yield
+def boss_down(delay):
+    music_want = "none"
+    wait(delay)
+    banner = "victory"
+    sfxq.append("victory")
+    wait(3)
+    banner = ""
+    boss_on = 0
+
+
+@proc
+def chapter_jump(r):
+    # scripted fall into the next chapter's first room
+    mode = "trans"
+    fade_to = 100
+    wait_until(fade > 99)
+    boss_on = 0
+    enter_dir = "S"
+    load_room(r)
+    wait(0)
+    fade_to = 0
+    wait_until(fade < 50)
+    mode = "play"
+
+
+# ------------------------------------------------------------ prologue
 @on("ev_boot")
 def ev_boot():
     once("boot")
@@ -690,28 +703,19 @@ def ev_hint_cling():
 
 @on("ev_hint_attack")
 def ev_hint_attack():
-    once("drones")
-    if first == 1:
-        say("drones")
-        wait_until(mode == "play")
+    say_once("drones")
     hint = "attack"
 
 
 @on("ev_hint_deflect")
 def ev_hint_deflect():
-    once("turret")
-    if first == 1:
-        say("turret")
-        wait_until(mode == "play")
+    say_once("turret")
     hint = "deflect"
 
 
 @on("ev_hint_dash")
 def ev_hint_dash():
-    once("barrier")
-    if first == 1:
-        say("barrier")
-        wait_until(mode == "play")
+    say_once("barrier")
     hint = "dash"
 
 
@@ -729,41 +733,39 @@ def ev_tetsu_done():
     hint = "heal"
 
 
-@on("ev_lift_talk")
-def ev_lift_talk():
-    once("lift")
-    if first == 1:
-        say("lift")
+@on("ev_edge")
+def ev_edge():
+    say_once("edge")
 
 
+@on("ev_shard")
+def ev_shard():
+    banner = "shard"
+    sfxq.append("shard")
+    wait(2)
+    banner = ""
+    if shard_id >= 8:
+        say_b(join("shard", shard_id))
+    else:
+        say(join("shard", shard_id))
+
+
+# ------------------------------------------------------------ chapter 1: neon alley
 @on("ev_ch1_start")
 def ev_ch1_start():
-    cp_room = room
-    cp_x = C_A1_X
-    cp_y = C_A1_Y
-    once("ch1")
-    if first == 1:
-        card = "ch1"
-        wait(2.5)
-        say("ch1")
+    chapter_open(1, C_A1_X, C_A1_Y, "ch1")
 
 
 @on("ev_hint_integrity")
 def ev_hint_integrity():
-    once("integrity")
-    if first == 1:
-        say("integrity")
-        wait_until(mode == "play")
+    say_once("integrity")
     hint = "integrity"
 
 
 @on("ev_daicam_start")
 def ev_daicam_start():
     if daicam_done == 0:
-        once("daicam1")
-        if first == 1:
-            say("daicam1")
-            wait_until(mode == "play")
+        say_once("daicam1")
         hint = "heavy"
 
 
@@ -777,10 +779,7 @@ def ev_daicam_end():
 
 @on("ev_hint_breach")
 def ev_hint_breach():
-    once("breach")
-    if first == 1:
-        say("breach")
-        wait_until(mode == "play")
+    say_once("breach")
     hint = "breach"
 
 
@@ -788,55 +787,32 @@ def ev_hint_breach():
 def ev_ambush():
     if len(ent_type) > 0:
         ambush_on = 1
-        once("ambush")
-        if first == 1:
-            say("ambush")
-            wait_until(mode == "play")
+        say_once("ambush")
         hint = "launch"
 
 
 @on("ev_boss_gate")
 def ev_boss_gate():
     if boss_dead == 0:
-        once("boss_gate")
-        if first == 1:
-            say("boss_gate")
-            wait_until(mode == "play")
+        say_once("boss_gate")
         hint = "heavy"
 
 
 @on("ev_boss_start")
 def ev_boss_start():
     if boss_dead == 0:
-        ambush_on = 1
-        boss_on = 1
-        boss_phase = 1
-        boss_name = "big_oni"
-        music_want = "boss"
-        once("oni")
-        if first == 1:
-            say("oni")
+        boss_open("big_oni", "boss", "oni")
 
 
 @on("ev_oni_phase2")
 def ev_oni_phase2():
-    boss_phase = 2
-    broadcast("drums")
-    once("oni2")
-    if first == 1:
-        say("oni2")
+    boss_phase2("oni2")
 
 
 @on("ev_oni_dead")
 def ev_oni_dead():
     boss_dead = 1
-    music_want = "none"
-    wait(1.4)
-    banner = "victory"
-    sfxq.append("victory")
-    wait(3)
-    banner = ""
-    boss_on = 0
+    boss_down(1.4)
     gmax = 4
     gourd = gmax
     hint = "upgrade"
@@ -848,60 +824,105 @@ def ev_oni_dead():
     music_want = "alley"
 
 
-@on("ev_shard")
-def ev_shard():
-    banner = "shard"
-    sfxq.append("shard")
-    wait(2)
-    banner = ""
-    say(join("shard", shard_id))
-
-
-# ------------------------------------------------------------ chapter 2
+# ------------------------------------------------------------ chapter 2: the sewers
 @on("ev_ch2_start")
 def ev_ch2_start():
-    cp_room = room
-    cp_x = C_B1_X
-    cp_y = C_B1_Y
-    once("ch2")
-    if first == 1:
-        card = "ch2"
-        wait(2.5)
-        say("ch2")
+    chapter_open(2, C_W1_X, C_W1_Y, "ch2")
+
+
+@on("ev_toxic")
+def ev_toxic():
+    say_once("toxic")
+    hint = "toxic"
+
+
+@on("ev_drainling")
+def ev_drainling():
+    if len(ent_type) > 0:
+        say_once("drainling")
+        hint = "drainling"
+
+
+@on("ev_tide")
+def ev_tide():
+    say_once("tide")
+    hint = "tide"
+
+
+@on("ev_daicam_sewer")
+def ev_daicam_sewer():
+    if daicam2_done == 0 and len(ent_type) > 0:
+        ambush_on = 1
+        say_once("daicam_sewer")
+
+
+@on("ev_daicam2_end")
+def ev_daicam2_end():
+    say("daicam_sewer2")
+    wait_until(mode == "play")
+    daicam2_done = 1
+
+
+@on("ev_dobu_gate")
+def ev_dobu_gate():
+    if dobu_dead == 0:
+        say_once("dobu_gate")
+        hint = "dobu"
+
+
+@on("ev_dobu_start")
+def ev_dobu_start():
+    if dobu_dead == 0:
+        boss_open("dobunushi", "dobu", "dobu")
+
+
+@on("ev_dobu_phase2")
+def ev_dobu_phase2():
+    boss_phase2("dobu2")
+
+
+@on("ev_dobu_dead")
+def ev_dobu_dead():
+    dobu_dead = 1
+    boss_down(2.0)
+    say("dobu_dead")
+    wait_until(mode == "play")
+    if chapter == 2:
+        music_want = "sewers"
+
+
+# ------------------------------------------------------------ chapter 3: the pachinko vaults
+@on("ev_ch3_start")
+def ev_ch3_start():
+    chapter_open(3, C_B1_X, C_B1_Y, "ch3")
 
 
 @on("ev_lasers")
 def ev_lasers():
-    once("lasers")
-    if first == 1:
-        say("lasers")
-        wait_until(mode == "play")
+    say_once("lasers")
     hint = "lasergrid"
 
 
 @on("ev_slots")
 def ev_slots():
-    once("slots")
-    if first == 1:
-        say("slots")
-        wait_until(mode == "play")
+    say_once("slots")
     hint = "cards"
+
+
+@on("ev_debtors")
+def ev_debtors():
+    say_once("debtors")
 
 
 @on("ev_rollers")
 def ev_rollers():
-    once("rollers")
-    if first == 1:
-        say("rollers")
+    say_once("rollers")
 
 
 @on("ev_daicam3")
 def ev_daicam3():
     if daicam3_done == 0:
-        once("daicam3")
-        if first == 1:
-            say("daicam3")
-            wait_until(mode == "play")
+        say_once("daicam3")
         hint = "cage"
 
 
@@ -916,88 +937,47 @@ def ev_daicam3_free():
 @on("ev_luck_gate")
 def ev_luck_gate():
     if luck_dead == 0:
-        once("luck_gate")
-        if first == 1:
-            say("luck_gate")
-            wait_until(mode == "play")
+        say_once("luck_gate")
         hint = "reels"
 
 
 @on("ev_luck_start")
 def ev_luck_start():
     if luck_dead == 0:
-        hint = ""
-        ambush_on = 1
-        boss_on = 1
-        boss_phase = 1
-        boss_name = "lady_luck"
-        music_want = "luck"
-        once("luck")
-        if first == 1:
-            say("luck")
+        boss_open("lady_luck", "luck", "luck")
 
 
 @on("ev_luck_phase2")
 def ev_luck_phase2():
-    boss_phase = 2
-    broadcast("drums")
-    once("luck2")
-    if first == 1:
-        say("luck2")
+    boss_phase2("luck2")
 
 
 @on("ev_luck_dead")
 def ev_luck_dead():
     luck_dead = 1
-    music_want = "none"
-    wait(1.4)
-    banner = "victory"
-    sfxq.append("victory")
-    wait(3)
-    banner = ""
-    boss_on = 0
+    boss_down(1.4)
     say("luck_dead")
     wait_until(mode == "play")
-    if chapter == 2:
+    if chapter == 3:
         music_want = "vaults"
 
 
-# ------------------------------------------------------------ chapter 3
-@on("ev_ch3_start")
-def ev_ch3_start():
-    cp_room = room
-    cp_x = C_C1_X
-    cp_y = C_C1_Y
-    once("ch3")
-    if first == 1:
-        card = "ch3"
-        wait(2.5)
-        say("ch3")
+# ------------------------------------------------------------ chapter 4: the physic gardens
+@on("ev_ch4_start")
+def ev_ch4_start():
+    chapter_open(4, C_C1_X, C_C1_Y, "ch4")
 
 
-@on("ev_mist")
-def ev_mist():
-    once("mist")
-    if first == 1:
-        say("mist")
-        wait_until(mode == "play")
+@on("ev_vents")
+def ev_vents():
+    say_once("vents")
     hint = "mist"
-
-
-@on("ev_racks")
-def ev_racks():
-    once("racks")
-    if first == 1:
-        say("racks")
 
 
 @on("ev_warden")
 def ev_warden():
     if len(ent_type) > 0:
-        once("warden")
-        if first == 1:
-            say("warden")
-            wait_until(mode == "play")
+        say_once("warden")
         hint = "warden"
 
 
@@ -1009,9 +989,7 @@ def ev_pulse():
 @on("ev_daicam4")
 def ev_daicam4():
     if daicam4_done == 0:
-        once("daicam4")
-        if first == 1:
-            say("daicam4")
+        say_once("daicam4")
 
 
 @on("ev_daicam4_end")
@@ -1021,104 +999,66 @@ def ev_daicam4_end():
     daicam4_done = 1
 
 
-@on("ev_muk_gate")
-def ev_muk_gate():
-    if muk_dead == 0:
-        once("muk_gate")
-        if first == 1:
-            say("muk_gate")
-            wait_until(mode == "play")
-        hint = "duel"
+@on("ev_pricing")
+def ev_pricing():
+    say_once("pricing")
 
 
-@on("ev_muk_start")
-def ev_muk_start():
-    if muk_dead == 0:
-        hint = ""
-        ambush_on = 1
-        boss_on = 1
-        boss_phase = 1
-        boss_name = "mukuro"
-        music_want = "mukuro"
-        once("mukuro")
-        if first == 1:
-            say("mukuro")
+@on("ev_harm_gate")
+def ev_harm_gate():
+    if harm_dead == 0:
+        say_once("harm_gate")
+        hint = "harm"
 
 
-@on("ev_muk_phase2")
-def ev_muk_phase2():
-    boss_phase = 2
-    broadcast("drums")
-    once("mukuro2")
-    if first == 1:
-        say("mukuro2")
+@on("ev_harm_start")
+def ev_harm_start():
+    if harm_dead == 0:
+        boss_open("the_harmacist", "harm", "harm")
 
 
-@on("ev_muk_dead")
-def ev_muk_dead():
-    muk_dead = 1
-    music_want = "none"
-    wait(1.4)
-    banner = "victory"
-    sfxq.append("victory")
-    wait(3)
-    banner = ""
-    boss_on = 0
-    say("muk_dead")
+@on("ev_harm_phase2")
+def ev_harm_phase2():
+    boss_phase2("harm2")
+
+
+@on("ev_harm_dead")
+def ev_harm_dead():
+    harm_dead = 1
+    boss_down(1.4)
+    say("harm_dead")
     wait_until(mode == "play")
-    muk_exit = 1
-    sfxq.append("muk_warp")
-    wait(1.2)
-    say("muk_gone")
-    wait_until(mode == "play")
-    if chapter == 3:
+    if chapter == 4:
         music_want = "gardens"
 
 
-# ------------------------------------------------------------ chapter 4
-@on("ev_ch4_start")
-def ev_ch4_start():
-    cp_room = room
-    cp_x = C_D1_X
-    cp_y = C_D1_Y
-    once("ch4")
-    if first == 1:
-        card = "ch4"
-        wait(2.5)
-        say("ch4")
+# ------------------------------------------------------------ chapter 5: monorail ascent
+@on("ev_ch5_start")
+def ev_ch5_start():
+    chapter_open(5, C_D1_X, C_D1_Y, "ch5")
 
 
 @on("ev_wind")
 def ev_wind():
-    once("wind")
-    if first == 1:
-        say("wind")
-        wait_until(mode == "play")
+    say_once("wind")
     hint = "wind"
 
 
 @on("ev_posts")
 def ev_posts():
-    once("posts")
-    if first == 1:
-        say("posts")
-        wait_until(mode == "play")
+    say_once("posts")
     hint = "posts"
 
 
 @on("ev_junction")
 def ev_junction():
-    once("junction")
-    if first == 1:
-        say("junction")
+    say_once("junction")
 
 
 @on("ev_daicam5")
 def ev_daicam5():
     if daicam5_done == 0:
-        once("daicam5")
-        if first == 1:
-            say("daicam5")
+        say_once("daicam5")
 
 
 @on("ev_daicam5_end")
@@ -1133,46 +1073,30 @@ def ev_raijin_gate():
     if raijin_dead == 0:
         once("raijin_gate")
         if first == 1:
-            sfxq.append("horn")
+            sfxq.append("cam_beep")
+            flash = 30
             say("raijin_gate")
             wait_until(mode == "play")
+            sfxq.append("horn")
         hint = "raijin"
 
 
 @on("ev_raijin_start")
 def ev_raijin_start():
     if raijin_dead == 0:
-        hint = ""
-        ambush_on = 1
-        boss_on = 1
-        boss_phase = 1
-        boss_name = "raijin"
-        music_want = "raijin"
-        once("raijin")
-        if first == 1:
-            wait(1.2)
-            say("raijin")
+        wait(1.2)
+        boss_open("raijin", "raijin", "raijin")
 
 
 @on("ev_raijin_phase2")
 def ev_raijin_phase2():
-    boss_phase = 2
-    broadcast("drums")
-    once("raijin2")
-    if first == 1:
-        say("raijin2")
+    boss_phase2("raijin2")
 
 
 @on("ev_raijin_dead")
 def ev_raijin_dead():
     raijin_dead = 1
-    music_want = "none"
-    wait(2.4)
-    banner = "victory"
-    sfxq.append("victory")
-    wait(3)
-    banner = ""
-    boss_on = 0
+    boss_down(2.4)
     say("raijin_dead")
     wait_until(mode == "play")
     wait(0.6)
@@ -1185,71 +1109,42 @@ def ev_raijin_dead():
     chapter_jump(C_ROOM_E1)
 
 
-@proc
-def chapter_jump(r):
-    # scripted fall into the next chapter's first room
-    mode = "trans"
-    fade_to = 100
-    wait_until(fade > 99)
-    boss_on = 0
-    enter_dir = "S"
-    load_room(r)
-    wait(0)
-    fade_to = 0
-    wait_until(fade < 50)
-    mode = "play"
-
-
-# ------------------------------------------------------------ chapter 5
-@on("ev_ch5_start")
-def ev_ch5_start():
-    cp_room = room
-    cp_x = C_E1_X
-    cp_y = C_E1_Y
-    once("ch5")
-    if first == 1:
-        card = "ch5"
-        wait(2.5)
-        say("ch5")
+# ------------------------------------------------------------ chapter 6: hollow floor
+@on("ev_ch6_start")
+def ev_ch6_start():
+    chapter_open(6, C_E1_X, C_E1_Y, "ch6")
 
 
 @on("ev_glitch")
 def ev_glitch():
-    once("glitch")
-    if first == 1:
-        say("glitch")
-        wait_until(mode == "play")
+    say_once("glitch")
     hint = "glitch"
 
 
 @on("ev_sump_mem")
 def ev_sump_mem():
-    once("sump_mem")
-    if first == 1:
-        say("sump_mem")
+    say_once("sump_mem")
 
 
 @on("ev_tetsu_mem")
 def ev_tetsu_mem():
-    once("tetsu_mem")
-    if first == 1:
-        say("tetsu_mem")
+    say_once("tetsu_mem")
+
+
+@on("ev_academy_mem")
+def ev_academy_mem():
+    say_once("academy_mem")
 
 
 @on("ev_possess")
 def ev_possess():
-    once("possess")
-    if first == 1:
-        say("possess")
-        wait_until(mode == "play")
+    say_once("possess")
     hint = "possess"
 
 
 @on("ev_white_room")
 def ev_white_room():
-    once("white_room")
-    if first == 1:
-        say("white_room")
+    say_once("white_room")
 
 
 @on("ev_daicam6")
@@ -1263,210 +1158,171 @@ def ev_daicam6():
 @on("ev_kuro_gate")
 def ev_kuro_gate():
     if kuro_dead == 0:
-        once("kuro_gate")
-        if first == 1:
-            say("kuro_gate")
-            wait_until(mode == "play")
+        say_once("kuro_gate")
         hint = "clash"
 
 
 @on("ev_kuro_start")
 def ev_kuro_start():
     if kuro_dead == 0:
-        hint = ""
-        ambush_on = 1
-        boss_on = 1
-        boss_phase = 1
-        boss_name = "kuro"
-        music_want = "kuro"
-        once("kuro")
-        if first == 1:
-            say("kuro_fight")
+        boss_open("kuro", "kuro", "kuro_fight")
 
 
 @on("ev_kuro_phase2")
 def ev_kuro_phase2():
-    boss_phase = 2
-    broadcast("drums")
-    once("kuro2")
-    if first == 1:
-        say("kuro2")
+    boss_phase2("kuro2")
+
+
+@on("ev_kuro_choice")
+def ev_kuro_choice():
+    music_want = "none"
+    flip = 0
+    hint = "choice"
+    say("kuro_choice")
 
 
 @on("ev_kuro_dead")
 def ev_kuro_dead():
     kuro_dead = 1
-    flip = 0
-    music_want = "none"
-    wait(1.4)
-    banner = "victory"
-    sfxq.append("victory")
-    wait(3)
-    banner = ""
+    hint = ""
+    kb_last = kbranch
+    wait(1.0)
     boss_on = 0
-    say("kuro_dead")
-    wait_until(mode == "play")
-    sfxq.append("respawn")
+    if kbranch == 1:
+        say("kuro_spared")
+        wait_until(mode == "play")
+        sfxq.append("respawn")
+    else:
+        say("kuro_destroyed")
+        wait_until(mode == "play")
+        sfxq.append("flatline")
     flash = 90
     chapter_jump(C_ROOM_F1)
 
 
-# ------------------------------------------------------------ chapter 6
-@on("ev_ch6_start")
-def ev_ch6_start():
-    cp_room = room
-    cp_x = C_F1_X
-    cp_y = C_F1_Y
-    once("ch6")
-    if first == 1:
-        card = "ch6"
-        wait(2.5)
-        say("ch6")
+# ------------------------------------------------------------ chapter 7: the academy
+@on("ev_ch7_start")
+def ev_ch7_start():
+    if kbranch == 2:
+        chapter_open(7, C_F1_X, C_F1_Y, "ch7_alone")
+    else:
+        chapter_open(7, C_F1_X, C_F1_Y, "ch7")
 
 
-@on("ev_shell")
-def ev_shell():
+@on("ev_trainee")
+def ev_trainee():
     if len(ent_type) > 0:
-        once("shell")
+        once("trainee")
         if first == 1:
-            say("shell")
+            say_b("trainee")
             wait_until(mode == "play")
         hint = "shell"
 
 
 @on("ev_holo")
 def ev_holo():
-    once("holo")
-    if first == 1:
-        say("holo")
+    if kbranch != 2:
+        say_once("holo")
 
 
 @on("ev_spar")
 def ev_spar():
-    once("spar")
-    if first == 1:
-        say("spar")
+    if kbranch != 2:
+        say_once("spar")
 
 
-@on("ev_daicam7")
-def ev_daicam7():
-    if daicam7_done == 0:
-        say("daicam7")
-        wait_until(mode == "play")
-        daicam7_done = 1
-
-
-@on("ev_instances")
-def ev_instances():
-    if muk2_dead == 0:
-        once("instances")
-        if first == 1:
-            say("instances")
-            wait_until(mode == "play")
-        hint = "muk2"
-
-
-@on("ev_muk2_start")
-def ev_muk2_start():
-    if muk2_dead == 0:
-        hint = ""
+@on("ev_intake")
+def ev_intake():
+    if daicam7_done == 0 and len(ent_type) > 0:
         ambush_on = 1
-        boss_on = 1
-        boss_phase = 1
-        boss_name = "mukuro"
-        music_want = "mukuro2"
-        once("muk2")
+        say_once("intake")
+
+
+@on("ev_daicam7_end")
+def ev_daicam7_end():
+    say("intake2")
+    wait_until(mode == "play")
+    daicam7_done = 1
+
+
+@on("ev_extraction")
+def ev_extraction():
+    if muk_dead == 0:
+        once("extraction")
         if first == 1:
-            say("muk2")
+            say_b("extraction")
+            wait_until(mode == "play")
+        hint = "duel"
 
 
-@on("ev_muk2_phase2")
-def ev_muk2_phase2():
-    boss_phase = 2
-    broadcast("drums")
-    once("muk2b")
-    if first == 1:
-        say("muk2b")
+@on("ev_muk_start")
+def ev_muk_start():
+    if muk_dead == 0:
+        if kbranch == 2:
+            boss_open("mukuro", "mukuro", "mukuro_alone")
+        else:
+            boss_open("mukuro", "mukuro", "mukuro")
 
 
-@on("ev_muk2_choice")
-def ev_muk2_choice():
-    music_want = "none"
-    hint = "choice"
-    say("muk2_choice")
-
-
-@on("ev_muk2_dead")
-def ev_muk2_dead():
-    muk2_dead = 1
-    hint = ""
-    wait(1.2)
-    banner = "victory"
-    sfxq.append("victory")
-    wait(3)
-    banner = ""
-    boss_on = 0
-    if muk_freed == 1:
-        say("muk2_freed")
-        wait_until(mode == "play")
-        muk_exit = 1
-        sfxq.append("muk_warp")
-        wait(1.2)
+@on("ev_muk_phase2")
+def ev_muk_phase2():
+    if kbranch == 2:
+        boss_phase2("mukuro2_alone")
     else:
-        say("muk2_destroyed")
-        wait_until(mode == "play")
+        boss_phase2("mukuro2")
+    hint = "muk2"
+
+
+@on("ev_muk_dead")
+def ev_muk_dead():
+    muk_dead = 1
+    hint = ""
+    boss_down(1.4)
+    say_b("muk_dead")
+    wait_until(mode == "play")
     wait(0.5)
     chapter_jump(C_ROOM_G1)
 
 
-# ------------------------------------------------------------ chapter 7
-@on("ev_ch7_start")
-def ev_ch7_start():
-    cp_room = room
-    cp_x = C_G1_X
-    cp_y = C_G1_Y
-    once("ch7")
-    if first == 1:
-        card = "ch7"
-        wait(2.5)
-        say("ch7")
-
-
-@on("ev_mukuro_gate")
-def ev_mukuro_gate():
-    if muk_freed == 1:
-        once("mukuro_ally")
-        if first == 1:
-            say("mukuro_ally")
+# ------------------------------------------------------------ chapter 8: the tenshu
+@on("ev_ch8_start")
+def ev_ch8_start():
+    if kbranch == 2:
+        chapter_open(8, C_G1_X, C_G1_Y, "ch8_alone")
+    else:
+        chapter_open(8, C_G1_X, C_G1_Y, "ch8")
 
 
 @on("ev_bailey")
 def ev_bailey():
-    once("bailey")
-    if first == 1:
-        say("bailey")
+    if kbranch != 2:
+        say_once("bailey")
 
 
 @on("ev_grid")
 def ev_grid():
-    once("grid")
-    if first == 1:
-        say("grid")
+    if kbranch != 2:
+        say_once("grid")
 
 
-@on("ev_harvest")
-def ev_harvest():
-    once("harvest")
-    if first == 1:
-        say("harvest")
-
-
-@on("ev_daicam8")
-def ev_daicam8():
+@on("ev_muster")
+def ev_muster():
     if daicam8_done == 0:
-        say("daicam8")
+        say("muster")
         wait_until(mode == "play")
         daicam8_done = 1
+
+
+@on("ev_transfer")
+def ev_transfer():
+    if kbranch == 1 and kuro_in == 0:
+        say("transfer")
+        wait(0.2)
+        wait_until(dlg_spk == "system" or mode == "play")
+        sfxq.append("sync")
+        flash = 60
+        kuro_in = 1
+        wait_until(mode == "play")
 
 
 @on("ev_throne")
@@ -1474,7 +1330,7 @@ def ev_throne():
     if daimyo_dead == 0:
         once("throne")
         if first == 1:
-            say("throne")
+            say_b("throne")
             wait_until(mode == "play")
         hint = "exo"
 
@@ -1482,67 +1338,60 @@ def ev_throne():
 @on("ev_daimyo_start")
 def ev_daimyo_start():
     if daimyo_dead == 0:
-        hint = ""
-        ambush_on = 1
-        boss_on = 1
-        boss_phase = 1
-        boss_name = "the_daimyo"
-        music_want = "daimyo"
-        once("daimyo")
-        if first == 1:
-            say("daimyo_fight")
+        boss_open("the_daimyo", "daimyo", "daimyo_fight")
+        wait_until(mode == "play")
+        if kbranch == 1:
+            say_once("dm_ally")
 
 
 @on("ev_dm_phase2")
 def ev_dm_phase2():
-    boss_phase = 2
-    broadcast("drums")
     hint = "eye"
-    once("dm2")
-    if first == 1:
-        wait(1.2)
-        say("dm2")
+    wait(1.2)
+    if kbranch == 2:
+        boss_phase2("dm2_alone")
+    else:
+        boss_phase2("dm2")
+
+
+@on("ev_kuro_falls")
+def ev_kuro_falls():
+    say_once("kuro_falls")
 
 
 @on("ev_dm_phase3")
 def ev_dm_phase3():
     music_want = "engram"
     hint = "mask"
-    once("dm3")
-    if first == 1:
-        wait(1.2)
-        say("dm3")
-
-
-@on("ev_dm_pin")
-def ev_dm_pin():
-    once("dm_pin")
-    if first == 1:
-        say("dm_pin")
+    wait(1.2)
+    say_once("dm3")
 
 
 @on("ev_dm_dead")
 def ev_dm_dead():
+    daimyo_dead = 1
     hint = ""
-    music_want = "none"
-    wait(1.6)
-    banner = "victory"
-    sfxq.append("victory")
-    wait(3)
-    banner = ""
-    boss_on = 0
-    say("ending")
+    boss_down(1.6)
+    say("dm_dead")
     wait_until(mode == "play")
-    sfxq.append("sync")
-    for k in range(6):
-        cq_t.append("sync")
-        cq_x.append(rand(-200, 200))
-        cq_y.append(rand(-100, 120))
-        cq_d.append(0)
-        wait(0.25)
-    flash = 100
-    say("ending2")
-    wait_until(mode == "play")
+    if kbranch == 2:
+        say("ending_alone")
+        wait_until(mode == "play")
+        flash = 60
+    else:
+        say("ending")
+        wait(0.2)
+        wait_until(dlg_spk == "system" or mode == "play")
+        sfxq.append("sync")
+        for k in range(6):
+            cq_t.append("sync")
+            cq_x.append(rand(-200, 200))
+            cq_y.append(rand(-100, 120))
+            cq_d.append(0)
+            wait(0.25)
+        flash = 100
+        wait_until(mode == "play")
+    wait(0.6)
     chapter_jump(C_ROOM_EP)
 
 
@@ -1554,20 +1403,28 @@ def ev_epilogue():
     wait(3)
     say("epilogue")
     wait_until(mode == "play")
-    if muk_freed == 1:
-        say("ep_mukuro")
+    say("ep_hollowed")
+    wait_until(mode == "play")
+    if kbranch == 2:
+        wait(0.6)
+        sfxq.append("blip")
+        wait(0.3)
+        sfxq.append("blip")
+        wait(0.6)
+        say("ep_destroyed")
         wait_until(mode == "play")
-    say("epilogue2")
-    wait_until(mode == "play")
-    wait(0.8)
-    # the scarf flickers once in Kuro's color
-    dash_ch = 1
-    sfxq.append("kvoice")
-    wait(0.35)
-    dash_ch = 2
-    wait(0.8)
-    say("epilogue3")
-    wait_until(mode == "play")
+    else:
+        say("ep_spared")
+        wait_until(mode == "play")
+        wait(0.8)
+        # the scarf flickers once in Kuro's color
+        dash_ch = 1
+        sfxq.append("kvoice")
+        wait(0.35)
+        dash_ch = 2
+        wait(0.8)
+        say("ep_spared2")
+        wait_until(mode == "play")
     wait(1.5)
     mode = "trans"
     fade_to = 100

@@ -756,6 +756,7 @@ class SpriteCompiler:
             if not isinstance(n, (ast.FunctionDef, ast.Expr, ast.Pass)):
                 raise CompileError('%s: top-level must be functions (line %s)' % (self.t.name, n.lineno))
         funcs = self.wrap_loop_hats(funcs)
+        funcs = self.prune_procs(funcs)
         # pass 1: procedures and locals
         for fn in funcs:
             kind, arg = self.decorator(fn)
@@ -847,6 +848,23 @@ class SpriteCompiler:
         if isinstance(d, ast.Call):
             return d.func.id, [x.value for x in d.args]
         raise CompileError('bad decorator')
+
+    def prune_procs(self, funcs):
+        """Drop procedures no script can reach (shared helper blocks are pasted into
+        many sprites, and most sprites only call some of them)."""
+        procs = {fn.name: fn for fn in funcs if self.decorator(fn)[0] in ('proc', 'proc_yield')}
+
+        def calls(fn):
+            return {n.func.id for n in ast.walk(fn)
+                    if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id in procs}
+        live = set()
+        todo = [c for fn in funcs if fn.name not in procs for c in calls(fn)]
+        while todo:
+            c = todo.pop()
+            if c not in live:
+                live.add(c)
+                todo.extend(calls(procs[c]))
+        return [fn for fn in funcs if fn.name not in procs or fn.name in live]
 
     def compile_func(self, fn):
         kind, arg = self.decorator(fn)

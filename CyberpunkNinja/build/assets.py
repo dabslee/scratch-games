@@ -84,12 +84,15 @@ def up4(im):
 
 
 # ---------------------------------------------------------------- tiles
-MATERIAL = {0: 'sump', 1: 'alley', 2: 'vaults', 3: 'gardens', 4: 'rail', 5: 'memory', 6: 'academy', 7: 'tenshu', 8: 'sump'}
+MATERIAL = {0: 'sump', 1: 'alley', 2: 'sewer', 3: 'vaults', 4: 'gardens', 5: 'rail', 6: 'memory', 7: 'academy', 8: 'tenshu', 9: 'sump'}
 
 
 def tile_images(material):
     layout = json.load(open(pack_path('tilesets', 'layout.json')))
-    if material == 'vaults':
+    if material == 'sewer':
+        import art_v2
+        atlas = art_v2.sewer_atlas()
+    elif material == 'vaults':
         import art_ch2
         atlas = art_ch2.vaults_atlas()
     elif material == 'rail':
@@ -171,6 +174,10 @@ def render_room(room):
                 name = 'spikes_up'
             elif ch == 'v':
                 name = 'spikes_down'
+            elif ch == 'w':
+                import art_v2
+                im.alpha_composite(art_v2.toxic_tile(r == 0 or room.g[r - 1][c] != 'w'), (c * 8, r * 8))
+                continue
             deco = room.decor.get((c, r))
             if deco and ch in '.#':
                 if ch == '#' and deco in ('ladder', 'pipe_v', 'pipe_h', 'grate'):
@@ -207,18 +214,23 @@ CH2_PREVIEW = {'croupier': ('HannyaBoy', 'CROUPIER_MAP', 'idle_0'), 'slotturret'
 def preview_room(room, scale=2):
     st = starter()
     if room.chapter == 2:
+        import art_v2
+        bg = art_v2.sewer_sky()
+        bg.alpha_composite(art_v2.sewer_far())
+        bg.alpha_composite(art_v2.sewer_mid())
+    elif room.chapter == 3:
         import art_ch2
         bg = art_ch2.sky()
         bg.alpha_composite(art_ch2.far())
         bg.alpha_composite(art_ch2.mid())
-    elif room.chapter == 4:
+    elif room.chapter == 5:
         import art_ch4
         bg = art_ch4.sky()
         bg.alpha_composite(art_ch4.far())
         bg.alpha_composite(art_ch4.mid())
-    elif room.chapter in (5, 6):
+    elif room.chapter in (6, 7):
         import art_ch56 as a56
-        if room.chapter == 5:
+        if room.chapter == 6:
             bg = a56.hollow_sky()
             bg.alpha_composite(a56.hollow_far())
             bg.alpha_composite(a56.hollow_mid())
@@ -227,20 +239,20 @@ def preview_room(room, scale=2):
             bg.alpha_composite(a56.academy_far())
             bg.alpha_composite(a56.academy_mid())
     else:
-        ch = {0: 'sump', 1: 'neon_alley', 3: 'server_gardens', 7: 'tenshu', 8: 'sump'}[room.chapter]
+        ch = {0: 'sump', 1: 'neon_alley', 4: 'server_gardens', 8: 'tenshu', 9: 'sump'}[room.chapter]
         bg = Image.open(pack_path('backgrounds', ch, 'sky.png')).convert('RGBA')
         for l in ('far', 'mid'):
             bg.alpha_composite(Image.open(pack_path('backgrounds', ch, l + '.png')).convert('RGBA'))
     im = Image.new('RGBA', (240, 184), (0, 0, 0, 255))
     im.paste(bg, (0, 0))
     im.alpha_composite(render_room(room))
-    if room.chapter >= 5:
+    if room.chapter in (6, 7, 8):
         import art_ch56 as a56
         for r in range(levels.H):
             for c in range(levels.W):
                 if room.g[r][c] in 'GH':
                     on = 'on' if room.g[r][c] == 'G' else 'off'
-                    im.alpha_composite(a56.phase_block(on, room.chapter == 6), (c * 8, r * 8))
+                    im.alpha_composite(a56.phase_block(on, room.chapter == 7), (c * 8, r * 8))
     import art_ch2
     import art_ch3
     import art_ch4
@@ -262,8 +274,8 @@ def preview_room(room, scale=2):
             sp, ax, ay = extra[key]
             _paste_clip(im, sp, int((o['x'] + 240) / 2) - ax, int((180 - o['y']) / 2) - ay)
             continue
-        if o['type'] in CH2_PREVIEW or (room.chapter == 4 and o['type'] in ('hannya', 'croupier')):
-            if room.chapter == 4 and o['type'] in ('hannya', 'croupier'):
+        if o['type'] in CH2_PREVIEW or (room.chapter == 5 and o['type'] in ('hannya', 'croupier')):
+            if room.chapter == 5 and o['type'] in ('hannya', 'croupier'):
                 spr, mp, cos = 'HannyaBoy', 'art_ch4.' + ('GUARD_MAP' if o['type'] == 'hannya' else 'GUNNER_MAP'), 'idle_0'
             else:
                 spr, mp, cos = CH2_PREVIEW[o['type']]

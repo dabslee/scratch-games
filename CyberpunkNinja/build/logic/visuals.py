@@ -95,7 +95,8 @@ def draw():
         eh = ent_h[slot]
         if role == "bar":
             if ent_int[slot] > 0 or ent_stag[slot] == 1:
-                costume(join("enemy_int_", round(ent_int[slot] * 8 / ent_imax[slot])))
+                # Stance fills gold under pressure; full means broken
+                costume(join("enemy_int_", min(8, round(ent_int[slot] * 8 / ent_imax[slot]))))
                 goto(ex + shx, ey + eh + 12 + shy)
                 show()
             else:
@@ -166,15 +167,17 @@ def hud_draw():
         else:
             hide()
     elif role == "heat":
+        # Hotaru's Stance works like everyone else's: it fills gold as she blocks, breaks when full
+        pv = min(16, max(0, round(heat)))
         if pst == "overheat":
             if frame % 6 < 3:
                 costume("heat_max_flash")
             else:
-                costume("heat_16")
-        elif heat < 10:
-            costume(join("heat_0", max(0, round(heat))))
+                costume("integrity_16")
+        elif pv < 10:
+            costume(join("integrity_0", pv))
         else:
-            costume(join("heat_", min(16, round(heat))))
+            costume(join("integrity_", pv))
         goto(0, -154)
         show()
     elif role == "bplate":
@@ -196,10 +199,11 @@ def hud_draw():
             hide()
     elif role == "bint":
         if boss_on == 1:
-            if boss_int < 10:
-                costume(join("integrity_0", round(boss_int)))
+            bv = min(16, max(0, round(boss_int)))
+            if bv < 10:
+                costume(join("integrity_0", bv))
             else:
-                costume(join("integrity_", round(boss_int)))
+                costume(join("integrity_", bv))
             goto(0, 106)
             show()
         else:
@@ -520,7 +524,7 @@ def draw():
         else:
             effect("ghost", 30 + (frame % 6 < 3) * 50)
         show()
-    elif live == 1 and (chapter < 2 or chapter == 8):
+    elif live == 1 and (chapter < 2 or chapter == 9):
         costume(join("rain_", floor(frame / 3) % 4))
         goto(0, 0)
         effect("ghost", 15)
@@ -554,24 +558,7 @@ def p_boot():
 @on("t_draw")
 def draw():
     if ingame == 1 and (mode != "menu" or menu == "pause"):
-        if chapter == 0:
-            costume("sump")
-        elif chapter == 1:
-            costume("neon_alley")
-        elif chapter == 2:
-            costume("vaults")
-        elif chapter == 3:
-            costume("server_gardens")
-        elif chapter == 4:
-            costume("rail")
-        elif chapter == 5:
-            costume("hollow")
-        elif chapter == 6:
-            costume("academy")
-        elif chapter == 7:
-            costume("tenshu")
-        else:
-            costume("sump")
+        costume(join("ch", chapter))
         po = (0 - px * %s - frame * %s * moving) %% 480
         if is_clone == 1:
             goto(po - 480, 0)
@@ -665,9 +652,9 @@ def a_init():
 @on("t_draw")
 def draw():
     want = 0
-    if ingame == 1 and mode != "menu" and (chapter < 2 or chapter == 8):
+    if ingame == 1 and mode != "menu" and (chapter < 2 or chapter == 9):
         want = 1
-    if ingame == 1 and mode != "menu" and chapter == 4 and moving == 1:
+    if ingame == 1 and mode != "menu" and chapter == 5 and moving == 1:
         want = 2
     if want != amb:
         amb = want

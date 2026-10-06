@@ -22,6 +22,7 @@ import art_ch3  # noqa: E402
 import art_ch4  # noqa: E402
 import art_ch56  # noqa: E402
 import art_ch7  # noqa: E402
+import art_v2  # noqa: E402
 import assets  # noqa: E402
 import dialogue  # noqa: E402
 import levels  # noqa: E402
@@ -154,8 +155,9 @@ first tstr pfr slash_fx slash_off dlg_t msel press_t chap_i
 luck_dead boss_name slot_state slot_t slot_sym daicam3_done cage_broken
 muk_dead muk_exit daicam4_done
 raijin_dead daicam5_done wind moving rj_bx rj_arm rj_plow rj_open
-kuro_dead muk2_dead muk_freed daicam6_done daicam7_done flip flip_warn gph ke1 ke2 sh_x sh_t sh_f
+kuro_dead kbranch kb_last kuro_in daicam6_done daicam7_done flip flip_warn gph ke1 ke2 sh_x sh_t sh_f
 daicam8_done daimyo_dead dm_ph eye_x eye_y eye_st mk_x mk_y mk_st ally_x
+dobu_dead daicam2_done harm_dead tide_y tide_hi tide_force tide_lvl
 '''.split()
 
 GLOBAL_LISTS = '''
@@ -165,7 +167,7 @@ ent_foe ent_obj ent_brk ent_sev hq_t hq_d hq_x cq_t cq_x cq_y cq_d mq_t mq_x mq_
 pq_t pq_x pq_y pq_vx pq_vy pk_x pk_y pz_x pz_y brk_hits sfxq ui_slot ui_role
 trig_x trig_ev trig_on dead_objs seen got_shards broken
 CONV_NAME CONV_START CONV_LEN DL_SPK DL_PORT DL_TEXT DL_NAME
-MI_KEY MI_X MI_Y MI_KIND HUD_ROLES DLG_ROLES FONT_W sl_q reel_q RZ R_WIND R_MOVE R_FLIP GL_I GL_T
+MI_KEY MI_X MI_Y MI_KIND HUD_ROLES DLG_ROLES FONT_W sl_q reel_q RZ R_WIND R_MOVE R_FLIP R_TIDE GL_I GL_T
 '''.split()
 
 for g in GLOBALS:
@@ -193,6 +195,11 @@ for d in 'LRUD':
 set_list('R_WIND', [r.wind for r in ROOMS])
 set_list('R_MOVE', [r.moving for r in ROOMS])
 set_list('R_FLIP', [r.flip for r in ROOMS])
+set_list('R_TIDE', [levels.top(r.tide) if r.tide else 0 for r in ROOMS])
+# per chapter (index = chapter + 1): first room and music
+CH_FIRST = ['p1', 'a1', 'w1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'ep']
+set_list('CH_ROOM', [RI[k] for k in CH_FIRST])
+set_list('CH_MUSIC', ['sump', 'alley', 'sewers', 'vaults', 'gardens', 'monorail', 'hollow', 'academy', 'tenshu', 'epilogue'])
 set_list('R_BOSS', [max(1, r.chapter) if 'boss' in r.flags else 0 for r in ROOMS])
 O_FIRST, O_NUM, OT, OX, OY, OA, OB = [], [], [], [], [], [], []
 for r in ROOMS:
@@ -215,6 +222,7 @@ set_list('O_Y', OY)
 set_list('O_A', OA)
 set_list('O_B', OB)
 a1_start = [o for o in levels.a1.objs if o['type'] == 'start'][0]
+w1_start = [o for o in levels.w1.objs if o['type'] == 'start'][0]
 b1_start = [o for o in levels.b1.objs if o['type'] == 'start'][0]
 c1_start = [o for o in levels.c1.objs if o['type'] == 'start'][0]
 d1_start = [o for o in levels.d1.objs if o['type'] == 'start'][0]
@@ -223,6 +231,7 @@ f1_start = [o for o in levels.f1.objs if o['type'] == 'start'][0]
 g1_start = [o for o in levels.g1.objs if o['type'] == 'start'][0]
 C.update({
     'C_ROOM_P1': RI['p1'], 'C_ROOM_A1': RI['a1'], 'C_A1_X': a1_start['x'], 'C_A1_Y': a1_start['y'],
+    'C_ROOM_W1': RI['w1'], 'C_W1_X': w1_start['x'], 'C_W1_Y': w1_start['y'],
     'C_ROOM_B1': RI['b1'], 'C_B1_X': b1_start['x'], 'C_B1_Y': b1_start['y'],
     'C_ROOM_C1': RI['c1'], 'C_C1_X': c1_start['x'], 'C_C1_Y': c1_start['y'],
     'C_ROOM_D1': RI['d1'], 'C_D1_X': d1_start['x'], 'C_D1_Y': d1_start['y'],
@@ -244,14 +253,14 @@ for cname, lines in dialogue.CONVERSATIONS.items():
     CONV_NAME.append(cname)
     CONV_START.append(len(DL_SPK) + 1)
     n = 0
-    for spk, port, text in lines:
+    for spk, who, port, text in lines:
         wrapped = REG.wrap(text, 178)
         for i in range(0, len(wrapped), 3):
             page = wrapped[i:i + 3]
             page_no += 1
             name = 'txt_%d' % page_no
             DLG_COSTUMES.append(costume_from(text_image(page, width=178), name, 0, 0))
-            DL_SPK.append('kuro' if spk == 'unknown' else spk)
+            DL_SPK.append(who)
             DL_PORT.append(port)
             DL_TEXT.append(name)
             DL_NAME.append(dialogue.NAMEPLATE[spk])
@@ -310,7 +319,7 @@ MENU_COSTUMES = []
 MENU_COSTUMES += copy_costumes('Buttons')
 MENU_COSTUMES += copy_costumes('MenuCursor')
 MENU_COSTUMES += copy_costumes('Panels')
-MENU_COSTUMES += copy_costumes('ChapterCards')
+MENU_COSTUMES += [costume_from(art_v2.chapter_card(i), 'ch%d' % i, 100, 22) for i in range(9)]
 MENU_COSTUMES += copy_costumes('KeyPrompts', names=['key_left', 'key_right'])
 MENU_COSTUMES += copy_costumes('Banners', names=['press_any_key'])
 big = panel_image(232, 176)
@@ -372,7 +381,8 @@ def page_image(rows, width=200):
 
 
 for key, rows, w in (('controls_page', dialogue.CONTROLS, 222),
-                     ('end_page', dialogue.END_PAGE, 236), ('end_next', dialogue.END_NEXT, 236)):
+                     ('end_page', dialogue.END_PAGE, 236), ('end_next', dialogue.END_NEXT, 236),
+                     ('end_next_alone', dialogue.END_NEXT_ALONE, 236)):
     im = page_image(rows, w)
     if im.width > 0 and key == 'controls_page':
         for r in rows:
@@ -512,24 +522,31 @@ def atk_info_src():
 
 # Stage
 stage = target('Stage', stage=True)
-stage.costumes = copy_costumes('Stage', names=['title_', 'sky_sump', 'sky_neon_alley', 'sky_server_gardens', 'sky_tenshu', 'black'])
-stage.costumes.append(make_costume('sky_vaults', up4(art_ch2.sky()), 480, 360, FILES))
-stage.costumes.append(make_costume('sky_rail', up4(art_ch4.sky()), 480, 360, FILES))
-stage.costumes.append(make_costume('sky_hollow', up4(art_ch56.hollow_sky()), 480, 360, FILES))
-stage.costumes.append(make_costume('sky_academy', up4(art_ch56.academy_sky()), 480, 360, FILES))
+stage.costumes = copy_costumes('Stage', names=['title_', 'black'])
+# backdrops and parallax layers are named by chapter number (9 = the epilogue, back in the Sump)
+PACK_BG = {0: 'sump', 1: 'neon_alley', 4: 'server_gardens', 8: 'tenshu', 9: 'sump'}
+NEW_BG = {2: (art_v2.sewer_sky, art_v2.sewer_far, art_v2.sewer_mid),
+          3: (art_ch2.sky, art_ch2.far, art_ch2.mid),
+          5: (art_ch4.sky, art_ch4.far, art_ch4.mid),
+          6: (art_ch56.hollow_sky, art_ch56.hollow_far, art_ch56.hollow_mid),
+          7: (art_ch56.academy_sky, art_ch56.academy_far, art_ch56.academy_mid)}
+PAR = {0: [], 1: [], 2: []}
+for ch in range(10):
+    if ch in PACK_BG:
+        k = PACK_BG[ch]
+        stage.costumes += copy_costumes('Stage', names=['sky_' + k], rename=lambda n, ch=ch: 'sky_%d' % ch)
+        for li, layer in ((1, 'Parallax_far'), (2, 'Parallax_mid')):
+            PAR[li] += copy_costumes(layer, names=[k], rename=lambda n, ch=ch: 'ch%d' % ch)
+    else:
+        sky, far, mid = NEW_BG[ch]
+        stage.costumes.append(make_costume('sky_%d' % ch, up4(sky()), 480, 360, FILES))
+        PAR[1].append(make_costume('ch%d' % ch, up4(far()), 480, 360, FILES))
+        PAR[2].append(make_costume('ch%d' % ch, up4(mid()), 480, 360, FILES))
 stage.sounds = []
 scratchc.compile_sprite(stage, read_logic('stage.py'), C)
 
-PAR_FAR = sprite('Parallax_far', copy_costumes('Parallax_far', names=['sump', 'neon_alley', 'server_gardens', 'tenshu'])
-                 + [make_costume('vaults', up4(art_ch2.far()), 480, 360, FILES),
-                    make_costume('rail', up4(art_ch4.far()), 480, 360, FILES),
-                    make_costume('hollow', up4(art_ch56.hollow_far()), 480, 360, FILES),
-                    make_costume('academy', up4(art_ch56.academy_far()), 480, 360, FILES)], visuals.parallax(0.05, 1))
-PAR_MID = sprite('Parallax_mid', copy_costumes('Parallax_mid', names=['sump', 'neon_alley', 'server_gardens', 'tenshu'])
-                 + [make_costume('vaults', up4(art_ch2.mid()), 480, 360, FILES),
-                    make_costume('rail', up4(art_ch4.mid()), 480, 360, FILES),
-                    make_costume('hollow', up4(art_ch56.hollow_mid()), 480, 360, FILES),
-                    make_costume('academy', up4(art_ch56.academy_mid()), 480, 360, FILES)], visuals.parallax(0.12, 9))
+PAR_FAR = sprite('Parallax_far', PAR[1], visuals.parallax(0.05, 1))
+PAR_MID = sprite('Parallax_mid', PAR[2], visuals.parallax(0.12, 9))
 sprite('Level', ROOM_COSTUMES, visuals.LEVEL)
 props = []
 props += copy_costumes('RamenCart', rename=lambda n: 'cart_' + n)
@@ -549,15 +566,23 @@ props += [costume_from(art_ch3.toro(i), 'toro_%d' % i, 6, 22) for i in range(2)]
 props.append(costume_from(art_ch3.bonsai(), 'bonsai', 7, 18))
 props.append(costume_from(art_ch4.seat(), 'seat', 9, 12))
 props.append(costume_from(art_ch56.dummy(), 'dummy', 7, 26))
+props += [costume_from(art_v2.planter(i), 'planter_%d' % i, 8, 24) for i in range(2)]
+props.append(costume_from(art_v2.herbs(), 'herbs', 7, 30))
+props += [costume_from(art_v2.price_board(i), 'board_%d' % i, 38, 0) for i in range(2)]
+props += [costume_from(art_v2.debtor(i), 'debtor_%d' % i, 5, 30) for i in range(2)]
+props.append(costume_from(art_v2.soldier(), 'soldier', 7, 36))
 for k in range(4):
     c = ST.costume('Mukuro', 'idle_%d' % k)
     im = ST.image('Mukuro', 'idle_%d' % k).transpose(Image.FLIP_LEFT_RIGHT)
     props.append(make_costume('mk_idle_%d' % k, im, im.width - c['rotationCenterX'], c['rotationCenterY'], FILES))
+c = ST.costume('Mukuro', 'death_5')
+props.append(make_costume('mk_lie', ST.image('Mukuro', 'death_5'), c['rotationCenterX'], c['rotationCenterY'], FILES))
 sprite('Props', props, CL + objects.PROPS)
 pb = [costume_from(art_ch56.phase_block(st_, h), '%s_%s' % ('hb' if h else 'gb', st_), 4, 4)
       for h in (False, True) for st_ in ('on', 'warn', 'soon', 'off')]
 sprite('PhaseBlock', pb, CL + objects.PHASEBLOCK)
-sprite('Mist', [costume_from(art_ch3.mist(i), 'mist_%d' % i, 8, 8) for i in range(art_ch3.MIST_FRAMES)], CL + objects.MIST)
+sprite('Mist', [costume_from(art_v2.heat_vent(i), 'mist_%d' % i, 8, 8) for i in range(art_ch3.MIST_FRAMES)]
+       + [costume_from(art_v2.sludge_fall(i), 'falls_%d' % i, 8, 8) for i in range(8)], CL + objects.MIST)
 slot_cos = [costume_from(art_ch2.slot_machine(i), 'slot_%d' % i, 40, 38) for i in range(2)]
 sprite('SlotMachine', slot_cos, CL + enemies.SLOT_MACHINE)
 reel_cos = [costume_from(art_ch2.symbol(n), 'sym_' + n, 6, 7) for n in art_ch2.SYMBOLS]
@@ -586,7 +611,12 @@ sprite('CamDrone', copy_costumes('CamDrone'), CL + objects.CAMDRONE)
 sprite('Turret', copy_costumes('Turret'), CL + FX + EN + enemies.TURRET)
 sprite('SlotTurret', recolored('Turret', art_ch2.SLOT_TURRET_MAP), CL + FX + EN + enemies.SLOT_TURRET)
 sprite('Croupier', recolored('HannyaBoy', art_ch2.CROUPIER_MAP) + recolored('HannyaBoy', art_ch4.GUNNER_MAP, 'g_'), CL + FX + EN + enemies.CROUPIER)
-sprite('HannyaBoy', copy_costumes('HannyaBoy') + recolored('HannyaBoy', art_ch4.GUARD_MAP, 'g_') + toned('HannyaBoy', MEM_RAMP, 'm_'), CL + FX + EN + enemies.HANNYA)
+drain_cos = []
+for i, c in enumerate(ST.costumes('HannyaBoy')):
+    im = art_v2.drainling_frame(ST.image_1x('HannyaBoy', c['name']), i)
+    drain_cos.append(make_costume('d_' + c['name'], up4(im), c['rotationCenterX'], c['rotationCenterY'], FILES))
+sprite('HannyaBoy', copy_costumes('HannyaBoy') + recolored('HannyaBoy', art_ch4.GUARD_MAP, 'g_') + toned('HannyaBoy', MEM_RAMP, 'm_')
+       + drain_cos, CL + FX + EN + enemies.HANNYA)
 sprite('BigOni', copy_costumes('BigOni'), CL + FX + EN + enemies.ONI)
 sprite('ScavDrone', copy_costumes('ScavDrone'), CL + FX + EN + enemies.DRONE)
 sprite('LadyLuck', recolored('Mukuro', art_ch2.LUCK_MAP), CL + FX + EN + enemies.LUCK)
@@ -643,6 +673,9 @@ proj_costumes += [costume_from(f, 'card_%d' % i, 4.5, 4.5) for i, f in enumerate
 proj_costumes += [costume_from(art_ch4.shell(i), 'shell_%d' % i, 4, 4) for i in range(2)]
 proj_costumes += [costume_from(art_ch4.shell(i, True), 'rshell_%d' % i, 4, 4) for i in range(2)]
 proj_costumes += [costume_from(art_ch7.orb(i), 'orb_%d' % i, 4, 4) for i in range(2)]
+proj_costumes += [costume_from(art_v2.spit(i), 'spit_%d' % i, 4, 4) for i in range(2)]
+# the sludge tide draws over the fighters (they wade in it), under the effects and HUD
+sprite('Sludge', [costume_from(art_v2.tide_surface(i), 'tide_%d' % i, 122, 0) for i in range(4)], objects.SLUDGE)
 sprite('Projectiles', proj_costumes, CL + FX + EN + objects.PROJECTILES)
 sprite('MoveFX', copy_costumes('MoveFX'), CL + visuals.fx_sprite('mq', visuals.MOVE_FX))
 sprite('CombatFX', copy_costumes('CombatFX'), CL + visuals.fx_sprite('cq', visuals.COMBAT_FX))
@@ -652,10 +685,12 @@ sprite('Flash', FLASH_COSTUMES, visuals.FLASH)
 eui = copy_costumes('HUD', names=['enemy_int_']) + copy_costumes('CombatFX', names=['breach_', 'severance_'])
 sprite('EnemyUI', eui, CL + visuals.ENEMY_UI)
 hud = copy_costumes('HUD', names=['hp_', 'dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro', 'boss_the_daimyo'])
+hud += [costume_from(art_v2.boss_plate(t), 'boss_' + k, 0, 0) for k, t in (('dobunushi', 'DOBUNUSHI'), ('the_harmacist', 'THE HARMACIST'))]
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])
 sprite('Hints', hint_cos, visuals.HINTS)
-ban = copy_costumes('Banners') + copy_costumes('ChapterCards')
+_ex = art_v2.banner_word('EXECUTION')
+ban = copy_costumes('Banners') + [costume_from(_ex, 'execution', _ex.width / 2, _ex.height / 2)] + [costume_from(art_v2.chapter_card(i), 'ch%d' % i, 100, 22) for i in range(9)]
 epi = panel_image(200, 44, border='mag3', accent='cyan3')
 REG.draw(epi, 10, 6, 'THE END OF THE CLIMB', P['mag3'], P['ink'])
 et = text_image(['EPILOGUE'], BOLD, P['cyan3'], shadow=P['mag2'])
@@ -668,6 +703,10 @@ dlg.append(costume_from(art_ch2.luck_portrait(), 'luck_neutral', 20, 20))
 dlg.append(costume_from(art_ch2.nameplate('LADY LUCK'), 'name_lady_luck', 0, 0))
 dlg.append(costume_from(art_ch2.system_portrait(), 'sys_boot', 20, 20))
 dlg.append(costume_from(art_ch2.nameplate('SYSTEM', border='cyan2'), 'name_system', 0, 0))
+dlg.append(costume_from(art_v2.oni_portrait(), 'oni_neutral', 20, 20))
+dlg.append(costume_from(art_ch2.nameplate('BIG ONI', border='red2'), 'name_big_oni', 0, 0))
+dlg.append(costume_from(art_v2.harm_portrait(), 'harm_neutral', 20, 20))
+dlg.append(costume_from(art_ch2.nameplate('THE HARMACIST', border='green2'), 'name_the_harmacist', 0, 0))
 sprite('Dialogue', dlg, visuals.DIALOGUE)
 sprite('Menu', MENU_COSTUMES, menu.MENU)
 sprite('TextFX', copy_costumes('Font'), menu.TEXTFX)
@@ -683,7 +722,7 @@ sprite('Music_mukuro_drums', [FADE_COSTUMES[0]], visuals.music('mukuro_drums', a
        sounds=['mukuro_drums'])
 sprite('Music_raijin_drums', [FADE_COSTUMES[0]], visuals.music('raijin_drums', audio.MUSIC['raijin'], drums=True, drums_for='raijin'),
        sounds=['raijin_drums'])
-for tr in ('kuro', 'mukuro2', 'daimyo'):
+for tr in ('kuro', 'daimyo', 'dobu', 'harm'):
     sprite('Music_%s_drums' % tr, [FADE_COSTUMES[0]], visuals.music(tr + '_drums', audio.MUSIC[tr], drums=True, drums_for=tr),
            sounds=[tr + '_drums'])
 sprite('Ambience', [FADE_COSTUMES[0]], visuals.AMBIENCE, sounds=['rain_loop', 'wind_loop'])

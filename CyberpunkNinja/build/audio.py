@@ -803,37 +803,107 @@ def song_academy():
             s.add(koto(n2m(nm), d * s.beat + 0.6, 0.3), rep, b)
     return s.render((1.8, 0.24, 3400)), s.length
 
+# ---------------------------------------------------------------------- sewers
+def drip(m, gain=1.0):
+    """A water drop: a short falling sine blip."""
+    d = 0.16
+    t = T(d)
+    f = mtof(m) * (1.6 - 0.6 * np.minimum(1, t / 0.05))
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * expenv(d, 0.04)
+    return fade(x, 0.001, 0.02) * gain
 
-def song_mukuro2(drums=False):
-    """Mukuro II: his old theme, a step higher and harder, with taiko rolls."""
-    s = Song(146, 8)
-    prog = [('D3', 'm'), ('D3', 'm'), ('A#2', 'M'), ('C3', 'M'),
-            ('D3', 'm'), ('F3', 'M'), ('D#3', 'M'), ('A2', '7')]
+
+def song_sewers():
+    """Chapter 2: slow and murky; a sub drone, echoing drips and a lonely koto."""
+    s = Song(84, 12)
+    prog = [('E2', 'm'), ('E2', 'm'), ('C2', 'M7'), ('B1', '7'),
+            ('E2', 'm'), ('G2', 'M'), ('A2', 'm'), ('B1', '7')]
+    bl = s.beat * 4
+    rng = np.random.RandomState(8)
+    for i in range(12):
+        r, kd = prog[i % 8]
+        s.add(pad([m + 12 for m in chord(r, kd)], bl + 0.4, 700, 0.34, 0.6, 0.8), i)
+        s.add(bass(n2m(r), bl * 0.95, 0.5, 260, pluck=False), i)
+        for j in (0, 2.5):
+            s.add(taiko(0.28, 0.7), i, j)
+        s.add(hat(False, 0.06), i, 1.5)
+        s.add(hat(False, 0.06), i, 3.5)
+        for _ in range(3):
+            s.add(delay(drip(n2m('E6') + int(rng.choice([0, 3, 7, 10, 12])), 0.2), 0.28, 0.45, 0.5), i,
+                  float(rng.choice([0.5, 1, 1.75, 2.25, 3, 3.5])))
+    line = [('E4', 0, 1.5), ('G4', 1.5, 0.5), ('F#4', 2, 2), ('B3', 4, 1), ('D4', 5, 1), ('E4', 6, 2)]
+    for rep in (2, 6, 10):
+        for nm, b, d in line:
+            s.add(koto(n2m(nm), d * s.beat + 0.8, 0.26), rep, b)
+    return s.render((2.4, 0.3, 1800)), s.length
+
+
+def song_dobu(drums=False):
+    """Dobunushi: a heavy, grinding sludge riff in E phrygian; war drums at phase 2."""
+    s = Song(96, 8)
+    prog = [('E2', 'm'), ('E2', 'm'), ('F2', 'M'), ('E2', 'm'),
+            ('E2', 'm'), ('G2', 'm'), ('F2', 'M'), ('D2', 'm')]
     if drums:
         for i in range(8):
-            for j in range(16):
-                if j % 2 == 0 or j in (11, 15):
-                    s.add(taiko(0.7 if j % 4 == 0 else 0.3, 1.0 if j % 4 == 0 else 1.3), i, j * 0.25)
-        return s.render((0.8, 0.12, 2400)), s.length
-    k, sn, h = kick(1.0), snare(0.55), hat(False, 0.2)
+            for j in range(8):
+                acc = j in (0, 3, 4, 6)
+                s.add(taiko(0.85 if acc else 0.3, 0.8 if acc else 1.1), i, j * 0.5)
+            s.add(metal(900, 0.5, 0.14), i, 3)
+        return s.render((0.9, 0.14, 1800)), s.length
+    k, sn = kick(1.1), snare(0.6)
     bl = s.beat * 4
     for i, (r, kd) in enumerate(prog):
         root = n2m(r)
-        for j in range(8):
-            s.add(bass(root - 12 + (7 if j == 6 else 0), s.beat * 0.4, 0.62, 950), i, j * 0.5)
-        for j in range(4):
-            s.add(k, i, j)
-            if j % 2:
-                s.add(sn, i, j)
-            s.add(h, i, j + 0.5)
-        s.add(pad([m + 12 for m in chord(r, kd)], bl, 1600, 0.3, 0.2, 0.3), i)
-    riff = [('D5', 0, 0.5), ('F5', 0.5, 0.5), ('A5', 1, 1), ('G5', 2, 0.5), ('F5', 2.5, 0.5),
-            ('E5', 3, 0.5), ('F5', 3.5, 0.5)]
-    for bar in range(8):
-        off = {2: -4, 3: -2, 6: -3, 7: -5}.get(bar, 0)
-        for nm, b, d in riff:
-            s.add(shamisen(n2m(nm) + off, d * s.beat + 0.2, 0.3), bar, b)
-    return s.render((1.0, 0.16, 3600)), s.length
+        riff = [0, 0, 1, 0, 0, 3, 1, 0]
+        for j, step in enumerate(riff):
+            note = dist(bass(root - 12 + step, s.beat * 0.48, 0.6, 700), 4.0) * 0.5
+            s.add(note, i, j * 0.5)
+        s.add(k, i, 0)
+        s.add(k, i, 1.5)
+        s.add(k, i, 2.5)
+        s.add(sn, i, 1)
+        s.add(sn, i, 3)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl, 900, 0.22, 0.4, 0.4), i)
+        s.add(delay(drip(n2m('B5'), 0.18), 0.31, 0.4, 0.4), i, 3.5)
+    for bar in (1, 3, 5, 7):
+        s.add(sweep_tone(140, 60, 1.4, 'saw', 0.12), bar, 2)
+    return s.render((1.2, 0.18, 2200)), s.length
+
+
+def song_harm(drums=False):
+    """The Harmacist: a poised, poisonous minuet on plucked strings; clinical ticks at phase 2."""
+    s = Song(126, 8)
+    prog = [('A2', 'm'), ('E2', '7'), ('A2', 'm'), ('D3', 'm'),
+            ('F2', 'M7'), ('D3', 'm7'), ('B1', 'm7'), ('E2', '7')]
+    if drums:
+        for i in range(8):
+            for j in range(8):
+                s.add(hat(False, 0.22 if j % 2 else 0.12), i, j * 0.5)
+            s.add(taiko(0.7, 1.1), i, 0)
+            s.add(taiko(0.4, 1.3), i, 2.5)
+            s.add(clap(0.45), i, 1)
+            s.add(clap(0.45), i, 3)
+        return s.render((0.8, 0.12, 3000)), s.length
+    k = kick(0.8)
+    bl = s.beat * 4
+    for i, (r, kd) in enumerate(prog):
+        root = n2m(r)
+        s.add(bass(root, s.beat * 1.8, 0.5, 800), i, 0)
+        s.add(bass(root + 7, s.beat * 1.8, 0.4, 800), i, 2)
+        s.add(k, i, 0)
+        s.add(k, i, 2)
+        s.add(pad([m + 12 for m in chord(r, kd)], bl, 2200, 0.2, 0.2, 0.4), i)
+        notes = chord(r, kd, 2)
+        for j in range(12):
+            nm = notes[[0, 1, 2, 1][j % 4] % len(notes)] + (12 if j in (5, 11) else 0)
+            s.add(ks_pluck(mtof(nm), s.beat * 0.6, 0.994, 0.8) * 0.22, i, j * (4 / 12))
+    mel = [('E5', 0, 1), ('C5', 1, 0.5), ('B4', 1.5, 0.5), ('A4', 2, 2), ('G#4', 4, 1), ('B4', 5, 1),
+           ('E5', 6, 2)]
+    for rep in (0, 4):
+        for nm, b, d in mel:
+            s.add(koto(n2m(nm), d * s.beat + 0.4, 0.24), rep, b)
+            s.add(koto(n2m(nm) - 5, d * s.beat + 0.4, 0.14), rep + 2, b)
+    return s.render((1.4, 0.2, 4200)), s.length
 
 
 # ---------------------------------------------------------------------- tenshu
@@ -1117,6 +1187,7 @@ def build_sfx():
     S['banner'] = impact(0.5, 55, 0.5, 0.6) + metal(1600, 0.5, 0.15)
     S['card'] = np.concatenate([whoosh(0.3, 400, 3000, 0.6), taiko(0.6)[:int(0.9 * SR)]])
     S['blip'] = blip(1320, 0.04, 'square', 0.18)
+    S['gurgle'] = cat(*[lp(noise(0.06), 500 + 200 * i) * expenv(0.06, 0.03) * 0.8 for i in range(5)])
     S['kvoice'] = glitch(0.09, 0.35) + blip(330, 0.09, 'square', 0.12)
     S['cam_beep'] = np.concatenate([blip(1800, 0.06, 'sine', 0.4), silence(0.04), blip(2400, 0.08, 'sine', 0.4)])
     S['menu_move'] = blip(880, 0.035, 'square', 0.18)
@@ -1219,9 +1290,10 @@ def build_all():
         out[k] = (wav_bytes(v), SR, len(v), 'wav')
         SFX_NAMES.append(k)
     songs = {'title': song_title, 'sump': song_sump, 'alley': song_alley, 'boss': song_boss,
-             'vaults': song_vaults, 'luck': song_luck, 'gardens': song_gardens, 'mukuro': song_mukuro,
+             'sewers': song_sewers, 'dobu': song_dobu,
+             'vaults': song_vaults, 'luck': song_luck, 'gardens': song_gardens, 'harm': song_harm,
              'monorail': song_monorail, 'raijin': song_raijin, 'hollow': song_hollow, 'kuro': song_kuro,
-             'academy': song_academy, 'mukuro2': song_mukuro2, 'tenshu': song_tenshu, 'daimyo': song_daimyo,
+             'academy': song_academy, 'mukuro': song_mukuro, 'tenshu': song_tenshu, 'daimyo': song_daimyo,
              'engram': song_engram, 'epilogue': song_epilogue}
     clash = set(songs) & set(out)
     assert not clash, 'sound effect and song share a name: %s' % clash
@@ -1231,7 +1303,7 @@ def build_all():
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')
         MUSIC[name] = round(length, 4)
     for name, fn in (('boss_drums', song_boss), ('luck_drums', song_luck), ('mukuro_drums', song_mukuro), ('raijin_drums', song_raijin), ('kuro_drums', song_kuro),
-                     ('mukuro2_drums', song_mukuro2), ('daimyo_drums', song_daimyo)):
+                     ('daimyo_drums', song_daimyo), ('dobu_drums', song_dobu), ('harm_drums', song_harm)):
         x, length = fn(drums=True)
         x = normalize(x, 0.8)
         out[name] = (mp3_bytes(x), SR, len(x), 'mp3')

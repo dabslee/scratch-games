@@ -25,7 +25,7 @@ def pr_spawn():
         vx = pq_vx[qi]
         vy = pq_vy[qi]
         t = 0
-        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell" or kind == "orb":
+        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell" or kind == "orb" or kind == "spit":
             owner = "e"
         elif kind == "wave":
             owner = "w"
@@ -46,6 +46,8 @@ def pr_update():
     t += 1
     if kind == "shell":
         vy -= 0.35
+    elif kind == "spit" and owner == "e":
+        vy -= 0.3
     x += vx
     y += vy
     if t > 100 or x < -260 or x > 260 or y < -200 or y > 260:
@@ -143,6 +145,8 @@ def pr_draw():
         costume(join("rshell_", floor(t / 3) % 2))
     elif kind == "orb":
         costume(join("orb_", floor(t / 3) % 2))
+    elif kind == "spit":
+        costume(join("spit_", floor(t / 3) % 2))
     else:
         costume(join("bullet_", floor(t / 4) % 2))
     goto(x + shx, y + shy)
@@ -257,7 +261,7 @@ if ddone == 0:
     st = "panic"
     if dmode == "cage":
         st = "caged"
-    if dmode == "echo" or dmode == "trainee" or dmode == "stream" or dmode == "ep":
+    if dmode == "echo" or dmode == "stream" or dmode == "ep":
         st = "idle"
     t = 0
     cam_x = x
@@ -278,13 +282,15 @@ def dc_done():
     ddone = daicam_done
     if dmode == "cage":
         ddone = daicam3_done
-    elif dmode == "float":
+    elif dmode == "lost":
+        ddone = daicam2_done
+    elif dmode == "sponsor":
         ddone = daicam4_done
     elif dmode == "dine":
         ddone = daicam5_done
     elif dmode == "echo":
         ddone = daicam6_done
-    elif dmode == "trainee":
+    elif dmode == "intake":
         ddone = daicam7_done
     elif dmode == "stream":
         ddone = daicam8_done
@@ -295,12 +301,6 @@ def dc_done():
 @proc
 def dc_update():
     t += 1
-    if dmode == "float" and (st == "panic" or st == "wait"):
-        if st == "panic":
-            y = by + sin(frame * 6) * 6
-        elif y > fy:
-            y = max(fy, y - 7)
-            t = 14
     if st == "idle":
         fr += 0.2
         dc_done()
@@ -325,8 +325,12 @@ def dc_update():
             st = "talk"
             if dmode == "cage":
                 broadcast("ev_daicam3_free")
-            elif dmode == "float":
+            elif dmode == "lost":
+                broadcast("ev_daicam2_end")
+            elif dmode == "sponsor":
                 broadcast("ev_daicam4_end")
+            elif dmode == "intake":
+                broadcast("ev_daicam7_end")
             elif dmode == "dine":
                 broadcast("ev_daicam5_end")
             else:
@@ -780,8 +784,8 @@ fr = 0
 is_clone = 1
 clone()
 is_clone = 0
-''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy" or O_TYPE[oi] == "mknpc":').replace(
-    'kind = O_A[oi]', 'kind = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
+''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy" or O_TYPE[oi] == "mknpc" or O_TYPE[oi] == "planter" or O_TYPE[oi] == "herbs" or O_TYPE[oi] == "board" or O_TYPE[oi] == "debtor" or O_TYPE[oi] == "soldier":').replace(
+    'kind = O_A[oi]', 'kind = O_A[oi]\n            pmode = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
 @on("t_draw")
 def draw():
     if is_clone == 1:
@@ -806,12 +810,26 @@ def draw():
             costume("seat")
         elif kind == "dummy":
             costume("dummy")
+        elif kind == "planter":
+            costume(join("planter_", (floor(frame / 20) + floor(x / 16)) % 2))
+        elif kind == "herbs":
+            costume("herbs")
+        elif kind == "board":
+            costume(join("board_", floor(frame / 15) % 2))
+        elif kind == "debtor":
+            costume(join("debtor_", (floor(frame / 24) + floor(x / 16)) % 2))
+        elif kind == "soldier":
+            costume("soldier")
         elif kind == "mknpc":
-            costume(join("mk_idle_", floor(frame / 8) % 4))
-            if muk_freed == 0:
+            # Mukuro's body, carried up by Hotaru when Kuro was spared; Kuro moves in at the Last Shrine
+            if kbranch != 1 or (pmode == "ally" and kuro_in == 0):
                 hide()
                 return
-        if chapter == 5:
+            if kuro_in == 0:
+                costume("mk_lie")
+            else:
+                costume(join("mk_idle_", floor(frame / 8) % 4))
+        if chapter == 6:
             effect("ghost", 35)
         else:
             fl_t -= 1
@@ -871,32 +889,66 @@ def draw():
 '''
 
 
-MIST = spawner('mist', '''
-x = O_X[oi]
-pulse = O_B[oi]
-for k in range(floor((O_A[oi] + 1) / 2)):
-    y = O_Y[oi] + 16 + k * 32
-    seg = k
-    is_clone = 1
-    clone()
-    is_clone = 0
-''') + '''
+# Updraft columns (heat vents in the Physic Gardens) and the Sewers' sludge falls.
+MIST = '''
+@on("spawn")
+def on_spawn():
+    if is_clone == 0:
+        o1 = O_FIRST[room]
+        for oi in range(o1, o1 + O_NUM[room]):
+            if O_TYPE[oi] == "mist" or O_TYPE[oi] == "falls":
+                kind = O_TYPE[oi]
+                x = O_X[oi]
+                pulse = O_B[oi]
+                for k in range(floor((O_A[oi] + 1) / 2)):
+                    if kind == "falls":
+                        y = O_Y[oi] - 16 - k * 32
+                    else:
+                        y = O_Y[oi] + 16 + k * 32
+                    seg = k
+                    is_clone = 1
+                    clone()
+                    is_clone = 0
+
+
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        if pulse == 1:
-            ph = frame % 110
-            if ph < 70:
-                effect("ghost", 25)
-            elif ph < 80:
-                effect("ghost", 25 + (ph - 70) * 7)
-            else:
-                effect("ghost", 100)
+        if kind == "falls":
+            effect("ghost", 0)
+            costume(join("falls_", (frame + seg * 2) % 8))
         else:
-            effect("ghost", 25)
-        costume(join("mist_", (floor(frame / 2) + seg * 3) % 8))
+            if pulse == 1:
+                ph = frame % 110
+                if ph < 70:
+                    effect("ghost", 25)
+                elif ph < 80:
+                    effect("ghost", 25 + (ph - 70) * 7)
+                else:
+                    effect("ghost", 100)
+            else:
+                effect("ghost", 25)
+            costume(join("mist_", (floor(frame / 2) + seg * 3) % 8))
         goto(x + shx, y + shy)
         show()
+'''
+
+
+# The Sewers' sludge tide, drawn as one surface band whose top edge sits at tide_y.
+SLUDGE = '''
+@flag
+def s_init():
+    hide()
+
+
+@on("t_draw")
+def draw():
+    if tide_y != 0 and ingame == 1:
+        costume(join("tide_", floor(frame / 3) % 4))
+        goto(shx, tide_y + shy)
+        show()
+    else:
+        hide()
 '''
 
 
@@ -916,7 +968,7 @@ def on_spawn():
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        if chapter >= 6:
+        if chapter == 7:
             pre = "hb_"
         else:
             pre = "gb_"
