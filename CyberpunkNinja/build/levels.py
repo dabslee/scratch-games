@@ -821,7 +821,7 @@ e4 = room('e4', 5, 'Memory: The Academy')
 e4.solid(0, 19, 29, 22).solid(0, 0, 21, 1).solid(26, 0, 29, 1)
 e4.solid(0, 2, 0, 13).solid(0, 17, 0, 18).solid(28, 2, 29, 18)
 e4.phase(4, 8, 15, 'G').phase(10, 14, 12, 'H').phase(4, 8, 9, 'G').phase(10, 14, 6, 'H')
-e4.plat(16, 19, 4).plat(22, 25, 2)
+e4.plat(16, 19, 5).plat(22, 25, 3)
 e4.obj('warden', cx(18), bottom(18), a=0)
 e4.obj('drone', cx(22), top(10))
 
@@ -862,7 +862,7 @@ e6.obj('trig', cx(19), 0, a='daicam6')
 # E7 Threshold --------------------------------------------------------
 e7 = room('e7', 5, 'Threshold')
 e7.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
-e7.phase(9, 12, 16, 'G').phase(17, 20, 16, 'H')
+e7.phase(9, 12, 15, 'G').phase(17, 20, 15, 'H')
 e7.obj('trig', cx(12), 0, a='kuro_gate')
 
 # E8 Hollow floor (Kuro) ------------------------------------------------

@@ -1117,7 +1117,7 @@ def build_sfx():
     S['banner'] = impact(0.5, 55, 0.5, 0.6) + metal(1600, 0.5, 0.15)
     S['card'] = np.concatenate([whoosh(0.3, 400, 3000, 0.6), taiko(0.6)[:int(0.9 * SR)]])
     S['blip'] = blip(1320, 0.04, 'square', 0.18)
-    S['kuro'] = glitch(0.09, 0.35) + blip(330, 0.09, 'square', 0.12)
+    S['kvoice'] = glitch(0.09, 0.35) + blip(330, 0.09, 'square', 0.12)
     S['cam_beep'] = np.concatenate([blip(1800, 0.06, 'sine', 0.4), silence(0.04), blip(2400, 0.08, 'sine', 0.4)])
     S['menu_move'] = blip(880, 0.035, 'square', 0.18)
     S['menu_select'] = np.concatenate([blip(1320, 0.05, 'square', 0.22), blip(1760, 0.07, 'square', 0.22)])
@@ -1223,6 +1223,8 @@ def build_all():
              'monorail': song_monorail, 'raijin': song_raijin, 'hollow': song_hollow, 'kuro': song_kuro,
              'academy': song_academy, 'mukuro2': song_mukuro2, 'tenshu': song_tenshu, 'daimyo': song_daimyo,
              'engram': song_engram, 'epilogue': song_epilogue}
+    clash = set(songs) & set(out)
+    assert not clash, 'sound effect and song share a name: %s' % clash
     for name, fn in songs.items():
         x, length = fn()
         x = normalize(x, 0.8)

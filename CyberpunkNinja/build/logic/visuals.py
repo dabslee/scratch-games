@@ -398,7 +398,7 @@ def show_page():
     dlg_nm = DL_NAME[di]
     dlg_t = 0
     if dlg_spk == "kuro":
-        sfxq.append("kuro")
+        sfxq.append("kvoice")
     else:
         sfxq.append("blip")
 

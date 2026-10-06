@@ -555,7 +555,7 @@ for k in range(4):
     props.append(make_costume('mk_idle_%d' % k, im, im.width - c['rotationCenterX'], c['rotationCenterY'], FILES))
 sprite('Props', props, CL + objects.PROPS)
 pb = [costume_from(art_ch56.phase_block(st_, h), '%s_%s' % ('hb' if h else 'gb', st_), 4, 4)
-      for h in (False, True) for st_ in ('on', 'warn', 'off')]
+      for h in (False, True) for st_ in ('on', 'warn', 'soon', 'off')]
 sprite('PhaseBlock', pb, CL + objects.PHASEBLOCK)
 sprite('Mist', [costume_from(art_ch3.mist(i), 'mist_%d' % i, 8, 8) for i in range(art_ch3.MIST_FRAMES)], CL + objects.MIST)
 slot_cos = [costume_from(art_ch2.slot_machine(i), 'slot_%d' % i, 40, 38) for i in range(2)]

@@ -130,14 +130,18 @@ def possess():
 
 # ------------------------------------------------------------------ shared phasing blocks
 def phase_block(state, holo=False):
-    """8x8 block: state 'on', 'warn' or 'off'. Glitch (violet) or hologram (cyan)."""
+    """8x8 block: state 'on', 'warn' (about to vanish), 'soon' (about to appear) or 'off'.
+    Glitch (violet) or hologram (cyan). 'off' is only a faint dotted outline so it reads as empty."""
     edge, fill, hi = ('cyan2', 'cyan1', 'cyan4') if holo else ('purple3', 'purple1', 'white')
     im = Image.new('RGBA', (8, 8), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     if state == 'off':
-        for i in range(0, 8, 2):
-            im.putpixel((i, 0), C(edge, 120))
-            im.putpixel((i, 7), C(edge, 120))
+        for i in range(0, 8, 3):
+            for p in ((i, 0), (i, 7), (0, i), (7, i)):
+                im.putpixel(p, C(edge, 90))
+        return im
+    if state == 'soon':
+        d.rectangle([0, 0, 7, 7], fill=C(fill, 50), outline=C(hi, 230))
         return im
     a = 255 if state == 'on' else 150
     d.rectangle([0, 0, 7, 7], fill=C(fill, a), outline=C(edge, a))

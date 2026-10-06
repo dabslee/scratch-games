@@ -905,13 +905,13 @@ PHASEBLOCK = '''
 def on_spawn():
     if is_clone == 0:
         for k in range(1, len(GL_I) + 1):
-            gi = GL_I[k]
-            x = -232 + 16 * ((gi - 1) % 30)
-            y = 172 - 16 * floor((gi - 1) / 30)
+            pbi = GL_I[k]
+            pbt = GL_T[k]
+            x = -232 + 16 * ((pbi - 1) % 30)
+            y = 172 - 16 * floor((pbi - 1) / 30)
             is_clone = 1
             clone()
             is_clone = 0
-
 
 @on("t_draw")
 def draw():
@@ -920,11 +920,14 @@ def draw():
             pre = "hb_"
         else:
             pre = "gb_"
-        if grid[gi] == "#":
-            if frame % 100 >= 80 and frame % 6 < 3:
+        if grid[pbi] == "#":
+            # only the outgoing set flickers; the incoming one is already solid in the overlap
+            if frame % 100 >= 70 and frame % 6 < 3 and ((pbt == "G" and gph < 2) or (pbt == "H" and gph >= 2)):
                 costume(join(pre, "warn"))
             else:
                 costume(join(pre, "on"))
+        elif frame % 100 >= 70 and frame % 6 < 3:
+            costume(join(pre, "soon"))
         else:
             costume(join(pre, "off"))
         goto(x + shx, y + shy)

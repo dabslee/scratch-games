@@ -166,11 +166,13 @@ def frame_step():
 
 @proc
 def phase_step():
-    # phasing blocks swap every 100 frames
-    if len(GL_I) > 0 and floor(frame / 100) % 2 != gph:
-        gph = floor(frame / 100) % 2
+    # phasing blocks swap every 100 frames; the incoming set turns solid 15 frames
+    # before the outgoing set vanishes (gph = 2 * set + overlap)
+    if len(GL_I) > 0 and floor(frame / 100) % 2 * 2 + (frame % 100 >= 85) != gph:
+        gph = floor(frame / 100) % 2 * 2 + (frame % 100 >= 85)
         apply_phase()
-        sfxq.append("phase")
+        if gph % 2 == 1:
+            sfxq.append("phase")
     # Kuro periodically takes the controls in possessed rooms
     if R_FLIP[room] == 1:
         cyc = frame % 330
@@ -179,7 +181,7 @@ def phase_step():
         else:
             flip_warn = 0
         if cyc == 240:
-            sfxq.append("kuro")
+            sfxq.append("kvoice")
         if cyc >= 240:
             flip = 1
         else:
@@ -189,7 +191,7 @@ def phase_step():
 @proc
 def apply_phase():
     for gi in range(1, len(GL_I) + 1):
-        if (GL_T[gi] == "G" and gph == 0) or (GL_T[gi] == "H" and gph == 1):
+        if gph % 2 == 1 or (GL_T[gi] == "G" and gph < 2) or (GL_T[gi] == "H" and gph >= 2):
             grid[GL_I[gi]] = "#"
         else:
             grid[GL_I[gi]] = "."
@@ -342,7 +344,7 @@ def load_room(r):
             if grid[gi] == "G" or grid[gi] == "H":
                 GL_I.append(gi)
                 GL_T.append(grid[gi])
-        gph = floor(frame / 100) % 2
+        gph = floor(frame / 100) % 2 * 2 + (frame % 100 >= 85)
         apply_phase()
     exL = R_L[r]
     exR = R_R[r]
@@ -1560,7 +1562,7 @@ def ev_epilogue():
     wait(0.8)
     # the scarf flickers once in Kuro's color
     dash_ch = 1
-    sfxq.append("kuro")
+    sfxq.append("kvoice")
     wait(0.35)
     dash_ch = 2
     wait(0.8)

@@ -3282,7 +3282,7 @@ def kr_go(kind):
         sfxq.append("dash")
         mfx("afterimage", x, y, face)
     elif kind == "possess":
-        sfxq.append("kuro")
+        sfxq.append("kvoice")
         flip = 1
         flip_t = 150
         st = "combo"
@@ -3291,7 +3291,7 @@ def kr_go(kind):
         ke2 = 228
         e1hit = 0
         e2hit = 0
-        sfxq.append("kuro")
+        sfxq.append("kvoice")
 
 
 @proc
@@ -3753,7 +3753,7 @@ def dm_go(kind):
         sfxq.append("zap_warn")
     elif kind == "pin":
         ally_x = mk_x - 34
-        sfxq.append("kuro")
+        sfxq.append("kvoice")
         if cnt < 2:
             broadcast("ev_dm_pin")
 
@@ -4119,7 +4119,7 @@ def dm_mask():
                 pq_y.append(mk_y)
                 pq_vx.append(cos(k * 45 + t) * 4)
                 pq_vy.append(sin(k * 45 + t) * 4)
-            sfxq.append("kuro")
+            sfxq.append("kvoice")
         if t >= 56:
             st = "float"
             t = 0
