@@ -266,6 +266,9 @@ def main():
         install_hotaru(sheet, sys.argv[sys.argv.index('--hotaru') + 1])
     if '--tetsu' in sys.argv:
         install_framed(sheet, 'tetsu_neutral', sys.argv[sys.argv.index('--tetsu') + 1])
+    for k, arg in enumerate(sys.argv):
+        if arg == '--framed':
+            install_framed(sheet, sys.argv[k + 1], sys.argv[k + 2])
     if '--kuro' in sys.argv:
         k = sys.argv.index('--kuro')
         clean = install_kuro(sheet, sys.argv[k + 1], sys.argv[k + 2])
