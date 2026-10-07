@@ -6,6 +6,7 @@ Daimyo in person. Everything is drawn in the pack's 34-color palette.
 All functions return 1x art-pixel images unless noted.
 """
 import math
+import os
 import random
 
 from PIL import Image, ImageDraw
@@ -515,7 +516,10 @@ DOBU_W, DOBU_H = 104, 72
 
 
 def dobu_body(state='idle', frame=0):
-    """The fused mass, 104x72, anchored bottom-center. state: idle, open, spew, dead."""
+    """The fused mass, 104x72, anchored bottom-center. state: idle, open, spew, dead.
+    Built on the hand-edited base in art/src when it's there."""
+    if os.path.exists(DOBU_BASE):
+        return dobu_states(Image.open(DOBU_BASE).convert('RGBA'), state, frame)
     im = Image.new('RGBA', (DOBU_W, DOBU_H), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     rng = random.Random(7)
@@ -552,6 +556,30 @@ def dobu_body(state='idle', frame=0):
     d.text((47, 7), 'K', fill=C('red2'))
     for k in range(3):
         d.line([50 + k * 2, 18, 50 + k * 2, 22 + (k + frame) % 3], fill=C('lime'))
+    dobu_states(im, state, frame, base=False)
+    for _ in range(14):
+        x, y = rng.randrange(8, 96), rng.randrange(20, 70)
+        if im.getpixel((x, y))[3]:
+            im.putpixel((x, y), C('lime' if rng.random() < 0.3 else 'green2'))
+    return im
+
+
+DOBU_BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'art', 'src', 'dobunushi_base.png')
+DOBU_BLINK = (86, 56)  # the eye that closes on the second idle frame
+
+
+def dobu_states(im, state, frame, base=True):
+    """The open core, spew mouth and death dissolve, drawn over a finished body."""
+    im = im.copy() if base else im
+    d = ImageDraw.Draw(im)
+    if base and frame % 2:
+        ex, ey = DOBU_BLINK
+        px = im.load()
+        for y in range(ey - 2, ey + 3):
+            for x in range(ex - 2, ex + 3):
+                if px[x, y][3] and px[x, y][:3] in (C('lime'), C('ink')):
+                    px[x, y] = C('green1')
+        d.line([ex - 1, ey, ex + 1, ey], fill=C('ink'))
     if state == 'open':
         # the mass parts around a glowing core
         d.ellipse([34, 30, 70, 64], fill=C('night1'), outline=C('green1'))
@@ -573,10 +601,6 @@ def dobu_body(state='idle', frame=0):
             for x in range(DOBU_W):
                 if px[x, y][3] and (x + y * 3 + frame) % (5 - min(4, frame)) == 0:
                     px[x, y] = (0, 0, 0, 0)
-    for _ in range(14):
-        x, y = rng.randrange(8, 96), rng.randrange(20, 70)
-        if im.getpixel((x, y))[3]:
-            im.putpixel((x, y), C('lime' if rng.random() < 0.3 else 'green2'))
     return im
 
 

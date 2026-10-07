@@ -280,10 +280,13 @@ def install_framed(sheet, name, src):
 
 
 def install_hotaru(sheet, src):
+    # 80x40 (neutral, visor up; the angry face is derived) or 120x40 (neutral, angry, visor up)
     pair = Image.open(src).convert('RGBA')
-    assert pair.size == (2 * CELL, CELL), 'expected an 80x40 image, got %s' % (pair.size,)
-    neutral, up = pair.crop((0, 0, CELL, CELL)), pair.crop((CELL, 0, 2 * CELL, CELL))
-    for name, fig in (('hotaru_neutral', neutral), ('hotaru_angry', angry_from(neutral)), ('hotaru_visor_up', up)):
+    assert pair.size in ((2 * CELL, CELL), (3 * CELL, CELL)), 'expected an 80x40 or 120x40 image, got %s' % (pair.size,)
+    cells = [pair.crop((k * CELL, 0, (k + 1) * CELL, CELL)) for k in range(pair.width // CELL)]
+    if len(cells) == 2:
+        cells = [cells[0], angry_from(cells[0]), cells[1]]
+    for name, fig in zip(('hotaru_neutral', 'hotaru_angry', 'hotaru_visor_up'), cells):
         i = ORDER.index(name)
         x, y = (i % COLS) * CELL, (i // COLS) * CELL
         sheet.paste((0, 0, 0, 0), (x, y, x + CELL, y + CELL))
