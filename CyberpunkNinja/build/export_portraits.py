@@ -285,6 +285,10 @@ def main():
     if '--oni' in sys.argv:
         # Big Oni: night1 (#140f2d) at the top to red1 (#6e0f1f) at the bottom, gold flecks
         install_keyed(sheet, 'oni_neutral', sys.argv[sys.argv.index('--oni') + 1], ('night1', 'red1', 'gold'))
+    if '--harm' in sys.argv:
+        # the Harmacist keeps her original greenhouse backdrop: night1 to green1, lime flecks
+        install_keyed(sheet, 'harm_neutral', sys.argv[sys.argv.index('--harm') + 1], ('night1', 'green1', 'lime'),
+                      key=(255, 0, 255))
     for k, arg in enumerate(sys.argv):
         if arg == '--framed':
             install_framed(sheet, sys.argv[k + 1], sys.argv[k + 2])
