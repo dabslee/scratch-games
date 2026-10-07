@@ -81,41 +81,84 @@ def angry_from(neutral):
     return im
 
 
-# Kuro's figure is reduced to a fixed palette taken from the reference painting
-# (black, four purples and a pale lilac); his backdrop is cut away and replaced with
-# a dithered gradient like Hotaru's, in dark green.
-KURO_TONES = ('ink', 'green1', 'night2')
-KURO_FG = [(8, 7, 13), (29, 17, 51), (38, 21, 67), (60, 35, 96), (93, 63, 138), (183, 162, 238)]
-
-
-def kuro_crisp(src):
-    im = src.convert('RGB')
+def from_upscale(path, grid=40):
+    """Recover a grid x grid pixel portrait from an enlarged copy (such as an AI upscale):
+    take the dominant color in the middle of each cell, ignoring soft edges."""
+    im = Image.open(path).convert('RGB')
+    if im.size == (grid, grid):
+        return im
     px = im.load()
-    W, H = im.size
-
-    def is_bg(p):
-        return p[1] - p[0] > 6 and max(p) < 140
-
-    def near(p, pal):
-        return min(pal, key=lambda c: sum((a - b) ** 2 for a, b in zip(p, c)))
-    out = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    pw, ph = im.width / grid, im.height / grid
+    out = Image.new('RGB', (grid, grid))
     op = out.load()
-    for y in range(H):
-        for x in range(W):
-            p = px[x, y]
-            if not is_bg(p):
-                op[x, y] = near(p, KURO_FG) + (255,)
+    for r in range(grid):
+        for c in range(grid):
+            x0, x1 = int((c + 0.3) * pw), int((c + 0.7) * pw)
+            y0, y1 = int((r + 0.3) * ph), int((r + 0.7) * ph)
+            groups = {}
+            for y in range(y0, y1):
+                for x in range(x0, x1):
+                    p = px[x, y]
+                    groups.setdefault(tuple(v // 12 for v in p), []).append(p)
+            g = max(groups.values(), key=len)
+            op[c, r] = tuple(sum(p[i] for p in g) // len(g) for i in range(3))
+    return out
+
+
+def snap_palette(images, radius=26):
+    """Merge near-identical shades shared by a set of portraits into one clean palette
+    (frequency-weighted means of each group) and snap every pixel to it."""
+    counts = Counter()
+    for im in images:
+        for y in range(1, im.height - 1):
+            for x in range(1, im.width - 1):
+                counts[im.getpixel((x, y))] += 1
+    groups = []
+    for c, n in counts.most_common():
+        for seed, mem in groups:
+            if sum((p - q) ** 2 for p, q in zip(c, seed)) < radius * radius:
+                mem.append((c, n))
+                break
+        else:
+            groups.append((c, [(c, n)]))
+    pal = [tuple(round(sum(c[i] * n for c, n in mem) / sum(n for _, n in mem)) for i in range(3))
+           for _, mem in groups]
+    out = []
+    for im in images:
+        im = im.copy()
+        px = im.load()
+        for y in range(im.height):
+            for x in range(im.width):
+                px[x, y] = min(pal, key=lambda c: sum((u - v) ** 2 for u, v in zip(px[x, y], c)))
+        out.append(im)
+    return out
+
+
+def bordered(im):
+    """The cyan portrait border (rounded corners) over a full-bleed portrait."""
+    base = art_v2.portrait_base('night2', 'cyan1', 'slate2')
+    out = im.convert('RGBA').copy()
+    bp, op = base.load(), out.load()
+    for y in range(CELL):
+        for x in range(CELL):
+            if not bp[x, y][3]:
+                op[x, y] = (0, 0, 0, 0)
+            elif bp[x, y][:3] == art_v2.P['cyan2'] and (x in (0, CELL - 1) or y in (0, CELL - 1)):
+                op[x, y] = bp[x, y]
     return out
 
 
 def install_kuro(sheet, neutral_src, smirk_src):
-    for name, src in (('kuro_neutral', neutral_src), ('kuro_smirk', smirk_src)):
-        im = Image.open(src)
-        assert im.size == (CELL, CELL), 'expected a 40x40 image, got %s' % (im.size,)
+    """Kuro's portraits are full 40x40 paintings with their own dark green backdrop
+    (enlarged copies are fine; they're sampled back down to the grid). Both are snapped
+    to one shared palette so edges stay crisp, then framed with the cyan border."""
+    ims = snap_palette([from_upscale(neutral_src), from_upscale(smirk_src)])
+    for name, im in zip(('kuro_neutral', 'kuro_smirk'), ims):
         i = ORDER.index(name)
         x, y = (i % COLS) * CELL, (i // COLS) * CELL
         sheet.paste((0, 0, 0, 0), (x, y, x + CELL, y + CELL))
-        sheet.alpha_composite(framed(kuro_crisp(im), KURO_TONES), (x, y))
+        sheet.alpha_composite(bordered(im), (x, y))
+    return ims
 
 
 def install_hotaru(sheet, src):
@@ -144,7 +187,10 @@ def main():
         install_hotaru(sheet, sys.argv[sys.argv.index('--hotaru') + 1])
     if '--kuro' in sys.argv:
         k = sys.argv.index('--kuro')
-        install_kuro(sheet, sys.argv[k + 1], sys.argv[k + 2])
+        clean = install_kuro(sheet, sys.argv[k + 1], sys.argv[k + 2])
+        # keep the cleaned 40x40 sources next to the sheet
+        for name, im in zip(('kuro_neutral', 'kuro_smirk'), clean):
+            im.save(os.path.join(ART, 'src', name + '.png'))
     sheet.save(path)
     ports = {n: sheet.crop(((i % COLS) * CELL, (i // COLS) * CELL, (i % COLS + 1) * CELL, (i // COLS + 1) * CELL))
              for i, n in enumerate(ORDER)}
