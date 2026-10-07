@@ -229,6 +229,22 @@ def install_kuro(sheet, neutral_src, smirk_src):
     return ims
 
 
+def install_keyed(sheet, name, src, tones, key=(255, 0, 241)):
+    """A 40x40 portrait whose backdrop is marked in a key color: the key is cut away and
+    the figure set on a dithered gradient (top, bottom and fleck colors), framed."""
+    im = Image.open(src).convert('RGBA')
+    assert im.size == (CELL, CELL), 'expected a 40x40 image, got %s' % (im.size,)
+    px = im.load()
+    for y in range(CELL):
+        for x in range(CELL):
+            if px[x, y][:3] == key:
+                px[x, y] = (0, 0, 0, 0)
+    i = ORDER.index(name)
+    x, y = (i % COLS) * CELL, (i // COLS) * CELL
+    sheet.paste((0, 0, 0, 0), (x, y, x + CELL, y + CELL))
+    sheet.alpha_composite(framed(im, tones), (x, y))
+
+
 def install_framed(sheet, name, src):
     """A finished 40x40 portrait (its own backdrop and border) dropped into its cell,
     with the standard rounded corners."""
@@ -266,6 +282,9 @@ def main():
         install_hotaru(sheet, sys.argv[sys.argv.index('--hotaru') + 1])
     if '--tetsu' in sys.argv:
         install_framed(sheet, 'tetsu_neutral', sys.argv[sys.argv.index('--tetsu') + 1])
+    if '--oni' in sys.argv:
+        # Big Oni: night1 (#140f2d) at the top to red1 (#6e0f1f) at the bottom, gold flecks
+        install_keyed(sheet, 'oni_neutral', sys.argv[sys.argv.index('--oni') + 1], ('night1', 'red1', 'gold'))
     for k, arg in enumerate(sys.argv):
         if arg == '--framed':
             install_framed(sheet, sys.argv[k + 1], sys.argv[k + 2])
