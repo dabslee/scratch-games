@@ -6,9 +6,14 @@ edited sheet dropped in its place changes the game. Also writes a labeled, enlar
 preview (art/portraits_preview.png) that shows which speaker uses which portrait.
 
 Run with CN_PACK set:  python3 build/export_portraits.py
+The sheet is the source of truth once it exists (it holds hand-made art), so this
+only refreshes portraits.json and the preview from it. Pass --reset to rebuild the
+sheet from the original art, or --hotaru PNG to install a new Hotaru set (an 80x40
+image: neutral on the left, visor up on the right; the angry face is derived).
 """
 import json
 import os
+import sys
 from collections import Counter
 
 from PIL import Image, ImageDraw
@@ -37,14 +42,71 @@ def source_portraits():
     return out
 
 
+def framed(figure):
+    """A figure on Hotaru's dithered blue backdrop, inside the cyan portrait border."""
+    base = art_v2.portrait_base('night2', 'cyan1', 'slate2')
+    out = base.copy()
+    out.alpha_composite(figure.convert('RGBA'))
+    bp, op = base.load(), out.load()
+    for y in range(CELL):
+        for x in range(CELL):
+            if bp[x, y][3] and bp[x, y][:3] == art_v2.P['cyan2'] and (x in (0, CELL - 1) or y in (0, CELL - 1)):
+                op[x, y] = bp[x, y]
+            elif not bp[x, y][3]:
+                op[x, y] = (0, 0, 0, 0)
+    return out
+
+
+def angry_from(neutral):
+    """Hotaru's angry face, derived from her neutral portrait: the visor glass turns deep
+    red with narrowed slits glowing through it, and her brows pull down into a V."""
+    im = neutral.convert('RGBA').copy()
+    px = im.load()
+    visor = {(17, 250, 255): (190, 32, 48), (16, 219, 238): (170, 28, 44), (18, 203, 227): (160, 26, 42),
+             (12, 166, 184): (120, 18, 34), (11, 148, 170): (110, 15, 31), (10, 129, 138): (92, 14, 28),
+             (9, 120, 150): (86, 12, 28), (8, 96, 112): (70, 10, 24), (11, 79, 96): (58, 8, 20)}
+    for y in range(15, 22):
+        for x in range(10, 32):
+            if px[x, y][3] and px[x, y][:3] in visor:
+                px[x, y] = visor[px[x, y][:3]] + (255,)
+    hot, core = (255, 90, 74, 255), (255, 224, 102, 255)
+    for (x, y), c in {(15, 17): hot, (16, 17): core, (17, 18): core, (18, 18): hot}.items():
+        px[x, y] = c
+        px[42 - x, y] = c
+    brow, brow_d = (100, 108, 140, 255), (61, 64, 92, 255)
+    for (x, y), c in {(15, 13): brow, (16, 13): brow, (17, 14): brow_d, (18, 14): brow_d}.items():
+        px[x, y] = c
+        px[39 - x, y] = c
+    return im
+
+
+def install_hotaru(sheet, src):
+    pair = Image.open(src).convert('RGBA')
+    assert pair.size == (2 * CELL, CELL), 'expected an 80x40 image, got %s' % (pair.size,)
+    neutral, up = pair.crop((0, 0, CELL, CELL)), pair.crop((CELL, 0, 2 * CELL, CELL))
+    for name, fig in (('hotaru_neutral', neutral), ('hotaru_angry', angry_from(neutral)), ('hotaru_visor_up', up)):
+        i = ORDER.index(name)
+        x, y = (i % COLS) * CELL, (i // COLS) * CELL
+        sheet.paste((0, 0, 0, 0), (x, y, x + CELL, y + CELL))
+        sheet.alpha_composite(framed(fig), (x, y))
+
+
 def main():
     os.makedirs(ART, exist_ok=True)
-    ports = source_portraits()
+    path = os.path.join(ART, 'portraits.png')
     rows = (len(ORDER) + COLS - 1) // COLS
-    sheet = Image.new('RGBA', (COLS * CELL, rows * CELL), (0, 0, 0, 0))
-    for i, name in enumerate(ORDER):
-        sheet.alpha_composite(ports[name].convert('RGBA'), ((i % COLS) * CELL, (i // COLS) * CELL))
-    sheet.save(os.path.join(ART, 'portraits.png'))
+    if '--reset' in sys.argv or not os.path.exists(path):
+        ports = source_portraits()
+        sheet = Image.new('RGBA', (COLS * CELL, rows * CELL), (0, 0, 0, 0))
+        for i, name in enumerate(ORDER):
+            sheet.alpha_composite(ports[name].convert('RGBA'), ((i % COLS) * CELL, (i // COLS) * CELL))
+    else:
+        sheet = Image.open(path).convert('RGBA')
+    if '--hotaru' in sys.argv:
+        install_hotaru(sheet, sys.argv[sys.argv.index('--hotaru') + 1])
+    sheet.save(path)
+    ports = {n: sheet.crop(((i % COLS) * CELL, (i // COLS) * CELL, (i % COLS + 1) * CELL, (i // COLS + 1) * CELL))
+             for i, n in enumerate(ORDER)}
 
     # which lines show each portrait
     use = Counter()
