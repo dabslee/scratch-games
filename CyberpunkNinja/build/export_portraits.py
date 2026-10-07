@@ -229,6 +229,17 @@ def install_kuro(sheet, neutral_src, smirk_src):
     return ims
 
 
+def install_framed(sheet, name, src):
+    """A finished 40x40 portrait (its own backdrop and border) dropped into its cell,
+    with the standard rounded corners."""
+    im = Image.open(src).convert('RGBA')
+    assert im.size == (CELL, CELL), 'expected a 40x40 image, got %s' % (im.size,)
+    i = ORDER.index(name)
+    x, y = (i % COLS) * CELL, (i // COLS) * CELL
+    sheet.paste((0, 0, 0, 0), (x, y, x + CELL, y + CELL))
+    sheet.alpha_composite(bordered(im), (x, y))
+
+
 def install_hotaru(sheet, src):
     pair = Image.open(src).convert('RGBA')
     assert pair.size == (2 * CELL, CELL), 'expected an 80x40 image, got %s' % (pair.size,)
@@ -253,6 +264,8 @@ def main():
         sheet = Image.open(path).convert('RGBA')
     if '--hotaru' in sys.argv:
         install_hotaru(sheet, sys.argv[sys.argv.index('--hotaru') + 1])
+    if '--tetsu' in sys.argv:
+        install_framed(sheet, 'tetsu_neutral', sys.argv[sys.argv.index('--tetsu') + 1])
     if '--kuro' in sys.argv:
         k = sys.argv.index('--kuro')
         clean = install_kuro(sheet, sys.argv[k + 1], sys.argv[k + 2])
