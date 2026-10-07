@@ -25,6 +25,7 @@ import art_ch7  # noqa: E402
 import art_v2  # noqa: E402
 import assets  # noqa: E402
 import dialogue  # noqa: E402
+import export_portraits  # noqa: E402
 import levels  # noqa: E402
 import scratchc  # noqa: E402
 from assets import PALETTE as P, make_costume, up4  # noqa: E402
@@ -808,6 +809,10 @@ def sheet_portraits():
     for p in meta['portraits']:
         im = sheet.crop((p['col'] * cell, p['row'] * cell, (p['col'] + 1) * cell, (p['row'] + 1) * cell))
         out.append(costume_from(im, p['name'], cell / 2, cell / 2))
+        if p['name'].startswith('kuro_'):
+            # Kuro's portrait glitches now and then while he talks
+            for k in (1, 2):
+                out.append(costume_from(export_portraits.kuro_glitch(im, k), '%s_g%d' % (p['name'], k), cell / 2, cell / 2))
     missing = set(dialogue.PORTRAIT.values()) - {p['name'] for p in meta['portraits']}
     assert not missing, 'portraits missing from art/portraits.png: %s' % missing
     return out

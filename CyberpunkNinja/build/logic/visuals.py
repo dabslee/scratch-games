@@ -419,8 +419,15 @@ def d_draw():
         costume(dlg_port)
         goto(-190, 129)
         if dlg_spk == "kuro":
+            # a ghost in the machine: now and then his portrait tears and fills with static
+            if gl_t > 0:
+                gl_t -= 1
+                costume(join(dlg_port, join("_g", 1 + floor(gl_t / 2) % 2)))
+            elif rand(1, 45) == 1:
+                gl_t = rand(3, 7)
             effect("ghost", rand(0, 25))
         else:
+            gl_t = 0
             effect("ghost", 0)
     elif role == "name":
         costume(dlg_nm)

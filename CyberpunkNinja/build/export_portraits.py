@@ -13,6 +13,7 @@ image: neutral on the left, visor up on the right; the angry face is derived).
 """
 import json
 import os
+import random
 import sys
 from collections import Counter
 
@@ -148,6 +149,73 @@ def bordered(im):
     return out
 
 
+# Kuro is a ghost in the machine: his portraits are muted and cooled (all but his eyes),
+# set against a dark purple backdrop, with holographic scanlines and a little static.
+KURO_EYES = {(222, 250, 247), (173, 208, 209)}
+KURO_BACK = ((14, 10, 30), (40, 28, 72))      # dark and light purple, replacing his greens
+KURO_MOUTH = (128, 96, 168)
+
+
+def kuro_ghost(im, smirk=False):
+    im = im.convert('RGB').copy()
+    px = im.load()
+    rng = random.Random(77)
+    for y in range(CELL):
+        for x in range(CELL):
+            r, g, b = px[x, y]
+            if (r, g, b) in KURO_EYES:
+                continue
+            if g > r + 12 and g > b:
+                # backdrop: his green dither becomes a purple one, same pattern
+                c = KURO_BACK[1] if g > 60 else KURO_BACK[0]
+                if rng.random() < 0.03:
+                    c = (78, 62, 120)          # a fleck of static
+            else:
+                lum = 0.3 * r + 0.59 * g + 0.11 * b
+                c = tuple(int((0.45 * v + 0.55 * lum) * 0.82) for v in (r, g, b))
+                c = (int(c[0] * 0.92), int(c[1] * 0.9), min(255, int(c[2] * 1.08 + 4)))
+            if y % 2 == 1:
+                c = tuple(int(v * 0.8) for v in c)   # holographic scanlines
+            px[x, y] = c
+    # a clearer mouth (it was nearly black on black); the smirk curls up at one end
+    for x in range(18, 22):
+        px[x, 25] = KURO_MOUTH
+    if smirk:
+        px[17, 24] = KURO_MOUTH
+    return im
+
+
+def kuro_glitch(cell, k):
+    """An in-game glitch frame for a framed Kuro portrait: a few row bands tear sideways,
+    with a magenta/cyan split along the figure's edges, and the static thickens."""
+    im = cell.convert('RGBA').copy()
+    src = cell.convert('RGBA')
+    px, sp = im.load(), src.load()
+    rng = random.Random(500 + k)
+    back = {KURO_BACK[0], KURO_BACK[1], (78, 62, 120)}
+
+    def is_back(p):
+        return p[:3] in back or p[:3] in {tuple(int(v * 0.8) for v in c) for c in back}
+    for _ in range(k):
+        y0, h, dx = rng.randint(6, 30), rng.randint(1, 2), rng.choice((-2, -1, 1, 2))
+        for y in range(y0, min(CELL - 1, y0 + h)):
+            row = [sp[min(max(x - dx, 1), CELL - 2), y] for x in range(CELL)]
+            for x in range(1, CELL - 1):
+                px[x, y] = row[x]
+            for x in range(2, CELL - 2):
+                if y != y0:
+                    break
+                if not is_back(row[x]) and is_back(row[x - 1]):
+                    px[x - 1, y] = (255, 61, 184, 255)
+                if not is_back(row[x]) and is_back(row[x + 1]):
+                    px[x + 1, y] = (62, 240, 255, 255)
+    for _ in range(4 + 4 * k):
+        x, y = rng.randint(1, CELL - 2), rng.randint(1, CELL - 2)
+        if px[x, y][:3] not in KURO_EYES:
+            px[x, y] = rng.choice(((110, 90, 160, 255), (78, 62, 120, 255)))
+    return im
+
+
 def install_kuro(sheet, neutral_src, smirk_src):
     """Kuro's portraits are full 40x40 paintings with their own dark green backdrop
     (enlarged copies are fine; they're sampled back down to the grid). Both are snapped
@@ -157,7 +225,7 @@ def install_kuro(sheet, neutral_src, smirk_src):
         i = ORDER.index(name)
         x, y = (i % COLS) * CELL, (i // COLS) * CELL
         sheet.paste((0, 0, 0, 0), (x, y, x + CELL, y + CELL))
-        sheet.alpha_composite(bordered(im), (x, y))
+        sheet.alpha_composite(bordered(kuro_ghost(im, smirk=name == 'kuro_smirk')), (x, y))
     return ims
 
 
