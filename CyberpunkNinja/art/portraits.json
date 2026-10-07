@@ -1,0 +1,124 @@
+{
+  "cell": 40,
+  "columns": 4,
+  "note": "Cells are read left to right, top to bottom. Keep each portrait inside its 40x40 cell.",
+  "portraits": [
+    {
+      "name": "hotaru_neutral",
+      "row": 0,
+      "col": 0,
+      "speakers": [
+        "hotaru"
+      ],
+      "lines": 67
+    },
+    {
+      "name": "hotaru_angry",
+      "row": 0,
+      "col": 1,
+      "speakers": [
+        "hotaru"
+      ],
+      "lines": 37
+    },
+    {
+      "name": "hotaru_visor_up",
+      "row": 0,
+      "col": 2,
+      "speakers": [
+        "hotaru"
+      ],
+      "lines": 29
+    },
+    {
+      "name": "kuro_neutral",
+      "row": 0,
+      "col": 3,
+      "speakers": [
+        "kuro"
+      ],
+      "lines": 160
+    },
+    {
+      "name": "kuro_smirk",
+      "row": 1,
+      "col": 0,
+      "speakers": [
+        "kuro"
+      ],
+      "lines": 34
+    },
+    {
+      "name": "tetsu_neutral",
+      "row": 1,
+      "col": 1,
+      "speakers": [
+        "tetsu"
+      ],
+      "lines": 19
+    },
+    {
+      "name": "daicam_neutral",
+      "row": 1,
+      "col": 2,
+      "speakers": [
+        "daicam"
+      ],
+      "lines": 36
+    },
+    {
+      "name": "mukuro_neutral",
+      "row": 1,
+      "col": 3,
+      "speakers": [
+        "mukuro"
+      ],
+      "lines": 9
+    },
+    {
+      "name": "daimyo_neutral",
+      "row": 2,
+      "col": 0,
+      "speakers": [
+        "daimyo"
+      ],
+      "lines": 24
+    },
+    {
+      "name": "luck_neutral",
+      "row": 2,
+      "col": 1,
+      "speakers": [
+        "luck"
+      ],
+      "lines": 4
+    },
+    {
+      "name": "sys_boot",
+      "row": 2,
+      "col": 2,
+      "speakers": [
+        "system"
+      ],
+      "lines": 25
+    },
+    {
+      "name": "oni_neutral",
+      "row": 2,
+      "col": 3,
+      "speakers": [
+        "oni"
+      ],
+      "lines": 2
+    },
+    {
+      "name": "harm_neutral",
+      "row": 3,
+      "col": 0,
+      "speakers": [
+        "harm"
+      ],
+      "lines": 6
+    }
+  ]
+}

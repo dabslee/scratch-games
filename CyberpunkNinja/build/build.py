@@ -797,15 +797,27 @@ et = text_image(['EPILOGUE'], BOLD, P['cyan3'], shadow=P['mag2'])
 epi.alpha_composite(et.resize((et.width * 2, et.height * 2), Image.NEAREST), (10, 18))
 ban.append(costume_from(epi, 'epi', 100, 22))
 sprite('Banners', ban, visuals.BANNERS)
-dlg = (copy_costumes('Dialogue') + copy_costumes('Portraits') + copy_costumes('NamePlates', names=['name_'])
+def sheet_portraits():
+    # every dialogue portrait comes from art/portraits.png (made by export_portraits.py);
+    # edit that sheet to change them. Cell order is in art/portraits.json.
+    path = os.path.join(HERE, '..', 'art', 'portraits.png')
+    meta = json.load(open(os.path.join(HERE, '..', 'art', 'portraits.json')))
+    sheet = Image.open(path).convert('RGBA')
+    cell = meta['cell']
+    out = []
+    for p in meta['portraits']:
+        im = sheet.crop((p['col'] * cell, p['row'] * cell, (p['col'] + 1) * cell, (p['row'] + 1) * cell))
+        out.append(costume_from(im, p['name'], cell / 2, cell / 2))
+    missing = set(dialogue.PORTRAIT.values()) - {p['name'] for p in meta['portraits']}
+    assert not missing, 'portraits missing from art/portraits.png: %s' % missing
+    return out
+
+
+dlg = (copy_costumes('Dialogue') + sheet_portraits() + copy_costumes('NamePlates', names=['name_'])
        + DLG_COSTUMES)
-dlg.append(costume_from(art_ch2.luck_portrait(), 'luck_neutral', 20, 20))
 dlg.append(costume_from(art_ch2.nameplate('LADY LUCK'), 'name_lady_luck', 0, 0))
-dlg.append(costume_from(art_ch2.system_portrait(), 'sys_boot', 20, 20))
 dlg.append(costume_from(art_ch2.nameplate('SYSTEM', border='cyan2'), 'name_system', 0, 0))
-dlg.append(costume_from(art_v2.oni_portrait(), 'oni_neutral', 20, 20))
 dlg.append(costume_from(art_ch2.nameplate('BIG ONI', border='red2'), 'name_big_oni', 0, 0))
-dlg.append(costume_from(art_v2.harm_portrait(), 'harm_neutral', 20, 20))
 dlg.append(costume_from(art_ch2.nameplate('THE HARMACIST', border='green2'), 'name_the_harmacist', 0, 0))
 sprite('Dialogue', dlg, visuals.DIALOGUE)
 sprite('Menu', MENU_COSTUMES, menu.MENU)
