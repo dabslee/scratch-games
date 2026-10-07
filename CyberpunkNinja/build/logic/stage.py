@@ -1406,7 +1406,7 @@ def ev_kuro_falls():
 @on("ev_dm_phase3")
 def ev_dm_phase3():
     music_want = "engram"
-    hint = "mask"
+    hint = "duel3"
     wait(1.2)
     say_once("dm3")
 

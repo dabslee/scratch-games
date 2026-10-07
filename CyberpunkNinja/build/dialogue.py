@@ -123,7 +123,8 @@ HINTS = {
     'choice': [('k', 'key_e'), ('t', 'Reach out'), ('g',), ('k', 'mouse_l'), ('t', 'Destroy his mind')],
     'exo': [('t', 'Deflect the nodachi. Jump the stomp.'), ('n',), ('t', 'Strike when the armor recovers')],
     'eye': [('k', 'key_down'), ('t', 'Deflect turret fire into the armor.'), ('n',), ('t', 'Strike it when it drops')],
-    'mask': [('k', 'key_down'), ('t', 'Deflect his cuts.'), ('n',), ('k', 'key_space'), ('t', 'Phase Step through the soul grab')],
+    'duel3': [('k', 'key_down'), ('t', 'Deflect his cuts and slash waves.'), ('n',), ('t', "Don't strike into his raised guard."), ('n',),
+              ('k', 'key_space'), ('t', 'Phase Step through the soul grab')],
 }
 # pre-boss tips: the same advice, labeled for the fight in the next room
 for _k, _src, _boss in (('gate_oni', 'heavy', 'BIG ONI'), ('gate_dobu', 'dobu', 'DOBUNUSHI'),

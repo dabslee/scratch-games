@@ -1000,3 +1000,20 @@ def glitch_piece(i):
                 if (x + y) % 2 == 0 and rng.random() < 0.6 - abs(y - h / 2) / h:
                     px[x, y] = C(rng.choice(('purple1', 'purple2', 'indigo', 'cyan1')), 190)
     return im
+
+
+# ------------------------------------------------------------------ the Daimyo's slash wave
+def crescent(frame):
+    """A crescent of Tamakiri's red edge flung through the air, 14x20, travelling right."""
+    im = Image.new('RGBA', (14, 20), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.ellipse([0, 0, 13, 19], fill=C('red2'))
+    d.ellipse([-5 + frame, 2, 9 + frame, 17], fill=(0, 0, 0, 0))
+    px = im.load()
+    for y in range(20):
+        row = [x for x in range(14) if px[x, y][3]]
+        if row:
+            px[row[-1], y] = C('white')          # the hot outer edge
+            if len(row) > 2:
+                px[row[0], y] = C('red3')
+    return im

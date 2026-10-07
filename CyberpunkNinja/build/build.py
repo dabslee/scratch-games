@@ -167,7 +167,7 @@ daicam8_done daimyo_dead dm_ph dm_vul eye_x eye_y eye_st mk_x mk_y mk_st ally_x 
 dobu_dead daicam2_done harm_dead tide_y tide_hi tide_force tide_lvl tide_t tide_warn
 dobu_cut dobu_gen dobu_ph dobu_open dobu_turn
 walk_to muk_bx muk_carry
-ally_hp ally_lives ally_rev ally_inv ally_def ally_dash ally_shot fy_floor exo_x dm_st dm_t dm_fc dm_tell dm_fl
+ally_hp ally_lives ally_rev ally_inv ally_def ally_dash ally_shot fy_floor dm_z dm_hi dm_lh exo_x dm_st dm_t dm_fc dm_tell dm_fl
 '''.split()
 
 GLOBAL_LISTS = '''
@@ -676,12 +676,15 @@ dm = []
 for pose in art_ch7.POSES:
     for fr in range(2 if pose in ('idle', 'walk') else 1):
         dm.append(costume_from(art_ch7.exo(pose, fr), 'exo_%s_%d' % (pose, fr), *art_ch7.EXO_ANCHOR))
-for p in art_v2.MAN_POSES:
-    if p in ('idle', 'walk'):
-        dm += [costume_small(art_v2.daimyo_man(p, i), 'man_%s_%d' % (p, i), *art_v2.MAN_FOOT) for i in range(2)]
-    else:
-        dm.append(costume_small(art_v2.daimyo_man(p), 'man_' + p, *art_v2.MAN_FOOT))
-dm.append(costume_small(art_v2.daimyo_man('dead'), 'man_dead', 22, 15))
+# the Daimyo in person: the user's 80x64 frames (art/src/daimyo_frames), feet at (40, 61),
+# drawn at 1.5 screen pixels per art pixel so he stands as tall as Hotaru
+_DMF = os.path.join(HERE, '..', 'art', 'src', 'daimyo_frames')
+for _folder in sorted(os.listdir(_DMF)):
+    _anim = _folder.split('_', 1)[1]
+    for _f in sorted(os.listdir(os.path.join(_DMF, _folder))):
+        _i = int(_f.rsplit('_', 1)[1].split('.')[0])
+        dm.append(costume_small(Image.open(os.path.join(_DMF, _folder, _f)).convert('RGBA'),
+                                'dmf_%s_%d' % (_anim, _i), 40, 61))
 dm.append(costume_from(art_v2.cable(), 'cable', 3, 110))
 dm += copy_costumes('Turret', names=['idle_0'], rename=lambda n: 'turret')
 dm += copy_costumes('Mukuro', prefix='mk_', names=['idle_', 'run_', 'attack1_', 'attack2_', 'attack3_', 'heavy_', 'deflect_', 'dash_', 'hurt_'])
@@ -742,6 +745,7 @@ def draw():
         hide()
 ''')
 proj_costumes = copy_costumes('Projectiles', names=['bullet_']) + WAVE_COSTUMES
+proj_costumes += [costume_from(art_v2.crescent(i), 'crescent_%d' % i, 7, 10) for i in range(2)]
 proj_costumes += [costume_from(f, 'card_%d' % i, 4.5, 4.5) for i, f in enumerate(art_ch2.card_frames())]
 proj_costumes += [costume_from(art_ch4.shell(i), 'shell_%d' % i, 4, 4) for i in range(2)]
 proj_costumes += [costume_from(art_ch4.shell(i, True), 'rshell_%d' % i, 4, 4) for i in range(2)]

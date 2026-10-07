@@ -245,6 +245,29 @@ def install_keyed(sheet, name, src, tones, key=(255, 0, 241)):
     sheet.alpha_composite(framed(im, tones), (x, y))
 
 
+def clean_keyed(src, out, key=(255, 0, 255), radius=12):
+    """Merge only near-identical shades in a key-color portrait (the key and any
+    transparent pixels are left alone) and save the result."""
+    im = Image.open(src).convert('RGBA')
+    px = im.load()
+    fig = Image.new('RGB', im.size, key)
+    fp = fig.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            if px[x, y][3] and px[x, y][:3] != key:
+                fp[x, y] = px[x, y][:3]
+    (clean,) = snap_palette([fig], radius=radius)
+    cp = clean.load()
+    res = Image.new('RGBA', im.size, (0, 0, 0, 0))
+    rp = res.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            if px[x, y][3]:
+                rp[x, y] = (key if fp[x, y] == key else cp[x, y]) + (255,)
+    res.save(out)
+    return res
+
+
 def install_framed(sheet, name, src):
     """A finished 40x40 portrait (its own backdrop and border) dropped into its cell,
     with the standard rounded corners."""
@@ -289,6 +312,12 @@ def main():
         # the Harmacist keeps her original greenhouse backdrop: night1 to green1, lime flecks
         install_keyed(sheet, 'harm_neutral', sys.argv[sys.argv.index('--harm') + 1], ('night1', 'green1', 'lime'),
                       key=(255, 0, 255))
+    if '--daimyo' in sys.argv:
+        # the Daimyo's own face (no mask), on a dithered navy-to-purple gradient with gold flecks
+        src = sys.argv[sys.argv.index('--daimyo') + 1]
+        out = os.path.join(ART, 'src', 'daimyo_portrait.png')
+        clean_keyed(src, out)
+        install_keyed(sheet, 'daimyo_neutral', out, ('night1', 'purple1', 'gold'), key=(255, 0, 255))
     for k, arg in enumerate(sys.argv):
         if arg == '--framed':
             install_framed(sheet, sys.argv[k + 1], sys.argv[k + 2])

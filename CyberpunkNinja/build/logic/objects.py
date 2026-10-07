@@ -26,7 +26,7 @@ def pr_spawn():
         vy = pq_vy[qi]
         t = 0
         hd = 0
-        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell" or kind == "orb" or kind == "spit" or kind == "vial":
+        if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell" or kind == "orb" or kind == "spit" or kind == "vial" or kind == "crescent":
             owner = "e"
         elif kind == "burst":
             owner = "c"
@@ -98,14 +98,14 @@ def pr_update():
         delete_clone()
     if owner == "e":
         if px + 7 > x - 4 and px - 7 < x + 4 and py + 36 > y - 4 and py < y + 4:
-            if kind == "shell":
+            if kind == "shell" or kind == "crescent":
                 hit_player(2, 0, x - vx * 3)
             else:
                 hit_player(1, 0, x - vx * 3)
             if res == "deflect":
-                if kind == "shell" or (kind == "bullet" and chapter == 8 and dm_ph == 2 and boss_on == 1):
+                if kind == "shell" or kind == "crescent" or (kind == "bullet" and chapter == 8 and dm_ph == 2 and boss_on == 1):
                     # a deflected shell flies straight back into Raijin's core
-                    # (and a turret round straight back into the Daimyo's armor)
+                    # (a turret round into the Daimyo's armor, a slash wave into the Daimyo)
                     if kind == "shell":
                         kind = "rshell"
                     ddx = ent_x[boss_slot] - x
@@ -140,11 +140,11 @@ def pr_update():
         for ei in range(1, len(ent_type) + 1):
             if ent_alive[ei] == 1 and ent_x[ei] + ent_w[ei] + 4 > x and ent_x[ei] - ent_w[ei] - 4 < x:
                 if ent_y[ei] + ent_h[ei] + 4 > y and ent_y[ei] - 4 < y:
-                    if kind == "bullet" or kind == "rshell":
+                    if kind == "bullet" or kind == "rshell" or kind == "crescent":
                         ent_dmg[ei] = ent_dmg[ei] + 2
                     else:
                         ent_dmg[ei] = ent_dmg[ei] + 1
-                    if kind == "rshell":
+                    if kind == "rshell" or kind == "crescent":
                         ent_idmg[ei] = ent_idmg[ei] + 3
                     else:
                         ent_idmg[ei] = ent_idmg[ei] + 2
@@ -211,6 +211,8 @@ def pr_draw():
         costume(join("spit_", floor(t / 3) % 2))
     elif kind == "vial":
         costume(join("vial_", floor(t / 3) % 2))
+    elif kind == "crescent":
+        costume(join("crescent_", floor(t / 2) % 2))
     elif kind == "cloud" or kind == "burst":
         if kind == "burst":
             costume(join("cloudb_", floor(t / 6) % 2))

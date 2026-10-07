@@ -3732,6 +3732,12 @@ if daimyo_dead == 0:
     ally_dash = 0
     exo_x = x
     exo_dark = 0
+    jz = 0
+    pat = 0
+    dm_stage = 1
+    dm_z = 0
+    dm_hi = 1
+    dm_lh = -99
     ally_shot = 0
     fy_floor = fy
     dm_st = "wait"
@@ -3801,7 +3807,7 @@ def dm_go(kind):
     dm_face()
     if kind == "stomp" or kind == "charge" or kind == "grab":
         sfxq.append("breach")
-    elif kind == "iaido" or kind == "combo" or kind == "cut3" or kind == "feint" or kind == "draw":
+    elif kind == "iaido" or kind == "combo" or kind == "draw" or kind == "tempest":
         sfxq.append("windup")
     elif kind == "lasers":
         sl_q.append(-230)
@@ -3880,6 +3886,16 @@ def ally_hurt():
 def dm_hurt():
     # damage, guard and Stance for whichever form is live
     hk = ent_hk[slot]
+    if dm_ph == 3 and st == "counter" and t >= 6 and hk != "projectile":
+        # he was waiting for that: Tamakiri turns the blow and answers at once
+        sfxq.append("deflect")
+        cfx("deflect", x + face * 12, fy + 40, 0 - face)
+        heat = min(16, heat + 3)
+        hitstop = max(hitstop, 6)
+        ent_dmg[slot] = 0
+        ent_idmg[slot] = 0
+        dm_combo("riposte")
+        return
     if dm_vul == 1 or hk == "projectile":
         ehp -= ent_dmg[slot]
         flash_t = 3
@@ -3940,6 +3956,7 @@ def dm_next_phase():
 def dm_update():
     t += 1
     if st == "end":
+        dm_publish()
         return
     if st == "wait":
         if boss_on == 1:
@@ -4004,9 +4021,9 @@ def dm_update():
         ent_h[slot] = 170
     else:
         ent_x[slot] = x
-        ent_y[slot] = fy
-        ent_w[slot] = 11
-        ent_h[slot] = 50
+        ent_y[slot] = fy + jz
+        ent_w[slot] = 12
+        ent_h[slot] = 52
         if flash_t > 0:
             flash_t -= 1
     ent_int[slot] = integ
@@ -4022,25 +4039,33 @@ def dm_publish():
     dm_t = t
     dm_fc = face
     dm_fl = flash_t
+    dm_z = jz
+    dm_hi = hi
     dm_tell = 0
     if dm_ph == 3:
-        if (st == "draw" and t >= 7 and t < 16) or (st == "feint" and ((t >= 6 and t < 9) or (t >= 21 and t < 30))):
+        if st == "draw" and t >= 10 and t < 18:
             dm_tell = 1
-        if st == "cut3" and t % 12 >= 3 and t < 37:
-            dm_tell = 1
-        if (st == "storm" or st == "rend") and hi <= len(dm_hits):
+        if (st == "cut3" or st == "storm" or st == "rend" or st == "riposte") and hi <= len(dm_hits):
             if dm_hits[hi] - t >= 1 and dm_hits[hi] - t <= 8:
                 dm_tell = 1
 
 
 @proc
 def dm_combo(kind):
-    # a long string to deflect in rhythm; the last cut is heavy and, deflected, staggers him
+    # a string of cuts to deflect in rhythm; the last is heavy and, deflected, staggers him
     dm_go(kind)
     sfxq.append("windup")
     hi = 1
+    dm_lh = -99
     dm_hits.clear()
-    if kind == "storm":
+    if kind == "cut3":
+        # da-da ... DA
+        dm_hits.append(14)
+        dm_hits.append(26)
+        dm_hits.append(46)
+    elif kind == "riposte":
+        dm_hits.append(9)
+    elif kind == "storm":
         dm_hits.append(18)
         dm_hits.append(28)
         dm_hits.append(38)
@@ -4054,6 +4079,47 @@ def dm_combo(kind):
         dm_hits.append(68)
         dm_hits.append(80)
         dm_hits.append(104)
+
+
+@proc
+def dm_pick():
+    # his moves come in a set order with a little variation, so the duel has a rhythm
+    ad = abs(px - x)
+    pat += 1
+    if rand(1, 4) == 1:
+        pat += 1
+    if dm_stage == 1:
+        k = pat % 6
+        if ad > 150 and k != 4:
+            k = 1
+        if k == 0 or k == 3:
+            dm_combo("cut3")
+        elif k == 1 or k == 5:
+            dm_go("draw")
+        elif k == 2:
+            dm_go("counter")
+            sfxq.append("muk_guard")
+        else:
+            dm_go("grab")
+    else:
+        k = pat % 8
+        if ad > 160 and (k == 0 or k == 4 or k == 7):
+            k = 1
+        if k == 0:
+            dm_combo("storm")
+        elif k == 1 or k == 6:
+            dm_go("tempest")
+        elif k == 2:
+            dm_go("draw")
+        elif k == 3:
+            dm_go("counter")
+            sfxq.append("muk_guard")
+        elif k == 4:
+            dm_combo("rend")
+        elif k == 5:
+            dm_go("grab")
+        else:
+            dm_combo("cut3")
 
 
 @proc
@@ -4257,31 +4323,29 @@ def dm_man():
         return
     eye_y = fy
     exo_dark = min(45, exo_dark + 1)
+    if dm_stage == 1 and ehp <= 10 and st == "move":
+        # halfway down he plants his feet and stops holding back
+        dm_stage = 2
+        dm_go("kiai")
     if st == "move":
         dm_face()
         if acd > 0:
             acd -= 1
-        ad = abs(dx)
         if acd == 0 and pst != "dead":
-            roll = rand(1, 6)
-            if roll == last:
-                roll = roll % 6 + 1
-            last = roll
-            if roll == 1:
-                dm_go("draw")
-            elif roll == 2:
-                dm_go("feint")
-            elif roll == 3 and ad < 120:
-                dm_go("cut3")
-            elif roll == 4:
-                dm_go("grab")
-            elif roll == 5:
-                dm_combo("storm")
-            else:
-                dm_combo("rend")
-        elif ad > 70:
-            x += face * 2.4
-    elif st == "storm" or st == "rend":
+            dm_pick()
+        elif abs(dx) > 80:
+            x += face * (2.6 + 0.8 * (dm_stage == 2))
+    elif st == "kiai":
+        if t == 2:
+            sfxq.append("breach")
+            flash = 24
+            shake = 16
+            shake_amp = 4
+        if t >= 40:
+            st = "move"
+            t = 0
+            acd = 10
+    elif st == "cut3" or st == "storm" or st == "rend" or st == "riposte":
         if hi <= len(dm_hits):
             nh = dm_hits[hi]
             if nh - t > 7:
@@ -4300,17 +4364,23 @@ def dm_man():
                 if hi == len(dm_hits):
                     lh = 1
                     dd = 3
+                dm_lh = t
                 dm_slash(66, dd, lh, 2)
                 hi += 1
-        elif t >= dm_hits[len(dm_hits)] + 14 and (st == "storm" or st == "rend"):
-            dm_rec(40)
+        elif t >= dm_hits[len(dm_hits)] + 14:
+            if st == "riposte":
+                dm_rec(24)
+            else:
+                dm_rec(34)
     elif st == "draw":
         # iaido: a dash-cut along the floor
-        if t < 16:
+        if t < 18:
             dm_face()
             prel = px - x
-        elif t < 24:
-            x += face * 14
+        elif t < 26:
+            x += face * 13
+            if t % 2 == 0:
+                mfx("afterimage", x, fy + 30, face)
             rel = px - x
             if hitdone == 0 and (rel * prel <= 0 or abs(rel) < 30) and py < fy + 40:
                 hitdone = 1
@@ -4320,24 +4390,12 @@ def dm_man():
                     st = "recoil"
                     t = 0
             prel = rel
-        elif t >= 34 and st == "draw":
+        elif t >= 44 and st == "draw":
             dm_rec(26)
-    elif st == "feint":
-        # a false start (no strike), then the real cut
-        if t == 30:
-            dm_face()
-            dm_slash(64, 3, 1, 3)
-        if t >= 42 and st == "feint":
-            dm_rec(24)
-    elif st == "cut3":
-        if t == 3 or t == 15 or t == 27:
-            dm_face()
-        if t == 12 or t == 24:
-            dm_slash(56, 2, 0, 2)
-        elif t == 36:
-            dm_slash(56, 2, 1, 2)
-        if t >= 46 and st == "cut3":
-            dm_rec(22)
+    elif st == "counter":
+        # Tamakiri raised and waiting; hold off and he lowers it, open
+        if t >= 46:
+            dm_rec(34)
     elif st == "grab":
         # the soul grab: a Breach; if it connects it fills Hotaru's Stance
         if t < 24:
@@ -4353,15 +4411,51 @@ def dm_man():
                     sfxq.append("kvoice")
         elif t >= 52:
             dm_rec(30)
+    elif st == "tempest":
+        # he leaps, spins in the air and throws three slash waves at Hotaru, then lands open
+        if t < 12:
+            dm_face()
+        elif t < 30:
+            jz = min(84, jz + 8)
+            x += (0 - x) * 0.04
+        elif t < 72:
+            jz = 84
+            dm_face()
+            if t == 32:
+                sfxq.append("oni_swing")
+            if t == 38 or t == 50 or t == 62:
+                ax = px - x
+                ay = py + 18 - (fy + jz + 30)
+                dd = sqrt(ax * ax + ay * ay) + 0.01
+                pq_t.append("crescent")
+                pq_x.append(x + face * 10)
+                pq_y.append(fy + jz + 30)
+                pq_vx.append(ax / dd * 5.5)
+                pq_vy.append(ay / dd * 5.5)
+                sfxq.append("muk_slash")
+        elif t < 88:
+            jz = max(0, jz - 10)
+        else:
+            jz = 0
+            if t == 88:
+                sfxq.append("oni_slam")
+                shake = 10
+                shake_amp = 4
+            if t >= 92:
+                dm_rec(46)
     elif st == "recover":
         if t >= rec_len:
             st = "move"
             t = 0
-            acd = rand(6, 20)
+            if dm_stage == 1:
+                acd = rand(16, 28)
+            else:
+                acd = rand(8, 16)
     elif st == "recoil":
         if t >= 26:
             dm_rec(8)
     elif st == "broken":
+        jz = 0
         if t >= 100:
             st = "move"
             t = 0
@@ -4548,48 +4642,78 @@ def dm_draw():
     elif role == "man":
         if mk_st == "man" or mk_st == "dead":
             if mk_st == "dead":
-                costume("man_dead")
+                # he crumbles to ash; Tamakiri is left on the floor
+                costume(join("dmf_death_", min(27, floor(dm_t / 3))))
             elif dm_st == "emerge":
                 if dm_t < 30:
                     hide()
                     return
-                costume("man_idle_0")
+                costume("dmf_idle_0")
                 effect("ghost", max(0, 100 - (dm_t - 30) * 5))
             elif dm_st == "draw":
-                if dm_t < 16:
-                    costume("man_wind")
+                if dm_t < 18:
+                    costume("dmf_dash_0")
+                elif dm_t < 26:
+                    costume(join("dmf_dash_", 1 + floor((dm_t - 18) / 3) % 3))
+                elif dm_t < 34:
+                    costume("dmf_dash_4")
                 else:
-                    costume("man_cut")
-            elif dm_st == "feint":
-                if dm_t < 14:
-                    costume("man_feint")
-                elif dm_t < 30:
-                    costume("man_wind")
+                    costume("dmf_dash_5")
+            elif dm_st == "riposte" and dm_t < 6:
+                costume(join("dmf_parry_", 2 + floor(dm_t / 3)))
+            elif dm_st == "cut3" or dm_st == "storm" or dm_st == "rend" or dm_st == "riposte":
+                if dm_t - dm_lh < 9:
+                    costume(join("dmf_slash_", 2 + floor((dm_t - dm_lh) / 3)))
+                elif dm_hi <= len(dm_hits) and dm_hits[dm_hi] - dm_t <= 6:
+                    costume("dmf_slash_1")
+                elif dm_hi <= len(dm_hits) and dm_hits[dm_hi] - dm_t <= 12:
+                    costume("dmf_slash_0")
                 else:
-                    costume("man_cut")
-            elif dm_st == "cut3":
-                if dm_t % 12 < 9:
-                    costume("man_wind")
+                    costume("dmf_slash_5")
+            elif dm_st == "counter":
+                if dm_t < 6:
+                    costume("dmf_parry_0")
+                elif dm_t < 40:
+                    costume("dmf_parry_1")
                 else:
-                    costume("man_cut")
-            elif dm_st == "storm" or dm_st == "rend":
-                if dm_tell == 1:
-                    costume("man_wind")
-                elif dm_t > 4:
-                    costume("man_cut")
-                else:
-                    costume("man_feint")
+                    costume(join("dmf_parry_", min(5, 4 + floor((dm_t - 40) / 4))))
+            elif dm_st == "kiai":
+                costume("dmf_parry_1")
             elif dm_st == "grab":
-                if dm_t < 24:
-                    costume("man_grab0")
+                if dm_t < 12:
+                    costume("dmf_grab_0")
+                elif dm_t < 24:
+                    costume("dmf_grab_1")
+                elif dm_t < 29:
+                    costume("dmf_grab_2")
+                elif dm_t < 34:
+                    costume("dmf_grab_3")
+                elif dm_t < 44:
+                    costume("dmf_grab_4")
                 else:
-                    costume("man_grab1")
-            elif dm_st == "broken" or dm_st == "recoil":
-                costume("man_hurt")
-            elif dm_st == "move" and abs(px - mk_x) > 70:
-                costume(join("man_walk_", floor(frame / 8) % 2))
+                    costume("dmf_grab_5")
+            elif dm_st == "tempest":
+                if dm_t < 12:
+                    costume(join("dmf_jump_", floor(dm_t / 6)))
+                elif dm_t < 30:
+                    costume(join("dmf_jump_", min(4, 2 + floor((dm_t - 12) / 6))))
+                elif dm_t < 72:
+                    costume(join("dmf_whirlwind_", 1 + floor(dm_t / 3) % 4))
+                elif dm_t < 88:
+                    costume(join("dmf_jump_", 5 + floor((dm_t - 72) / 8)))
+                else:
+                    costume("dmf_jump_7")
+            elif dm_st == "broken":
+                if dm_t < 8:
+                    costume(join("dmf_kneel_stunned_", floor(dm_t / 4)))
+                else:
+                    costume(join("dmf_kneel_stunned_", 2 + floor(dm_t / 5) % 6))
+            elif dm_st == "recoil":
+                costume(join("dmf_hurt_", 2 + floor(dm_t / 6) % 2))
+            elif dm_st == "move" and abs(px - mk_x) > 80:
+                costume(join("dmf_run_", floor(frame / 3) % 8))
             else:
-                costume(join("man_idle_", floor(frame / 12) % 2))
+                costume(join("dmf_idle_", floor(frame / 5) % 12))
             if mk_st == "dead":
                 effect("brightness", 0)
             elif dm_tell == 1:
@@ -4598,14 +4722,16 @@ def dm_draw():
                 effect("brightness", 60)
             elif dm_st == "grab" and dm_t < 24:
                 effect("brightness", 40 * (frame % 6 < 3))
+            elif dm_st == "kiai":
+                effect("brightness", 50 * (frame % 4 < 2))
             if dm_fc == 1:
                 point(90)
             else:
                 point(-90)
-            if dm_st == "broken":
+            if dm_st == "broken" and dm_t > 8:
                 goto(mk_x + shx + (frame % 4 < 2) * 2 - 1, fy + shy)
             else:
-                goto(mk_x + shx, fy + shy)
+                goto(mk_x + shx, fy + dm_z + shy)
             show()
         else:
             hide()
