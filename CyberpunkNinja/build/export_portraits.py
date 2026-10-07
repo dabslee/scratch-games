@@ -318,6 +318,12 @@ def main():
         out = os.path.join(ART, 'src', 'daimyo_portrait.png')
         clean_keyed(src, out)
         install_keyed(sheet, 'daimyo_neutral', out, ('night1', 'purple1', 'gold'), key=(255, 0, 255))
+    if '--mukuro' in sys.argv:
+        # Mukuro keeps his old navy-to-blood-red backdrop, with red flecks
+        src = sys.argv[sys.argv.index('--mukuro') + 1]
+        out = os.path.join(ART, 'src', 'mukuro_portrait.png')
+        clean_keyed(src, out)
+        install_keyed(sheet, 'mukuro_neutral', out, ('night1', 'red1', 'red2'), key=(255, 0, 255))
     for k, arg in enumerate(sys.argv):
         if arg == '--framed':
             install_framed(sheet, sys.argv[k + 1], sys.argv[k + 2])
