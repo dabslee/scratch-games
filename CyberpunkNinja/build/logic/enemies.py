@@ -795,6 +795,7 @@ if boss_dead == 0:
     acd = 40
     phase = 1
     flash_t = 0
+    ha = 0
     boss_hp = 20
     boss_int = 0
     is_clone = 1
@@ -5269,6 +5270,7 @@ def hm_face():
 def hm_go(s2):
     st = s2
     t = 0
+    ha = 0
     hm_face()
 
 
@@ -5304,6 +5306,7 @@ def hm_beaten():
 @proc
 def hm_update():
     t += 1
+    ha += 1
     if st == "beaten":
         if harm_dead == 2:
             # she gets up and limps off, away from Hotaru
@@ -5476,6 +5479,8 @@ def hm_update():
             t = 0
     elif st == "burst":
         ent_brk[slot] = 1
+        if t >= 12 and t < 24 and ad > 26:
+            x += face * 3
         if t == 24:
             pq_t.append("burst")
             pq_x.append(x)
@@ -5529,6 +5534,7 @@ def hm_update():
 
 @proc
 def hm_draw():
+    # hand-drawn frames at 12 fps (2.5 game frames each); harmj_ is her juiced look
     pre = "harm_"
     if juiced == 1:
         pre = "harmj_"
@@ -5536,32 +5542,41 @@ def hm_draw():
         hide()
         return
     if st == "beaten":
-        costume("harm_dead")
+        costume(join("harm_death_", min(11, floor(t / 2.5))))
     elif st == "limp":
-        costume(join("harm_limp_", floor(fr) % 2))
+        costume(join("harm_run_", floor(fr * 4) % 8))
     elif st == "throw":
+        # 0 takes a vial, 1-2 wind up, 3 lets go (the vial spawns at t 18), 4-7 follow through
         if t < 18:
-            costume(join(pre, "throw0"))
+            costume(join(pre, join("throw_", floor(t / 6))))
         else:
-            costume(join(pre, "throw1"))
+            costume(join(pre, join("throw_", min(7, 3 + floor((t - 18) / 3)))))
     elif st == "slash":
+        # 0-1 wind up, 2 is the cut (t 12), 3-5 follow through
         if t < 12:
-            costume(join(pre, "slash0"))
+            costume(join(pre, join("slash_", floor(t / 6))))
         else:
-            costume(join(pre, "slash1"))
+            costume(join(pre, join("slash_", min(5, 2 + floor((t - 12) / 3)))))
     elif st == "stim" or st == "juice":
         if t < 20:
-            costume(join(pre, "stim0"))
+            costume(join(pre, "burst_0"))
         else:
-            costume(join(pre, "stim1"))
+            costume(join(pre, "burst_1"))
     elif st == "burst":
-        costume(join(pre, "burst"))
-    elif st == "hurt" or st == "broken":
-        costume(join(pre, "hurt"))
-    elif st == "move" and abs(px - x) > 6:
-        costume(join(join(pre, "walk_"), floor(fr) % 2))
+        if t < 12:
+            costume(join(pre, join("burst_", floor(t / 6))))
+        elif t < 24:
+            costume(join(pre, join("burst_", 2 + floor((t - 12) / 3) % 3)))
+        else:
+            costume(join(pre, join("burst_", min(7, 5 + floor((t - 24) / 5)))))
+    elif st == "hurt":
+        costume(join(pre, join("hurt_", min(3, floor(ha / 3)))))
+    elif st == "broken":
+        costume(join(pre, "hurt_3"))
+    elif (st == "move" and abs(px - x) > 6) or st == "hop":
+        costume(join(pre, join("run_", floor(fr * 2) % 8)))
     else:
-        costume(join(join(pre, "idle_"), floor(t / 15) % 2))
+        costume(join(pre, join("idle_", floor(frame / 2.5) % 12)))
     if st == "broken":
         goto(x + shx + (frame % 4 < 2) * 2 - 1, y + z + shy)
     else:

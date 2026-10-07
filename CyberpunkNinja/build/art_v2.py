@@ -716,6 +716,87 @@ HARM_POSES = {
 }
 
 
+HARM_FRAMES = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'art', 'src', 'harmacist_frames')
+HARM_ANCHOR = (40, 61)  # her feet in each 80x64 cell
+
+
+def _components(im):
+    px = im.load()
+    seen, comps = set(), []
+    for y in range(im.height):
+        for x in range(im.width):
+            if px[x, y][3] and (x, y) not in seen:
+                stack, comp = [(x, y)], []
+                seen.add((x, y))
+                while stack:
+                    a, b = stack.pop()
+                    comp.append((a, b))
+                    for q in ((a + 1, b), (a - 1, b), (a, b + 1), (a, b - 1), (a + 1, b + 1), (a - 1, b - 1), (a + 1, b - 1), (a - 1, b + 1)):
+                        if 0 <= q[0] < im.width and 0 <= q[1] < im.height and q not in seen and px[q][3]:
+                            seen.add(q)
+                            stack.append(q)
+                comps.append(comp)
+    return comps
+
+
+def harm_frames():
+    """The hand-drawn Harmacist animations: {anim: [80x64 frames]}, facing right. The
+    vial already in flight is taken out of the throw frames, since the game throws
+    its own."""
+    out = {}
+    for folder in sorted(os.listdir(HARM_FRAMES)):
+        if not os.path.isdir(os.path.join(HARM_FRAMES, folder)):
+            continue
+        anim = folder.split('_', 1)[1]
+        files = sorted(os.listdir(os.path.join(HARM_FRAMES, folder)))
+        out[anim] = [Image.open(os.path.join(HARM_FRAMES, folder, f)).convert('RGBA') for f in files]
+    for i in (4, 5, 6):
+        im = out['throw'][i]
+        comps = sorted(_components(im), key=len)
+        px = im.load()
+        for comp in comps[:-1]:
+            for q in comp:
+                px[q] = (0, 0, 0, 0)
+    return out
+
+
+def harm_juiced(im, frame=0):
+    """After her stim: the visor burns red and red flecks crawl over the coat."""
+    im = im.copy()
+    px = im.load()
+    box = im.getbbox()
+    if not box:
+        return im
+    solid = {}
+    for y in range(box[1], box[3]):
+        for x in range(box[0], box[2]):
+            if px[x, y][3]:
+                solid[px[x, y][:3]] = solid.get(px[x, y][:3], 0) + 1
+    if max(solid.values()) > 0.6 * sum(solid.values()):
+        return im  # a flash frame (all white or all red): leave it
+    lime, glow = C('lime'), (236, 255, 196)
+    top = box[1]
+    for y in range(top, min(top + 10, box[3])):
+        x = box[0]
+        while x < box[2]:
+            if px[x, y][:3] in (lime, glow):
+                x2 = x
+                while x2 < box[2] and px[x2, y][3] and px[x2, y][:3] in (lime, glow):
+                    x2 += 1
+                if x2 - x >= 3:  # a visor, not a vial
+                    for k in range(x, x2):
+                        px[k, y] = C('red3') + (255,) if px[k, y][:3] == lime else (255, 200, 180, 255)
+                x = x2
+            x += 1
+    coat = C('white')
+    cx = (box[0] + box[2]) // 2
+    for k in range(3):
+        fx, fy = cx - 4 + k * 4, top + 13 + (frame + k * 2) % 7
+        if 0 <= fx < im.width and 0 <= fy < im.height and px[fx, fy][:3] == coat:
+            px[fx, fy] = C('red3') + (255,)
+    return im
+
+
 def harmacist(pose='idle', frame=0, juiced=False):
     """The Harmacist, facing right, 34x36, feet at HARM_FOOT."""
     im = Image.new('RGBA', (HARM_W, HARM_H), (0, 0, 0, 0))

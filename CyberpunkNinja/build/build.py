@@ -69,6 +69,12 @@ def costume_small(im_1x, name, cx1, cy1):
     return make_costume(name, im_1x.resize((im_1x.width * 3, im_1x.height * 3), Image.NEAREST), int(cx1 * 3), int(cy1 * 3), FILES)
 
 
+def costume_crop(im_1x, name, cx1, cy1):
+    """costume_small, trimmed to the drawn pixels (big animation cells are mostly empty)."""
+    box = im_1x.getbbox() or (0, 0, 1, 1)
+    return costume_small(im_1x.crop(box), name, cx1 - box[0], cy1 - box[1])
+
+
 def rgba(name, a=255):
     return P[name] + (a,)
 
@@ -699,13 +705,11 @@ dobu_cos += [costume_from(art_v2.dobu_arm(i), 'dobu_arm_%d' % i, 0, 11) for i in
 dobu_cos.append(costume_from(art_v2.dobu_arm(0, True), 'dobu_stump', 0, 11))
 sprite('Dobunushi', dobu_cos, CL + FX + EN + enemies.DOBU)
 harm_cos = []
-for j, pre in ((False, 'harm_'), (True, 'harmj_')):
-    for p in art_v2.HARM_POSES:
-        if p in ('idle', 'walk', 'limp'):
-            harm_cos += [costume_small(art_v2.harmacist(p, i, j), '%s%s_%d' % (pre, p, i), *art_v2.HARM_FOOT) for i in range(2)]
-        else:
-            harm_cos.append(costume_small(art_v2.harmacist(p, 0, j), pre + p, *art_v2.HARM_FOOT))
-harm_cos.append(costume_small(art_v2.harmacist('dead'), 'harm_dead', *art_v2.HARM_FOOT))
+for _anim, _fs in art_v2.harm_frames().items():
+    for _i, _im in enumerate(_fs):
+        harm_cos.append(costume_crop(_im, 'harm_%s_%d' % (_anim, _i), *art_v2.HARM_ANCHOR))
+        if _anim != 'death':
+            harm_cos.append(costume_crop(art_v2.harm_juiced(_im, _i), 'harmj_%s_%d' % (_anim, _i), *art_v2.HARM_ANCHOR))
 sprite('Harmacist', harm_cos, CL + FX + EN + enemies.HARM)
 sprite('Mukuro', copy_costumes('Mukuro') + [mk_slump()], CL + FX + EN + enemies.MUKURO)
 rj_cut = lambda im: im.crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT))
