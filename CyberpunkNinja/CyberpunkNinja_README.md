@@ -9,14 +9,14 @@ CONTROLS:
 - Arrow keys or A / D to run. Up or W to jump (hold for a higher jump). Jump into a wall to cling to it, then jump again to wall jump. Thin platforms can be jumped up through. To drop down through one, double-tap Down or Phase Step downward (Down + Space).
 - Left click (or X / J) to attack. Keep pressing to chain a 4-hit combo. Up + attack is a rising Launcher.
 - Space (or Z / K) to Phase Step: an invincible dash that passes through lasers and attacks. Hold the arrow keys to aim it, including diagonals and downward. You have 2 charges, shown by the color of Hotaru's scarf and the pips under her health bar; they refill when you land or perfectly deflect.
-- Attack during or right after a Phase Step for a Heavy Strike, which breaks guards and builds a lot of enemy Stance.
+- Attack during or right after a Phase Step for a Heavy Strike. It can't cut through a guard or a deflect, but it builds a lot of enemy Stance (and staggers some foes, like Big Oni and Lady Luck).
 - Down (or S / L) to deflect right before a hit lands. Hold it to block, but blocking builds Hotaru's own Stance (the gold bar at the bottom). If her Stance fills, it breaks: she overheats and is defenseless for a moment. Press Up to jump out of a block, or Space to dash out of it.
 - R to drink from the Nano-Gourd and heal. E to talk and to rest at Shrine Terminals. E, Enter or Space advances dialogue. P to pause.
 - Scratch can't detect the Shift or Esc keys, so Phase Step is on Space and Pause is on P.
 
 TIPS:
 - Enemies flash white just before an attack lands: that's the moment to deflect.
-- Every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure (deflects, Heavy Strikes, returned projectiles), then slowly settles. When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution. Regular enemies die instantly, and bosses lose a whole health segment. Every Execution also refills one gourd charge and clears Hotaru's own Stance.
+- Every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure (deflects, Heavy Strikes, returned projectiles), then slowly settles. Every fighter's settles more slowly the lower their health (down to half speed), and Hotaru's only while her guard is down. When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution. Regular enemies die instantly, and bosses lose a whole health segment. Every Execution also refills one gourd charge and clears Hotaru's own Stance.
 - A red diamond over an enemy means a Breach attack, which can't be blocked or deflected. Guarding against one still costs you Stance on top of the hit, so jump or Phase Step instead. Phase Step through it (or jump over shockwaves).
 - Shrine Terminals (the hacked vending machines) heal you, refill your gourd, and become your respawn point.
 - In the Sewers, glowing runoff burns: jump it or Phase Step across. Each room starts at low tide. When the pumps gurgle and the TIDE RISING warning flashes at the bottom of the screen, the sludge is about to rise; get up high and wait it out. Drainlings leap at you from mid range and spit sludge from afar (deflect the spit back).

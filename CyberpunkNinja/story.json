@@ -104,7 +104,7 @@
         {
           "name": "Samurai mech",
           "mechanics": "A red samurai mech with a glowing blue katana. Deflect the iaido draw and the 3-slash strings, jump the shockwaves when it leaps and stomps, Phase Step through the thruster charge, and strike while it recovers.",
-          "ally": "kuro_spared: Kuro (in Mukuro's body) fights like Hotaru: he flanks the armor, deflects, Phase Steps Breaches, cuts into its openings and Heavy Strikes its guard. He has 4 hidden HP and gets back up once per Memory Shard collected (a shard burns above him)."
+          "ally": "kuro_spared: Kuro (in Mukuro's body) fights like Hotaru: he flanks the armor, deflects, Phase Steps Breaches, cuts into its openings and Heavy Strikes its guard. He goes down in one hit, and gets back up once per Memory Shard collected (a shard burns above him)."
         },
         {
           "name": "Castle defenses",
@@ -169,9 +169,9 @@
     "core_combat": [
       "Attack chains into a 4-hit combo; Up + attack is a rising Launcher.",
       "Phase Step (Space): an invincible, aimable dash with 2 charges (shown by the scarf color). Passes through lasers and attacks; refills on landing or a perfect deflect.",
-      "Heavy Strike: attack during or right after a Phase Step. Breaks guards and builds a lot of enemy Stance.",
+      "Heavy Strike: attack during or right after a Phase Step. It can't cut through a guard or a deflect, but it builds a lot of enemy Stance.",
       "Deflect: press Down right before a hit lands (enemies flash white just before). A perfect deflect builds the attacker's Stance. Holding Down blocks, but blocking builds Hotaru's Stance.",
-      "Stance: every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure, then slowly settles. When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution (instant kill for regular enemies, a whole health segment for bosses). Every Execution also refills one gourd charge and clears Hotaru's Stance. When Hotaru's Stance breaks, she overheats and staggers.",
+      "Stance: every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure, then slowly settles (more slowly the lower a fighter's health, down to half speed; Hotaru's only with her guard down). When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution (instant kill for regular enemies, a whole health segment for bosses). Every Execution also refills one gourd charge and clears Hotaru's Stance. When Hotaru's Stance breaks, she overheats and staggers.",
       "Breach: a red diamond marks an attack that cannot be blocked or deflected (guarding against one still costs Stance). Phase Step through it or jump it."
     ],
     "survival": [

@@ -707,7 +707,10 @@ def h_update():
             hitrow = 0
     int_t += 1
     if int_t > 60 and integ > 0 and st != "stagger" and t % 15 == 0:
-        integ -= 1
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     hit_t += 1
     if hit_t > 30:
         hitrow = 0
@@ -860,7 +863,7 @@ def o_update():
             vuln = 1
         if (st == "swing" and t >= 20) or (st == "slam" and t >= 44):
             vuln = 1
-        if vuln == 1 or hk == "heavy":
+        if vuln == 1:
             ehp -= ent_dmg[slot]
             flash_t = 3
         else:
@@ -968,7 +971,10 @@ def o_update():
             acd = 20
     int_t += 1
     if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
-        integ -= 1
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     ent_x[slot] = x
     ent_int[slot] = integ
     boss_hp = ehp
@@ -1269,7 +1275,10 @@ def c_update():
             t = 0
     int_t += 1
     if int_t > 60 and integ > 0 and st != "stagger" and t % 15 == 0:
-        integ -= 1
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     ent_x[slot] = x
     ent_y[slot] = y + z
     ent_int[slot] = integ
@@ -1461,18 +1470,20 @@ def l_update():
     if ent_dmg[slot] > 0:
         hk = ent_hk[slot]
         vulnerable()
-        if vuln == 1 or hk == "projectile" or (hk == "heavy" and st != "jackpot"):
+        if vuln == 1 or hk == "projectile":
             ehp -= ent_dmg[slot]
             flash_t = 3
-            if hk == "heavy" and vuln == 0:
+        else:
+            sfxq.append("clang")
+            cfx("deflect", x + face * 12, y + 26, 0 - face)
+            if hk == "heavy" and st != "jackpot":
+                # a Heavy Strike doesn't cut through her guard, but it rocks her back
                 st = "stagger"
                 t = 0
                 slot_state = "idle"
                 sfxq.append("oni_hurt")
-        else:
-            sfxq.append("clang")
-            cfx("deflect", x + face * 12, y + 26, 0 - face)
-            guard_t = 8
+            else:
+                guard_t = 8
         gain = ent_idmg[slot]
         if vuln == 0 and hk != "projectile" and hk != "heavy":
             gain = gain * 0.4
@@ -1647,7 +1658,10 @@ def l_update():
         slot_t += 1
     int_t += 1
     if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
-        integ -= 1
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     if x < -200:
         x = -200
     if x > 200:
@@ -2084,7 +2098,10 @@ def w_update():
             t = 0
     int_t += 1
     if int_t > 60 and integ > 0 and st != "stagger" and t % 15 == 0:
-        integ -= 1
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / (6 + 2 * elite) / 2
+        if integ < 0:
+            integ = 0
     hit_t += 1
     if hit_t > 40:
         guard_n = 0
@@ -2649,7 +2666,10 @@ def m_update():
                 x = min(max(x - face * 30, -205), 205)
     int_t += 1
     if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
-        integ = max(0, integ - 1)
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     hit_t += 1
     if hit_t > 40:
         guard_n = 0
@@ -3091,7 +3111,10 @@ def rj_update():
             idle_len = 16
     int_t += 1
     if int_t > 90 and integ > 0 and st != "overload" and t % 20 == 0:
-        integ -= 1
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     ent_x[slot] = rj_bx
     ent_int[slot] = integ
     boss_hp = ceil(ehp)
@@ -3580,7 +3603,10 @@ def kr_update():
             acd = 16
     int_t += 1
     if int_t > 75 and integ > 0 and st != "broken" and t % 20 == 0:
-        integ = max(0, integ - 1)
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     hit_t += 1
     if hit_t > 40:
         guard_n = 0
@@ -3750,7 +3776,7 @@ if daimyo_dead == 0:
     mk_st = "hidden"
     ally_x = 999
     ally_st = "fight"
-    ally_hp = 4
+    ally_hp = 1
     ally_lives = shards
     ally_rev = 0
     ally_inv = 0
@@ -3898,7 +3924,7 @@ def ally_hurt():
         if ally_lives > 0:
             # a Memory Shard burns to put him back on his feet
             ally_lives -= 1
-            ally_hp = 4
+            ally_hp = 1
             ally_rev = 50
             ally_inv = 50
             sfxq.append("sync")
@@ -4032,7 +4058,10 @@ def dm_update():
         dm_man()
     int_t += 1
     if int_t > 80 and integ > 0 and st != "broken" and t % 20 == 0:
-        integ = max(0, integ - 1)
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     x = min(max(x, -200), 200)
     # hitboxes cover the whole figure: the mech stands about 150 tall, the eye is about 60 across, the man about 64
     if dm_ph == 1:
@@ -5050,7 +5079,10 @@ def db_update():
             db_close()
     int_t += 1
     if int_t > 75 and integ > 0 and ent_stag[cslot] == 0 and t % 20 == 0:
-        integ = max(0, integ - 1)
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[cslot] / 2
+        if integ < 0:
+            integ = 0
     ent_int[cslot] = integ
     boss_hp = ehp
     boss_int = integ * 16 / imax
@@ -5616,7 +5648,10 @@ def hm_update():
             acd = 10
     int_t += 1
     if int_t > 150 and integ > 0 and st != "broken" and t % 45 == 0:
-        integ = max(0, integ - 1)
+        # hurt fighters settle slower, down to half speed
+        integ -= 0.5 + ehp / ent_hp[slot] / 2
+        if integ < 0:
+            integ = 0
     hit_t += 1
     if hit_t > 40:
         hitrow = 0

@@ -171,9 +171,12 @@ def timers():
         land_t -= 1
     air_t += 1
     heat_idle += 1
-    # Stance only recovers with her guard down: never while blocking
+    # Stance only recovers with her guard down: never while blocking. The more hurt
+    # she is the slower it settles, down to half speed near empty
     if heat_idle > 30 and heat > 0 and pst != "overheat" and pst != "block" and pst != "deflect" and frame % 6 == 0:
-        heat -= 1
+        heat -= 0.5 + hp / 20
+        if heat < 0:
+            heat = 0
 
 
 # ------------------------------------------------------------ states
