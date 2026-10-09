@@ -71,6 +71,11 @@ def hit_player(dmg, breach, sx):
     hq_t.append(res)
     hq_d.append(dmg)
     hq_x.append(sx)
+    if breach == 1 and res == "hit" and (pparry > 0 or (pblock == 1 and (sx - px) * pface >= 0)):
+        # a Breach goes through her guard, but meeting it with one still costs Stance
+        hq_t.append("guardbreak")
+        hq_d.append(0)
+        hq_x.append(sx)
 
 
 @proc

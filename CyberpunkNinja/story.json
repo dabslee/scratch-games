@@ -113,7 +113,7 @@
         },
         {
           "name": "The Daimyo, in person",
-          "mechanics": "The eye crashes to the floor and stays there, going dark, as he steps out to duel with Tamakiri. The fight runs on a beat. Every cut string and the iaido draw open on a 0.9 s windup. First half: a da-da-DA 3-cut string, an iaido draw that dashes across the floor (deflect it as he passes), a counter stance (striking into it gets you riposted; wait it out and he lowers his guard for a brief opening), and a soul-grab Breach: Phase Step through it, or he holds Hotaru up for a second, draining 3 health and 9 Stance, then throws her. His openings are short, so the duel is won by deflecting. At half health he lets out a kiai and speeds up, adding the Tempest (he leaps into the air, spins in a whirlwind and throws three red slash waves at Hotaru; deflect them back into him, then punish the long landing), a 7-cut storm string, and a 5-cut rend string where he blinks behind Hotaru; the 3-cut string drops out. He flashes white before every cut, and breaking his Stance drops him to one knee.",
+          "mechanics": "The eye crashes to the floor and stays there, going dark, as he steps out to duel with Tamakiri. The fight runs on a beat. Every cut string and the iaido draw open on a 0.9 s windup. First half: a da-da-DA 3-cut string, an iaido draw that dashes across the floor (deflect it as he passes), a counter stance (striking into it gets you riposted; wait it out and he lowers his guard for a brief opening), and a soul-grab Breach: Phase Step through it, or he holds Hotaru up for a second, draining 3 health (which heals him) and 9 Stance, then throws her. His openings are short, so the duel is won by deflecting. At half health he lets out a kiai and speeds up, adding the Tempest (he leaps into the air, spins in a whirlwind and throws three red slash waves at Hotaru; deflect them back into him, then punish the long landing), a 7-cut storm string, and a 5-cut rend string where he blinks behind Hotaru; the 3-cut string drops out. He flashes white before every cut, and breaking his Stance drops him to one knee.",
           "ally": "None in either branch."
         }
       ]
@@ -172,7 +172,7 @@
       "Heavy Strike: attack during or right after a Phase Step. Breaks guards and builds a lot of enemy Stance.",
       "Deflect: press Down right before a hit lands (enemies flash white just before). A perfect deflect builds the attacker's Stance. Holding Down blocks, but blocking builds Hotaru's Stance.",
       "Stance: every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure, then slowly settles. When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution (instant kill for regular enemies, a whole health segment for bosses). Every Execution also refills one gourd charge and clears Hotaru's Stance. When Hotaru's Stance breaks, she overheats and staggers.",
-      "Breach: a red diamond marks an attack that cannot be blocked or deflected. Phase Step through it or jump it."
+      "Breach: a red diamond marks an attack that cannot be blocked or deflected (guarding against one still costs Stance). Phase Step through it or jump it."
     ],
     "survival": [
       "Nano-Gourd (R) heals; upgraded to 4 charges after Big Oni.",

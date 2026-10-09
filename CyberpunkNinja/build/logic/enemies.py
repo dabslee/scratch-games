@@ -4445,6 +4445,10 @@ def dm_man():
                     st = "hold"
                     t = 0
                     dm_hold()
+                    if pparry > 0 or (pblock == 1 and (x - px) * pface >= 0):
+                        hq_t.append("guardbreak")
+                        hq_d.append(0)
+                        hq_x.append(x)
                     hq_t.append("held")
                     hq_d.append(0)
                     hq_x.append(x)
@@ -4456,10 +4460,13 @@ def dm_man():
         if pst != "held":
             dm_rec(15)
         elif t == 5 or t == 15 or t == 25:
-            # 3 damage and 9 Stance over the second
+            # 3 damage and 9 Stance over the second, and every point of it heals him
             hq_t.append("squeeze")
             hq_d.append(1)
             hq_x.append(x)
+            ehp = min(20, ehp + 1)
+            cfx("heal", x, fy + 40, face)
+            sfxq.append("heal")
         elif t >= 30:
             hq_t.append("thrown")
             hq_d.append(0)

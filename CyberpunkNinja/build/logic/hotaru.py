@@ -734,6 +734,8 @@ def proc_hits():
             hazard(hq_d[hi])
         elif ht == "sting":
             sting(hq_d[hi])
+        elif ht == "guardbreak":
+            guard_break()
         elif ht == "held":
             got_held()
         elif ht == "squeeze":
@@ -806,6 +808,20 @@ def take_hit(dmg, sx):
     hitstop = 3
     if hp <= 0:
         die()
+
+
+@proc
+def guard_break():
+    # she tried to guard a Breach: the hit lands, and her Stance takes a block's worth
+    if pst == "dead":
+        return
+    if opt_heat == 1:
+        heat += 1.5
+    else:
+        heat += 3
+    heat_idle = 0
+    if heat >= 16:
+        overheat()
 
 
 @proc
