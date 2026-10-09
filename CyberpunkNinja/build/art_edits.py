@@ -445,38 +445,51 @@ def _katana(orig, out):
         if len(solid) >= 3:
             po[q] = SUIT
     pt = lambda t: (int(round(mx + ux * t)), int(round(my + uy * t)))
-    guard_t = max(t0, th) + 1
-    # grip and pommel behind the guard
-    for t in range(0, 4):
-        x, y = pt(guard_t - 1 - t)
-        if 0 <= x < W and 0 <= y < H:
-            po[x, y] = GUARD if t == 3 else BLACK
-    # the guard, across the blade
-    gx, gy = pt(guard_t)
-    for s in (-1, 0, 1):
-        x, y = int(round(gx - uy * s)), int(round(gy + ux * s))
-        if 0 <= x < W and 0 <= y < H:
-            po[x, y] = GUARD
-    # the blade, outlined where it stands clear of his body
-    t = guard_t + 1
-    blade = []
-    while t <= t1 + 2:
-        blade.append(pt(t))
-        t += 0.5
-    blade = list(dict.fromkeys(blade))
-    for i, (x, y) in enumerate(blade):
-        if 0 <= x < W and 0 <= y < H:
-            po[x, y] = BLADE_DK if i < 2 else BLADE
-    nx, ny = -uy, ux
-    for x, y in blade:
-        for s, c in ((1, OUTLINE), (-1, BLACK)):
-            q = (int(round(x + nx * s)), int(round(y + ny * s)))
-            if 0 <= q[0] < W and 0 <= q[1] < H and not po[q][3]:
-                po[q] = c
-    tip = blade[-1]
-    q = (int(round(tip[0] + ux)), int(round(tip[1] + uy)))
-    if 0 <= q[0] < W and 0 <= q[1] < H and not po[q][3]:
-        po[q] = OUTLINE
+
+    def line(p, q):
+        # a one-pixel line (Bresenham), like a hand-drawn blade
+        (x0, y0), (x1, y1) = p, q
+        dx, dy = abs(x1 - x0), -abs(y1 - y0)
+        sx, sy = (1 if x1 > x0 else -1), (1 if y1 > y0 else -1)
+        err, out = dx + dy, []
+        while True:
+            out.append((x0, y0))
+            if (x0, y0) == (x1, y1):
+                return out
+            e2 = 2 * err
+            step_x, step_y = e2 >= dy, e2 <= dx
+            if step_x:
+                err += dy
+                x0 += sx
+            if step_x and step_y:
+                out.append((x0, y0))  # no corner-only joins: the blade stays one solid strip
+            if step_y:
+                err += dx
+                y0 += sy
+
+    def put(q, c, only_clear=False):
+        if 0 <= q[0] < W and 0 <= q[1] < H and (not only_clear or not po[q][3]):
+            po[q] = c
+
+    guard = pt(max(t0, th) + 1)
+    tip = pt(t1 + 2)
+    blade = line(guard, tip)[1:]
+    steep = abs(tip[1] - guard[1]) >= abs(tip[0] - guard[0])
+    # the blade: darker steel for its first stretch out of the guard, as in the edit
+    for i, q in enumerate(blade):
+        put(q, BLADE_DK if i < 3 else BLADE)
+    # outlined one pixel to each side, ink on one side and black on the other
+    for q in blade:
+        a, b = ((q[0] - 1, q[1]), (q[0] + 1, q[1])) if steep else ((q[0], q[1] - 1), (q[0], q[1] + 1))
+        put(a, OUTLINE, True)
+        put(b, BLACK, True)
+    put((tip[0] + int(round(ux)), tip[1] + int(round(uy))), OUTLINE, True)
+    # a three-pixel guard across the blade, a short black grip and a brown pommel
+    for s_ in (-1, 0, 1):
+        put((guard[0] + s_, guard[1]) if steep else (guard[0], guard[1] + s_), GUARD)
+    grip = line(guard, pt(max(t0, th) + 1 - 4))[1:]
+    for i, q in enumerate(grip):
+        put(q, GUARD if i == len(grip) - 1 else BLACK)
 
 
 def _drop_strays(im):
