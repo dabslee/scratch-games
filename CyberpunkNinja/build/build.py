@@ -23,6 +23,7 @@ import art_ch4  # noqa: E402
 import art_ch56  # noqa: E402
 import art_ch7  # noqa: E402
 import art_v2  # noqa: E402
+import art_edits  # noqa: E402
 import assets  # noqa: E402
 import dialogue  # noqa: E402
 import export_portraits  # noqa: E402
@@ -669,12 +670,15 @@ drain_cos = []
 for i, c in enumerate(ST.costumes('HannyaBoy')):
     im = art_v2.drainling_frame(ST.image_1x('HannyaBoy', c['name']), i)
     drain_cos.append(make_costume('d_' + c['name'], up4(im), c['rotationCenterX'], c['rotationCenterY'], FILES))
-sprite('HannyaBoy', copy_costumes('HannyaBoy') + recolored('HannyaBoy', art_ch4.GUARD_MAP, 'g_') + toned('HannyaBoy', MEM_RAMP, 'm_')
+# from the Vaults on, the grunts are men in black suits (u_); in the Hollow Floor, a memory of one (m_)
+suit = art_edits.suit_costumes(ST, 'u_')
+suit_mem = [('m_' + n[2:], art_ch56.tone(im, MEM_RAMP, stretch=True), cx, cy) for n, im, cx, cy in suit]
+sprite('HannyaBoy', copy_costumes('HannyaBoy') + [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in suit + suit_mem]
        + drain_cos, CL + FX + EN + enemies.HANNYA)
 sprite('BigOni', copy_costumes('BigOni'), CL + FX + EN + enemies.ONI)
 SPRAYER_MAP = {'slate3': 'white', 'slate2': 'steel', 'steel': 'green2', 'slate1': 'green1', 'red3': 'lime'}
 sprite('ScavDrone', copy_costumes('ScavDrone') + recolored('ScavDrone', SPRAYER_MAP, 'p_'), CL + FX + EN + enemies.DRONE)
-sprite('LadyLuck', recolored('Mukuro', art_ch2.LUCK_MAP), CL + FX + EN + enemies.LUCK)
+sprite('LadyLuck', [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in art_edits.luck_costumes(ST)], CL + FX + EN + enemies.LUCK)
 sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP) + toned('Mukuro', MEM_RAMP, 'm_') + recolored('Mukuro', art_v2.TRAINEE_MAP, 's_')
        + recolored('Mukuro', art_v2.SOLDIER_MAP, 'h_'), CL + FX + EN + enemies.WARDEN)
 sprite('KuroBoss', copy_costumes('Kuro'), CL + FX + EN + enemies.KUROBOSS)
@@ -727,7 +731,7 @@ sprite('TrackPost', [costume_from(art_v2.robo_crow(i), 'crow_%d' % i, 12, 7) for
 sprite('SweepLaser', copy_costumes('LaserBarrier', names=['on_']), CL + EN + enemies.SWEEP)
 sprite('Kuro', copy_costumes('Kuro', names=['idle_']), visuals.KURO)
 hotaru_src = read_logic('hotaru.py') + FX + anim_info_src('Hotaru') + atk_info_src()
-sprite('Hotaru', copy_costumes('Hotaru'), hotaru_src)
+sprite('Hotaru', [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in art_edits.hotaru_costumes(ST)], hotaru_src)
 sprite('SlashFX', copy_costumes('SlashFX'), '''
 @flag
 def s_init():

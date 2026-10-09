@@ -441,11 +441,13 @@ if not (oi in dead_objs):
         skin = "d_"
         ehp = 5
         imax = 6
-    elif chapter == 5:
-        skin = "g_"
-        pkind = "bolt"
     elif chapter == 6:
         skin = "m_"
+    elif chapter >= 3:
+        # from the casino floor on, the gang grunts wear suits
+        skin = "u_"
+        if chapter == 5:
+            pkind = "bolt"
     add_ent("hannya", x, y, 10, 38, ehp, imax, 1)
     find_bounds()
     st = "idle"
