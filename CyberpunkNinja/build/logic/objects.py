@@ -495,6 +495,12 @@ def set_cells(v):
 
 @on("t_world")
 def tick():
+    if is_clone == 1 and lon == 1:
+        # touching a live laser burns: a hit and a knockback (Phase Step passes through)
+        if abs(px - x) < 16 and py < y + 96 and py + 34 > y and pdash == 0 and pinv == 0 and pst != "dead" and pst != "cut" and pst != "reboot":
+            hq_t.append("hit")
+            hq_d.append(1)
+            hq_x.append(x)
     if is_clone == 1 and pulse == 1:
         # laser grids pulse: on for 60 frames, off for 40 (warning flicker in the last 15)
         ph = (frame + phase) % 100
@@ -518,10 +524,7 @@ def tick():
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        if pulse == 0:
-            costume(join("b_on_", floor(frame / 3) % 4))
-            effect("ghost", 0)
-        elif lon == 1:
+        if lon == 1:
             costume(join("on_", floor(frame / 3) % 4))
             effect("ghost", 0)
         elif (frame + phase) % 100 >= 85 and frame % 4 < 2:

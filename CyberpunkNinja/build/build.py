@@ -6,7 +6,6 @@ script, generated audio and the Scratch-DSL game logic in logic/.
 """
 import copy
 import hashlib
-import io
 import json
 import os
 import sys
@@ -654,19 +653,7 @@ for sym, text in SLOT_CALLOUTS.items():
     reel_cos.append(costume_from(im, 'call_' + sym, w / 2, 7))
 sprite('Reels', reel_cos, CL + enemies.REELS)
 sprite('Breakable', BREAK_COSTUMES, CL + FX + objects.BREAKABLE)
-# a barrier that only blocks the way is blue; the red ones pulse and hurt
-_LASER_BLUE = {(255, 90, 74): (70, 140, 255), (212, 36, 56): (36, 72, 212), (110, 15, 31): (15, 31, 110)}
-_laser_cos = copy_costumes('LaserBarrier')
-for _c in ST.costumes('LaserBarrier'):
-    if _c['name'].startswith('on_'):
-        _im = Image.open(io.BytesIO(ST.data(_c['md5ext']))).convert('RGBA')
-        _px = _im.load()
-        for _y in range(_im.height):
-            for _x in range(_im.width):
-                if _px[_x, _y][3] and _px[_x, _y][:3] in _LASER_BLUE:
-                    _px[_x, _y] = _LASER_BLUE[_px[_x, _y][:3]] + (_px[_x, _y][3],)
-        _laser_cos.append(make_costume('b_' + _c['name'], _im, _c['rotationCenterX'], _c['rotationCenterY'], FILES))
-sprite('LaserBarrier', _laser_cos, CL + objects.LASER)
+sprite('LaserBarrier', copy_costumes('LaserBarrier'), CL + objects.LASER)
 sprite('SecurityDoor', copy_costumes('SecurityDoor'), CL + EN + objects.DOOR)
 sprite('ShrineTerminal', copy_costumes('ShrineTerminal'), CL + FX + objects.SHRINE)
 sprite('Pickup', PICKUP_COSTUMES, CL + FX + objects.PICKUP)

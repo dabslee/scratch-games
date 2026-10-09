@@ -21,7 +21,7 @@ TIPS:
 - Shrine Terminals (the hacked vending machines) heal you, refill your gourd, and become your respawn point.
 - In the Sewers, glowing runoff burns: jump it or Phase Step across. Each room starts at low tide. When the pumps gurgle and the TIDE RISING warning flashes at the bottom of the screen, the sludge is about to rise; get up high and wait it out. Drainlings leap at you from mid range and spit sludge from afar (deflect the spit back).
 - Dobunushi's arms rear up and slam down: deflect the slam to pin the arm, then cut it until its Stance breaks. With both arms cut, its core opens until they regrow. The tide rises in waves through the fight, and in phase 2 it spews a Breach wave along the floor.
-- In The Vaults, red laser grids pulse on and off and flicker just before they switch on; they hurt if they switch on while you're inside. Wait for a gap or Phase Step through them. Blue lasers only block the way.
+- Lasers burn you if you touch them. In The Vaults, laser grids pulse on and off and flicker just before they switch on. Wait for a gap or Phase Step through them.
 - Lady Luck's slot machine decides her next attack. When the reels stop, the machine names the move ("CARD FAN!", "SHOCKWAVE!", "LASERS!"...).
 - In the Physic Gardens, step into the greenhouse heat vents to ride them upward, steering left and right as you rise. Some vents pulse, so ride them while the heat is strong.
 - Garden Wardens guard your normal attacks and counter if you keep swinging into their guard. Deflect their strikes (or Heavy Strike them) to build their Stance, then attack while they recover.
