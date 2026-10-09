@@ -4011,7 +4011,7 @@ def dm_update():
     if int_t > 80 and integ > 0 and st != "broken" and t % 20 == 0:
         integ = max(0, integ - 1)
     x = min(max(x, -200), 200)
-    # hitboxes cover the whole figure: the mech stands about 150 tall, the eye is about 88 across, the man about 64
+    # hitboxes cover the whole figure: the mech stands about 150 tall, the eye is about 60 across, the man about 64
     if dm_ph == 1:
         ent_x[slot] = x
         ent_y[slot] = y
@@ -4020,8 +4020,8 @@ def dm_update():
     elif dm_ph == 2:
         ent_x[slot] = eye_x
         ent_y[slot] = eye_y
-        ent_w[slot] = 40
-        ent_h[slot] = 86
+        ent_w[slot] = 28
+        ent_h[slot] = 58
     else:
         ent_x[slot] = x
         ent_y[slot] = fy + jz
@@ -4666,7 +4666,7 @@ def dm_draw():
     elif role == "cable":
         if dm_ph == 2:
             costume("cable")
-            goto(eye_x + shx, eye_y + 84 + shy)
+            goto(eye_x + shx, eye_y + 58 + shy)
             show()
         else:
             hide()

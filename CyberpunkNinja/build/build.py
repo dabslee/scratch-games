@@ -688,7 +688,7 @@ dm = []
 for _n, (_im, (_ax, _ay)) in art_mech.frames().items():
     _bb = _im.getbbox()
     dm.append(costume_from(_im.crop(_bb), _n, _ax - _bb[0], _ay - _bb[1]))
-# phase 2: the mech's eye, wired into the castle (open, half-lidded, shut), 3 screen px per art px,
+# phase 2: the mech's eye, wired into the castle (open, half-lidded, shut), 2 screen px per art px,
 # turned to look right like every other sprite; feet (bottom centre) at its anchor
 for _i, _n in enumerate(('eye_open', 'eye_half', 'eye_shut')):
     _im = Image.open(os.path.join(HERE, '..', 'art', 'src', 'daimyo_mech', 'eye_sheet.png')).convert('RGBA')
@@ -697,7 +697,7 @@ for _i, _n in enumerate(('eye_open', 'eye_half', 'eye_shut')):
     for _y in range(_im.height):
         for _x in range(_im.width):
             _px[_x, _y] = _px[_x, _y][:3] + (255,) if _px[_x, _y][3] >= 128 else (0, 0, 0, 0)
-    dm.append(make_costume(_n, _im.resize((_im.width * 6, _im.height * 6), Image.NEAREST), _im.width * 3, _im.height * 6 - 6, FILES))
+    dm.append(costume_from(_im, _n, _im.width / 2, _im.height - 1))
 # the Daimyo in person: the user's 80x64 frames (art/src/daimyo_frames), feet at (40, 61),
 # drawn at 1.5 screen pixels per art pixel so he stands as tall as Hotaru
 _DMF = os.path.join(HERE, '..', 'art', 'src', 'daimyo_frames')
