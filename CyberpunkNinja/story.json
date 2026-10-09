@@ -108,7 +108,7 @@
         },
         {
           "name": "Castle defenses",
-          "mechanics": "The broken mech's eye rises on a cable and wires itself into the Tenshu: half-lidded while it watches, wide open while the castle fires. Turrets fire bullet barrages: deflect them back into the eye, and strike when it drops to the floor, shut, to recharge.",
+          "mechanics": "The broken mech's eye rises on a cable and wires itself into the Tenshu: shut while it floats and the castle fires. Turrets fire bullet barrages: deflect them back into the eye, and strike when it drops to the floor and opens to recharge.",
           "ally": "kuro_spared: Kuro keeps fighting (every other turret volley targets him; he deflects most of it back into the eye) until the end of this phase, then collapses."
         },
         {

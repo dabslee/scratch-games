@@ -4163,16 +4163,17 @@ def dm_exo():
         if t >= 40 and st == "iaido":
             dm_rec(30)
     elif st == "combo":
-        if t == 4 or t == 20 or t == 36:
+        # a 0.9 s windup like the iaido, then three cuts half a second apart (t 26, 42, 58)
+        if t == 17 or t == 33 or t == 49:
             dm_face()
-        if (t > 4 and t < 14) or (t > 20 and t < 30) or (t > 36 and t < 46):
+        if (t > 17 and t < 26) or (t > 33 and t < 42) or (t > 49 and t < 58):
             if abs(dx) > 50:
                 x += face * 2.5
-        if t == 14 or t == 30:
+        if t == 26 or t == 42:
             dm_slash(84, 2, 0, 2)
-        elif t == 46:
+        elif t == 58:
             dm_slash(84, 2, 1, 2)
-        if t >= 56 and st == "combo":
+        if t >= 68 and st == "combo":
             dm_rec(24)
     elif st == "stomp":
         if t < 30:
@@ -4563,21 +4564,19 @@ def dm_draw():
     if role == "body":
         # phase 1: the mech's frames run at 12 a second (2.5 game frames each)
         if dm_ph == 2:
-            # the eye wired into the castle: half-lidded while it watches, wide open while
-            # the castle fires, shut while it lies on the floor recharging (the opening)
-            if st == "barrage" or st == "lasers":
-                costume("eye_open")
-            elif st == "descend":
+            # the eye wired into the castle: shut while it floats and the castle fires,
+            # open while it lies on the floor recharging, so it's the eye Hotaru hits
+            if st == "descend":
                 if t < 8 or t > 116:
                     costume("eye_half")
                 else:
-                    costume("eye_shut")
+                    costume("eye_open")
             elif st == "broken":
-                costume("eye_shut")
-            elif st == "float" and (frame % 90) < 4:
-                costume("eye_shut")
-            else:
+                costume("eye_open")
+            elif st == "rise" or st == "climb":
                 costume("eye_half")
+            else:
+                costume("eye_shut")
         elif dm_ph == 3:
             # the dead eye stays where it fell, going dark behind the duel
             costume("eye_shut")
@@ -4590,13 +4589,15 @@ def dm_draw():
             else:
                 costume(join("mech_slash_", min(3, floor((t - 23) / 2.5))))
         elif st == "combo":
-            # three cuts land at t 14, 30 and 46: each swing starts 10 frames before
-            k = min(2, floor(max(0, t - 4) / 16))
-            u = t - 4 - k * 16
-            if u < 7:
-                costume(join("mech_windup_", min(2, floor(max(0, u) / 2.5))))
+            # the windup (sword raised), then three cuts landing at t 26, 42 and 58
+            if t < 17:
+                costume(join("mech_windup_", min(2, floor(t / 2.5))))
             else:
-                costume(join("mech_slash_", min(3, floor((u - 7) / 2.5))))
+                u = t - 17 - min(2, floor((t - 17) / 16)) * 16
+                if u < 6:
+                    costume("mech_windup_2")
+                else:
+                    costume(join("mech_slash_", min(3, floor((u - 6) / 2.5))))
         elif st == "stomp":
             # crouch, leap, and come down on the shockwave at t 30
             if t < 30:
@@ -4622,7 +4623,7 @@ def dm_draw():
         if dm_ph == 1:
             if st == "iaido" and t >= 17 and t <= 26:
                 tell = 1
-            if st == "combo" and ((t >= 5 and t <= 14) or (t >= 21 and t <= 30) or (t >= 37 and t <= 46)):
+            if st == "combo" and ((t >= 17 and t <= 26) or (t >= 33 and t <= 42) or (t >= 49 and t <= 58)):
                 tell = 1
         if tell == 1:
             effect("brightness", 100)
