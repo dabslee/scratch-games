@@ -260,3 +260,27 @@ def suit_frames(st):
 def suit_costumes(st, prefix):
     fr = suit_frames(st)
     return [(prefix + c['name'], _4x(fr[c['name']]), c['rotationCenterX'], c['rotationCenterY']) for c in st.costumes('HannyaBoy')]
+
+
+# ---------------------------------------------------------------- Mukuro
+_MUK = {}
+
+
+def mukuro_image(st, name):
+    """Mukuro's pack frame (4x) with the edit (his eyes showing under the hood)."""
+    if not _MUK:
+        frames = {c['name']: st.image_1x('Mukuro', c['name']) for c in st.costumes('Mukuro')}
+        ed = Edit(frames['idle_0'], _load('mukuro_idle_0.png'), head=(15, 11, 31, 25))
+        for n, im in frames.items():
+            _MUK[n] = _4x(ed.new if n == 'idle_0' else ed.apply(im))
+    return _MUK[name].copy()
+
+
+def mukuro_costumes(st, prefix='', names=None):
+    out = []
+    for c in st.costumes('Mukuro'):
+        n = c['name']
+        if names is not None and not any(n.startswith(k) for k in names):
+            continue
+        out.append((prefix + n, mukuro_image(st, n), c['rotationCenterX'], c['rotationCenterY']))
+    return out

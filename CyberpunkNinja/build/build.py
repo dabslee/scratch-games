@@ -584,12 +584,12 @@ sprite('Level', ROOM_COSTUMES, visuals.LEVEL)
 def mk_slump(name='slump'):
     # the last kneeling frame of Mukuro's death, held solid, with his visor lights gone out
     c = ST.costume('Mukuro', 'death_2')
-    im = ST.image('Mukuro', 'death_2').convert('RGBA')
+    im = art_edits.mukuro_image(ST, 'death_2')
     px = im.load()
     for y in range(im.height):
         for x in range(im.width):
             r, g, b, a = px[x, y]
-            if a and r > 150 and g < 140:
+            if a and r > 150 and g < 100:  # the visor reds, not his skin
                 px[x, y] = P['red1'] + (a,)
     return make_costume(name, im, c['rotationCenterX'], c['rotationCenterY'], FILES)
 
@@ -621,15 +621,15 @@ props.append(costume_from(art_v2.soldier(), 'soldier', 7, 36))
 
 for k in range(4):
     c = ST.costume('Mukuro', 'idle_%d' % k)
-    im = ST.image('Mukuro', 'idle_%d' % k).transpose(Image.FLIP_LEFT_RIGHT)
+    im = art_edits.mukuro_image(ST, 'idle_%d' % k).transpose(Image.FLIP_LEFT_RIGHT)
     props.append(make_costume('mk_idle_%d' % k, im, im.width - c['rotationCenterX'], c['rotationCenterY'], FILES))
 props.append(mk_slump('mk_lie'))
 for k in range(4):
     c = ST.costume('Mukuro', 'idle_%d' % k)
-    props.append(make_costume('mk_idr_%d' % k, ST.image('Mukuro', 'idle_%d' % k), c['rotationCenterX'], c['rotationCenterY'], FILES))
+    props.append(make_costume('mk_idr_%d' % k, art_edits.mukuro_image(ST, 'idle_%d' % k), c['rotationCenterX'], c['rotationCenterY'], FILES))
 for k in range(8):
     c = ST.costume('Mukuro', 'run_%d' % k)
-    im = ST.image('Mukuro', 'run_%d' % k)
+    im = art_edits.mukuro_image(ST, 'run_%d' % k)
     props.append(make_costume('mk_runr_%d' % k, im, c['rotationCenterX'], c['rotationCenterY'], FILES))
     props.append(make_costume('mk_runl_%d' % k, im.transpose(Image.FLIP_LEFT_RIGHT), im.width - c['rotationCenterX'], c['rotationCenterY'], FILES))
 sprite('Props', props, CL + objects.PROPS)
@@ -697,7 +697,7 @@ for _folder in sorted(os.listdir(_DMF)):
                                 'dmf_%s_%d' % (_anim, _i), 40, 61))
 dm.append(costume_from(art_v2.cable(), 'cable', 3, 110))
 dm += copy_costumes('Turret', names=['idle_0'], rename=lambda n: 'turret')
-dm += copy_costumes('Mukuro', prefix='mk_', names=['idle_', 'run_', 'attack1_', 'attack2_', 'attack3_', 'heavy_', 'deflect_', 'dash_', 'hurt_'])
+dm += [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in art_edits.mukuro_costumes(ST, 'mk_', ['idle_', 'run_', 'attack1_', 'attack2_', 'attack3_', 'heavy_', 'deflect_', 'dash_', 'hurt_'])]
 dm += copy_costumes('MemoryShard', names=['spin_'], rename=lambda n: n.replace('spin_', 'shard_'))
 dm.append(mk_slump('mk_lie'))
 sprite('Daimyo', dm, CL + FX + EN + enemies.DAIMYO)
@@ -715,7 +715,7 @@ for _anim, _fs in art_v2.harm_frames().items():
         if _anim != 'death':
             harm_cos.append(costume_crop(art_v2.harm_juiced(_im, _i), 'harmj_%s_%d' % (_anim, _i), *art_v2.HARM_ANCHOR))
 sprite('Harmacist', harm_cos, CL + FX + EN + enemies.HARM)
-sprite('Mukuro', copy_costumes('Mukuro') + [mk_slump()], CL + FX + EN + enemies.MUKURO)
+sprite('Mukuro', [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in art_edits.mukuro_costumes(ST)] + [mk_slump()], CL + FX + EN + enemies.MUKURO)
 rj_cut = lambda im: im.crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT))
 rj = [costume_from(rj_cut(art_ch4.raijin('idle', i)), 'rj_idle_%d' % i, *art_ch4.RJ_CORE) for i in range(2)]
 rj += [costume_from(rj_cut(art_ch4.raijin('vent', i)), 'rj_vent_%d' % i, *art_ch4.RJ_CORE) for i in range(2)]
