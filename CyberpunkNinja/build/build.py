@@ -24,6 +24,7 @@ import art_ch56  # noqa: E402
 import art_ch7  # noqa: E402
 import art_v2  # noqa: E402
 import art_edits  # noqa: E402
+import art_mech  # noqa: E402
 import assets  # noqa: E402
 import dialogue  # noqa: E402
 import export_portraits  # noqa: E402
@@ -683,9 +684,20 @@ sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP) + toned('Mukuro', MEM_R
        + recolored('Mukuro', art_v2.SOLDIER_MAP, 'h_'), CL + FX + EN + enemies.WARDEN)
 sprite('KuroBoss', copy_costumes('Kuro'), CL + FX + EN + enemies.KUROBOSS)
 dm = []
-for pose in art_ch7.POSES:
-    for fr in range(2 if pose in ('idle', 'walk') else 1):
-        dm.append(costume_from(art_ch7.exo(pose, fr), 'exo_%s_%d' % (pose, fr), *art_ch7.EXO_ANCHOR))
+# phase 1: the user's samurai mech, animated from its parts (art_mech.py), 2 screen px per art px
+for _n, (_im, (_ax, _ay)) in art_mech.frames().items():
+    _bb = _im.getbbox()
+    dm.append(costume_from(_im.crop(_bb), _n, _ax - _bb[0], _ay - _bb[1]))
+# phase 2: the mech's eye, wired into the castle (open, half-lidded, shut), 3 screen px per art px,
+# turned to look right like every other sprite; feet (bottom centre) at its anchor
+for _i, _n in enumerate(('eye_open', 'eye_half', 'eye_shut')):
+    _im = Image.open(os.path.join(HERE, '..', 'art', 'src', 'daimyo_mech', 'eye_sheet.png')).convert('RGBA')
+    _im = _im.crop((1 + 32 * _i, 9, 31 + 32 * _i, 39)).transpose(Image.FLIP_LEFT_RIGHT)
+    _px = _im.load()
+    for _y in range(_im.height):
+        for _x in range(_im.width):
+            _px[_x, _y] = _px[_x, _y][:3] + (255,) if _px[_x, _y][3] >= 128 else (0, 0, 0, 0)
+    dm.append(make_costume(_n, _im.resize((_im.width * 6, _im.height * 6), Image.NEAREST), _im.width * 3, _im.height * 6 - 6, FILES))
 # the Daimyo in person: the user's 80x64 frames (art/src/daimyo_frames), feet at (40, 61),
 # drawn at 1.5 screen pixels per art pixel so he stands as tall as Hotaru
 _DMF = os.path.join(HERE, '..', 'art', 'src', 'daimyo_frames')

@@ -4011,17 +4011,17 @@ def dm_update():
     if int_t > 80 and integ > 0 and st != "broken" and t % 20 == 0:
         integ = max(0, integ - 1)
     x = min(max(x, -200), 200)
-    # hitboxes cover the whole figure: the armor stands about 170 tall, the man about 64
+    # hitboxes cover the whole figure: the mech stands about 150 tall, the eye is about 88 across, the man about 64
     if dm_ph == 1:
         ent_x[slot] = x
         ent_y[slot] = y
         ent_w[slot] = 26
-        ent_h[slot] = 170
+        ent_h[slot] = 150
     elif dm_ph == 2:
         ent_x[slot] = eye_x
         ent_y[slot] = eye_y
-        ent_w[slot] = 26
-        ent_h[slot] = 170
+        ent_w[slot] = 40
+        ent_h[slot] = 86
     else:
         ent_x[slot] = x
         ent_y[slot] = fy + jz
@@ -4127,7 +4127,7 @@ def dm_pick():
 
 @proc
 def dm_exo():
-    # phase 1: the samurai exoskeleton
+    # phase 1: the samurai mech
     if st == "move":
         dm_face()
         if acd > 0:
@@ -4234,7 +4234,7 @@ def dm_exo():
 
 @proc
 def dm_plug():
-    # phase 2: the damaged armor plugs into the Tenshu; its turrets do the fighting
+    # phase 2: the mech's eye wires itself into the Tenshu; the castle's turrets do the fighting
     if st == "rise":
         eye_y = min(-40, eye_y + 5)
         if eye_y >= -40 and t > 50:
@@ -4257,7 +4257,7 @@ def dm_plug():
             else:
                 dm_go("barrage")
     elif st == "barrage":
-        # the wall turrets fire in turn; deflected rounds fly back into the armor
+        # the wall turrets fire in turn; deflected rounds fly back into the eye
         if t % 14 == 8 and nshot < 4:
             nshot += 1
             tsx = 224
@@ -4313,7 +4313,7 @@ def dm_plug():
 def dm_man():
     # phase 3: the Daimyo in person, with Tamakiri
     if st == "emerge":
-        # the armor crashes to the floor where it hung, and he steps out of it
+        # the eye crashes to the floor where it hung, and he steps out of it
         eye_y = max(fy, eye_y - 8)
         if t == 30:
             x = exo_x + 26
@@ -4561,39 +4561,63 @@ def dm_draw():
     effect("ghost", 0)
     effect("brightness", 0)
     if role == "body":
-        if st == "wait" and boss_on == 0:
-            costume("exo_idle_0")
-        elif dm_ph == 2:
-            costume("exo_broken_0")
+        # phase 1: the mech's frames run at 12 a second (2.5 game frames each)
+        if dm_ph == 2:
+            # the eye wired into the castle: half-lidded while it watches, wide open while
+            # the castle fires, shut while it lies on the floor recharging (the opening)
+            if st == "barrage" or st == "lasers":
+                costume("eye_open")
+            elif st == "descend":
+                if t < 8 or t > 116:
+                    costume("eye_half")
+                else:
+                    costume("eye_shut")
+            elif st == "broken":
+                costume("eye_shut")
+            elif st == "float" and (frame % 90) < 4:
+                costume("eye_shut")
+            else:
+                costume("eye_half")
         elif dm_ph == 3:
-            # the empty armor stays where he left it, going dark behind the duel
-            costume("exo_broken_0")
+            # the dead eye stays where it fell, going dark behind the duel
+            costume("eye_shut")
             effect("brightness", -20 - exo_dark)
+        elif st == "wait" and boss_on == 0:
+            costume("mech_idle_0")
         elif st == "iaido":
-            if t < 26:
-                costume("exo_wind_0")
+            if t < 23:
+                costume(join("mech_windup_", min(2, floor(t / 2.5))))
             else:
-                costume("exo_slash_0")
+                costume(join("mech_slash_", min(3, floor((t - 23) / 2.5))))
         elif st == "combo":
-            if (t > 4 and t < 14) or (t > 20 and t < 30) or (t > 36 and t < 46):
-                costume("exo_wind_0")
+            # three cuts land at t 14, 30 and 46: each swing starts 10 frames before
+            k = min(2, floor(max(0, t - 4) / 16))
+            u = t - 4 - k * 16
+            if u < 7:
+                costume(join("mech_windup_", min(2, floor(max(0, u) / 2.5))))
             else:
-                costume("exo_slash_0")
+                costume(join("mech_slash_", min(3, floor((u - 7) / 2.5))))
         elif st == "stomp":
+            # crouch, leap, and come down on the shockwave at t 30
             if t < 30:
-                costume("exo_stomp_0")
+                costume(join("mech_stomp_", min(4, floor(t / 6))))
             else:
-                costume("exo_low_0")
+                costume("mech_stomp_5")
         elif st == "charge":
-            costume("exo_dash_0")
-        elif st == "broken" or st == "recoil":
-            costume("exo_hurt_0")
+            if t < 30:
+                costume(join("mech_charge_", min(1, floor(t / 10))))
+            else:
+                costume(join("mech_dash_", floor(t / 2.5) % 2))
+        elif st == "broken":
+            costume("mech_kneel_0")
+        elif st == "recoil":
+            costume("mech_hurt_0")
         elif guard_t > 0:
-            costume("exo_low_0")
+            costume("mech_low_0")
         elif st == "move" and abs(px - x) > 90:
-            costume(join("exo_walk_", floor(frame / 8) % 2))
+            costume(join("mech_walk_", floor(frame / 2.5) % 8))
         else:
-            costume(join("exo_idle_", floor(frame / 12) % 2))
+            costume(join("mech_idle_", floor(frame / 7.5) % 4))
         tell = 0
         if dm_ph == 1:
             if st == "iaido" and t >= 17 and t <= 26:
@@ -4612,6 +4636,10 @@ def dm_draw():
         else:
             point(-90)
         if dm_ph == 2:
+            if px > eye_x:
+                point(90)
+            else:
+                point(-90)
             goto(eye_x + shx, eye_y + shy)
         elif dm_ph == 3:
             point(90)
@@ -4638,7 +4666,7 @@ def dm_draw():
     elif role == "cable":
         if dm_ph == 2:
             costume("cable")
-            goto(eye_x + shx, eye_y + 180 + shy)
+            goto(eye_x + shx, eye_y + 84 + shy)
             show()
         else:
             hide()

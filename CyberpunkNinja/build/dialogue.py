@@ -122,7 +122,7 @@ HINTS = {
     'muk2': [('t', 'Jump his shockwaves.'), ('n',), ('t', 'His shadow strikes from behind you')],
     'choice': [('k', 'key_e'), ('t', 'Reach out'), ('g',), ('k', 'mouse_l'), ('t', 'Destroy his mind')],
     'exo': [('t', 'Deflect the nodachi. Jump the stomp.'), ('n',), ('t', 'Strike when the armor recovers')],
-    'eye': [('k', 'key_down'), ('t', 'Deflect turret fire into the armor.'), ('n',), ('t', 'Strike it when it drops')],
+    'eye': [('k', 'key_down'), ('t', 'Deflect turret fire into the eye.'), ('n',), ('t', 'Strike it when it drops')],
     'duel3': [('k', 'key_down'), ('t', 'Deflect his cuts and slash waves.'), ('n',), ('t', "Don't strike into his raised guard."), ('n',),
               ('k', 'key_space'), ('t', 'Phase Step through the soul grab')],
 }

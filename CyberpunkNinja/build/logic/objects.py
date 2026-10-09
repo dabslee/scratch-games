@@ -109,7 +109,7 @@ def pr_update():
                     if kind == "shell":
                         kind = "rshell"
                     ddx = ent_x[boss_slot] - x
-                    ddy = ent_y[boss_slot] + 14 - y
+                    ddy = ent_y[boss_slot] + 14 + 30 * (chapter == 8 and dm_ph == 2) - y
                     dd = sqrt(ddx * ddx + ddy * ddy) + 0.01
                     vx = ddx / dd * 11
                     vy = ddy / dd * 11
@@ -121,13 +121,13 @@ def pr_update():
             elif res != "miss":
                 delete_clone()
         elif kind == "bullet" and chapter == 8 and ally_x < 900 and ally_st != "down" and ally_st != "fall" and abs(ally_x - x) < 9 and y > fy_floor and y < fy_floor + 50:
-            # turret fire aimed at Kuro: he deflects most of it back into the armor
+            # turret fire aimed at Kuro: he deflects most of it back into the eye
             if rand(1, 10) <= 6:
                 sfxq.append("deflect")
                 cfx("deflect", x, y, 0)
                 ally_def = 9
                 ddx = ent_x[boss_slot] - x
-                ddy = ent_y[boss_slot] + 14 - y
+                ddy = ent_y[boss_slot] + 44 - y
                 dd = sqrt(ddx * ddx + ddy * ddy) + 0.01
                 vx = ddx / dd * 11
                 vy = ddy / dd * 11
