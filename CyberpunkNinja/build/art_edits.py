@@ -583,3 +583,26 @@ def suit_costumes(st, prefix):
 def croupier_costumes(st, prefix=''):
     """The casino croupier: the suited man in plum with purple shades."""
     return costumes(st, 'HannyaBoy', suit_frames(st, 'croupier_idle_0.png'), prefix)
+
+
+# the Chapter 5 gunner: the croupier's suit (and shades) in blue instead of plum
+PLUM = ((66, 25, 60), (128, 44, 116), (147, 70, 135))
+
+
+def _to_blue(c, hue=222):
+    import colorsys
+    h, l, s = colorsys.rgb_to_hls(*[v / 255 for v in c])
+    return tuple(int(round(v * 255)) for v in colorsys.hls_to_rgb(hue / 360, l, s))
+
+
+def gunner_costumes(st, prefix='g_'):
+    blue = {c: _to_blue(c) for c in PLUM}
+    frames = suit_frames(st, 'croupier_idle_0.png')
+    for im in frames.values():
+        px = im.load()
+        for y in range(im.height):
+            for x in range(im.width):
+                p = px[x, y]
+                if p[3] and p[:3] in blue:
+                    px[x, y] = blue[p[:3]] + (p[3],)
+    return costumes(st, 'HannyaBoy', frames, prefix)
