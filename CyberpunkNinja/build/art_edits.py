@@ -492,6 +492,19 @@ def _katana(orig, out):
         put(q, GUARD if i == len(grip) - 1 else BLACK)
 
 
+def _belt(im):
+    """The Hannya Boy's gold belt: the stretch of a row from its first gold pixel to its
+    last, where the row holds three or more (in some poses the pants show through)."""
+    px = im.load()
+    W, H = im.size
+    out = set()
+    for y in range(H):
+        xs = [x for x in range(W) if px[x, y][3] and px[x, y][:3] == P['gold']]
+        if len(xs) >= 3 and xs[-1] - xs[0] <= 8:
+            out.update((x, y) for x in range(xs[0], xs[-1] + 1))
+    return out
+
+
 def _drop_strays(im):
     """Lone pixels with nothing around them (the old mask's horn tips)."""
     px = im.load()
@@ -503,10 +516,20 @@ def _drop_strays(im):
                 px[x, y] = CLEAR
 
 
-def suit_frames(st):
-    """{name: 1x image} of the Hannya Boy redrawn as a man in a black suit."""
+_SUITS = {}
+
+
+def suit_frames(st, edit='grunt_suit_idle_0.png'):
+    """{name: 1x image} of the Hannya Boy redrawn as a man in a suit: the black-suited
+    grunt, or (with croupier_idle_0.png) the casino croupier in plum."""
+    if edit not in _SUITS:
+        _SUITS[edit] = _suit_frames(st, edit)
+    return {k: v.copy() for k, v in _SUITS[edit].items()}
+
+
+def _suit_frames(st, edit):
     frames = {c['name']: st.image_1x('HannyaBoy', c['name']) for c in st.costumes('HannyaBoy')}
-    new = _load('grunt_suit_idle_0.png')
+    new = _load(edit)
     box = (18, 9, 34, 22)
     ed = Edit(frames['idle_0'], new, head=box, keep=STEEL,
               body={_rgba('mag3'): (79, 79, 79, 255)},
@@ -516,14 +539,31 @@ def suit_frames(st):
     rot = {k: Head(frames['idle_0'], new, box, rotate=r) for k, (r, _) in GRUNT_ROTATED.items()}
     for h in rot.values():
         h.replaceable = set(ed.head_only)
+    # the shadow under the jacket: the edit's colors in the two rows below the old belt
+    pants = {P['slate1'], P['slate2'], P['night1'], P['skin1']}
+    po0, pn0 = frames['idle_0'].load(), new.load()
+    shade = {}
+    for k in (1, 2):
+        cs = Counter(pn0[x, y + k] for x, y in _belt(frames['idle_0'])
+                     if po0[x, y + k][3] and po0[x, y + k][:3] in pants and pn0[x, y + k][3])
+        shade[k] = cs.most_common(1)[0][0] if cs else None
 
     def hooks(name):
         def run(out, touched):
             if name in rot:
                 rot[name].paste(out, GRUNT_ROTATED[name][1], touched, force=True)
             _katana(frames[name], out)
-            # the katana is drawn now; keep it out of the recolor
             po = out.load()
+            orig = frames[name].load()
+            belt = _belt(frames[name])
+            for x, y in belt:
+                for k in (1, 2):
+                    q = (x, y + k)
+                    if (shade[k] and q not in touched and q not in belt and y + k < out.height
+                            and orig[q][3] and orig[q][:3] in pants and po[q][3]):
+                        po[q] = shade[k]
+                        touched.add(q)
+            # the katana is drawn now; keep it out of the recolor
             for y in range(out.height):
                 for x in range(out.width):
                     if po[x, y] in (BLADE, BLADE_DK, GUARD, BLACK):
@@ -538,3 +578,8 @@ def suit_frames(st):
 
 def suit_costumes(st, prefix):
     return costumes(st, 'HannyaBoy', suit_frames(st), prefix)
+
+
+def croupier_costumes(st, prefix=''):
+    """The casino croupier: the suited man in plum with purple shades."""
+    return costumes(st, 'HannyaBoy', suit_frames(st, 'croupier_idle_0.png'), prefix)

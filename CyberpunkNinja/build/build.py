@@ -665,7 +665,7 @@ sprite('Cage', [costume_from(art_ch2.cage(i), 'cage_%d' % i, 14, 40) for i in ra
 sprite('CamDrone', copy_costumes('CamDrone'), CL + objects.CAMDRONE)
 sprite('Turret', copy_costumes('Turret'), CL + FX + EN + enemies.TURRET)
 sprite('SlotTurret', recolored('Turret', art_ch2.SLOT_TURRET_MAP), CL + FX + EN + enemies.SLOT_TURRET)
-sprite('Croupier', recolored('HannyaBoy', art_ch2.CROUPIER_MAP) + recolored('HannyaBoy', art_ch4.GUNNER_MAP, 'g_'), CL + FX + EN + enemies.CROUPIER)
+sprite('Croupier', [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in art_edits.croupier_costumes(ST)] + recolored('HannyaBoy', art_ch4.GUNNER_MAP, 'g_'), CL + FX + EN + enemies.CROUPIER)
 drain_cos = []
 for i, c in enumerate(ST.costumes('HannyaBoy')):
     im = art_v2.drainling_frame(ST.image_1x('HannyaBoy', c['name']), i)
