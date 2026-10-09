@@ -176,7 +176,7 @@ dobu_dead daicam2_done harm_dead tide_y tide_hi tide_force tide_lvl tide_t tide_
 dobu_cut dobu_gen dobu_ph dobu_open dobu_turn
 walk_to muk_bx muk_carry
 ally_hp ally_lives ally_rev ally_inv ally_def ally_dash ally_shot fy_floor dm_z dm_hi dm_lh exo_x dm_st dm_t dm_fc dm_tell dm_fl
-hold_x hold_y
+hold_x hold_y ke1_tell ke2_tell
 '''.split()
 
 GLOBAL_LISTS = '''

@@ -26,6 +26,7 @@ def pr_spawn():
         vy = pq_vy[qi]
         t = 0
         hd = 0
+        kd = 0
         if kind == "bullet" or kind == "card" or kind == "bolt" or kind == "shell" or kind == "orb" or kind == "spit" or kind == "vial" or kind == "crescent":
             owner = "e"
         elif kind == "burst":
@@ -132,6 +133,7 @@ def pr_update():
                 vx = ddx / dd * 11
                 vy = ddy / dd * 11
                 owner = "p"
+                kd = 1
                 t = 0
             else:
                 ally_shot += 1
@@ -140,14 +142,16 @@ def pr_update():
         for ei in range(1, len(ent_type) + 1):
             if ent_alive[ei] == 1 and ent_x[ei] + ent_w[ei] + 4 > x and ent_x[ei] - ent_w[ei] - 4 < x:
                 if ent_y[ei] + ent_h[ei] + 4 > y and ent_y[ei] - 4 < y:
+                    # a round Kuro sent back hits half as hard as one of Hotaru's
+                    kw = 1 - kd * 0.5
                     if kind == "bullet" or kind == "rshell" or kind == "crescent":
-                        ent_dmg[ei] = ent_dmg[ei] + 2
+                        ent_dmg[ei] = ent_dmg[ei] + 2 * kw
                     else:
-                        ent_dmg[ei] = ent_dmg[ei] + 1
+                        ent_dmg[ei] = ent_dmg[ei] + kw
                     if kind == "rshell" or kind == "crescent":
-                        ent_idmg[ei] = ent_idmg[ei] + 3
+                        ent_idmg[ei] = ent_idmg[ei] + 3 * kw
                     else:
-                        ent_idmg[ei] = ent_idmg[ei] + 2
+                        ent_idmg[ei] = ent_idmg[ei] + 2 * kw
                     ent_hk[ei] = "projectile"
                     if vx > 0:
                         ent_kb[ei] = 2

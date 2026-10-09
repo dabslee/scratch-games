@@ -171,7 +171,8 @@ def timers():
         land_t -= 1
     air_t += 1
     heat_idle += 1
-    if heat_idle > 30 and heat > 0 and pst != "overheat" and frame % 6 == 0:
+    # Stance only recovers with her guard down: never while blocking
+    if heat_idle > 30 and heat > 0 and pst != "overheat" and pst != "block" and pst != "deflect" and frame % 6 == 0:
         heat -= 1
 
 

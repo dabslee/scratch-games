@@ -183,7 +183,7 @@ def d_draw():
     else:
         point(-90)
     tell = 0
-    if st == "dive" and hitdone == 0 and sqrt((px - x) * (px - x) + (py + 18 - y) * (py + 18 - y)) < 100:
+    if st == "dive" and hitdone == 0 and (sqrt((px - x) * (px - x) + (py + 18 - y) * (py + 18 - y)) - 19) / 8 < 9:
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -764,8 +764,14 @@ def h_draw():
     else:
         point(-90)
     tell = 0
-    if (st == "wind" and t >= 15) or (st == "swing" and t <= 1) or (st == "crouch" and t >= 8) or (st == "spitw" and t >= 10 and t <= 18):
+    if (st == "wind" and t >= 15) or (st == "swing" and t == 0) or (st == "spitw" and t >= 9 and t <= 17):
         tell = 1
+    if (st == "crouch" or st == "leap") and hitdone == 0:
+        tth = max(0, abs(px - x) - 21) / 6
+        if st == "crouch":
+            tth += 17 - t
+        if tth < 9:
+            tell = 1
     if tell == 1:
         effect("brightness", 100)
     elif flash_t > 0:
@@ -1056,7 +1062,7 @@ def o_draw():
     else:
         point(-90)
     tell = 0
-    if (st == "swing" and t >= 6 and t <= 15) or (st == "slam" and t >= 31 and t <= 40):
+    if (st == "swing" and t >= 6 and t <= 14) or (st == "slam" and t >= 31 and t <= 39):
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -1308,7 +1314,7 @@ def c_draw():
     else:
         point(-90)
     tell = 0
-    if (st == "wind" and t >= 15) or (st == "swing" and t <= 1):
+    if (st == "wind" and t >= 15) or (st == "swing" and t == 0):
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -1693,9 +1699,9 @@ def l_draw():
     else:
         point(-90)
     tell = 0
-    if st == "slash" and ((t >= 3 and t <= 12) or (t >= 21 and t <= 30)):
+    if st == "slash" and ((t >= 3 and t <= 11) or (t >= 21 and t <= 29)):
         tell = 1
-    if st == "skull" and t >= 21 and t <= 30:
+    if st == "skull" and t >= 21 and t <= 29:
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -2153,9 +2159,9 @@ def w_draw():
     else:
         point(-90)
     tell = 0
-    if st == "combo" and ((t >= 7 and t <= 16) or (nh == 2 and t >= 21 and t <= 30)):
+    if st == "combo" and ((t >= 7 and t <= 15) or (nh == 2 and t >= 21 and t <= 29)):
         tell = 1
-    if st == "heavy" and t >= 15 and t <= 24:
+    if st == "heavy" and t >= 15 and t <= 23:
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -2286,7 +2292,7 @@ def sh_draw():
         else:
             costume("attack1_3")
         effect("ghost", 40)
-        if sh_t >= 9 and sh_t <= 18:
+        if sh_t >= 9 and sh_t <= 17:
             effect("brightness", 100)
         else:
             effect("brightness", -40)
@@ -2740,12 +2746,12 @@ def m_draw():
     else:
         point(-90)
     tell = 0
-    if st == "combo":
-        if t >= ht - 9 and t <= ht and ci > 0:
+    if st == "combo" and ci > 0:
+        if (h1 - t >= 1 and h1 - t <= 9) or (n >= 2 and h2 - t >= 1 and h2 - t <= 9) or (n >= 3 and h3 - t >= 1 and h3 - t <= 9) or (n >= 4 and h4 - t >= 1 and h4 - t <= 9):
             tell = 1
-    if st == "kunai" and (t % 16) >= 5 and (t % 16) <= 14 and t < 32:
+    if st == "kunai" and ((t >= 5 and t <= 13) or (phase == 2 and t >= 21 and t <= 29)):
         tell = 1
-    if st == "shadow" and t >= 21 and t <= 30:
+    if st == "shadow" and t >= 21 and t <= 29:
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -3120,7 +3126,7 @@ def rj_draw():
     elif role == "arm":
         if rj_arm > -300 and rj_arm < 900:
             costume(join("arm_", frame % 2))
-            if rj_arm > px and (rj_arm - px - 12) / 11 <= 9:
+            if rj_arm - px >= 12 and (rj_arm - px - 12) / 11 < 9:
                 effect("brightness", 100)
             goto(rj_arm + shx, roof_y + 26 + shy)
             show()
@@ -3368,6 +3374,21 @@ def kr_update():
             hit_player(2, 1, ke2 + 20)
         if ke2 < -270:
             ke2 = 999
+    # each echo flashes for the 0.3 s before it reaches Hotaru (15/frame, 14 px)
+    ke1_tell = 0
+    ke2_tell = 0
+    if ke1 < 900 and e1hit == 0 and px - ke1 >= 14:
+        tth = 1 + floor((px - ke1 - 14) / 15)
+        if st == "echo":
+            tth = max(1, 30 - t) + floor((px - ke1 - 14) / 15)
+        if tth <= 9:
+            ke1_tell = 1
+    if ke2 < 900 and e2hit == 0 and ke2 - px >= 14:
+        tth = 1 + floor((ke2 - px - 14) / 15)
+        if st == "echo":
+            tth = max(1, 50 - t) + floor((ke2 - px - 14) / 15)
+        if tth <= 9:
+            ke2_tell = 1
     if ent_sev[slot] == 1:
         ent_sev[slot] = 0
         seg = ceil(ehp / 5)
@@ -3618,7 +3639,7 @@ def kr_draw():
         if ex < 900:
             costume(join("dash_", 1 + floor(frame / 2) % 2))
             effect("ghost", 45)
-            if st == "echo" and ((role == "echo1" and t < 30) or (role == "echo2" and t < 50)) and frame % 6 < 3:
+            if (role == "echo1" and ke1_tell == 1) or (role == "echo2" and ke2_tell == 1):
                 effect("brightness", 100)
             goto(ex + shx, y + shy)
             show()
@@ -3682,7 +3703,9 @@ def kr_draw():
     else:
         point(-90)
     tell = 0
-    if (st == "combo" or st == "blink") and t >= ht - 9 and t <= ht:
+    if st == "combo" and ((t >= 3 and t <= 11) or (t >= 15 and t <= 23) or (t >= 27 and t <= 35) or (t >= 47 and t <= 55)):
+        tell = 1
+    if st == "blink" and t >= 17 and t <= 25:
         tell = 1
     if tell == 1:
         effect("brightness", 100)
@@ -3852,7 +3875,7 @@ def ally_hit(breach):
     if breach == 0 and rand(1, 10) <= 6:
         sfxq.append("deflect")
         cfx("deflect", ally_x, fy + 30, 0 - face)
-        integ = min(imax, integ + 2)
+        integ = min(imax, integ + 1)
         int_t = 0
         ally_def = 9
         return
@@ -4046,10 +4069,13 @@ def dm_publish():
     dm_hi = hi
     dm_tell = 0
     if dm_ph == 3:
-        if st == "draw" and t >= 18 and t < 26:
-            dm_tell = 1
+        if st == "draw" and hitdone == 0 and t < 34 and (t < 26 or (px - x) * face > 0):
+            # frames to the hit: the dash moves 13 px a frame from t 26 and connects inside 30 px
+            tth = max(1, 26 - t) + floor(max(0, abs(px - x) - 30) / 13)
+            if tth <= 9:
+                dm_tell = 1
         if (st == "cut3" or st == "storm" or st == "rend" or st == "riposte") and hi <= len(dm_hits):
-            if dm_hits[hi] - t >= 1 and dm_hits[hi] - t <= 8:
+            if dm_hits[hi] - t >= 1 and dm_hits[hi] - t <= 9:
                 dm_tell = 1
 
 
@@ -4529,8 +4555,8 @@ def al_update():
         if act_t == 6 or act_t == 18:
             sfxq.append("muk_slash")
             if abs(bx2 - ally_x) < 64 and reach_ok:
-                ent_dmg[boss_slot] = ent_dmg[boss_slot] + 0.5
-                ent_idmg[boss_slot] = ent_idmg[boss_slot] + 1
+                ent_dmg[boss_slot] = ent_dmg[boss_slot] + 0.25
+                ent_idmg[boss_slot] = ent_idmg[boss_slot] + 0.5
                 ent_hk[boss_slot] = "ally"
                 cfx("hit_enemy", bx2 - aface * 6, fy + 50, aface)
         if act_t >= 28:
@@ -4547,8 +4573,8 @@ def al_update():
         if act_t == 12:
             sfxq.append("muk_slash")
             if abs(bx2 - ally_x) < 70 and reach_ok:
-                ent_dmg[boss_slot] = ent_dmg[boss_slot] + 0.5
-                ent_idmg[boss_slot] = ent_idmg[boss_slot] + 3
+                ent_dmg[boss_slot] = ent_dmg[boss_slot] + 0.25
+                ent_idmg[boss_slot] = ent_idmg[boss_slot] + 1.5
                 ent_hk[boss_slot] = "heavy"
                 cfx("hit_enemy", bx2 - aface * 6, fy + 50, aface)
         if act_t >= 26:
@@ -4650,9 +4676,9 @@ def dm_draw():
             costume(join("mech_idle_", floor(frame / 7.5) % 4))
         tell = 0
         if dm_ph == 1:
-            if st == "iaido" and t >= 17 and t <= 26:
+            if st == "iaido" and t >= 17 and t <= 25:
                 tell = 1
-            if st == "combo" and ((t >= 17 and t <= 26) or (t >= 33 and t <= 42) or (t >= 49 and t <= 58)):
+            if st == "combo" and ((t >= 17 and t <= 25) or (t >= 33 and t <= 41) or (t >= 49 and t <= 57)):
                 tell = 1
         if tell == 1:
             effect("brightness", 100)
@@ -5067,7 +5093,7 @@ def db_draw():
     else:
         costume(join("dobu_idle_", floor(t / 15) % 2))
     goto(bx + shx, by - 8 + shy)
-    if st == "spew" and t >= 15 and t <= 26:
+    if st == "spew" and t >= 17 and t <= 25:
         effect("brightness", 100)
     elif flash_t > 0:
         flash_t -= 1
@@ -5257,7 +5283,7 @@ def da_draw():
         point(dir)
         size(asz)
     goto(sx + shx, sy + shy)
-    if st == "rear" and t >= 23 - 6 * (dobu_ph - 1):
+    if (st == "rear" and t >= 25 - 6 * (dobu_ph - 1)) or (st == "slam" and t <= 1):
         effect("brightness", 100)
     elif flash_t > 0:
         flash_t -= 1
