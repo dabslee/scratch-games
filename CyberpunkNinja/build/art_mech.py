@@ -288,11 +288,65 @@ def anim_frames():
     return A
 
 
+# the sword's tip and a point partway down the blade, in its own pixels
+SWORD_TIP = (17.5, 0.5)
+SWORD_IN = (13, 20)
+# the swish behind a cut, like Tamakiri's: white at the tip, the blade's cyans inward
+TRAIL_COLS = ((238, 242, 255), (138, 255, 253), (97, 195, 223), (52, 118, 156))
+# per slash frame: how far back the smear reaches (in frames of the swing) and how solid it is
+SLASH_TRAIL = ((1.0, 1.0), (1.8, 1.0), (1.2, 0.66), (0.6, 0.33))
+
+
+def _blade(pose, W, H):
+    """The sword tip and inner blade point on the canvas for a pose."""
+    P = dict(REST_P)
+    P.update(pose)
+    gx, gy = W // 2, H - 6
+    grip = (gx + P['grip'][0], gy + P['grip'][1] - P.get('z', 0))
+    pt = lambda q: (grip[0] + _rot(_sub(q, PIV['sword']), P['sword'])[0], grip[1] + _rot(_sub(q, PIV['sword']), P['sword'])[1])
+    return pt(SWORD_TIP), pt(SWORD_IN)
+
+
+def trail(path, u1, span, solid, W, H):
+    """The smear swept by the blade over path (a list of poses) from u1 - span to u1,
+    where u is a fractional index into path."""
+    cv = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    px = cv.load()
+    u0 = max(0.0, u1 - span)
+    steps = int((u1 - u0) * 120) + 2
+    for k in range(steps):
+        u = u0 + (u1 - u0) * k / (steps - 1)
+        i = min(int(u), len(path) - 2)
+        tip, inn = _blade(_tween(path[i], path[i + 1], u - i), W, H)
+        a = (u - u0) / max(1e-6, u1 - u0)          # 0 at the oldest edge, 1 at the blade
+        # the smear thins toward its tail: only the outer part of the blade survives
+        lo = 1 - (0.35 + 0.65 * a)
+        for j in range(41):
+            f = lo + (1 - lo) * j / 40
+            X = inn[0] + (tip[0] - inn[0]) * f
+            Y = inn[1] + (tip[1] - inn[1]) * f
+            xi, yi = int(X), int(Y)
+            if not (0 <= xi < W and 0 <= yi < H):
+                continue
+            g = (f - lo) / max(1e-6, 1 - lo)
+            col = TRAIL_COLS[0 if g > 0.86 else 1 if g > 0.6 else 2 if g > 0.3 else 3]
+            al = int(255 * solid * (1.0 if a > 0.55 else 0.66 if a > 0.25 else 0.33))
+            if px[xi, yi][3] < al:
+                px[xi, yi] = col + (al,)
+    return cv
+
+
 def frames():
     """{costume name: (1x image, anchor)}"""
     out = {}
-    for anim, poses in anim_frames().items():
+    A = anim_frames()
+    for anim, poses in A.items():
         for i, p in enumerate(poses):
             im, anc = render(p, W=160, H=170)
+            if anim == 'slash':
+                # sweep from the top of the windup, the trail under the mech
+                span, solid = SLASH_TRAIL[i]
+                tr = trail([A['windup'][-1]] + poses, i + 1, span, solid, 160, 170)
+                im = Image.alpha_composite(tr, im)
             out['mech_%s_%d' % (anim, i)] = (im, anc)
     return out
