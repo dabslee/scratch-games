@@ -4046,7 +4046,7 @@ def dm_publish():
     dm_hi = hi
     dm_tell = 0
     if dm_ph == 3:
-        if st == "draw" and t >= 10 and t < 18:
+        if st == "draw" and t >= 18 and t < 26:
             dm_tell = 1
         if (st == "cut3" or st == "storm" or st == "rend" or st == "riposte") and hi <= len(dm_hits):
             if dm_hits[hi] - t >= 1 and dm_hits[hi] - t <= 8:
@@ -4062,26 +4062,32 @@ def dm_combo(kind):
     dm_lh = -99
     dm_hits.clear()
     if kind == "cut3":
-        # da-da ... DA
-        dm_hits.append(14)
+        # a 0.9 s windup, then da-da ... DA
         dm_hits.append(26)
-        dm_hits.append(46)
+        dm_hits.append(38)
+        dm_hits.append(58)
     elif kind == "riposte":
         dm_hits.append(9)
     elif kind == "storm":
-        dm_hits.append(18)
-        dm_hits.append(28)
-        dm_hits.append(38)
-        dm_hits.append(58)
+        dm_hits.append(26)
+        dm_hits.append(36)
+        dm_hits.append(46)
         dm_hits.append(66)
         dm_hits.append(74)
-        dm_hits.append(100)
+        dm_hits.append(82)
+        dm_hits.append(108)
     else:
-        dm_hits.append(20)
-        dm_hits.append(44)
-        dm_hits.append(68)
-        dm_hits.append(80)
-        dm_hits.append(104)
+        dm_hits.append(26)
+        dm_hits.append(50)
+        dm_hits.append(74)
+        dm_hits.append(86)
+        dm_hits.append(110)
+
+
+@proc
+def dm_hold():
+    hold_x = min(max(x + face * 22, -210), 210)
+    hold_y = fy + 8
 
 
 @proc
@@ -4105,8 +4111,8 @@ def dm_pick():
         else:
             dm_go("grab")
     else:
-        k = pat % 8
-        if ad > 160 and (k == 0 or k == 4 or k == 7):
+        k = pat % 7
+        if ad > 160 and (k == 0 or k == 4):
             k = 1
         if k == 0:
             dm_combo("storm")
@@ -4119,10 +4125,8 @@ def dm_pick():
             sfxq.append("muk_guard")
         elif k == 4:
             dm_combo("rend")
-        elif k == 5:
-            dm_go("grab")
         else:
-            dm_combo("cut3")
+            dm_go("grab")
 
 
 @proc
@@ -4377,11 +4381,11 @@ def dm_man():
             else:
                 dm_rec(34)
     elif st == "draw":
-        # iaido: a dash-cut along the floor
-        if t < 18:
+        # iaido: a 0.9 s draw, then a dash-cut along the floor
+        if t < 26:
             dm_face()
             prel = px - x
-        elif t < 26:
+        elif t < 34:
             x += face * 13
             if t % 2 == 0:
                 mfx("afterimage", x, fy + 30, face)
@@ -4391,15 +4395,16 @@ def dm_man():
                 hit_player(3, 0, x - face * 10)
                 if res == "deflect":
                     integ = min(imax, integ + 3)
+                    # a short stagger: 9 frames, then 8 open (half the old 34)
                     st = "recoil"
-                    t = 0
+                    t = 17
             prel = rel
-        elif t >= 44 and st == "draw":
-            dm_rec(26)
+        elif t >= 52 and st == "draw":
+            dm_rec(13)
     elif st == "counter":
         # Tamakiri raised and waiting; hold off and he lowers it, open
         if t >= 46:
-            dm_rec(34)
+            dm_rec(7)
     elif st == "grab":
         # the soul grab: a Breach; if it connects it fills Hotaru's Stance
         if t < 24:
@@ -4409,12 +4414,36 @@ def dm_man():
             x += face * 12
             if hitdone == 0 and abs(px - x) < 24 and py < fy + 40:
                 hitdone = 1
-                hit_player(2, 1, x)
-                if res == "hit":
-                    heat = min(16, heat + 9)
+                if pinv == 0 and pdash == 0 and pst != "dead" and pst != "cut" and pst != "reboot":
+                    # caught: he holds her up for a second, draining her, then throws her
+                    st = "hold"
+                    t = 0
+                    dm_hold()
+                    hq_t.append("held")
+                    hq_d.append(0)
+                    hq_x.append(x)
                     sfxq.append("kvoice")
         elif t >= 52:
-            dm_rec(30)
+            dm_rec(15)
+    elif st == "hold":
+        dm_hold()
+        if pst != "held":
+            dm_rec(15)
+        elif t == 5 or t == 15 or t == 25:
+            # 3 damage and 9 Stance over the second
+            hq_t.append("squeeze")
+            hq_d.append(1)
+            hq_x.append(x)
+        elif t >= 30:
+            hq_t.append("thrown")
+            hq_d.append(0)
+            hq_x.append(x)
+            sfxq.append("oni_swing")
+            st = "throw"
+            t = 0
+    elif st == "throw":
+        if t >= 10:
+            dm_rec(15)
     elif st == "tempest":
         # he leaps, spins in the air and throws three slash waves at Hotaru, then lands open
         if t < 12:
@@ -4683,11 +4712,11 @@ def dm_draw():
                 costume("dmf_idle_0")
                 effect("ghost", max(0, 100 - (dm_t - 30) * 5))
             elif dm_st == "draw":
-                if dm_t < 18:
+                if dm_t < 26:
                     costume("dmf_dash_0")
-                elif dm_t < 26:
-                    costume(join("dmf_dash_", 1 + floor((dm_t - 18) / 3) % 3))
                 elif dm_t < 34:
+                    costume(join("dmf_dash_", 1 + floor((dm_t - 26) / 3) % 3))
+                elif dm_t < 42:
                     costume("dmf_dash_4")
                 else:
                     costume("dmf_dash_5")
@@ -4724,6 +4753,10 @@ def dm_draw():
                     costume("dmf_grab_4")
                 else:
                     costume("dmf_grab_5")
+            elif dm_st == "hold":
+                costume(join("dmf_grab_", 2 + floor(dm_t / 4) % 2))
+            elif dm_st == "throw":
+                costume(join("dmf_grab_", 4 + (dm_t >= 5)))
             elif dm_st == "tempest":
                 if dm_t < 12:
                     costume(join("dmf_jump_", floor(dm_t / 6)))

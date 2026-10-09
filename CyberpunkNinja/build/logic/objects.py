@@ -518,7 +518,10 @@ def tick():
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        if lon == 1:
+        if pulse == 0:
+            costume(join("b_on_", floor(frame / 3) % 4))
+            effect("ghost", 0)
+        elif lon == 1:
             costume(join("on_", floor(frame / 3) % 4))
             effect("ghost", 0)
         elif (frame + phase) % 100 >= 85 and frame % 4 < 2:

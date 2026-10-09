@@ -132,7 +132,9 @@ def p_update():
         st_overheat()
     elif pst == "heal":
         st_heal()
-    if pst != "dead":
+    elif pst == "held":
+        st_held()
+    if pst != "dead" and pst != "held":
         physics()
         post()
     pt += 1
@@ -731,6 +733,12 @@ def proc_hits():
             hazard(hq_d[hi])
         elif ht == "sting":
             sting(hq_d[hi])
+        elif ht == "held":
+            got_held()
+        elif ht == "squeeze":
+            squeeze(hq_d[hi])
+        elif ht == "thrown":
+            thrown(hq_x[hi])
     hq_t.clear()
     hq_d.clear()
     hq_x.clear()
@@ -797,6 +805,79 @@ def take_hit(dmg, sx):
     hitstop = 3
     if hp <= 0:
         die()
+
+
+@proc
+def got_held():
+    # caught in the Daimyo's soul grab: lifted and held until he throws her
+    if pst == "dead":
+        return
+    pst = "held"
+    pt = 0
+    pvx = 0
+    pvy = 0
+    pblock = 0
+    pparry = 0
+    pdash = 0
+    cling = 0
+    anim_force("hurt")
+    sfxq.append("hurt")
+    cfx("hit", px, py + 20, 0)
+    shake = 6
+    shake_amp = 4
+    hitstop = 4
+
+
+@proc
+def st_held():
+    px = hold_x
+    py = hold_y
+    pvx = 0
+    pvy = 0
+    grounded = 0
+    if mk_x > px:
+        pface = 1
+    else:
+        pface = -1
+    if pt > 60:
+        pst = "move"
+
+
+@proc
+def squeeze(dmg):
+    if pst != "held":
+        return
+    if opt_god == 0:
+        hp -= dmg
+    heat = min(16, heat + 3)
+    heat_idle = 0
+    sfxq.append("zap")
+    cfx("hit", px, py + 20, 0)
+    shake = 3
+    shake_amp = 2
+    if hp <= 0:
+        die()
+
+
+@proc
+def thrown(sx):
+    if pst != "held":
+        return
+    pinv = C_IFRAMES
+    if px > sx:
+        pvx = 8
+    else:
+        pvx = -8
+    pvy = 8
+    grounded = 0
+    onplat = 0
+    pst = "hurt"
+    pt = 0
+    anim_force("hurt")
+    sfxq.append("hurt")
+    shake = 6
+    shake_amp = 4
+    hitstop = 3
 
 
 @proc
