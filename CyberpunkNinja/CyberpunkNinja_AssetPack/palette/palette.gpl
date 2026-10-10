@@ -1,0 +1,38 @@
+GIMP Palette
+Name: Cyberpunk Ninja
+Columns: 8
+#
+ 11   8  20	ink
+ 20  15  45	night1
+ 31  24  70	night2
+ 45  36 102	night3
+ 60  58 138	indigo
+ 38  43  66	slate1
+ 61  69  99	slate2
+ 98 108 145	slate3
+154 163 194	steel
+238 242 255	white
+ 14  90 122	cyan1
+ 20 163 199	cyan2
+ 62 240 255	cyan3
+196 253 255	cyan4
+107  20  80	mag1
+194  31 134	mag2
+255  61 184	mag3
+255 166 230	mag4
+110  15  31	red1
+212  36  56	red2
+255  90  74	red3
+255 154  60	orange
+255 224 102	yellow
+ 31 107  74	green1
+ 63 209 122	green2
+182 255  90	lime
+122  74  58	skin1
+201 138 106	skin2
+242 196 160	skin3
+ 74  31 122	purple1
+138  63 240	purple2
+196 155 255	purple3
+ 74  46  42	brown
+224 176  64	gold

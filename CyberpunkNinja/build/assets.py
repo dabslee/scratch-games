@@ -17,7 +17,8 @@ from PIL import Image
 import levels
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PACK = os.environ.get('CN_PACK', os.path.join(HERE, '..', '..', '..', 'CyberpunkNinja_AssetPack'))
+# the asset pack ships in the repo next to build/; CN_PACK points the build at another copy
+PACK = os.environ.get('CN_PACK', os.path.join(HERE, '..', 'CyberpunkNinja_AssetPack'))
 
 
 def pack_path(*p):

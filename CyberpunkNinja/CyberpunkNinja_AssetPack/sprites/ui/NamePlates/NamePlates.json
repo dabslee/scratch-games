@@ -1,0 +1,158 @@
+{
+ "name_hotaru": {
+  "file": "sprites/ui/NamePlates/name_hotaru.png",
+  "frame_w": 53,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "name_kuro": {
+  "file": "sprites/ui/NamePlates/name_kuro.png",
+  "frame_w": 39,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "name_tetsu": {
+  "file": "sprites/ui/NamePlates/name_tetsu.png",
+  "frame_w": 46,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "name_daicam": {
+  "file": "sprites/ui/NamePlates/name_daicam.png",
+  "frame_w": 51,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "name_mukuro": {
+  "file": "sprites/ui/NamePlates/name_mukuro.png",
+  "frame_w": 53,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "name_the_daimyo": {
+  "file": "sprites/ui/NamePlates/name_the_daimyo.png",
+  "frame_w": 77,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "name_unknown": {
+  "file": "sprites/ui/NamePlates/name_unknown.png",
+  "frame_w": 32,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "boss_big_oni": {
+  "file": "sprites/ui/NamePlates/boss_big_oni.png",
+  "frame_w": 96,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "boss_lady_luck": {
+  "file": "sprites/ui/NamePlates/boss_lady_luck.png",
+  "frame_w": 96,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "boss_mukuro": {
+  "file": "sprites/ui/NamePlates/boss_mukuro.png",
+  "frame_w": 96,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "boss_raijin": {
+  "file": "sprites/ui/NamePlates/boss_raijin.png",
+  "frame_w": 96,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "boss_kuro": {
+  "file": "sprites/ui/NamePlates/boss_kuro.png",
+  "frame_w": 96,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ },
+ "boss_the_daimyo": {
+  "file": "sprites/ui/NamePlates/boss_the_daimyo.png",
+  "frame_w": 96,
+  "frame_h": 11,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   0,
+   0
+  ]
+ }
+}

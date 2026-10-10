@@ -1,0 +1,14 @@
+{
+ "logo": {
+  "file": "sprites/ui/Logo/logo.png",
+  "frame_w": 111,
+  "frame_h": 65,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   55,
+   32
+  ]
+ }
+}

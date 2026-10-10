@@ -1,0 +1,110 @@
+{
+ "hotaru_neutral": {
+  "file": "sprites/ui/Portraits/hotaru_neutral.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ },
+ "hotaru_angry": {
+  "file": "sprites/ui/Portraits/hotaru_angry.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ },
+ "hotaru_visor_up": {
+  "file": "sprites/ui/Portraits/hotaru_visor_up.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ },
+ "kuro_neutral": {
+  "file": "sprites/ui/Portraits/kuro_neutral.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ },
+ "kuro_smirk": {
+  "file": "sprites/ui/Portraits/kuro_smirk.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ },
+ "tetsu_neutral": {
+  "file": "sprites/ui/Portraits/tetsu_neutral.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ },
+ "daicam_neutral": {
+  "file": "sprites/ui/Portraits/daicam_neutral.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ },
+ "mukuro_neutral": {
+  "file": "sprites/ui/Portraits/mukuro_neutral.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ },
+ "daimyo_neutral": {
+  "file": "sprites/ui/Portraits/daimyo_neutral.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": false,
+  "anchor": [
+   20,
+   20
+  ]
+ }
+}

@@ -1,0 +1,62 @@
+{
+ "idle": {
+  "file": "sprites/characters/BigOni/idle.png",
+  "frame_w": 112,
+  "frame_h": 88,
+  "frames": 4,
+  "fps": 5,
+  "loop": true,
+  "anchor": [
+   50,
+   85
+  ]
+ },
+ "walk": {
+  "file": "sprites/characters/BigOni/walk.png",
+  "frame_w": 112,
+  "frame_h": 88,
+  "frames": 6,
+  "fps": 6,
+  "loop": true,
+  "anchor": [
+   50,
+   85
+  ]
+ },
+ "slam": {
+  "file": "sprites/characters/BigOni/slam.png",
+  "frame_w": 112,
+  "frame_h": 88,
+  "frames": 8,
+  "fps": 10,
+  "loop": false,
+  "anchor": [
+   50,
+   85
+  ]
+ },
+ "stagger": {
+  "file": "sprites/characters/BigOni/stagger.png",
+  "frame_w": 112,
+  "frame_h": 88,
+  "frames": 3,
+  "fps": 6,
+  "loop": true,
+  "anchor": [
+   50,
+   85
+  ]
+ },
+ "death": {
+  "file": "sprites/characters/BigOni/death.png",
+  "frame_w": 112,
+  "frame_h": 88,
+  "frames": 6,
+  "fps": 6,
+  "loop": false,
+  "anchor": [
+   50,
+   85
+  ]
+ }
+}

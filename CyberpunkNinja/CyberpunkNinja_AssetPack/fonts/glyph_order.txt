@@ -1,0 +1,2 @@
+Sheet is 16 columns x 6 rows, 7px wide x 11px tall cells, ASCII 32-126 in order.
+Glyph height 9px (7px caps + 2px descender). Proportional advance = glyph width + 1px.
