@@ -266,7 +266,7 @@ def sync():
     heat = 0
     if has_gourd == 1:
         gourd = gmax
-    dash_ch = 2
+    dash_ch = 1
     dead_objs.clear()
     has_save = 1
     cfx("sync", x, y + 30, 0)
@@ -796,7 +796,6 @@ SHARD = spawner('shard', '''
 if not (oi in got_shards):
     x = O_X[oi]
     y = O_Y[oi]
-    sid = O_A[oi]
     myobj = oi
     t = 0
     is_clone = 1
@@ -814,7 +813,8 @@ def tick():
             if abs(px - x) < 18 and py < y + 14 and py + 36 > y - 14:
                 got_shards.append(myobj)
                 shards += 1
-                shard_id = sid
+                # memories play in the order found, wherever the shard was
+                shard_id = shards
                 cfx("sync", x, y, 0)
                 broadcast("ev_shard")
                 delete_clone()

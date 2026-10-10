@@ -753,7 +753,7 @@ def proc_hits():
 @proc
 def got_deflect(sx):
     heat = max(0, heat - 2)
-    dash_ch = 2
+    dash_ch = 1
     hitstop = max(hitstop, 4)
     if sx > px:
         cfx("deflect", px + 14, py + 24, 1)
@@ -1022,7 +1022,7 @@ def physics():
     if grounded == 1:
         air_t = 0
         if was_g == 0:
-            dash_ch = 2
+            dash_ch = 1
             airatk = 0
             if fallv < -9 and pst == "move":
                 land_t = 5
@@ -1230,8 +1230,9 @@ def p_draw():
         fi = a_n - 1
     if fi < 0:
         fi = 0
+    # one Phase Step charge: the scarf greys out while it's spent (2 = the epilogue's violet flicker)
     suf = ""
-    if dash_ch == 1:
+    if dash_ch == 2:
         suf = "_m"
     elif dash_ch < 1:
         suf = "_g"

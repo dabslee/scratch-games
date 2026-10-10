@@ -256,7 +256,7 @@ p7s.deco('g', 2, 3, 27, 3).deco('x', 3, 17, 5, 17).deco('x', 23, 17, 25, 17)
 p7s.obj('drone', cx(6), top(11))
 p7s.obj('drone', cx(23), top(11))
 p7s.obj('drone', cx(14), top(6))
-p7s.obj('shard', cx(14) + 8, top(6), a=1)
+p7s.obj('shard', cx(14) + 8, top(6))
 p7s.flags.append('challenge')
 
 # P8 Scrapyard edge -----------------------------------------------------
@@ -392,7 +392,7 @@ a8.deco('g', 2, 3, 27, 3).deco('m', 2, 18, 12, 18).deco('c', 16, 18, 27, 18)
 a8.obj('hannya', cx(6), bottom(18), a=0)
 a8.obj('hannya', cx(23), bottom(18), a=1)
 a8.obj('drone', cx(14), top(10))
-a8.obj('shard', cx(14) + 8, top(10), a=2)
+a8.obj('shard', cx(14) + 8, top(10))
 a8.obj('sign', cx(8), bottom(2), a='NeonSign_Bar')
 a8.flags.append('challenge')
 
@@ -508,7 +508,7 @@ b5s.deco('y', 2, 3, 27, 3).deco('o', 3, 6, 8, 6)
 b5s.obj('slotturret', left(2), top(10) - 8, a=90)
 b5s.obj('croupier', cx(16), bottom(18), a=0)
 b5s.obj('drone', cx(20), top(9))
-b5s.obj('shard', cx(15) + 8, top(8), a=3)
+b5s.obj('shard', cx(15) + 8, top(8))
 b5s.flags.append('challenge')
 
 # B6 Cashier's cage ---------------------------------------------------
@@ -546,6 +546,18 @@ b8.obj('luck', cx(22), bottom(18))
 b8.obj('trig', cx(4), 0, a='luck_start')
 b8.flags.append('boss')
 
+# B9 Freight shaft (the debtors' lift went down; Hotaru drops after it into the Sewers) ---
+b9 = room('b9', 2, 'Freight Shaft')
+b9.solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 18)
+b9.solid(0, 19, 19, 22).solid(23, 19, 29, 22)
+b9.deco('y', 1, 3, 28, 3).deco('z', 19, 19, 19, 22).deco('z', 23, 19, 23, 22).deco('y', 1, 19, 18, 19).deco('y', 24, 19, 28, 19)
+b9.deco('l', 21, 4, 21, 18)
+for c in (3, 6, 9):
+    b9.obj('pachinko', cx(c), bottom(18))
+b9.obj('sign', cx(21) + 8, top(4), a='NeonSign_Danger')
+b9.obj('lantern', cx(14), top(3))
+b9.obj('trig', cx(13), 0, a='shaft')
+
 
 # =====================================================================
 # CHAPTER 3: THE SEWERS
@@ -553,10 +565,10 @@ b8.flags.append('boss')
 
 # W1 Drain mouth ------------------------------------------------------
 w1 = room('w1', 3, 'Drain Mouth')
-w1.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
+w1.solid(0, 19, 29, 22).solid(0, 0, 19, 2).solid(23, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
 w1.solid(18, 16, 22, 18).deco('g', 18, 16, 22, 16)
 w1.plat(23, 27, 13).plat(8, 12, 14)
-w1.deco('g', 1, 3, 28, 3).deco('i', 6, 4, 6, 18).deco('i', 15, 4, 15, 15).deco('z', 1, 18, 4, 18)
+w1.deco('g', 1, 3, 18, 3).deco('g', 24, 3, 28, 3).deco('z', 19, 0, 19, 2).deco('z', 23, 0, 23, 2).deco('i', 6, 4, 6, 18).deco('i', 15, 4, 15, 15).deco('z', 1, 18, 4, 18)
 w1.obj('start', cx(3), bottom(18))
 w1.obj('trig', -999, 0, a='ch3_start')
 
@@ -601,7 +613,7 @@ w4s.deco('g', 2, 3, 27, 3)
 w4s.obj('drainling', cx(10), bottom(18))
 w4s.obj('drainling', cx(18), bottom(18))
 w4s.obj('drone', cx(14), top(6))
-w4s.obj('shard', cx(14) + 8, top(6), a=4)
+w4s.obj('shard', cx(14) + 8, top(6))
 w4s.flags.append('challenge')
 
 # W5 Drainling nest (DaiCam, ambush) -----------------------------------
@@ -667,14 +679,16 @@ def car(r, c1, c2, roof=ROOF):
 
 # D1 Platform 9 (station) ----------------------------------------------
 d1 = room('d1', 4, 'Platform 9')
-d1.solid(0, 19, 25, 22).solid(0, 0, 25, 2).solid(0, 3, 0, 13)
+d1.solid(0, 19, 25, 22).solid(0, 0, 25, 8).solid(0, 9, 0, 13)
 car(d1, 18, 29)
-d1.deco('i', 8, 3, 8, 18).deco('i', 15, 3, 15, 18).deco('z', 1, 19, 17, 19)
+d1.deco('i', 8, 9, 8, 18).deco('i', 15, 9, 15, 18).deco('z', 1, 19, 17, 19).deco('z', 25, 0, 25, 8).deco('c', 1, 8, 24, 8)
+for c in (3, 11, 19):
+    d1.deco('o', c, 7, c + 1, 7)                                          # tunnel lights
 d1.obj('start', cx(2), bottom(18))
 d1.obj('shrine', cx(5), bottom(18))
-d1.obj('sign', cx(11) + 8, top(4), a='NeonSign_Danger')
-d1.obj('lantern', cx(4), top(3))
-d1.obj('lantern', cx(12), top(3))
+d1.obj('sign', cx(11) + 8, top(9), a='NeonSign_Danger')
+d1.obj('lantern', cx(4), top(9))
+d1.obj('lantern', cx(12), top(9))
 d1.obj('trig', -999, 0, a='ch4_start')
 
 # D2 Roof run ----------------------------------------------------------
@@ -735,7 +749,7 @@ for r in (5, 9, 13):
 d5s.obj('croupier', cx(8), bottom(18), a=0)
 d5s.obj('croupier', cx(22), bottom(18), a=0)
 d5s.obj('hannya', cx(15), bottom(18), a=1)
-d5s.obj('shard', cx(22) + 8, top(5), a=5)
+d5s.obj('shard', cx(22) + 8, top(5))
 d5s.flags.append('challenge')
 
 # D6 Dining car --------------------------------------------------------
@@ -832,7 +846,7 @@ e5s.solid(0, 19, 3, 22).solid(8, 19, 29, 22).plat(4, 7, 19)
 e5s.phase(12, 16, 14, 'G').phase(18, 22, 10, 'H')
 e5s.obj('warden', cx(12), bottom(18), a=1)
 e5s.obj('warden', cx(22), bottom(18), a=0)
-e5s.obj('shard', cx(20) + 8, top(7), a=6)
+e5s.obj('shard', cx(20) + 8, top(7))
 e5s.flags.append('challenge')
 
 # E6 The white room ---------------------------------------------------
@@ -965,7 +979,7 @@ c5s.plat(4, 9, 13).plat(11, 16, 10)
 c5s.deco('g', 2, 3, 27, 3)
 c5s.obj('warden', cx(8), bottom(18), a=1)
 c5s.obj('warden', cx(14), bottom(18), a=0)
-c5s.obj('shard', cx(13) + 8, top(7), a=7)
+c5s.obj('shard', cx(13) + 8, top(7))
 for c in (3, 26):
     c5s.obj('herbs', cx(c), bottom(18))
 c5s.flags.append('challenge')
@@ -1009,6 +1023,17 @@ c8.obj('harm', cx(22), bottom(18))
 c8.obj('trig', cx(4), 0, a='harm_start')
 c8.flags.append('boss')
 
+# C9 Service lift (up from the Gardens to the Academy) -------------------
+c9 = room('c9', 6, 'Service Lift')
+c9.solid(0, 19, 8, 22).solid(13, 19, 29, 22).solid(9, 21, 12, 22)
+c9.solid(0, 0, 8, 7).solid(13, 0, 29, 7).solid(0, 8, 0, 13).solid(29, 8, 29, 18)
+c9.deco('g', 1, 7, 7, 7).deco('g', 14, 7, 28, 7).deco('z', 8, 0, 8, 7).deco('z', 13, 0, 13, 7)
+c9.obj('lift', left(9) + 32, top(19), a='up')
+c9.obj('planter', cx(18), bottom(18))
+c9.obj('herbs', cx(22), bottom(18))
+c9.obj('lantern', cx(4), top(8))
+c9.obj('lantern', cx(20), top(8))
+
 
 # =====================================================================
 # CHAPTER 7: THE ACADEMY
@@ -1016,11 +1041,12 @@ c8.flags.append('boss')
 
 # F1 Academy gate -----------------------------------------------------
 f1 = room('f1', 7, 'Academy Gate')
-f1.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
-f1.deco('y', 1, 19, 28, 19)
+f1.solid(0, 19, 8, 22).solid(13, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 18).solid(29, 3, 29, 13)
+f1.deco('y', 1, 19, 8, 19).deco('y', 13, 19, 28, 19)
+f1.obj('lift', left(9) + 32, top(19), a='arrive')
 f1.obj('start', cx(3), bottom(18))
 f1.obj('shrine', cx(6), bottom(18))
-for c in (13, 17, 21):
+for c in (16, 20, 24):
     f1.obj('dummy', cx(c), bottom(18))
 f1.obj('lantern', cx(10), top(3))
 f1.obj('lantern', cx(24), top(3))
@@ -1074,7 +1100,7 @@ f5s.solid(0, 19, 3, 22).solid(8, 19, 29, 22).plat(4, 7, 19)
 f5s.plat(12, 17, 14).plat(20, 25, 10)
 f5s.obj('shell', cx(15), bottom(18), a=1)
 f5s.obj('turret', left(28), top(6) - 8, a=-90)
-f5s.obj('shard', cx(22) + 8, top(8), a=8)
+f5s.obj('shard', cx(22) + 8, top(8))
 f5s.flags.append('challenge')
 
 # F6 Intake (DaiCam in the queue) ------------------------------------------------------
@@ -1100,20 +1126,20 @@ f7.obj('trig', cx(8), 0, a='extraction')
 
 # F8 Mukuro's ring (Mukuro) ------------------------------------------
 f8 = room('f8', 7, "Mukuro's Ring")
-f8.solid(0, 19, 29, 22).solid(0, 0, 29, 1).solid(0, 2, 0, 13).solid(29, 2, 29, 18)
+f8.solid(0, 19, 29, 22).solid(0, 0, 29, 1).solid(0, 2, 0, 13).solid(29, 2, 29, 13)
 f8.plat(3, 7, 14).plat(22, 26, 14).deco('r', 1, 19, 28, 19)
 f8.obj('door', left(0) + 8, bottom(18), a='ambush')
+f8.obj('door', left(29), bottom(18), a='lock')
 f8.obj('mukuro', cx(22), bottom(18), a=2)
 f8.obj('trig', cx(4), 0, a='muk_start')
 f8.flags.append('boss')
 
-# F9 Spire lift (the ride up to the Tenshu) ------------------------------
+# F9 Spire lift (behind Mukuro's ring; the ride up to the Tenshu) --------
 f9 = room('f9', 7, 'Spire Lift')
 f9.solid(0, 19, 8, 22).solid(13, 19, 29, 22).solid(9, 21, 12, 22)
-f9.solid(0, 0, 8, 7).solid(13, 0, 29, 7).solid(0, 8, 0, 18).solid(29, 8, 29, 18)
+f9.solid(0, 0, 8, 7).solid(13, 0, 29, 7).solid(0, 8, 0, 13).solid(29, 8, 29, 18)
 f9.deco('g', 1, 7, 7, 7).deco('g', 14, 7, 28, 7).deco('z', 8, 0, 8, 7).deco('z', 13, 0, 13, 7)
-f9.obj('start', cx(4), bottom(18))
-f9.obj('lift', left(9), top(19), a='up')
+f9.obj('lift', left(9) + 32, top(19), a='up')
 f9.obj('lantern', cx(4), top(8))
 f9.obj('lantern', cx(20), top(8))
 
@@ -1125,7 +1151,7 @@ f9.obj('lantern', cx(20), top(8))
 # G1 Cloud gate -------------------------------------------------------
 g1 = room('g1', 8, 'Cloud Gate')
 g1.solid(0, 19, 8, 22).solid(13, 19, 29, 22).solid(0, 0, 0, 18).solid(29, 0, 29, 13)
-g1.obj('lift', left(9), top(19), a='arrive')
+g1.obj('lift', left(9) + 32, top(19), a='arrive')
 g1.deco('y', 1, 19, 8, 19).deco('y', 13, 19, 28, 19)
 g1.obj('start', cx(3), bottom(18))
 g1.obj('shrine', cx(6), bottom(18))
@@ -1173,7 +1199,7 @@ g4s.solid(0, 19, 3, 22).solid(8, 19, 29, 22).plat(4, 7, 19)
 g4s.plat(12, 17, 14).plat(20, 25, 10)
 g4s.obj('shell', cx(14), bottom(18), a=1)
 g4s.obj('warden', cx(22), bottom(18), a=1)
-g4s.obj('shard', cx(22) + 8, top(8), a=9)
+g4s.obj('shard', cx(22) + 8, top(8))
 g4s.flags.append('challenge')
 
 # G5 Muster hall ------------------------------------------------------
@@ -1255,7 +1281,8 @@ link(b5, 'U', b5s)
 link(b5, 'R', b6)
 link(b6, 'R', b7)
 link(b7, 'R', b8)
-link(b8, 'R', w1)
+link(b8, 'R', b9)
+link(w1, 'U', b9)
 link(w1, 'R', w2)
 link(w2, 'R', w3)
 link(w3, 'R', w4)
@@ -1290,7 +1317,8 @@ link(c5, 'U', c5s)
 link(c5, 'R', c6)
 link(c6, 'R', c7)
 link(c7, 'R', c8)
-link(c8, 'R', f1)
+link(c8, 'R', c9)
+link(c9, 'U', f1)
 link(f1, 'R', f2)
 link(f2, 'R', f3)
 link(f3, 'R', f4)
@@ -1299,6 +1327,7 @@ link(f5, 'U', f5s)
 link(f5, 'R', f6)
 link(f6, 'R', f7)
 link(f7, 'R', f8)
+link(f8, 'R', f9)
 link(f9, 'U', g1)
 link(g1, 'R', g2)
 link(g2, 'R', g3)

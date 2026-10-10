@@ -56,10 +56,7 @@ def fx_draw():
     elif kind == "afterimage":
         if life > 8:
             delete_clone()
-        if dash_ch >= 1:
-            costume("afterimage_0")
-        else:
-            costume("afterimage_1")
+        costume("afterimage_0")
         effect("ghost", 30 + life * 8)
     else:
         if fr >= nfr:

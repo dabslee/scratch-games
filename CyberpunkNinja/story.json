@@ -23,7 +23,7 @@
     "The Daimyo": "CEO of Kanshi Dynamics. A human man in a samurai exoskeleton who believes the soul is the root of every riot, strike, and theft. He carries Tamakiri, the blade that split Kuro."
   },
   "branches": {
-    "description": "One choice at the end of Chapter 5 decides the rest of the game. A scene whose condition is 'branch: kuro_spared' or 'branch: kuro_destroyed' plays only on that branch. 'optional' marks a scene the player can skip (Memory Shards, repeat talks); 'optional; branch: ...' means both. Scenes with no condition play on every branch.",
+    "description": "One choice at the end of Chapter 5 decides the rest of the game. A scene whose condition is 'branch: kuro_spared' or 'branch: kuro_destroyed' plays only on that branch. 'optional' marks a scene the player can skip (repeat talks); 'optional; branch: ...' means both. Scenes with no condition play on every branch.",
     "kuro_spared": "Hotaru and Kuro compromise: he gets his revenge, she gets her answers, and he stops fighting her for control. He rides along through the Physic Gardens. In Chapter 7 Kuro realizes he can possess Mukuro, his own former body, and asks Hotaru to bring it along. At the Last Shrine he moves into it and fights beside her in the first two phases of the final battle. One soul cannot keep two bodies alive, so after the Daimyo falls Kuro lets go and leaves the whole soul to Hotaru.",
     "kuro_destroyed": "Hotaru destroys Kuro's mind and keeps the soul for herself. She climbs the rest of the Spire alone, from the Physic Gardens up. Mukuro can only be put down, and she faces the Daimyo by herself."
   },
@@ -168,7 +168,7 @@
     ],
     "core_combat": [
       "Attack chains into a 4-hit combo; Up + attack is a rising Launcher.",
-      "Phase Step (Space): an invincible, aimable dash with 2 charges (shown by the scarf color). Passes through lasers and attacks; refills on landing or a perfect deflect.",
+      "Phase Step (Space): an invincible, aimable dash with one charge (the scarf greys out while it's spent). Passes through lasers and attacks; refills on landing or a perfect deflect.",
       "Heavy Strike: attack during or right after a Phase Step. It can't cut through a guard or a deflect, but it builds a lot of enemy Stance.",
       "Deflect: press Down right before a hit lands (enemies flash white just before). A perfect deflect builds the attacker's Stance. Holding Down blocks, but blocking builds Hotaru's Stance.",
       "Stance: every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure, then slowly settles (more slowly the lower a fighter's health, down to half speed; Hotaru's only with her guard down). When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution (instant kill for regular enemies, a whole health segment for bosses). Every Execution also refills one gourd charge and clears Hotaru's Stance. When Hotaru's Stance breaks, she overheats and staggers.",
@@ -180,7 +180,7 @@
     ],
     "traversal": [
       "Wall cling and wall jump; jump up through thin platforms, double-tap Down (or Phase Step down) to drop through.",
-      "Lifts: the Scrapyard lift cycles up and down; the Spire Lift carries Hotaru from Mukuro's Ring up into the Tenshu.",
+      "Lifts and shafts: the Scrapyard lift up into Neon Alley; the freight shaft behind Lady Luck's table, dropping into the Sewers; the service lift from the Apothecary up into the Academy; the Spire Lift behind Mukuro's Ring, up into the Tenshu.",
       "Toxic pools and rising sludge tides (Sewers). Each room starts at low tide; a TIDE RISING warning flashes and the pumps gurgle before each rise.",
       "Laser grids pulse on and off (Vaults, Castle).",
       "Greenhouse heat vents carry you upward; some vents pulse (Physic Gardens).",
@@ -199,7 +199,7 @@
       "Hollowed trainees: Kuro's former students, who dash in and throw kunai (Academy).",
       "Hollowed soldiers, castle turrets, beams, and lasers (Tenshu)."
     ],
-    "collectibles": "Nine hidden Memory Shards, one per area. Each is a piece of Kuro's memory that broke off when he was split from his body.",
+    "collectibles": "Nine hidden Memory Shards, one per area. Each is a piece of Kuro's memory that broke off when he was split from his body. The memories play in order, oldest first, whichever shard you find; nothing outside them depends on finding them.",
     "assist_options": [
       "Wide deflect window",
       "Slower game speed",
@@ -443,34 +443,6 @@
           ]
         },
         {
-          "id": "shard1",
-          "room": "Scrap Vault",
-          "trigger": "Memory Shard 1 (hidden above the Gauntlet)",
-          "condition": "optional",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "This shard. It holds memories... memories familiar to me..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...A courtyard. Rain on a tiled roof. Someone is teaching me to hold a blade."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "An older woman. She's laughing at me."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "What are your memories doing floating around?"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Not sure... they must have broken away from me somehow when I died. Let's try and find the rest."
-            }
-          ]
-        },
-        {
           "id": "edge",
           "room": "Scrapyard Edge",
           "trigger": "Reach the edge of the Scrapyard",
@@ -613,34 +585,6 @@
           ]
         },
         {
-          "id": "shard2",
-          "room": "Hidden Den",
-          "trigger": "Memory Shard 2 (behind a breakable ceiling in the Ambush room)",
-          "condition": "optional",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...A rooftop in the Sump. Rain. A big guy laughing next to me, sharing noodles."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Two arms, back then. He called me 'kid'."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "That's the ramen man. Tetsu."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...Huh. I wonder if he saw me in you somehow?"
-            }
-          ]
-        },
-        {
           "id": "boss_gate",
           "room": "Boss Gate",
           "trigger": "Before the boss arena",
@@ -757,7 +701,8 @@
         "Back Room",
         "Cashier's Cage",
         "Velvet Rope",
-        "Lady Luck's Table"
+        "Lady Luck's Table",
+        "Freight Shaft"
       ],
       "scenes": [
         {
@@ -812,7 +757,7 @@
         {
           "id": "debtors",
           "room": "Pachinko Shaft",
-          "trigger": "A line of debtors being led to a freight lift",
+          "trigger": "A line of debtors being led away",
           "lines": [
             {
               "speaker": "Hotaru",
@@ -828,7 +773,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "That freight lift is going down, not up. Where are they taking them?"
+              "text": "They're being shipped out like freight. Let's find out where."
             }
           ]
         },
@@ -844,34 +789,6 @@
           ]
         },
         {
-          "id": "shard3",
-          "room": "Back Room",
-          "trigger": "Memory Shard 3 (back room above the High Rollers floor)",
-          "condition": "optional",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...A fighting pit, right here in the Vaults. I'm young. I'm winning."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "A man in a Kanshi coat is watching. He says the Daimyo's guard pays in medicine."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Medicine? For who?"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "The woman from before, I think. I took the job for her."
-            }
-          ]
-        },
-        {
           "id": "daicam3",
           "room": "Cashier's Cage",
           "trigger": "DaiCam caged as collateral",
@@ -882,7 +799,7 @@
             },
             {
               "speaker": "DaiCam",
-              "text": "Ninja lady! You came back for me! For the content!"
+              "text": "Ninja lady! You came for me! For the content!"
             },
             {
               "speaker": "Hotaru",
@@ -985,11 +902,11 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "Not this time, chrome-dome. Where does that freight lift take them?"
+              "text": "Not this time, chrome-dome. Where are you sending them?"
             },
             {
               "speaker": "Lady Luck",
-              "text": "Down, sweetheart. To a station that isn't on any map. Platform 9, through the Sewers."
+              "text": "Down the freight shaft behind my table, sweetheart. To a station that isn't on any map: Platform 9, under the Sewers."
             },
             {
               "speaker": "Lady Luck",
@@ -1002,6 +919,21 @@
             {
               "speaker": "DaiCam",
               "text": "Chat, the ninja just broke the bank. Literally. Somebody clip the reels!"
+            }
+          ]
+        },
+        {
+          "id": "shaft",
+          "room": "Freight Shaft",
+          "trigger": "The edge of the freight shaft",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "No lift. It already went down with the debtors."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Then we take the short way down."
             }
           ]
         }
@@ -1144,34 +1076,6 @@
           ]
         },
         {
-          "id": "shard4",
-          "room": "Overflow Cistern",
-          "trigger": "Memory Shard 4 (above the Pump Station, past the tide)",
-          "condition": "optional",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...The older woman. Coughing into her sleeve."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "The river behind our house turned black the year the factories opened."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Your mother. The medicine was for her."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...Yeah. I think so. How did you know that?"
-            }
-          ]
-        },
-        {
           "id": "dobu_gate",
           "room": "Lock Gate",
           "trigger": "Before the boss arena",
@@ -1286,7 +1190,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "But we can get around that. By force. Cut through the gate and get on the roof."
+              "text": "But nobody checks IDs on the roof. Get up there."
             }
           ]
         },
@@ -1331,35 +1235,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "There's a maintenance door in the tower wall too, if you're curious."
-            }
-          ]
-        },
-        {
-          "id": "shard5",
-          "room": "Maintenance Bay",
-          "trigger": "Memory Shard 5 (behind the Spiral Junction's tower door)",
-          "condition": "optional",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...My first ride on this line. I wore a guard uniform, Kanshi ID on a lanyard."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "I watched the city get smaller and smaller out the window. Tetsu didn't come to see me off."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Were you angry about that?"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "No, I was glad he didn't come to see my shame."
+              "text": "There's a maintenance passage in the tower wall too, if you're curious."
             }
           ]
         },
@@ -1408,7 +1284,7 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "Every screen just changed. A man in elegant blue robes... and someone standing behind him?"
+              "text": "Every window in the car just turned into a screen. A man in elegant blue robes... and someone standing behind him?"
             },
             {
               "speaker": "???",
@@ -1735,34 +1611,6 @@
           ]
         },
         {
-          "id": "shard6",
-          "room": "Locked Memory",
-          "trigger": "Memory Shard 6 (above the Possession room)",
-          "condition": "optional",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...The Academy, years later. My students don't recognize me."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "They stand in rows. They don't blink. Ren looks right through me."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "The Daimyo hollowed them. Stripped out their souls like he later did to you."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Every one. And that's the night I drew my blade on him."
-            }
-          ]
-        },
-        {
           "id": "white_room",
           "room": "The White Room",
           "trigger": "The room where Kuro was split",
@@ -1777,7 +1625,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "My body walked out of this room. My soul went down the vent. Most of the other souls faded, but I didn't."
+              "text": "My body walked out of this room. My soul went down the vent. Souls like that fade in minutes."
             },
             {
               "speaker": "Hotaru",
@@ -1954,7 +1802,8 @@
         "Seed Vault",
         "Dispensary",
         "Moon Bridge",
-        "The Apothecary"
+        "The Apothecary",
+        "Service Lift"
       ],
       "scenes": [
         {
@@ -2122,50 +1971,6 @@
             {
               "speaker": "Hotaru",
               "text": "They poison the water, then sell the cure. And whoever can't pay ends up at the Vaults. And then the Academy."
-            }
-          ]
-        },
-        {
-          "id": "shard7",
-          "room": "Seed Vault",
-          "trigger": "Memory Shard 7 (top of the pulsing vent in the Drying Lofts)",
-          "condition": "optional; branch: kuro_spared",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...My first pay from the Daimyo's guard. A box of Kanshi Clear, the same pills they grow here."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "I brought it home. But they kept raising the prices."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Did she...?"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "It wasn't enough. It was never going to be enough."
-            }
-          ]
-        },
-        {
-          "id": "shard7_alone",
-          "room": "Seed Vault",
-          "trigger": "Memory Shard 7 (top of the pulsing vent in the Drying Lofts)",
-          "condition": "optional; branch: kuro_destroyed",
-          "lines": [
-            {
-              "speaker": "System",
-              "text": "MEMORY FRAGMENT: A young guard sets a box of Kanshi Clear by a sickbed. The prices keep climbing."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "...The same pills they grow here. It wasn't enough for her. It was never going to be enough."
             }
           ]
         },
@@ -2379,7 +2184,7 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "We'll leave you with the Garden for now. But lower those prices, or we'll be back."
+              "text": "I'll leave you your Garden for now. But lower those prices, or I'll be back."
             }
           ]
         },
@@ -2391,7 +2196,7 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "Her service stairs keep climbing. Floor 41 and up: the Academy."
+              "text": "There's a service lift behind the Apothecary. Floor 41 and up: the Academy."
             },
             {
               "speaker": "Kuro",
@@ -2407,7 +2212,7 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "Her service stairs keep climbing. Floor 41 and up: the Academy."
+              "text": "There's a service lift behind the Apothecary. Floor 41 and up: the Academy."
             },
             {
               "speaker": "Hotaru",
@@ -2432,7 +2237,8 @@
         "Instructor's Loft",
         "Intake",
         "Extraction Hall",
-        "Mukuro's Ring"
+        "Mukuro's Ring",
+        "Spire Lift"
       ],
       "scenes": [
         {
@@ -2527,55 +2333,7 @@
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "The sparring ring: The doors seal until combat is over. I regret writing that that rule."
-            }
-          ]
-        },
-        {
-          "id": "shard8",
-          "room": "Instructor's Loft",
-          "trigger": "Memory Shard 8 (above the Sparring Ring)",
-          "condition": "optional; branch: kuro_spared",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...The night I found out what was going on. I went to Tetsu first. He said we should run."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "I said no. I said I'd make the Daimyo stop. I went up alone to confront him."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "You were brave."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "I was stupid. Same thing, a lot of the time."
-            }
-          ]
-        },
-        {
-          "id": "shard8_alone",
-          "room": "Instructor's Loft",
-          "trigger": "Memory Shard 8 (above the Sparring Ring)",
-          "condition": "optional; branch: kuro_destroyed",
-          "lines": [
-            {
-              "speaker": "System",
-              "text": "MEMORY FRAGMENT: A ramen cart in the rain. A big man saying, 'We run tonight. Take the kids.'"
-            },
-            {
-              "speaker": "System",
-              "text": "A younger voice: 'No. I'm going up alone.'"
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "...He went up alone. Just like I'm doing now."
+              "text": "The sparring ring: The doors seal until combat is over. I regret writing that rule."
             }
           ]
         },
@@ -2678,7 +2436,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "He'll fight like I did--he'll wait waits for you to swing first. So don't."
+              "text": "He'll fight like I did--he'll wait for you to swing first. So don't."
             },
             {
               "speaker": "Kuro",
@@ -2790,6 +2548,38 @@
               "text": "I'm sorry. I think you'd have wanted this."
             }
           ]
+        },
+        {
+          "id": "muk_door",
+          "room": "Mukuro's Ring",
+          "trigger": "His door opens on the Spire Lift",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "His door's open. There's a lift back there."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "The Spire Lift. Straight up to the Tenshu. That's where he'll be."
+            }
+          ]
+        },
+        {
+          "id": "muk_door_alone",
+          "room": "Mukuro's Ring",
+          "trigger": "His door opens on the Spire Lift",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "His door's open. There's a lift back there."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "The Spire Lift. Straight up to the Tenshu, and the Daimyo."
+            }
+          ]
         }
       ]
     },
@@ -2888,58 +2678,6 @@
           ]
         },
         {
-          "id": "shard9",
-          "room": "Daimyo's Study",
-          "trigger": "Memory Shard 9 (above the Defense Grid)",
-          "condition": "optional; branch: kuro_spared",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...My mother, pinning a little lantern charm to my scarf. A firefly?"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "'So you can always find your way home,' she said."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Hotaru. Firefly."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Out of every piece of scrap in that yard, I fell into the one named after her charm."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Maybe I wasn't lost. Maybe I was finding my way home."
-            }
-          ]
-        },
-        {
-          "id": "shard9_alone",
-          "room": "Daimyo's Study",
-          "trigger": "Memory Shard 9 (above the Defense Grid)",
-          "condition": "optional; branch: kuro_destroyed",
-          "lines": [
-            {
-              "speaker": "System",
-              "text": "MEMORY FRAGMENT: A woman pins a firefly charm to a boy's scarf. 'So you can always find your way home.'"
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "...A firefly. Hotaru."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "His mother's charm, and my name. Out of all the scrap in that yard. Funny coincidence."
-            }
-          ]
-        },
-        {
           "id": "muster",
           "room": "Muster Hall",
           "trigger": "The Muster Hall",
@@ -2954,7 +2692,7 @@
             },
             {
               "speaker": "DaiCam",
-              "text": "Hotaru! I'm live! Chat, this is the army. This is what's coming. Get out of the city! Tell everyone."
+              "text": "Hotaru! I rode the lift up behind you, and I'm live! Chat, this is the army. This is what's coming. Get out of the city! Tell everyone."
             },
             {
               "speaker": "Hotaru",
@@ -3340,7 +3078,7 @@
           "lines": [
             {
               "speaker": "System",
-              "text": "Hotaru's scarf flashes, and she briefly feels like Koru is still there, with her always."
+              "text": "Hotaru's scarf flashes, and she briefly feels like Kuro is still there, with her always."
             },
             {
               "speaker": "Tetsu",
@@ -3393,6 +3131,419 @@
       "Hotaru climbed the Spire",
       "and came home alone.",
       "Thanks for playing!"
+    ]
+  },
+  "memories": {
+    "description": "Nine Memory Shards are hidden one per area. Whichever shard Hotaru picks up, the memories play in this order: the first shard found plays memory 1, the second memory 2, and so on. A memory may lean on the ones before it, but nothing else in the story depends on them. Before the Kuro choice and on the kuro_spared branch Kuro remembers aloud; on kuro_destroyed the shard plays as a fragment and Hotaru reacts alone.",
+    "scenes": [
+      {
+        "id": "shard1",
+        "room": "Any",
+        "trigger": "Memory Shard 1 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "This shard. It holds memories... memories familiar to me..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...A courtyard. Rain on a tiled roof. Someone is teaching me to hold a blade."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "A woman. She's laughing at me."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "What are your memories doing floating around?"
+          },
+          {
+            "speaker": "Kuro",
+            "text": "They must have broken away from me when I died. Let's try and find the rest."
+          }
+        ]
+      },
+      {
+        "id": "shard1_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 1 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: A courtyard. Rain on a tiled roof. A woman laughs as she teaches a boy to hold a blade."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "A piece of Kuro, broken off when he was split. ...I'll keep it for him."
+          }
+        ]
+      },
+      {
+        "id": "shard2",
+        "room": "Any",
+        "trigger": "Memory Shard 2 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "I remember..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...A rooftop in the Sump. Rain. A big guy laughing next to me, sharing noodles."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "Two arms, back then. He called me 'kid'."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "That's the ramen man. Tetsu."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...Huh. I wonder if he saw me in you somehow?"
+          }
+        ]
+      },
+      {
+        "id": "shard2_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 2 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: A rooftop in the Sump. Rain. A big man with two good arms shares his noodles with a boy. 'Eat up, kid.'"
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "Tetsu. Before Kanshi took his arm."
+          }
+        ]
+      },
+      {
+        "id": "shard3",
+        "room": "Any",
+        "trigger": "Memory Shard 3 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "I remember..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...The woman who taught me the blade. Coughing into her sleeve."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "The river behind our house turned black the year the factories opened."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "Who was she?"
+          },
+          {
+            "speaker": "Kuro",
+            "text": "My mother. ...Yeah. I'm sure of it now."
+          }
+        ]
+      },
+      {
+        "id": "shard3_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 3 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: The woman from the courtyard, coughing into her sleeve. Behind the house, the river runs black."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "His mother. The factories got to her too."
+          }
+        ]
+      },
+      {
+        "id": "shard4",
+        "room": "Any",
+        "trigger": "Memory Shard 4 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "I remember..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...A fighting pit under a casino. I'm young. I'm winning."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "A man in a Kanshi coat is watching. He says the Daimyo's guard pays in medicine."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "Medicine. For your mother."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "I took the job. I think I took it for her."
+          }
+        ]
+      },
+      {
+        "id": "shard4_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 4 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: A fighting pit under a casino. A man in a Kanshi coat: 'The Daimyo's guard pays in medicine.'"
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "Medicine for his mother. That's how Kanshi got him."
+          }
+        ]
+      },
+      {
+        "id": "shard5",
+        "room": "Any",
+        "trigger": "Memory Shard 5 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "I remember..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...My first ride up the Kanshi Line. A guard uniform, Kanshi ID on a lanyard."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "I watched the Sump get smaller out the window. Tetsu didn't come to see me off."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "Were you angry about that?"
+          },
+          {
+            "speaker": "Kuro",
+            "text": "No. I was glad he didn't see my shame."
+          }
+        ]
+      },
+      {
+        "id": "shard5_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 5 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: A young guard rides the Kanshi Line up, ID on a lanyard, watching the Sump shrink in the window. Nobody sees him off."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "He went up for her. Alone."
+          }
+        ]
+      },
+      {
+        "id": "shard6",
+        "room": "Any",
+        "trigger": "Memory Shard 6 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "I remember..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...My first pay from the Daimyo's guard. A box of Kanshi Clear, the lung pills."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "I brought it home. But they kept raising the prices."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "Did she...?"
+          },
+          {
+            "speaker": "Kuro",
+            "text": "It wasn't enough. It was never going to be enough."
+          }
+        ]
+      },
+      {
+        "id": "shard6_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 6 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: A young guard sets a box of Kanshi Clear by a sickbed. The prices keep climbing."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "It wasn't enough for her. It was never going to be enough."
+          }
+        ]
+      },
+      {
+        "id": "shard7",
+        "room": "Any",
+        "trigger": "Memory Shard 7 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "I remember..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...The Academy, years later. My students don't recognize me."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "They stand in rows. They don't blink. Ren looks right through me."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "The Daimyo hollowed them. Stripped out their souls like he later did to you."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "Every one. That's when I knew what the Academy really was."
+          }
+        ]
+      },
+      {
+        "id": "shard7_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 7 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: The Academy. A young instructor walks between rows of his students. None of them blink. None of them know him."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "His students. That's when he found out what the Academy really was."
+          }
+        ]
+      },
+      {
+        "id": "shard8",
+        "room": "Any",
+        "trigger": "Memory Shard 8 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "I remember..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...That night I went to Tetsu first. He said we should run."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "I said no. I said I'd make the Daimyo stop. I went up alone to confront him."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "You were brave."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "I was stupid. Same thing, a lot of the time."
+          }
+        ]
+      },
+      {
+        "id": "shard8_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 8 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: A ramen cart in the rain. A big man saying, 'We run tonight. Take the kids.'"
+          },
+          {
+            "speaker": "System",
+            "text": "A younger voice: 'No. I'm going up alone.'"
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "...He went up alone. Just like I'm doing now."
+          }
+        ]
+      },
+      {
+        "id": "shard9",
+        "room": "Any",
+        "trigger": "Memory Shard 9 found (Kuro present)",
+        "condition": "optional; branch: kuro_spared (or before the choice)",
+        "lines": [
+          {
+            "speaker": "Kuro",
+            "text": "I remember..."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "...My mother, pinning a little lantern charm to my scarf. A firefly?"
+          },
+          {
+            "speaker": "Kuro",
+            "text": "'So you can always find your way home,' she said."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "Hotaru. Firefly."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "Out of every piece of scrap in that yard, I fell into the one named after her charm."
+          },
+          {
+            "speaker": "Kuro",
+            "text": "Maybe I wasn't lost. Maybe I was finding my way home."
+          }
+        ]
+      },
+      {
+        "id": "shard9_alone",
+        "room": "Any",
+        "trigger": "Memory Shard 9 found (Kuro destroyed)",
+        "condition": "optional; branch: kuro_destroyed",
+        "lines": [
+          {
+            "speaker": "System",
+            "text": "MEMORY FRAGMENT: A woman pins a firefly charm to a boy's scarf. 'So you can always find your way home.'"
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "...A firefly. Hotaru."
+          },
+          {
+            "speaker": "Hotaru",
+            "text": "His mother's charm, and my name. Out of all the scrap in that yard. Funny coincidence."
+          }
+        ]
+      }
     ]
   }
 }

@@ -58,7 +58,7 @@ EXPRESSION = {
     ('epilogue', 2): 'hotaru_visor_up', ('ep_spared', 5): 'hotaru_visor_up', ('ep_spared2', 2): 'hotaru_visor_up',
     ('ep_destroyed', 3): 'hotaru_visor_up', ('barrier', 1): 'hotaru_visor_up', ('ch1', 1): 'hotaru_angry',
     ('daicam2', 2): 'hotaru_angry', ('ch3', 2): 'kuro_smirk', ('ch3', 3): 'hotaru_angry',
-    ('luck_dead', 1): 'hotaru_angry', ('harm_gate', 1): 'hotaru_angry', ('harm_gate_alone', 1): 'hotaru_angry', ('shard6', 3): 'hotaru_angry',
+    ('luck_dead', 1): 'hotaru_angry', ('harm_gate', 1): 'hotaru_angry', ('harm_gate_alone', 1): 'hotaru_angry', ('shard7', 3): 'hotaru_angry',
     ('kuro2', 2): 'hotaru_angry', ('kuro_spared', 5): 'hotaru_visor_up', ('dm_ally', 0): 'kuro_smirk',
     ('dm_dead', 1): 'hotaru_angry', ('record', 13): 'hotaru_visor_up', ('oni_dead', 4): 'hotaru_angry',
     ('throne', 1): 'hotaru_angry',
@@ -67,8 +67,9 @@ EXPRESSION = {
 
 def _conversations():
     out = {}
-    for ch in STORY['chapters']:
-        for sc in ch['scenes']:
+    # the memory shards' scenes play in the order found, so they live outside the chapters
+    for scenes in [ch['scenes'] for ch in STORY['chapters']] + [STORY['memories']['scenes']]:
+        for sc in scenes:
             lines = []
             for i, ln in enumerate(sc['lines']):
                 spk = SPEAKER_KEY[ln['speaker']]

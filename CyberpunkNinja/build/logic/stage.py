@@ -49,11 +49,12 @@ def init_options():
 @proc
 def reset_run():
     hp = 10
+    walk_to = 999
     heat = 0
     gourd = 0
     gmax = 3
     has_gourd = 0
-    dash_ch = 2
+    dash_ch = 1
     shards = 0
     deaths = 0
     play_time = 0
@@ -93,10 +94,11 @@ def reset_run():
 @proc
 def respawn_state():
     hp = 10
+    walk_to = 999
     heat = 0
     if has_gourd == 1:
         gourd = gmax
-    dash_ch = 2
+    dash_ch = 1
     dead_objs.clear()
 
 
@@ -683,6 +685,12 @@ def boss_phase2(scene):
         say(scene)
 
 
+@proc
+def hold_still():
+    # a boss is down: Hotaru stays put until its aftermath plays out (walk_to = 999 frees her)
+    walk_to = px
+
+
 @proc_yield
 def boss_down(delay):
     music_want = "none"
@@ -701,6 +709,7 @@ def chapter_jump(r):
     fade_to = 100
     wait_until(fade > 99)
     boss_on = 0
+    walk_to = 999
     enter_dir = "S"
     load_room(r)
     wait(0)
@@ -777,10 +786,7 @@ def ev_shard():
     sfxq.append("shard")
     wait(2)
     banner = ""
-    if shard_id >= 7:
-        say_b(join("shard", shard_id))
-    else:
-        say(join("shard", shard_id))
+    say_b(join("shard", shard_id))
 
 
 # ------------------------------------------------------------ chapter 1: neon alley
@@ -845,6 +851,7 @@ def ev_oni_phase2():
 @on("ev_oni_dead")
 def ev_oni_dead():
     boss_dead = 1
+    hold_still()
     boss_down(1.4)
     gmax = 4
     gourd = gmax
@@ -853,6 +860,7 @@ def ev_oni_dead():
     wait(2.5)
     say("oni_dead")
     wait_until(mode == "play")
+    walk_to = 999
     hint = ""
     music_want = "alley"
 
@@ -921,16 +929,24 @@ def ev_luck_phase2():
 @on("ev_luck_dead")
 def ev_luck_dead():
     luck_dead = 1
+    hold_still()
     boss_down(1.4)
     say("luck_dead")
     wait_until(mode == "play")
+    walk_to = 999
     if chapter == 2:
         music_want = "vaults"
+
+
+@on("ev_shaft")
+def ev_shaft():
+    say_once("shaft")
 
 
 # ------------------------------------------------------------ chapter 3: the sewers
 @on("ev_ch3_start")
 def ev_ch3_start():
+    wait_until(p_ground == 1)
     chapter_open(3, C_W1_X, C_W1_Y, "ch3")
 
 
@@ -988,9 +1004,11 @@ def ev_dobu_phase2():
 @on("ev_dobu_dead")
 def ev_dobu_dead():
     dobu_dead = 1
+    hold_still()
     boss_down(2.0)
     say("dobu_dead")
     wait_until(mode == "play")
+    walk_to = 999
     if chapter == 3:
         music_want = "sewers"
 
@@ -1059,6 +1077,7 @@ def ev_raijin_phase2():
 @on("ev_raijin_dead")
 def ev_raijin_dead():
     raijin_dead = 1
+    hold_still()
     boss_down(2.4)
     say("raijin_dead")
     wait_until(mode == "play")
@@ -1148,6 +1167,7 @@ def ev_kuro_choice():
 @on("ev_kuro_dead")
 def ev_kuro_dead():
     kuro_dead = 1
+    hold_still()
     hint = ""
     kb_last = kbranch
     wait(1.0)
@@ -1243,6 +1263,7 @@ def ev_harm_phase2():
 @on("ev_harm_dead")
 def ev_harm_dead():
     harm_dead = 1
+    hold_still()
     music_want = "none"
     wait(0.9)
     say("harm_dead")
@@ -1252,6 +1273,7 @@ def ev_harm_dead():
     boss_down(0)
     say_b("harm_dead2")
     wait_until(mode == "play")
+    walk_to = 999
     if chapter == 6:
         music_want = "gardens"
 
@@ -1259,6 +1281,7 @@ def ev_harm_dead():
 # ------------------------------------------------------------ chapter 7: the academy
 @on("ev_ch7_start")
 def ev_ch7_start():
+    wait_until(py > C_LIFT_TOP - 4 or lift_ride == 0)
     if kbranch == 2:
         chapter_open(7, C_F1_X, C_F1_Y, "ch7_alone")
     else:
@@ -1334,6 +1357,7 @@ def ev_muk_dead():
     muk_dead = 1
     hint = ""
     muk_carry = 0
+    hold_still()
     boss_down(1.4)
     say_b("muk_dead")
     wait_until(mode == "play")
@@ -1344,12 +1368,12 @@ def ev_muk_dead():
         while abs(px - walk_to) > 5 and wtt < 120:
             wtt += 1
             wait(0)
-        walk_to = 999
         sfxq.append("pickup")
         muk_carry = 1
         wait(0.6)
-    wait(0.5)
-    chapter_jump(C_ROOM_F9)
+    say_b("muk_door")
+    wait_until(mode == "play")
+    walk_to = 999
 
 
 # ------------------------------------------------------------ chapter 8: the tenshu
@@ -1441,6 +1465,7 @@ def ev_dm_phase3():
 def ev_dm_dead():
     daimyo_dead = 1
     hint = ""
+    hold_still()
     boss_down(1.6)
     say("dm_dead")
     wait_until(mode == "play")
@@ -1489,10 +1514,10 @@ def ev_epilogue():
         wait_until(mode == "play")
         wait(0.8)
         # the scarf flickers once in Kuro's color
-        dash_ch = 1
+        dash_ch = 2
         sfxq.append("kvoice")
         wait(0.35)
-        dash_ch = 2
+        dash_ch = 1
         wait(0.8)
         say("ep_spared2")
         wait_until(mode == "play")

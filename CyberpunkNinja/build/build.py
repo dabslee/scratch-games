@@ -256,7 +256,7 @@ C.update({
     'C_ROOM_D1': RI['d1'], 'C_D1_X': d1_start['x'], 'C_D1_Y': d1_start['y'],
     'C_ROOM_E1': RI['e1'], 'C_E1_X': e1_start['x'], 'C_E1_Y': e1_start['y'],
     'C_ROOM_F1': RI['f1'], 'C_F1_X': f1_start['x'], 'C_F1_Y': f1_start['y'],
-    'C_ROOM_G1': RI['g1'], 'C_G1_X': g1_start['x'], 'C_G1_Y': g1_start['y'], 'C_ROOM_EP': RI['ep'], 'C_ROOM_F9': RI['f9'], 'C_ROOM_G5': RI['g5'], 'C_ROOM_F7': RI['f7'],
+    'C_ROOM_G1': RI['g1'], 'C_G1_X': g1_start['x'], 'C_G1_Y': g1_start['y'], 'C_ROOM_EP': RI['ep'], 'C_ROOM_G5': RI['g5'], 'C_ROOM_F7': RI['f7'],
     'C_LIFT_LOW': -200, 'C_LIFT_TOP': levels.top(19),
     'C_G': 1.5, 'C_JUMP': 16.5, 'C_WALLJUMP': 15, 'C_BOOST': 18, 'C_RUN': 6, 'C_MAXFALL': 13,
     'C_SLIDE': 3, 'C_DASHV': 21.3, 'C_DASHF': 6, 'C_HW': 7, 'C_PH': 34, 'C_COYOTE': 3,
@@ -812,7 +812,8 @@ def snug_hp(name):
 
 
 hud = [snug_hp('hp_%02d' % k) for k in range(11)]
-hud += copy_costumes('HUD', names=['dash_', 'gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro', 'boss_the_daimyo'])
+hud += [costume_from(ST.image_1x('HUD', src).crop((0, 0, 8, 9)), 'dash_%d' % i, 0, 0) for i, src in enumerate(('dash_0', 'dash_2', 'dash_1'))]
+hud += copy_costumes('HUD', names=['gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro', 'boss_the_daimyo'])
 hud += [costume_from(art_v2.boss_plate(t), 'boss_' + k, 0, 0) for k, t in (('dobunushi', 'DOBUNUSHI'), ('the_harmacist', 'THE HARMACIST'))]
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])
