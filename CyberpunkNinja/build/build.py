@@ -174,7 +174,7 @@ kuro_dead kbranch kb_last kuro_in daicam6_done daicam7_done flip flip_warn gph k
 daicam8_done daimyo_dead dm_ph dm_vul eye_x eye_y eye_st mk_x mk_y mk_st ally_x ally_st
 dobu_dead daicam2_done harm_dead tide_y tide_hi tide_force tide_lvl tide_t tide_warn
 dobu_cut dobu_gen dobu_ph dobu_open dobu_turn
-walk_to muk_bx muk_carry
+walk_to muk_bx muk_carry recep
 ally_hp ally_lives ally_rev ally_inv ally_def ally_dash ally_shot fy_floor dm_z dm_hi dm_lh exo_x dm_st dm_t dm_fc dm_tell dm_fl
 hold_x hold_y ke1_tell ke2_tell
 '''.split()
@@ -620,6 +620,7 @@ props += [costume_from(art_v2.price_board(i), 'board_%d' % i, 38, 0) for i in ra
 props += [costume_from(art_v2.civilian(i, f), 'debtor_%d_%d' % (i, f), 7, 28) for i in range(art_v2.CIVILIANS) for f in range(2)]
 props.append(costume_from(art_v2.soldier(), 'soldier', 7, 36))
 props += [costume_from(art_v2.desk(f), 'desk_%d' % f, 36, 30) for f in range(2)]
+props.append(costume_from(art_v2.desk(staffed=False), 'desk_empty', 36, 30))
 props.append(costume_from(art_v2.directory(), 'directory', 38, 0))
 
 
@@ -853,6 +854,7 @@ dlg.append(costume_from(art_ch2.nameplate('SYSTEM', border='cyan2'), 'name_syste
 dlg.append(costume_from(art_ch2.nameplate('BIG ONI', border='red2'), 'name_big_oni', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('THE HARMACIST', border='green2'), 'name_the_harmacist', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('DEBTOR', border='steel'), 'name_debtor', 0, 0))
+dlg.append(costume_from(art_ch2.nameplate('RECEPTIONIST', border='cyan2'), 'name_receptionist', 0, 0))
 sprite('Dialogue', dlg, visuals.DIALOGUE)
 sprite('Menu', MENU_COSTUMES, menu.MENU)
 sprite('TextFX', copy_costumes('Font'), menu.TEXTFX)

@@ -426,7 +426,7 @@ def t_draw():
 
 
 HANNYA = spawner('hannya', '''
-if not (oi in dead_objs):
+if not (oi in dead_objs) and not (O_A[oi] == "desk" and recep == 2):
     x = O_X[oi]
     y = O_Y[oi]
     brk_ok = O_A[oi]
@@ -449,6 +449,12 @@ if not (oi in dead_objs):
         if chapter == 4:
             pkind = "bolt"
     add_ent("hannya", x, y, 10, 38, ehp, imax, 1)
+    # the Spire Lobby's receptionist (brk_ok "desk") waits behind his desk, out of the fight,
+    # until the lobby scene sends him over the counter
+    waiting = 0
+    if brk_ok == "desk" and recep == 0:
+        waiting = 1
+        ent_alive[slot] = 0
     find_bounds()
     st = "idle"
     t = 0
@@ -538,10 +544,23 @@ def h_die():
     ent_brk[slot] = 0
     dead_objs.append(myobj)
     sfxq.append("thug_die")
+    if brk_ok == "desk":
+        recep = 2
+        broadcast("ev_recep_dead")
 
 
 @proc
 def h_update():
+    if waiting == 1:
+        if recep == 0:
+            return
+        # over the counter
+        waiting = 0
+        ent_alive[slot] = 1
+        face = -1
+        acd = 30
+        cfx("hit", x, y + 24, 0)
+        sfxq.append("windup")
     t += 1
     if st == "dead":
         fr += 0.27
@@ -725,6 +744,9 @@ def h_update():
 
 @proc
 def h_draw():
+    if waiting == 1:
+        hide()
+        return
     if st == "dead":
         if fr >= 7:
             delete_clone()

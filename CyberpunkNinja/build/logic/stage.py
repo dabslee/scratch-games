@@ -50,6 +50,7 @@ def init_options():
 def reset_run():
     hp = 10
     walk_to = 999
+    recep = 0
     heat = 0
     gourd = 0
     gmax = 3
@@ -536,6 +537,7 @@ def late_run(c):
     if c >= 7:
         harm_dead = 1
         daicam4_done = 1
+        recep = 2
     if c >= 8:
         muk_dead = 1
         daicam7_done = 1
@@ -1191,6 +1193,18 @@ def ev_ch6_start():
         chapter_open(6, C_C0_X, C_C0_Y, "ch6_alone")
     else:
         chapter_open(6, C_C0_X, C_C0_Y, "ch6")
+    if recep == 0:
+        # the receptionist has seen her: he comes over the desk
+        wait_until(mode == "play")
+        recep = 1
+
+
+@on("ev_recep_dead")
+def ev_recep_dead():
+    wait(0.8)
+    once("recep_down")
+    if first == 1:
+        say_b("recep_down")
 
 
 @on("ev_garden")

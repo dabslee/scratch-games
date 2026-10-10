@@ -21,7 +21,8 @@
     "Lady Luck": "Croupier who runs the Pachinko Vaults. Kanshi pays her to keep the city gambling, broke, and distracted, and per head for the debtors she sends up.",
     "The Harmacist": "Head of Kanshi's Physic Gardens, on the Spire's lower floors. She sells the Sump the cure for the sickness Kanshi's factories cause, at whatever price it will bear.",
     "The Daimyo": "CEO of Kanshi Dynamics. A human man in a samurai exoskeleton who believes the soul is the root of every riot, strike, and theft. He carries Tamakiri, the blade that split Kuro.",
-    "Debtor": "A Sump man who gambled everything at the Pachinko Vaults and lost himself as collateral. Hotaru passes him in the debtors' line, and finds him again at the Academy's intake."
+    "Debtor": "A Sump man who gambled everything at the Pachinko Vaults and lost himself as collateral. Hotaru passes him in the debtors' line, and finds him again at the Academy's intake.",
+    "Receptionist": "The Kanshi Spire's front-desk man, sword under the counter. He doesn't let unauthorized scrap through his lobby."
   },
   "branches": {
     "description": "One choice at the end of Chapter 5 decides the rest of the game. A scene whose condition is 'branch: kuro_spared' or 'branch: kuro_destroyed' plays only on that branch. 'optional' marks a scene the player can skip (repeat talks); 'optional; branch: ...' means both. Scenes with no condition play on every branch.",
@@ -196,6 +197,7 @@
       "Drainlings: irradiated zombies covered in glowing pustules who lunge and spit sludge (Sewers).",
       "Kanshi Line guards (Monorail).",
       "Memory echoes of Kuro's past fights (Hollow Floor).",
+      "The Spire Lobby's receptionist, a suit grunt behind the desk (Physic Gardens).",
       "Garden Wardens: guarded duelists you must deflect to break, and sprayer drones (Physic Gardens).",
       "Hollowed trainees: Kuro's former students, who dash in and throw kunai (Academy).",
       "Hollowed soldiers, castle turrets, beams, and lasers (Tenshu)."
@@ -1818,7 +1820,7 @@
         {
           "id": "ch6",
           "room": "Spire Lobby",
-          "trigger": "Chapter start (inside the Spire)",
+          "trigger": "Chapter start (inside the Spire): the receptionist spots her and attacks",
           "condition": "branch: kuro_spared",
           "lines": [
             {
@@ -1834,19 +1836,23 @@
               "text": "Riding along as always. Hands off the wheel, like I promised."
             },
             {
-              "speaker": "Hotaru",
-              "text": "The receptionist hasn't blinked once."
+              "speaker": "Receptionist",
+              "text": "Excuse me! Miss! You're not supposed to be in here! This lobby is for Kanshi staff only!"
+            },
+            {
+              "speaker": "Receptionist",
+              "text": "Wait... a scrapped HTR frame. You're the one who wrecked Raijin! Security! ...Ugh. Fine. I'll handle this myself."
             },
             {
               "speaker": "Kuro",
-              "text": "Hollowed. Kanshi puts them on the front desk too. Gardens first, partner. Then the Academy. Then him."
+              "text": "Kanshi's front desk carries a sword. Of course it does."
             }
           ]
         },
         {
           "id": "ch6_alone",
           "room": "Spire Lobby",
-          "trigger": "Chapter start (inside the Spire)",
+          "trigger": "Chapter start (inside the Spire): the receptionist spots her and attacks",
           "condition": "branch: kuro_destroyed",
           "lines": [
             {
@@ -1862,12 +1868,40 @@
               "text": "...Right."
             },
             {
-              "speaker": "Hotaru",
-              "text": "The receptionist hasn't blinked once. Hollowed, like the rest of them."
+              "speaker": "Receptionist",
+              "text": "Excuse me! Miss! You're not supposed to be in here! This lobby is for Kanshi staff only!"
+            },
+            {
+              "speaker": "Receptionist",
+              "text": "Wait... a scrapped HTR frame. You're the one who wrecked Raijin! Security! ...Ugh. Fine. I'll handle this myself."
             },
             {
               "speaker": "Hotaru",
-              "text": "Gardens first. Then the Academy. Then him."
+              "text": "Of course the front desk carries a sword."
+            }
+          ]
+        },
+        {
+          "id": "recep_down",
+          "room": "Spire Lobby",
+          "trigger": "The receptionist is defeated",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "So much for the welcome. Gardens first, partner. Then the Academy. Then him."
+            }
+          ]
+        },
+        {
+          "id": "recep_down_alone",
+          "room": "Spire Lobby",
+          "trigger": "The receptionist is defeated",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "So much for the welcome. Gardens first. Then the Academy. Then him."
             }
           ]
         },

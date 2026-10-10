@@ -893,6 +893,7 @@ c0.plat(22, 27, 14).deco('c', 22, 14, 27, 14)
 c0.obj('start', cx(3), bottom(18))
 c0.obj('shrine', cx(6), bottom(18))
 c0.obj('desk', cx(15) + 8, bottom(18))
+c0.obj('hannya', cx(15) + 8, bottom(18), a='desk')                   # the receptionist, once he jumps the desk
 c0.obj('directory', cx(15) + 8, top(9))
 c0.obj('planter', cx(10), bottom(18))
 c0.obj('planter', cx(21), bottom(18))

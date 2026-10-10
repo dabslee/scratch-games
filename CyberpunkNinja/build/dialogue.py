@@ -13,18 +13,18 @@ STORY = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 SPEAKER_KEY = {
     'Hotaru': 'hotaru', 'Kuro': 'kuro', 'Tetsu': 'tetsu', 'DaiCam': 'daicam', 'Lady Luck': 'luck',
     'System': 'system', 'Mukuro': 'mukuro', 'The Daimyo': 'daimyo', 'Big Oni': 'oni',
-    'The Harmacist': 'harm', 'Debtor': 'debtor', '???': 'unknown',
+    'The Harmacist': 'harm', 'Debtor': 'debtor', 'Receptionist': 'recep', '???': 'unknown',
 }
 NAMEPLATE = {
     'hotaru': 'name_hotaru', 'kuro': 'name_kuro', 'tetsu': 'name_tetsu',
     'daicam': 'name_daicam', 'unknown': 'name_unknown', 'luck': 'name_lady_luck', 'system': 'name_system',
     'mukuro': 'name_mukuro', 'daimyo': 'name_the_daimyo', 'oni': 'name_big_oni', 'harm': 'name_the_harmacist',
-    'debtor': 'name_debtor',
+    'debtor': 'name_debtor', 'recep': 'name_receptionist',
 }
 PORTRAIT = {
     'hotaru': 'hotaru_neutral', 'kuro': 'kuro_neutral', 'tetsu': 'tetsu_neutral', 'daicam': 'daicam_neutral',
     'luck': 'luck_neutral', 'system': 'sys_boot', 'mukuro': 'mukuro_neutral', 'daimyo': 'daimyo_neutral',
-    'oni': 'oni_neutral', 'harm': 'harm_neutral', 'debtor': 'debtor_neutral',
+    'oni': 'oni_neutral', 'harm': 'harm_neutral', 'debtor': 'debtor_neutral', 'recep': 'recep_neutral',
 }
 # (scene id, line index) -> portrait, where the speaker's default expression doesn't fit
 EXPRESSION = {
@@ -47,7 +47,7 @@ EXPRESSION = {
     ('possess', 0): 'kuro_smirk', ('possess', 1): 'hotaru_angry', ('white_room', 3): 'hotaru_visor_up',
     ('daicam6', 3): 'hotaru_angry', ('kuro_fight', 1): 'hotaru_angry', ('kuro2', 1): 'hotaru_angry',
     ('kuro_spared', 3): 'hotaru_visor_up', ('kuro_spared', 4): 'kuro_smirk', ('kuro_destroyed', 0): 'hotaru_angry',
-    ('ch6', 1): 'hotaru_visor_up', ('ch6_alone', 1): 'hotaru_visor_up', ('ch7_alone', 0): 'hotaru_visor_up', ('trainee', 2): 'hotaru_visor_up',
+    ('ch6', 1): 'hotaru_visor_up', ('ch6', 5): 'kuro_smirk', ('ch6_alone', 1): 'hotaru_visor_up', ('ch7_alone', 0): 'hotaru_visor_up', ('trainee', 2): 'hotaru_visor_up',
     ('spar', 0): 'kuro_smirk', ('shard8', 3): 'hotaru_visor_up', ('shard8', 4): 'kuro_smirk',
     ('intake', 3): 'hotaru_angry', ('mukuro', 1): 'kuro_smirk', ('mukuro', 4): 'kuro_smirk',
     ('muk_dead', 6): 'hotaru_visor_up', ('ch8', 0): 'hotaru_visor_up', ('ch8', 4): 'kuro_smirk',

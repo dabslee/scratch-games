@@ -435,11 +435,12 @@ def soldier():
     return im
 
 
-def desk(frame=0):
-    """The Spire Lobby's reception desk, with the receptionist behind it, 72x30 (bottom-center)."""
+def desk(frame=0, staffed=True):
+    """The Spire Lobby's reception desk, with the receptionist behind it until he jumps it, 72x30 (bottom-center)."""
     im = Image.new('RGBA', (72, 30), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    im.alpha_composite(receptionist(frame), (37, -2))
+    if staffed:
+        im.alpha_composite(receptionist(frame), (37, -2))
     # a terminal on the counter
     d.rectangle([12, 6, 24, 14], fill=C('ink'), outline=C('slate2'))
     d.rectangle([14, 8, 22, 12], fill=C('cyan1'))
