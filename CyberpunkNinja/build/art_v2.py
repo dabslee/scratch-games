@@ -244,9 +244,9 @@ def heat_vent(frame):
 # ------------------------------------------------------------------ chapter cards
 CARDS = [
     ('PROLOGUE', 'THE SUMP', '沈殿'), ('CHAPTER 1', 'NEON ALLEY', 'ネオン横丁'),
-    ('CHAPTER 2', 'THE SEWERS', '下水道'), ('CHAPTER 3', 'PACHINKO VAULTS', '金庫'),
-    ('CHAPTER 4', 'PHYSIC GARDENS', '薬草園'), ('CHAPTER 5', 'MONORAIL ASCENT', '登り線'),
-    ('CHAPTER 6', 'HOLLOW FLOOR', '虚ろ'), ('CHAPTER 7', 'THE ACADEMY', '忍道場'),
+    ('CHAPTER 2', 'PACHINKO VAULTS', '金庫'), ('CHAPTER 3', 'THE SEWERS', '下水道'),
+    ('CHAPTER 4', 'MONORAIL ASCENT', '登り線'), ('CHAPTER 5', 'HOLLOW FLOOR', '虚ろ'),
+    ('CHAPTER 6', 'PHYSIC GARDENS', '薬草園'), ('CHAPTER 7', 'THE ACADEMY', '忍道場'),
     ('CHAPTER 8', 'THE TENSHU', '天守'),
 ]
 
@@ -406,6 +406,49 @@ def soldier():
     d.ellipse([3, 2, 10, 11], fill=C('night1'), outline=C('ink'))
     d.rectangle([4, 6, 9, 7], fill=C('white'))
     d.line([2, 2, 11, 2], fill=C('slate2'))
+    return im
+
+
+def desk():
+    """The Spire Lobby's reception desk, with a hollowed receptionist behind it, 72x30 (bottom-center)."""
+    im = Image.new('RGBA', (72, 30), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    # the receptionist: Kanshi uniform, headset, the same empty white stare as the soldiers
+    d.rectangle([40, 9, 51, 15], fill=C('night2'), outline=C('ink'))
+    d.line([45, 9, 46, 13], fill=C('red2'))
+    d.ellipse([42, 0, 49, 8], fill=C('skin1'), outline=C('ink'))
+    d.rectangle([42, 0, 49, 2], fill=C('night1'))
+    d.point([(42, 3), (49, 3)], fill=C('night1'))
+    d.line([43, 4, 48, 4], fill=C('white'))
+    d.line([41, 3, 41, 6], fill=C('slate2'))
+    d.point([(42, 7)], fill=C('red3'))
+    # a terminal on the counter
+    d.rectangle([12, 6, 24, 14], fill=C('ink'), outline=C('slate2'))
+    d.rectangle([14, 8, 22, 12], fill=C('cyan1'))
+    d.line([15, 9, 20, 9], fill=C('cyan3'))
+    d.line([15, 11, 18, 11], fill=C('cyan2'))
+    # the counter: a glossy top, a dark front with the Kanshi diamond, a lit kick strip
+    d.rectangle([0, 15, 71, 29], fill=C('night2'), outline=C('ink'))
+    d.line([0, 15, 71, 15], fill=C('steel'))
+    d.line([1, 16, 70, 16], fill=C('slate2'))
+    d.line([1, 27, 70, 27], fill=C('cyan2'))
+    d.polygon([(36, 18), (40, 22), (36, 26), (32, 22)], fill=C('red2'), outline=C('red3'))
+    d.point([(36, 22)], fill=C('white'))
+    return im
+
+
+def directory():
+    """The Spire Lobby's floor directory, 76x40 (top-center)."""
+    import assets
+    im = Image.new('RGBA', (76, 40), C('ink'))
+    d = ImageDraw.Draw(im)
+    d.rectangle([0, 0, 75, 39], outline=C('cyan2'))
+    d.line([0, 10, 75, 10], fill=C('cyan1'))
+    f = assets.Font(False)
+    f.draw(im, (76 - f.width('KANSHI SPIRE')) // 2, 1, 'KANSHI SPIRE', P['white'])
+    f.draw(im, 3, 12, '2-40 GARDENS', P['lime'])
+    f.draw(im, 3, 21, '41-90 ACADEMY', P['gold'])
+    f.draw(im, 3, 30, 'TOP  TENSHU', P['red3'])
     return im
 
 

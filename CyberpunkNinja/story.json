@@ -7,8 +7,8 @@
     "hollowing": "The Daimyo's extraction tears the soul out of a person. The body lives, obeys, and remembers how to fight, but wants nothing. The soul is vented out of the Spire and fades. Hollowing cannot be undone.",
     "the_army": "Most of the city is still free. The hollowed soldiers, drilled at the Academy and mustered in the Tenshu, are about to march on the city to capture and hollow everyone else.",
     "hotaru_frame": "HTR-0 'HOTARU' was a prototype from Kanshi's first super-soldier program: robot Shinobi frames with phase drives. They were scrapped because a machine without a soul cannot improvise. The Daimyo switched to hollowing people. Kuro's soul is what made the frame work, and the fighting memories that came with it are where her skills come from. Her name is the model name stamped on her chassis.",
-    "memory_shards": "Pieces of Kuro's memory that broke off when he was split from his body; the rest stayed in Mukuro. They scattered down the Spire as his soul fell, so one waits in every area.",
-    "the_pipeline": "Big Oni sells Sump residents to Kanshi. Lady Luck sends up debtors who lose everything. Kanshi's factories poison the Sump, and its Physic Gardens sell the cure at a huge markup. The Kanshi Line monorail has no Sump stops. Every road leads to the Academy, where people are hollowed."
+    "memory_shards": "Pieces of Kuro's memory that broke off when he was split from his body; the rest stayed in Mukuro. They scattered down the Spire and across the city as his soul fell, so one waits in every area.",
+    "the_pipeline": "Big Oni sells Sump residents to Kanshi and delivers them to the Pachinko Vaults. Lady Luck sends up debtors who lose everything. Both go down a freight lift to Platform 9, a Kanshi Line station hidden off the Sewers, and ride the monorail up to the Spire. Kanshi's factories poison the Sump, and the Physic Gardens on the Spire's lower floors sell the cure at a huge markup. Every road leads to the Academy, where people are hollowed."
   },
   "cast": {
     "Hotaru": "Scrapped prototype frame HTR-0, woken by Kuro's soul. Dry, guarded, and certain she is a person. Her scarf shows her Phase Step charges. The game's central question is whether she is alive. She is.",
@@ -19,26 +19,35 @@
     "Big Oni": "Boss of the Hannya Boys. Kanshi pays him to keep the Sump penned in and to sell its people.",
     "Dobunushi": "'Lord of the ditch.' A mass of mutants fused around a broken Kanshi outflow pipe in the Sewers.",
     "Lady Luck": "Croupier who runs the Pachinko Vaults. Kanshi pays her to keep the city gambling, broke, and distracted, and per head for the debtors she sends up.",
-    "The Harmacist": "Head of Kanshi's Physic Gardens. She sells the Sump the cure for the sickness Kanshi's factories cause, at whatever price it will bear.",
+    "The Harmacist": "Head of Kanshi's Physic Gardens, on the Spire's lower floors. She sells the Sump the cure for the sickness Kanshi's factories cause, at whatever price it will bear.",
     "The Daimyo": "CEO of Kanshi Dynamics. A human man in a samurai exoskeleton who believes the soul is the root of every riot, strike, and theft. He carries Tamakiri, the blade that split Kuro."
   },
   "branches": {
-    "description": "One choice at the end of Chapter 6 decides the rest of the game. A scene whose condition is 'branch: kuro_spared' or 'branch: kuro_destroyed' plays only on that branch. 'optional' marks a scene the player can skip (Memory Shards, repeat talks); 'optional; branch: ...' means both. Scenes with no condition play on every branch.",
-    "kuro_spared": "Hotaru and Kuro compromise: he gets his revenge, she gets her answers, and he stops fighting her for control. In Chapter 7 Kuro realizes he can possess Mukuro, his own former body, and asks Hotaru to bring it along. At the Last Shrine he moves into it and fights beside her in the first two phases of the final battle. One soul cannot keep two bodies alive, so after the Daimyo falls Kuro lets go and leaves the whole soul to Hotaru.",
-    "kuro_destroyed": "Hotaru destroys Kuro's mind and keeps the soul for herself. She climbs the rest of the Spire alone, Mukuro can only be put down, and she faces the Daimyo by herself."
+    "description": "One choice at the end of Chapter 5 decides the rest of the game. A scene whose condition is 'branch: kuro_spared' or 'branch: kuro_destroyed' plays only on that branch. 'optional' marks a scene the player can skip (Memory Shards, repeat talks); 'optional; branch: ...' means both. Scenes with no condition play on every branch.",
+    "kuro_spared": "Hotaru and Kuro compromise: he gets his revenge, she gets her answers, and he stops fighting her for control. He rides along through the Physic Gardens. In Chapter 7 Kuro realizes he can possess Mukuro, his own former body, and asks Hotaru to bring it along. At the Last Shrine he moves into it and fights beside her in the first two phases of the final battle. One soul cannot keep two bodies alive, so after the Daimyo falls Kuro lets go and leaves the whole soul to Hotaru.",
+    "kuro_destroyed": "Hotaru destroys Kuro's mind and keeps the soul for herself. She climbs the rest of the Spire alone, from the Physic Gardens up. Mukuro can only be put down, and she faces the Daimyo by herself."
   },
   "bosses": {
     "Big Oni": {
       "chapter": "ch1",
-      "who": "Gang boss of the Hannya Boys. He guards the drain that leads out of the Scrapyard.",
+      "who": "Gang boss of the Hannya Boys. He guards the gate out of the Sump, toward the Pachinko Vaults.",
       "mechanics": [
         "Slow club swings: deflect them.",
         "Heavy Strikes (Phase Step, then attack) stagger him.",
         "Phase 2 overhead slam is a Breach that sends a shockwave across the roof: jump it or Phase Step through."
       ]
     },
-    "Dobunushi": {
+    "Lady Luck": {
       "chapter": "ch2",
+      "who": "Croupier who runs every table on the Vaults tier.",
+      "mechanics": [
+        "A slot machine behind her picks each attack, and names it when the reels stop (CARD FAN!, SHOCKWAVE!, LASERS!...).",
+        "Deflect her card-blades to send them back.",
+        "SHOCKWAVE is a Breach: jump or Phase Step. Jackpot turns on laser grids: Phase Step through them."
+      ]
+    },
+    "Dobunushi": {
+      "chapter": "ch3",
       "who": "A mass of polluted mutants fused around a broken Kanshi outflow pipe.",
       "mechanics": [
         "Sludge rises in waves from the bottom of the arena: stay on the platforms while the tide is high.",
@@ -47,28 +56,8 @@
         "Phase 2 toxic spew is a Breach wave across the floor: jump it or Phase Step through."
       ]
     },
-    "Lady Luck": {
-      "chapter": "ch3",
-      "who": "Croupier who runs every table on the Vaults tier.",
-      "mechanics": [
-        "A slot machine behind her picks each attack, and names it when the reels stop (CARD FAN!, SHOCKWAVE!, LASERS!...).",
-        "Deflect her card-blades to send them back.",
-        "SHOCKWAVE is a Breach: jump or Phase Step. Jackpot turns on laser grids: Phase Step through them."
-      ]
-    },
-    "The Harmacist": {
-      "chapter": "ch4",
-      "who": "Head of the Physic Gardens, armed with a vial bandolier and a stim injector.",
-      "mechanics": [
-        "Throws vials in arcs: deflect them back at her.",
-        "Poison clouds linger where vials break: they sting (damage without staggering), so leave the cloud or Phase Step through it.",
-        "When she pulls out a stim to heal, interrupt her with a Heavy Strike.",
-        "Phase 2: she injects herself, gets faster, and she can crush a vial to jet forward on the gas before it bursts into a poison cloud that acts as a Breach.",
-        "Defeated, she kneels and pleads her case, then limps out of the Apothecary once Hotaru answers."
-      ]
-    },
     "Raijin": {
-      "chapter": "ch5",
+      "chapter": "ch4",
       "who": "The Kanshi Line's enforcement locomotive, built to ram anyone on the tracks who doesn't belong.",
       "mechanics": [
         "Its reactor core is shuttered except while it vents steam: strike it then.",
@@ -78,13 +67,24 @@
       ]
     },
     "Kuro": {
-      "chapter": "ch6",
+      "chapter": "ch5",
       "who": "Kuro's mind, fighting Hotaru for control of the frame inside the space they share.",
       "mechanics": [
         "Uses Hotaru's own moves: the 4-hit string, blink strikes from behind, and a Breach Phase Cut.",
         "When he Phase Cuts at you, Phase Step through him at the same moment to Clash, which breaks his Stance.",
         "Possession: when the screen edges turn purple, left and right are swapped.",
         "When his last segment breaks he kneels: press E to reach out and compromise, or attack to destroy his mind. This choice sets the branch for the rest of the game."
+      ]
+    },
+    "The Harmacist": {
+      "chapter": "ch6",
+      "who": "Head of the Physic Gardens on the Spire's lower floors, armed with a vial bandolier and a stim injector.",
+      "mechanics": [
+        "Throws vials in arcs: deflect them back at her.",
+        "Poison clouds linger where vials break: they sting (damage without staggering), so leave the cloud or Phase Step through it.",
+        "When she pulls out a stim to heal, interrupt her with a Heavy Strike.",
+        "Phase 2: she injects herself, gets faster, and she can crush a vial to jet forward on the gas before it bursts into a poison cloud that acts as a Breach.",
+        "Defeated, she kneels and pleads her case, then limps out of the Apothecary once Hotaru answers."
       ]
     },
     "Mukuro": {
@@ -191,11 +191,11 @@
     "enemies": [
       "Scavenger drones and wall turrets (Prologue).",
       "Hannya Boys gang members (Neon Alley).",
-      "Drainlings: irradiated zombies covered in glowing pustules who lunge and spit sludge (Sewers).",
       "Croupier dealers who throw card-blades, and slot turrets (Pachinko Vaults).",
-      "Garden Wardens: guarded duelists you must deflect to break, and sprayer drones (Physic Gardens).",
+      "Drainlings: irradiated zombies covered in glowing pustules who lunge and spit sludge (Sewers).",
       "Kanshi Line guards (Monorail).",
       "Memory echoes of Kuro's past fights (Hollow Floor).",
+      "Garden Wardens: guarded duelists you must deflect to break, and sprayer drones (Physic Gardens).",
       "Hollowed trainees: Kuro's former students, who dash in and throw kunai (Academy).",
       "Hollowed soldiers, castle turrets, beams, and lasers (Tenshu)."
     ],
@@ -477,11 +477,11 @@
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "Neon Alley. Past those masks is the only drain out of the Scrapyard."
+              "text": "Neon Alley. Past those masks is the only way out of the Sump."
             },
             {
               "speaker": "Hotaru",
-              "text": "And past the drain?"
+              "text": "And past that?"
             },
             {
               "speaker": "Kuro",
@@ -496,7 +496,7 @@
       "label": "Chapter 1",
       "title": "Neon Alley",
       "boss": "Big Oni",
-      "summary": "The Hannya Boys keep the Sump penned into the Scrapyard and sell its people to Kanshi. Hotaru meets DaiCam the livestreamer and executes Big Oni, who was guarding the only way out: the drain into the Sewers.",
+      "summary": "The Hannya Boys keep the Sump penned in and sell its people to Kanshi. Hotaru meets DaiCam the livestreamer and executes Big Oni, whose ledger shows where the captives go: up the Spire, by way of the Pachinko Vaults next door.",
       "rooms": [
         "Neon Alley",
         "Market Street",
@@ -651,7 +651,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "He's a big one, guarding the drain cover. He's slow, though."
+              "text": "He's a big one, guarding the gate out of the Sump. He's slow, though."
             },
             {
               "speaker": "Kuro",
@@ -720,19 +720,19 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "A list of names, dates, and prices..."
+              "text": "A list of names, dates, and prices... Every one delivered to the Pachinko Vaults."
             },
             {
               "speaker": "Hotaru",
-              "text": "They've been kidnapping and selling people to somewhere called 'the Academy'."
+              "text": "And from there, up the Spire. To somewhere called 'the Academy'."
             },
             {
               "speaker": "Kuro",
-              "text": "The Academy... I've heard that before. It's up the Spire. Why do I know this?"
+              "text": "The Academy... I've heard that before. Why do I know this?"
             },
             {
               "speaker": "Kuro",
-              "text": "Anyway, the drain he was sitting on goes under the wall. That's our way out."
+              "text": "The Vaults are right through that gate. If the captives went through there, so do we."
             },
             {
               "speaker": "DaiCam",
@@ -745,247 +745,9 @@
     {
       "id": "ch2",
       "label": "Chapter 2",
-      "title": "The Sewers",
-      "boss": "Dobunushi",
-      "summary": "The only way out of the Scrapyard runs under it, through sewers fed by Kanshi's factories. The waste has twisted the people who live down here into Drainlings. At the outflow, a mass of them has fused into Dobunushi.",
-      "rooms": [
-        "Drain Mouth",
-        "Outflow Tunnel",
-        "Sludge Falls",
-        "Pump Station",
-        "Drainling Nest",
-        "Overflow Cistern",
-        "Lock Gate",
-        "Maintenance Shrine",
-        "Outflow Chamber"
-      ],
-      "scenes": [
-        {
-          "id": "ch2",
-          "room": "Drain Mouth",
-          "trigger": "Chapter start",
-          "lines": [
-            {
-              "speaker": "Hotaru",
-              "text": "That smell... What is that?"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Heh. We're in a sewer. What do you think?"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "I guess you wouldn't know since you're a robot."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "As I said, I'm human. What I mean is that this place doesn't smell... natural."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "It's the pollution you're smelling, the toxic runoff of their dozens of enterprises. It all ends up down here."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "And everything down here ends up in the Sump's water."
-            }
-          ]
-        },
-        {
-          "id": "toxic",
-          "room": "Outflow Tunnel",
-          "trigger": "First toxic pool",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "Don't touch the glowing water. It eats through chrome. Probably through people faster."
-            }
-          ]
-        },
-        {
-          "id": "drainling",
-          "room": "Sludge Falls",
-          "trigger": "First Drainlings",
-          "lines": [
-            {
-              "speaker": "Hotaru",
-              "text": "Those are... people? Or they used to be."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Sump workers. Kanshi sends them to unjam the pipes, but the work takes a toll."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "There's nothing left in there to talk to. Put them out of their misery."
-            }
-          ]
-        },
-        {
-          "id": "tide",
-          "room": "Pump Station",
-          "trigger": "First sludge tide",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "The pumps are failing. The sludge is gonna come up in waves. Get high and stay high."
-            }
-          ]
-        },
-        {
-          "id": "daicam_sewer",
-          "room": "Drainling Nest",
-          "trigger": "DaiCam lost in the sewers",
-          "lines": [
-            {
-              "speaker": "DaiCam",
-              "text": "Chat, welcome to urban exploring. I'm not lost--I'm 'creating suspense'."
-            },
-            {
-              "speaker": "DaiCam",
-              "text": "Ninja lady! Okay, chat, this is not a coincidence, this is destiny."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "You followed me."
-            },
-            {
-              "speaker": "DaiCam",
-              "text": "I followed the ledger thing! Kanshi bought my neighbor! I'm doing journalism now!"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Just clear out the nest and point him at the exit."
-            }
-          ]
-        },
-        {
-          "id": "daicam_sewer2",
-          "room": "Drainling Nest",
-          "trigger": "After clearing the nest",
-          "lines": [
-            {
-              "speaker": "DaiCam",
-              "text": "The exit is that way? Chat, I was going in circles in this sewer for ages."
-            },
-            {
-              "speaker": "DaiCam",
-              "text": "Thank you. Seriously. Okay, that's enough sincerity for one stream. Byeee!"
-            }
-          ]
-        },
-        {
-          "id": "shard3",
-          "room": "Overflow Cistern",
-          "trigger": "Memory Shard 3 (above the Pump Station, past the tide)",
-          "condition": "optional",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "I remember..."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...The older woman. Coughing into her sleeve."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "The river behind our house turned black the year the factories opened."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Your mother."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "...Yeah. I think so. How did you know that?"
-            }
-          ]
-        },
-        {
-          "id": "dobu_gate",
-          "room": "Lock Gate",
-          "trigger": "Before the boss arena",
-          "lines": [
-            {
-              "speaker": "Hotaru",
-              "text": "Something is moving behind the gate. Something big."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "We're near the outflow chamber. This is the way forward."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Whatever it is, let's cut our way through."
-            }
-          ]
-        },
-        {
-          "id": "dobu",
-          "room": "Outflow Chamber",
-          "trigger": "Boss fight starts",
-          "lines": [
-            {
-              "speaker": "Hotaru",
-              "text": "What... is that??"
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "It looks like the Sump workers, but mashed together into... that!"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "I've heard of this... Dobunushi, Lord of the ditch. It's where the Sump workers end up after too much degeneration."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Cut the arms when they slam down. When both are gone, hit what's in the middle."
-            }
-          ]
-        },
-        {
-          "id": "dobu2",
-          "room": "Outflow Chamber",
-          "trigger": "Boss phase 2",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "It's spewing. That wave is a Breach. Jump it or phase it!"
-            }
-          ]
-        },
-        {
-          "id": "dobu_dead",
-          "room": "Outflow Chamber",
-          "trigger": "Dobunushi defeated",
-          "lines": [
-            {
-              "speaker": "Hotaru",
-              "text": "That thing will just re-form over time, so long as the pollution keeps flowing."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Yes. We'll need to stop it at its source."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "I see a ladder. And light... and is that music? What's up next?"
-            },
-            {
-              "speaker": "Kuro",
-              "text": "This sewer exit probably leads to the Pachinko Vaults. Be ready--they'll try and stop you there."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ch3",
-      "label": "Chapter 3",
       "title": "The Pachinko Vaults",
       "boss": "Lady Luck",
-      "summary": "Kanshi pays Lady Luck to keep the city gambling, broke, and distracted. When a debtor loses everything, she sends them up to the Academy. Her slot machine picks her moves, and somebody upstairs set the odds.",
+      "summary": "Big Oni's captives come through the city's biggest casino, along with every debtor who loses everything to Lady Luck. Her slot machine picks her moves, and somebody upstairs set the odds. Beaten, she gives up where the captives go next: a secret monorail station off the Sewers.",
       "rooms": [
         "Vault Entrance",
         "Laser Hall",
@@ -999,13 +761,17 @@
       ],
       "scenes": [
         {
-          "id": "ch3",
+          "id": "ch2",
           "room": "Vault Entrance",
           "trigger": "Chapter start",
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "The Pachinko Vaults. Welcome to the city's biggest casino, where Kanshi turns addictions into profit."
+              "text": "The Pachinko Vaults. The city's biggest casino, where Kanshi turns addictions into profit."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "And where Big Oni delivered his captives. They have to be in here somewhere."
             },
             {
               "speaker": "Kuro",
@@ -1059,6 +825,10 @@
             {
               "speaker": "Kuro",
               "text": "Lose your money, lose yourself--seems like these people gambled away even their freedom."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "That freight lift is going down, not up. Where are they taking them?"
             }
           ]
         },
@@ -1074,9 +844,9 @@
           ]
         },
         {
-          "id": "shard4",
+          "id": "shard3",
           "room": "Back Room",
-          "trigger": "Memory Shard 4 (back room above the High Rollers floor)",
+          "trigger": "Memory Shard 3 (back room above the High Rollers floor)",
           "condition": "optional",
           "lines": [
             {
@@ -1093,11 +863,11 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "For your mother."
+              "text": "Medicine? For who?"
             },
             {
               "speaker": "Kuro",
-              "text": "I took the job. I think I took it for her."
+              "text": "The woman from before, I think. I took the job for her."
             }
           ]
         },
@@ -1215,11 +985,19 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "Not this time, chrome-dome."
+              "text": "Not this time, chrome-dome. Where does that freight lift take them?"
+            },
+            {
+              "speaker": "Lady Luck",
+              "text": "Down, sweetheart. To a station that isn't on any map. Platform 9, through the Sewers."
+            },
+            {
+              "speaker": "Lady Luck",
+              "text": "The Kanshi Line runs from there straight up to the Spire. Every debt gets paid upstairs."
             },
             {
               "speaker": "Kuro",
-              "text": "The Gardens are next, home of Kanshi's pharmaceutical wing."
+              "text": "A secret monorail stop. That's our way to the upper city."
             },
             {
               "speaker": "DaiCam",
@@ -1230,95 +1008,145 @@
       ]
     },
     {
-      "id": "ch4",
-      "label": "Chapter 4",
-      "title": "The Physic Gardens",
-      "boss": "The Harmacist",
-      "summary": "A real garden on the Spire's terraces where Kanshi grows medicine. The pollution from the Sewers makes the Sump sick, and the Gardens sell it the cure at a huge markup. The Harmacist sets the prices.",
+      "id": "ch3",
+      "label": "Chapter 3",
+      "title": "The Sewers",
+      "boss": "Dobunushi",
+      "summary": "The way to Platform 9 runs through sewers fed by Kanshi's factories. The waste has twisted the people who work down here into Drainlings. At the outflow, a mass of them has fused into Dobunushi, and behind it is the secret station.",
       "rooms": [
-        "Garden Gate",
-        "Greenhouse Steps",
-        "Herb Rows",
-        "Koi Terraces",
-        "Drying Lofts",
-        "Seed Vault",
-        "Dispensary",
-        "Moon Bridge",
-        "The Apothecary"
+        "Drain Mouth",
+        "Outflow Tunnel",
+        "Sludge Falls",
+        "Pump Station",
+        "Drainling Nest",
+        "Overflow Cistern",
+        "Lock Gate",
+        "Maintenance Shrine",
+        "Outflow Chamber"
       ],
       "scenes": [
         {
-          "id": "ch4",
-          "room": "Garden Gate",
+          "id": "ch3",
+          "room": "Drain Mouth",
           "trigger": "Chapter start",
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "Grass. Trees. Clean water. Up here, the whole time."
+              "text": "That smell... What is that?"
             },
             {
               "speaker": "Kuro",
-              "text": "Kanshi's Physic Gardens. Everything that grows here gets ground into pills and medicine."
-            }
-          ]
-        },
-        {
-          "id": "vents",
-          "room": "Greenhouse Steps",
-          "trigger": "First greenhouse heat vent",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "Heat vents from the greenhouses. Step in them: They should be strong enough to carry you upwards."
-            }
-          ]
-        },
-        {
-          "id": "warden",
-          "room": "Herb Rows",
-          "trigger": "First Garden Warden",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "A Garden Warden, Kanshi duelist. It loves to block anything you throw at it."
+              "text": "Heh. We're in a sewer. What do you think?"
             },
             {
               "speaker": "Kuro",
-              "text": "So let it swing first. Deflect, break its guard, then cut."
-            }
-          ]
-        },
-        {
-          "id": "pricing",
-          "room": "Dispensary",
-          "trigger": "The price board over the dispensary",
-          "lines": [
-            {
-              "speaker": "Hotaru",
-              "text": "Is that a price board?"
-            },
-            {
-              "speaker": "System",
-              "text": "KANSHI CLEAR // lung treatment, 30 days. Manufacture cost: 4 credits. Sale price: 2,400 credits."
+              "text": "I guess you wouldn't know since you're a robot."
             },
             {
               "speaker": "Hotaru",
-              "text": "That upcharge is absurd. For medicine for what their own sewers did."
+              "text": "As I said, I'm human. What I mean is that this place doesn't smell... natural."
             },
             {
               "speaker": "Kuro",
-              "text": "They poison the water, then sell the cure. And whoever can't pay..."
+              "text": "It's the pollution you're smelling, the toxic runoff of their dozens of enterprises. It all ends up down here."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "And everything down here ends up in the Sump's water."
             },
             {
               "speaker": "Hotaru",
-              "text": "Ends up at the Vaults. And then the Academy."
+              "text": "Lady Luck said Platform 9 is somewhere down here. We follow the pipes."
             }
           ]
         },
         {
-          "id": "shard5",
-          "room": "Seed Vault",
-          "trigger": "Memory Shard 5 (top of the pulsing vent in the Drying Lofts)",
+          "id": "toxic",
+          "room": "Outflow Tunnel",
+          "trigger": "First toxic pool",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "Don't touch the glowing water. It eats through chrome. Probably through people faster."
+            }
+          ]
+        },
+        {
+          "id": "drainling",
+          "room": "Sludge Falls",
+          "trigger": "First Drainlings",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Those are... people? Or they used to be."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Sump workers. Kanshi sends them to unjam the pipes, but the work takes a toll."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "There's nothing left in there to talk to. Put them out of their misery."
+            }
+          ]
+        },
+        {
+          "id": "tide",
+          "room": "Pump Station",
+          "trigger": "First sludge tide",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "The pumps are failing. The sludge is gonna come up in waves. Get high and stay high."
+            }
+          ]
+        },
+        {
+          "id": "daicam_sewer",
+          "room": "Drainling Nest",
+          "trigger": "DaiCam lost in the sewers",
+          "lines": [
+            {
+              "speaker": "DaiCam",
+              "text": "Chat, welcome to urban exploring. I'm not lost--I'm 'creating suspense'."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "Ninja lady! Okay, chat, this is not a coincidence, this is destiny."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "You followed me again."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "I followed the debtors! Kanshi took my neighbor! I'm doing journalism now!"
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Just clear out the nest and point him at the exit."
+            }
+          ]
+        },
+        {
+          "id": "daicam_sewer2",
+          "room": "Drainling Nest",
+          "trigger": "After clearing the nest",
+          "lines": [
+            {
+              "speaker": "DaiCam",
+              "text": "The exit is that way? Chat, I was going in circles in this sewer for ages."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "Thank you. Seriously. Okay, that's enough sincerity for one stream. Byeee!"
+            }
+          ]
+        },
+        {
+          "id": "shard4",
+          "room": "Overflow Cistern",
+          "trigger": "Memory Shard 4 (above the Pump Station, past the tide)",
           "condition": "optional",
           "lines": [
             {
@@ -1327,171 +1155,106 @@
             },
             {
               "speaker": "Kuro",
-              "text": "...My first pay from the Daimyo's guard. A box of Kanshi Clear, the same pills they grow here."
+              "text": "...The older woman. Coughing into her sleeve."
             },
             {
               "speaker": "Kuro",
-              "text": "I brought it home. But they kept raising the prices."
+              "text": "The river behind our house turned black the year the factories opened."
             },
             {
               "speaker": "Hotaru",
-              "text": "Did she...?"
+              "text": "Your mother. The medicine was for her."
             },
             {
               "speaker": "Kuro",
-              "text": "It wasn't enough. It was never going to be enough."
+              "text": "...Yeah. I think so. How did you know that?"
             }
           ]
         },
         {
-          "id": "daicam4",
-          "room": "Koi Terraces",
-          "trigger": "DaiCam's sponsored stream",
-          "lines": [
-            {
-              "speaker": "DaiCam",
-              "text": "This stream is brought to you by Kanshi Clear! Breathe easy, Sump! *cough* *cough*"
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "You're coughing."
-            },
-            {
-              "speaker": "DaiCam",
-              "text": "Sponsor contract says I'm actually not! Regardless of what my body thinks..."
-            },
-            {
-              "speaker": "DaiCam",
-              "text": "Is that weird? That feels weird now that I say it out loud."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Clear the Wardens. Then tell him and his stream the truth about these pills."
-            }
-          ]
-        },
-        {
-          "id": "daicam4b",
-          "room": "Koi Terraces",
-          "trigger": "After clearing the Wardens",
-          "lines": [
-            {
-              "speaker": "Hotaru",
-              "text": "The reason you're coughing is the pollution Kanshi releases, DaiCam. The pills only cost four credits to make, but once you're sick, you're dependent."
-            },
-            {
-              "speaker": "DaiCam",
-              "text": "Four credits?! Chat, I've been paying two thousand four hundred! I'm canceling the sponsorship."
-            },
-            {
-              "speaker": "DaiCam",
-              "text": "...Though... I NEED the pills, don't I? I'm already sick. That's the trick, isn't it?"
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "That's the trick."
-            }
-          ]
-        },
-        {
-          "id": "harm_gate",
-          "room": "Moon Bridge",
+          "id": "dobu_gate",
+          "room": "Lock Gate",
           "trigger": "Before the boss arena",
           "lines": [
             {
-              "speaker": "Kuro",
-              "text": "The Apothecary's across the bridge. The woman who sets the prices works there."
+              "speaker": "Hotaru",
+              "text": "Something is moving behind the gate. Something big."
             },
             {
-              "speaker": "Hotaru",
-              "text": "Good. Let's go give her a piece of our mind."
+              "speaker": "Kuro",
+              "text": "We're near the outflow chamber. This is the way forward."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Whatever it is, let's cut our way through."
             }
           ]
         },
         {
-          "id": "harm",
-          "room": "The Apothecary",
+          "id": "dobu",
+          "room": "Outflow Chamber",
           "trigger": "Boss fight starts",
           "lines": [
             {
-              "speaker": "The Harmacist",
-              "text": "A visitor without an appointment. Let me guess. You can't afford the pills."
-            },
-            {
-              "speaker": "The Harmacist",
-              "text": "Although... that body of yours shouldn't need them, anyway."
+              "speaker": "Hotaru",
+              "text": "What... is that??"
             },
             {
               "speaker": "Hotaru",
-              "text": "You charge six hundred times what it costs to make. You hold people's lives ransom for profit."
-            },
-            {
-              "speaker": "The Harmacist",
-              "text": "I have a duty to my shareholders, honey. I charge what a life is worth to the person living it."
-            },
-            {
-              "speaker": "The Harmacist",
-              "text": "Simple supply and demand. It's the economy, stupid."
+              "text": "It looks like the Sump workers, but mashed together into... that!"
             },
             {
               "speaker": "Kuro",
-              "text": "She's going to throw vials. Deflect them back. Stay out of the green clouds."
+              "text": "I've heard of this... Dobunushi, Lord of the ditch. It's where the Sump workers end up after too much degeneration."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Cut the arms when they slam down. When both are gone, hit what's in the middle."
             }
           ]
         },
         {
-          "id": "harm2",
-          "room": "The Apothecary",
+          "id": "dobu2",
+          "room": "Outflow Chamber",
           "trigger": "Boss phase 2",
           "lines": [
             {
-              "speaker": "The Harmacist",
-              "text": "Argh! Time to test out my experimental formula, I suppose."
-            },
-            {
               "speaker": "Kuro",
-              "text": "She just juiced herself. When that cloud bursts, it's a Breach. Phase through it!"
+              "text": "It's spewing. That wave is a Breach. Jump it or phase it!"
             }
           ]
         },
         {
-          "id": "harm_dead",
-          "room": "The Apothecary",
-          "trigger": "The Harmacist falls",
-          "lines": [
-            {
-              "speaker": "The Harmacist",
-              "text": "Kill me... and the Sump dies by spring... You need me..."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "We'll leave you with the Garden for now. But lower those prices, or we'll be back."
-            }
-          ]
-        },
-        {
-          "id": "harm_dead2",
-          "room": "The Apothecary",
-          "trigger": "After she limps out of the Apothecary",
+          "id": "dobu_dead",
+          "room": "Outflow Chamber",
+          "trigger": "Dobunushi defeated",
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "So, how do we get up the Spire?"
+              "text": "That thing will just re-form over time, so long as the pollution keeps flowing."
             },
             {
               "speaker": "Kuro",
-              "text": "We'll need to take the Kanshi Line, the monorail that keeps Kanshi separated from the rest of us. Let's go."
+              "text": "Yes. We'll need to stop it at its source."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "There's a door behind the outflow. Kanshi markings. And I can hear trains."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Platform 9. Kanshi's secret station. Next stop, the upper city."
             }
           ]
         }
       ]
     },
     {
-      "id": "ch5",
-      "label": "Chapter 5",
+      "id": "ch4",
+      "label": "Chapter 4",
       "title": "Monorail Ascent",
       "boss": "Raijin",
-      "summary": "The Kanshi Line spirals up the Spire with no Sump stops, and its gates only open for Kanshi ID. Hotaru rides it anyway. The Daimyo appears for the first time, with Mukuro at his side, and recognizes Kuro. Raijin's black box finally tells both of them what they are.",
+      "summary": "Platform 9 is a freight station hidden off the Sewers, where the Kanshi Line loads its captives for the ride up to the Spire. Hotaru rides it anyway. The Daimyo appears for the first time, with Mukuro at his side, and recognizes Kuro. Raijin's black box finally tells both of them what they are.",
       "rooms": [
         "Platform 9",
         "Roof Run",
@@ -1505,21 +1268,21 @@
       ],
       "scenes": [
         {
-          "id": "ch5",
+          "id": "ch4",
           "room": "Platform 9",
           "trigger": "Chapter start",
           "lines": [
             {
               "speaker": "System",
-              "text": "KANSHI LINE // Kanshi ID required at all gates. Mind the gap."
+              "text": "KANSHI LINE // PLATFORM 9 // FREIGHT ONLY. Kanshi ID required at all gates."
             },
             {
               "speaker": "Hotaru",
-              "text": "Sounds like we need Kanshi ID."
+              "text": "A whole station hidden under the city. This is how the captives go up."
             },
             {
               "speaker": "Kuro",
-              "text": "Typically, yes. Or a fat wallet to pay for a temporary pass."
+              "text": "Straight to the Spire, no questions asked. You'd normally need Kanshi ID to ride."
             },
             {
               "speaker": "Kuro",
@@ -1573,9 +1336,9 @@
           ]
         },
         {
-          "id": "shard6",
+          "id": "shard5",
           "room": "Maintenance Bay",
-          "trigger": "Memory Shard 6 (behind the Spiral Junction's tower door)",
+          "trigger": "Memory Shard 5 (behind the Spiral Junction's tower door)",
           "condition": "optional",
           "lines": [
             {
@@ -1607,7 +1370,7 @@
           "lines": [
             {
               "speaker": "DaiCam",
-              "text": "Hotaru! First class! I bought a ticket with the sponsor money! They have little towels!"
+              "text": "Hotaru! First class! I snuck aboard with the freight! They have little towels!"
             },
             {
               "speaker": "Hotaru",
@@ -1811,8 +1574,8 @@
       ]
     },
     {
-      "id": "ch6",
-      "label": "Chapter 6",
+      "id": "ch5",
+      "label": "Chapter 5",
       "title": "Hollow Floor",
       "boss": "Kuro",
       "summary": "Kuro tries to take the frame for himself. Inside the space they share, built from his broken memories, Hotaru fights to prove she's alive. When he falls, she chooses: compromise with him, or destroy his mind and keep the soul for herself.",
@@ -1846,7 +1609,7 @@
       },
       "scenes": [
         {
-          "id": "ch6",
+          "id": "ch5",
           "room": "Static",
           "trigger": "Chapter start (the space Hotaru and Kuro share)",
           "lines": [
@@ -1972,9 +1735,9 @@
           ]
         },
         {
-          "id": "shard7",
+          "id": "shard6",
           "room": "Locked Memory",
-          "trigger": "Memory Shard 7 (above the Possession room)",
+          "trigger": "Memory Shard 6 (above the Possession room)",
           "condition": "optional",
           "lines": [
             {
@@ -2176,6 +1939,485 @@
       ]
     },
     {
+      "id": "ch6",
+      "label": "Chapter 6",
+      "title": "The Physic Gardens",
+      "boss": "The Harmacist",
+      "summary": "The monorail carries Hotaru into the Kanshi Spire itself. Past the lobby, the lower floors are a real garden where Kanshi grows medicine. The pollution from the Sewers makes the Sump sick, and the Gardens sell it the cure at a huge markup. The Harmacist sets the prices.",
+      "rooms": [
+        "Spire Lobby",
+        "Garden Gate",
+        "Greenhouse Steps",
+        "Herb Rows",
+        "Koi Terraces",
+        "Drying Lofts",
+        "Seed Vault",
+        "Dispensary",
+        "Moon Bridge",
+        "The Apothecary"
+      ],
+      "scenes": [
+        {
+          "id": "ch6",
+          "room": "Spire Lobby",
+          "trigger": "Chapter start (inside the Spire)",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "System",
+              "text": "KANSHI SPIRE // LOBBY. Welcome, valued asset. Floors 2-40: PHYSIC GARDENS. Floors 41-90: THE ACADEMY. Tenshu: by invitation only."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "The train carried us the rest of the way in. We're inside the Spire. Kuro? Are you there?"
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Riding along as always. Hands off the wheel, like I promised."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "The receptionist hasn't blinked once."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Hollowed. Kanshi puts them on the front desk too. Gardens first, partner. Then the Academy. Then him."
+            }
+          ]
+        },
+        {
+          "id": "ch6_alone",
+          "room": "Spire Lobby",
+          "trigger": "Chapter start (inside the Spire)",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "System",
+              "text": "KANSHI SPIRE // LOBBY. Welcome, valued asset. Floors 2-40: PHYSIC GARDENS. Floors 41-90: THE ACADEMY. Tenshu: by invitation only."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "The train carried me the rest of the way in. I'm inside the Spire. Kuro?"
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "...Right."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "The receptionist hasn't blinked once. Hollowed, like the rest of them."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Gardens first. Then the Academy. Then him."
+            }
+          ]
+        },
+        {
+          "id": "garden",
+          "room": "Garden Gate",
+          "trigger": "Entering the Gardens",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Grass. Trees. Clean water. In here, the whole time."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Kanshi's Physic Gardens. Everything that grows here gets ground into pills and medicine."
+            }
+          ]
+        },
+        {
+          "id": "garden_alone",
+          "room": "Garden Gate",
+          "trigger": "Entering the Gardens",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Grass. Trees. Clean water. In here, the whole time."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Kanshi's Physic Gardens. Everything that grows here gets ground into pills."
+            }
+          ]
+        },
+        {
+          "id": "vents",
+          "room": "Greenhouse Steps",
+          "trigger": "First greenhouse heat vent",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "Heat vents from the greenhouses. Step in them: They should be strong enough to carry you upwards."
+            }
+          ]
+        },
+        {
+          "id": "warden",
+          "room": "Herb Rows",
+          "trigger": "First Garden Warden",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "A Garden Warden, Kanshi duelist. It loves to block anything you throw at it."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "So let it swing first. Deflect, break its guard, then cut."
+            }
+          ]
+        },
+        {
+          "id": "pricing",
+          "room": "Dispensary",
+          "trigger": "The price board over the dispensary",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Is that a price board?"
+            },
+            {
+              "speaker": "System",
+              "text": "KANSHI CLEAR // lung treatment, 30 days. Manufacture cost: 4 credits. Sale price: 2,400 credits."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "That upcharge is absurd. For medicine for what their own sewers did."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "They poison the water, then sell the cure. And whoever can't pay..."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Ends up at the Vaults. And then the Academy."
+            }
+          ]
+        },
+        {
+          "id": "pricing_alone",
+          "room": "Dispensary",
+          "trigger": "The price board over the dispensary",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Is that a price board?"
+            },
+            {
+              "speaker": "System",
+              "text": "KANSHI CLEAR // lung treatment, 30 days. Manufacture cost: 4 credits. Sale price: 2,400 credits."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "That upcharge is absurd. For medicine for what their own sewers did."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "They poison the water, then sell the cure. And whoever can't pay ends up at the Vaults. And then the Academy."
+            }
+          ]
+        },
+        {
+          "id": "shard7",
+          "room": "Seed Vault",
+          "trigger": "Memory Shard 7 (top of the pulsing vent in the Drying Lofts)",
+          "condition": "optional; branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "I remember..."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "...My first pay from the Daimyo's guard. A box of Kanshi Clear, the same pills they grow here."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "I brought it home. But they kept raising the prices."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Did she...?"
+            },
+            {
+              "speaker": "Kuro",
+              "text": "It wasn't enough. It was never going to be enough."
+            }
+          ]
+        },
+        {
+          "id": "shard7_alone",
+          "room": "Seed Vault",
+          "trigger": "Memory Shard 7 (top of the pulsing vent in the Drying Lofts)",
+          "condition": "optional; branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "System",
+              "text": "MEMORY FRAGMENT: A young guard sets a box of Kanshi Clear by a sickbed. The prices keep climbing."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "...The same pills they grow here. It wasn't enough for her. It was never going to be enough."
+            }
+          ]
+        },
+        {
+          "id": "daicam4",
+          "room": "Koi Terraces",
+          "trigger": "DaiCam's sponsored stream",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "DaiCam",
+              "text": "This stream is brought to you by Kanshi Clear! Breathe easy, Sump! *cough* *cough*"
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "You're coughing."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "Sponsor contract says I'm actually not! Regardless of what my body thinks..."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "Is that weird? That feels weird now that I say it out loud."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Clear the Wardens. Then tell him and his stream the truth about these pills."
+            }
+          ]
+        },
+        {
+          "id": "daicam4_alone",
+          "room": "Koi Terraces",
+          "trigger": "DaiCam's sponsored stream",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "DaiCam",
+              "text": "This stream is brought to you by Kanshi Clear! Breathe easy, Sump! *cough* *cough*"
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "You're coughing."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "Sponsor contract says I'm actually not! Regardless of what my body thinks..."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "Is that weird? That feels weird now that I say it out loud."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Hold that thought. Let me clear out these Wardens first."
+            }
+          ]
+        },
+        {
+          "id": "daicam4b",
+          "room": "Koi Terraces",
+          "trigger": "After clearing the Wardens",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "The reason you're coughing is the pollution Kanshi releases, DaiCam. The pills only cost four credits to make, but once you're sick, you're dependent."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "Four credits?! Chat, I've been paying two thousand four hundred! I'm canceling the sponsorship."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "...Though... I NEED the pills, don't I? I'm already sick. That's the trick, isn't it?"
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "That's the trick."
+            }
+          ]
+        },
+        {
+          "id": "harm_gate",
+          "room": "Moon Bridge",
+          "trigger": "Before the boss arena",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "The Apothecary's across the bridge. The woman who sets the prices works there."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Good. Let's go give her a piece of our mind."
+            }
+          ]
+        },
+        {
+          "id": "harm_gate_alone",
+          "room": "Moon Bridge",
+          "trigger": "Before the boss arena",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "The Apothecary's across the bridge. The woman who sets the prices works there."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Time to give her a piece of my mind."
+            }
+          ]
+        },
+        {
+          "id": "harm",
+          "room": "The Apothecary",
+          "trigger": "Boss fight starts",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "The Harmacist",
+              "text": "A visitor without an appointment. Let me guess. You can't afford the pills."
+            },
+            {
+              "speaker": "The Harmacist",
+              "text": "Although... that body of yours shouldn't need them, anyway."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "You charge six hundred times what it costs to make. You hold people's lives ransom for profit."
+            },
+            {
+              "speaker": "The Harmacist",
+              "text": "I have a duty to my shareholders, honey. I charge what a life is worth to the person living it."
+            },
+            {
+              "speaker": "The Harmacist",
+              "text": "Simple supply and demand. It's the economy, stupid."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "She's going to throw vials. Deflect them back. Stay out of the green clouds."
+            }
+          ]
+        },
+        {
+          "id": "harm_alone",
+          "room": "The Apothecary",
+          "trigger": "Boss fight starts",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "The Harmacist",
+              "text": "A visitor without an appointment. Let me guess. You can't afford the pills."
+            },
+            {
+              "speaker": "The Harmacist",
+              "text": "Although... that body of yours shouldn't need them, anyway."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "You charge six hundred times what it costs to make. You hold people's lives ransom for profit."
+            },
+            {
+              "speaker": "The Harmacist",
+              "text": "I have a duty to my shareholders, honey. I charge what a life is worth to the person living it."
+            },
+            {
+              "speaker": "The Harmacist",
+              "text": "Simple supply and demand. It's the economy, stupid."
+            }
+          ]
+        },
+        {
+          "id": "harm2",
+          "room": "The Apothecary",
+          "trigger": "Boss phase 2",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "The Harmacist",
+              "text": "Argh! Time to test out my experimental formula, I suppose."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "She just juiced herself. When that cloud bursts, it's a Breach. Phase through it!"
+            }
+          ]
+        },
+        {
+          "id": "harm2_alone",
+          "room": "The Apothecary",
+          "trigger": "Boss phase 2",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "The Harmacist",
+              "text": "Argh! Time to test out my experimental formula, I suppose."
+            }
+          ]
+        },
+        {
+          "id": "harm_dead",
+          "room": "The Apothecary",
+          "trigger": "The Harmacist falls",
+          "lines": [
+            {
+              "speaker": "The Harmacist",
+              "text": "Kill me... and the Sump dies by spring... You need me..."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "We'll leave you with the Garden for now. But lower those prices, or we'll be back."
+            }
+          ]
+        },
+        {
+          "id": "harm_dead2",
+          "room": "The Apothecary",
+          "trigger": "After she limps out of the Apothecary",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Her service stairs keep climbing. Floor 41 and up: the Academy."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Where every road in this city ends. Let's not keep it waiting."
+            }
+          ]
+        },
+        {
+          "id": "harm_dead2_alone",
+          "room": "The Apothecary",
+          "trigger": "After she limps out of the Apothecary",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Her service stairs keep climbing. Floor 41 and up: the Academy."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Where every road in this city ends."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "ch7",
       "label": "Chapter 7",
       "title": "The Academy",
@@ -2200,12 +2442,8 @@
           "condition": "branch: kuro_spared",
           "lines": [
             {
-              "speaker": "Hotaru",
-              "text": "We're out. Kuro? Are you there?"
-            },
-            {
               "speaker": "Kuro",
-              "text": "Riding along as always. Hands off the wheel, like I promised. Welcome to the Academy, partner."
+              "text": "Welcome to the Academy, partner."
             },
             {
               "speaker": "Kuro",
@@ -2221,15 +2459,11 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "Kuro?"
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "...Right."
-            },
-            {
-              "speaker": "Hotaru",
               "text": "The Academy. He said he used to train students here."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "He'd have had something to say about this place."
             }
           ]
         },

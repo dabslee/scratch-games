@@ -63,7 +63,7 @@ and rooms, read and set variables, press keys, and take screenshots (`s_<name>.p
 **Boss run** (`boss_run.js`, or `npm run boss`): fights a boss and logs the state every 5 s.
 
 ```sh
-BOSS="start_ch8,83,daimyo_dead,250,dm" VARS=dm_ph KB=1 SHARDS=2 npm run boss
+BOSS="start_ch8,84,daimyo_dead,250,dm" VARS=dm_ph KB=1 SHARDS=2 npm run boss
 ```
 
 `BOSS` is `<chapter start event>,<room>,<boss-dead variable>,<seconds>,<log tag>`. `KB=1`
@@ -75,8 +75,8 @@ correct tell is 9 frames long and lands on the 10th (Hotaru reacts the frame aft
 resolves).
 
 ```sh
-BOSS="start_ch7,73,60" SPR=Mukuro npm run tells
-BOSS="start_ch5,55,80" SPR=Raijin NOBOT=1 V=1 npm run tells   # bot off, every flash listed
+BOSS="start_ch7,74,60" SPR=Mukuro npm run tells
+BOSS="start_ch4,46,80" SPR=Raijin NOBOT=1 V=1 npm run tells   # bot off, every flash listed
 ```
 
 **Chapters and boss rooms.** Rooms are numbered from 1 in the order of `levels.ROOMS`.
@@ -84,10 +84,10 @@ BOSS="start_ch5,55,80" SPR=Raijin NOBOT=1 V=1 npm run tells   # bot off, every f
 | Chapter start event | Boss room | Boss sprite |
 |---|---|---|
 | `start_ch1` | 19 | `BigOni` |
-| `start_ch2` | 28 | `Dobunushi` |
-| `start_ch3` | 37 | `LadyLuck` |
-| `start_ch4` | 46 | `Harmacist` (Wardens in rooms 40 to 44) |
-| `start_ch5` | 55 | `Raijin` |
-| `start_ch6` | 64 | `KuroBoss` |
-| `start_ch7` | 73 | `Mukuro` |
-| `start_ch8` | 83 | `Daimyo` |
+| `start_ch2` | 28 | `LadyLuck` |
+| `start_ch3` | 37 | `Dobunushi` |
+| `start_ch4` | 46 | `Raijin` |
+| `start_ch5` | 55 | `KuroBoss` |
+| `start_ch6` | 65 | `Harmacist` (Wardens in rooms 57 to 63) |
+| `start_ch7` | 74 | `Mukuro` |
+| `start_ch8` | 84 | `Daimyo` |

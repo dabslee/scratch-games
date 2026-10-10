@@ -85,7 +85,7 @@ def up4(im):
 
 
 # ---------------------------------------------------------------- tiles
-MATERIAL = {0: 'sump', 1: 'alley', 2: 'sewer', 3: 'vaults', 4: 'gardens', 5: 'rail', 6: 'memory', 7: 'academy', 8: 'tenshu', 9: 'sump'}
+MATERIAL = {0: 'sump', 1: 'alley', 2: 'vaults', 3: 'sewer', 4: 'rail', 5: 'memory', 6: 'gardens', 7: 'academy', 8: 'tenshu', 9: 'sump'}
 
 
 def tile_images(material):
@@ -214,24 +214,24 @@ CH2_PREVIEW = {'croupier': ('HannyaBoy', 'CROUPIER_MAP', 'idle_0'), 'slotturret'
 
 def preview_room(room, scale=2):
     st = starter()
-    if room.chapter == 2:
+    if room.chapter == 3:
         import art_v2
         bg = art_v2.sewer_sky()
         bg.alpha_composite(art_v2.sewer_far())
         bg.alpha_composite(art_v2.sewer_mid())
-    elif room.chapter == 3:
+    elif room.chapter == 2:
         import art_ch2
         bg = art_ch2.sky()
         bg.alpha_composite(art_ch2.far())
         bg.alpha_composite(art_ch2.mid())
-    elif room.chapter == 5:
+    elif room.chapter == 4:
         import art_ch4
         bg = art_ch4.sky()
         bg.alpha_composite(art_ch4.far())
         bg.alpha_composite(art_ch4.mid())
-    elif room.chapter in (6, 7):
+    elif room.chapter in (5, 7):
         import art_ch56 as a56
-        if room.chapter == 6:
+        if room.chapter == 5:
             bg = a56.hollow_sky()
             bg.alpha_composite(a56.hollow_far())
             bg.alpha_composite(a56.hollow_mid())
@@ -240,14 +240,14 @@ def preview_room(room, scale=2):
             bg.alpha_composite(a56.academy_far())
             bg.alpha_composite(a56.academy_mid())
     else:
-        ch = {0: 'sump', 1: 'neon_alley', 4: 'server_gardens', 8: 'tenshu', 9: 'sump'}[room.chapter]
+        ch = {0: 'sump', 1: 'neon_alley', 6: 'server_gardens', 8: 'tenshu', 9: 'sump'}[room.chapter]
         bg = Image.open(pack_path('backgrounds', ch, 'sky.png')).convert('RGBA')
         for l in ('far', 'mid'):
             bg.alpha_composite(Image.open(pack_path('backgrounds', ch, l + '.png')).convert('RGBA'))
     im = Image.new('RGBA', (240, 184), (0, 0, 0, 255))
     im.paste(bg, (0, 0))
     im.alpha_composite(render_room(room))
-    if room.chapter in (6, 7, 8):
+    if room.chapter in (5, 7, 8):
         import art_ch56 as a56
         for r in range(levels.H):
             for c in range(levels.W):
@@ -262,6 +262,7 @@ def preview_room(room, scale=2):
                  'jackpot': (art_ch2.jackpot_sign(True), 26, 0), 'pod': (art_ch3.pod(0), 7, 30),
                  'toro': (art_ch3.toro(0), 6, 22), 'bonsai': (art_ch3.bonsai(), 7, 18),
                  'seat': (art_ch4.seat(), 9, 12), 'post': (art_ch4.post(), 5, 22),
+                 'desk': (__import__('art_v2').desk(), 36, 30), 'directory': (__import__('art_v2').directory(), 38, 0),
                  'dummy': (__import__('art_ch56').dummy(), 7, 26),
                  'daimyo': (__import__('art_ch7').exo('idle', 0), 42, 91),
                  'raijin': (art_ch4.raijin('idle', 0).crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT)),
@@ -275,8 +276,8 @@ def preview_room(room, scale=2):
             sp, ax, ay = extra[key]
             _paste_clip(im, sp, int((o['x'] + 240) / 2) - ax, int((180 - o['y']) / 2) - ay)
             continue
-        if o['type'] in CH2_PREVIEW or (room.chapter == 5 and o['type'] in ('hannya', 'croupier')):
-            if room.chapter == 5 and o['type'] in ('hannya', 'croupier'):
+        if o['type'] in CH2_PREVIEW or (room.chapter == 4 and o['type'] in ('hannya', 'croupier')):
+            if room.chapter == 4 and o['type'] in ('hannya', 'croupier'):
                 spr, mp, cos = 'HannyaBoy', 'art_ch4.' + ('GUARD_MAP' if o['type'] == 'hannya' else 'GUNNER_MAP'), 'idle_0'
             else:
                 spr, mp, cos = CH2_PREVIEW[o['type']]

@@ -11,7 +11,7 @@ if not (oi in dead_objs):
     myobj = oi
     add_ent("drone", x, y - 12, 13, 22, 2, 0, 1)
     skin = ""
-    if chapter == 4:
+    if chapter == 6:
         skin = "p_"
     st = "hover"
     t = rand(0, 80)
@@ -441,12 +441,12 @@ if not (oi in dead_objs):
         skin = "d_"
         ehp = 5
         imax = 6
-    elif chapter == 6:
+    elif chapter == 5:
         skin = "m_"
-    elif chapter >= 3:
+    elif chapter >= 2:
         # from the casino floor on, the gang grunts wear suits
         skin = "u_"
-        if chapter == 5:
+        if chapter == 4:
             pkind = "bolt"
     add_ent("hannya", x, y, 10, 38, ehp, imax, 1)
     find_bounds()
@@ -1094,7 +1094,7 @@ if not (oi in dead_objs):
     myobj = oi
     skin = ""
     pkind = "card"
-    if chapter == 5:
+    if chapter == 4:
         skin = "g_"
         pkind = "bolt"
     add_ent("croupier", x, y, 10, 38, 5, 6, 1)
@@ -1874,7 +1874,7 @@ if not (oi in dead_objs):
             skin = "h_"
         ehp = 8
         imax = 7
-    elif chapter == 6:
+    elif chapter == 5:
         skin = "m_"
     is_clone = 1
     clone()

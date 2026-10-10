@@ -216,9 +216,9 @@ set_list('R_MOVE', [r.moving for r in ROOMS])
 set_list('R_FLIP', [r.flip for r in ROOMS])
 set_list('R_TIDE', [levels.top(r.tide) if r.tide else 0 for r in ROOMS])
 # per chapter (index = chapter + 1): first room and music
-CH_FIRST = ['p1', 'a1', 'w1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'ep']
+CH_FIRST = ['p1', 'a1', 'b1', 'w1', 'd1', 'e1', 'c0', 'f1', 'g1', 'ep']
 set_list('CH_ROOM', [RI[k] for k in CH_FIRST])
-set_list('CH_MUSIC', ['sump', 'alley', 'sewers', 'vaults', 'gardens', 'monorail', 'hollow', 'academy', 'tenshu', 'epilogue'])
+set_list('CH_MUSIC', ['sump', 'alley', 'vaults', 'sewers', 'monorail', 'hollow', 'gardens', 'academy', 'tenshu', 'epilogue'])
 set_list('R_BOSS', [max(1, r.chapter) if 'boss' in r.flags else 0 for r in ROOMS])
 O_FIRST, O_NUM, OT, OX, OY, OA, OB = [], [], [], [], [], [], []
 for r in ROOMS:
@@ -243,7 +243,7 @@ set_list('O_B', OB)
 a1_start = [o for o in levels.a1.objs if o['type'] == 'start'][0]
 w1_start = [o for o in levels.w1.objs if o['type'] == 'start'][0]
 b1_start = [o for o in levels.b1.objs if o['type'] == 'start'][0]
-c1_start = [o for o in levels.c1.objs if o['type'] == 'start'][0]
+c0_start = [o for o in levels.c0.objs if o['type'] == 'start'][0]
 d1_start = [o for o in levels.d1.objs if o['type'] == 'start'][0]
 e1_start = [o for o in levels.e1.objs if o['type'] == 'start'][0]
 f1_start = [o for o in levels.f1.objs if o['type'] == 'start'][0]
@@ -252,7 +252,7 @@ C.update({
     'C_ROOM_P1': RI['p1'], 'C_ROOM_A1': RI['a1'], 'C_A1_X': a1_start['x'], 'C_A1_Y': a1_start['y'],
     'C_ROOM_W1': RI['w1'], 'C_W1_X': w1_start['x'], 'C_W1_Y': w1_start['y'],
     'C_ROOM_B1': RI['b1'], 'C_B1_X': b1_start['x'], 'C_B1_Y': b1_start['y'],
-    'C_ROOM_C1': RI['c1'], 'C_C1_X': c1_start['x'], 'C_C1_Y': c1_start['y'],
+    'C_ROOM_C0': RI['c0'], 'C_C0_X': c0_start['x'], 'C_C0_Y': c0_start['y'],
     'C_ROOM_D1': RI['d1'], 'C_D1_X': d1_start['x'], 'C_D1_Y': d1_start['y'],
     'C_ROOM_E1': RI['e1'], 'C_E1_X': e1_start['x'], 'C_E1_Y': e1_start['y'],
     'C_ROOM_F1': RI['f1'], 'C_F1_X': f1_start['x'], 'C_F1_Y': f1_start['y'],
@@ -538,11 +538,11 @@ def atk_info_src():
 stage = target('Stage', stage=True)
 stage.costumes = copy_costumes('Stage', names=['title_', 'black'])
 # backdrops and parallax layers are named by chapter number (9 = the epilogue, back in the Sump)
-PACK_BG = {0: 'sump', 1: 'neon_alley', 4: 'server_gardens', 8: 'tenshu', 9: 'sump'}
-NEW_BG = {2: (art_v2.sewer_sky, art_v2.sewer_far, art_v2.sewer_mid),
-          3: (art_ch2.sky, art_ch2.far, art_ch2.mid),
-          5: (art_ch4.sky, art_ch4.far, art_ch4.mid),
-          6: (art_ch56.hollow_sky, art_ch56.hollow_far, art_ch56.hollow_mid),
+PACK_BG = {0: 'sump', 1: 'neon_alley', 6: 'server_gardens', 8: 'tenshu', 9: 'sump'}
+NEW_BG = {2: (art_ch2.sky, art_ch2.far, art_ch2.mid),
+          3: (art_v2.sewer_sky, art_v2.sewer_far, art_v2.sewer_mid),
+          4: (art_ch4.sky, art_ch4.far, art_ch4.mid),
+          5: (art_ch56.hollow_sky, art_ch56.hollow_far, art_ch56.hollow_mid),
           7: (art_ch56.academy_sky, art_ch56.academy_far, art_ch56.academy_mid)}
 PAR = {0: [], 1: [], 2: []}
 for ch in range(10):
@@ -550,9 +550,9 @@ for ch in range(10):
         k = PACK_BG[ch]
         stage.costumes += copy_costumes('Stage', names=['sky_' + k], rename=lambda n, ch=ch: 'sky_%d' % ch)
         for li, layer in ((1, 'Parallax_far'), (2, 'Parallax_mid')):
-            if ch == 4 and li == 2:
+            if ch == 6 and li == 2:
                 # the gardens' front layer: a thick band of blossoming trees
-                PAR[li].append(make_costume('ch4', up4(art_v2.garden_trees(ST.image_1x(layer, k))), 480, 360, FILES))
+                PAR[li].append(make_costume('ch6', up4(art_v2.garden_trees(ST.image_1x(layer, k))), 480, 360, FILES))
                 continue
             PAR[li] += copy_costumes(layer, names=[k], rename=lambda n, ch=ch: 'ch%d' % ch)
     else:
@@ -619,6 +619,8 @@ props.append(costume_from(art_v2.herbs(), 'herbs', 7, 30))
 props += [costume_from(art_v2.price_board(i), 'board_%d' % i, 38, 0) for i in range(2)]
 props += [costume_from(art_v2.debtor(i), 'debtor_%d' % i, 5, 30) for i in range(2)]
 props.append(costume_from(art_v2.soldier(), 'soldier', 7, 36))
+props.append(costume_from(art_v2.desk(), 'desk', 36, 30))
+props.append(costume_from(art_v2.directory(), 'directory', 38, 0))
 
 
 for k in range(4):

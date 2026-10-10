@@ -568,7 +568,7 @@ def draw():
         costume(join("ch", chapter))
         po = (0 - px * %s - frame * %s * moving) %% 480
         gj = 0
-        if chapter == 6 and frame %% 70 < 3:
+        if chapter == 5 and frame %% 70 < 3:
             # Hollow Floor's memory skips like a bad tape
             gj = rand(-10, 10)
             effect("color", rand(-40, 40))
@@ -668,7 +668,7 @@ def draw():
     want = 0
     if ingame == 1 and mode != "menu" and (chapter < 2 or chapter == 9):
         want = 1
-    if ingame == 1 and mode != "menu" and chapter == 5 and moving == 1:
+    if ingame == 1 and mode != "menu" and chapter == 4 and moving == 1:
         want = 2
     if want != amb:
         amb = want
@@ -714,7 +714,7 @@ def g_boot():
 def draw():
     if is_clone == 0:
         return
-    if ingame == 1 and chapter == 6 and (mode != "menu" or menu == "pause"):
+    if ingame == 1 and chapter == 5 and (mode != "menu" or menu == "pause"):
         gt -= 1
         if gt <= 0:
             gt = rand(4, 40)

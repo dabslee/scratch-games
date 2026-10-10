@@ -386,7 +386,7 @@ def load_room(r):
     tide_warn = 0
     GL_I.clear()
     GL_T.clear()
-    if chapter == 6 or chapter == 7:
+    if chapter == 5 or chapter == 7:
         for gi in range(1, 691):
             if grid[gi] == "G" or grid[gi] == "H":
                 GL_I.append(gi)
@@ -436,7 +436,7 @@ def load_room(r):
     backdrop(join("sky_", chapter))
     music_want = CH_MUSIC[chapter + 1]
     bk = R_BOSS[r]
-    if (bk == 1 and boss_dead == 0) or (bk == 2 and dobu_dead == 0) or (bk == 3 and luck_dead == 0) or (bk == 4 and harm_dead == 0) or (bk == 5 and raijin_dead == 0) or (bk == 6 and kuro_dead == 0) or (bk == 7 and muk_dead == 0) or (bk == 8 and daimyo_dead == 0):
+    if (bk == 1 and boss_dead == 0) or (bk == 2 and luck_dead == 0) or (bk == 3 and dobu_dead == 0) or (bk == 4 and raijin_dead == 0) or (bk == 5 and kuro_dead == 0) or (bk == 6 and harm_dead == 0) or (bk == 7 and muk_dead == 0) or (bk == 8 and daimyo_dead == 0):
         music_want = "none"
     broadcast("clear")
     broadcast("spawn")
@@ -517,23 +517,23 @@ def late_run(c):
         boss_dead = 1
         daicam_done = 1
     if c >= 3:
-        dobu_dead = 1
-        daicam2_done = 1
-    if c >= 4:
         luck_dead = 1
         daicam3_done = 1
+    if c >= 4:
+        dobu_dead = 1
+        daicam2_done = 1
     if c >= 5:
-        harm_dead = 1
-        daicam4_done = 1
-    if c >= 6:
         raijin_dead = 1
         daicam5_done = 1
-    if c >= 7:
+    if c >= 6:
         kuro_dead = 1
         daicam6_done = 1
         kbranch = kb_last
         if kbranch == 0:
             kbranch = 1
+    if c >= 7:
+        harm_dead = 1
+        daicam4_done = 1
     if c >= 8:
         muk_dead = 1
         daicam7_done = 1
@@ -635,6 +635,15 @@ def say_once(name):
     once(name)
     if first == 1:
         say(name)
+        wait_until(mode == "play")
+
+
+@proc_yield
+def say_once_b(name):
+    # say_once for a scene with a "<name>_alone" variant
+    once(name)
+    if first == 1:
+        say_b(name)
         wait_until(mode == "play")
 
 
@@ -768,7 +777,7 @@ def ev_shard():
     sfxq.append("shard")
     wait(2)
     banner = ""
-    if shard_id >= 8:
+    if shard_id >= 7:
         say_b(join("shard", shard_id))
     else:
         say(join("shard", shard_id))
@@ -848,77 +857,10 @@ def ev_oni_dead():
     music_want = "alley"
 
 
-# ------------------------------------------------------------ chapter 2: the sewers
+# ------------------------------------------------------------ chapter 2: the pachinko vaults
 @on("ev_ch2_start")
 def ev_ch2_start():
-    chapter_open(2, C_W1_X, C_W1_Y, "ch2")
-
-
-@on("ev_toxic")
-def ev_toxic():
-    say_once("toxic")
-    hint = "toxic"
-
-
-@on("ev_drainling")
-def ev_drainling():
-    if len(ent_type) > 0:
-        say_once("drainling")
-        hint = "drainling"
-
-
-@on("ev_tide")
-def ev_tide():
-    say_once("tide")
-    hint = "tide"
-
-
-@on("ev_daicam_sewer")
-def ev_daicam_sewer():
-    if daicam2_done == 0 and len(ent_type) > 0:
-        ambush_on = 1
-        say_once("daicam_sewer")
-
-
-@on("ev_daicam2_end")
-def ev_daicam2_end():
-    say("daicam_sewer2")
-    wait_until(mode == "play")
-    daicam2_done = 1
-
-
-@on("ev_dobu_gate")
-def ev_dobu_gate():
-    if dobu_dead == 0:
-        say_once("dobu_gate")
-        hint = "gate_dobu"
-
-
-@on("ev_dobu_start")
-def ev_dobu_start():
-    if dobu_dead == 0:
-        boss_open("dobunushi", "dobu", "dobu")
-
-
-@on("ev_dobu_phase2")
-def ev_dobu_phase2():
-    boss_phase2("dobu2")
-
-
-@on("ev_dobu_dead")
-def ev_dobu_dead():
-    dobu_dead = 1
-    boss_down(2.0)
-    say("dobu_dead")
-    wait_until(mode == "play")
-    if chapter == 2:
-        music_want = "sewers"
-
-
-# ------------------------------------------------------------ chapter 3: the pachinko vaults
-@on("ev_ch3_start")
-def ev_ch3_start():
-    chapter_open(3, C_B1_X, C_B1_Y, "ch3")
+    chapter_open(2, C_B1_X, C_B1_Y, "ch2")
 
 
 @on("ev_lasers")
@@ -982,90 +924,81 @@ def ev_luck_dead():
     boss_down(1.4)
     say("luck_dead")
     wait_until(mode == "play")
-    if chapter == 3:
+    if chapter == 2:
         music_want = "vaults"
 
 
-# ------------------------------------------------------------ chapter 4: the physic gardens
+# ------------------------------------------------------------ chapter 3: the sewers
+@on("ev_ch3_start")
+def ev_ch3_start():
+    chapter_open(3, C_W1_X, C_W1_Y, "ch3")
+
+
+@on("ev_toxic")
+def ev_toxic():
+    say_once("toxic")
+    hint = "toxic"
+
+
+@on("ev_drainling")
+def ev_drainling():
+    if len(ent_type) > 0:
+        say_once("drainling")
+        hint = "drainling"
+
+
+@on("ev_tide")
+def ev_tide():
+    say_once("tide")
+    hint = "tide"
+
+
+@on("ev_daicam_sewer")
+def ev_daicam_sewer():
+    if daicam2_done == 0 and len(ent_type) > 0:
+        ambush_on = 1
+        say_once("daicam_sewer")
+
+
+@on("ev_daicam2_end")
+def ev_daicam2_end():
+    say("daicam_sewer2")
+    wait_until(mode == "play")
+    daicam2_done = 1
+
+
+@on("ev_dobu_gate")
+def ev_dobu_gate():
+    if dobu_dead == 0:
+        say_once("dobu_gate")
+        hint = "gate_dobu"
+
+
+@on("ev_dobu_start")
+def ev_dobu_start():
+    if dobu_dead == 0:
+        boss_open("dobunushi", "dobu", "dobu")
+
+
+@on("ev_dobu_phase2")
+def ev_dobu_phase2():
+    boss_phase2("dobu2")
+
+
+@on("ev_dobu_dead")
+def ev_dobu_dead():
+    dobu_dead = 1
+    boss_down(2.0)
+    say("dobu_dead")
+    wait_until(mode == "play")
+    if chapter == 3:
+        music_want = "sewers"
+
+
+# ------------------------------------------------------------ chapter 4: monorail ascent
 @on("ev_ch4_start")
 def ev_ch4_start():
-    chapter_open(4, C_C1_X, C_C1_Y, "ch4")
-
-
-@on("ev_vents")
-def ev_vents():
-    say_once("vents")
-    hint = "mist"
-
-
-@on("ev_warden")
-def ev_warden():
-    if len(ent_type) > 0:
-        say_once("warden")
-        hint = "warden"
-
-
-@on("ev_pulse")
-def ev_pulse():
-    hint = "pulse"
-
-
-@on("ev_daicam4")
-def ev_daicam4():
-    if daicam4_done == 0:
-        say_once("daicam4")
-
-
-@on("ev_daicam4_end")
-def ev_daicam4_end():
-    say("daicam4b")
-    wait_until(mode == "play")
-    daicam4_done = 1
-
-
-@on("ev_pricing")
-def ev_pricing():
-    say_once("pricing")
-
-
-@on("ev_harm_gate")
-def ev_harm_gate():
-    if harm_dead == 0:
-        say_once("harm_gate")
-        hint = "gate_harm"
-
-
-@on("ev_harm_start")
-def ev_harm_start():
-    if harm_dead == 0:
-        boss_open("the_harmacist", "harm", "harm")
-
-
-@on("ev_harm_phase2")
-def ev_harm_phase2():
-    boss_phase2("harm2")
-
-
-@on("ev_harm_dead")
-def ev_harm_dead():
-    harm_dead = 1
-    music_want = "none"
-    wait(0.9)
-    say("harm_dead")
-    wait_until(mode == "play")
-    harm_dead = 2
-    wait(2.6)
-    boss_down(0)
-    say("harm_dead2")
-    wait_until(mode == "play")
-    if chapter == 4:
-        music_want = "gardens"
-
-
-# ------------------------------------------------------------ chapter 5: monorail ascent
-@on("ev_ch5_start")
-def ev_ch5_start():
-    chapter_open(5, C_D1_X, C_D1_Y, "ch5")
+    chapter_open(4, C_D1_X, C_D1_Y, "ch4")
 
 
 @on("ev_wind")
@@ -1139,10 +1072,10 @@ def ev_raijin_dead():
     chapter_jump(C_ROOM_E1)
 
 
-# ------------------------------------------------------------ chapter 6: hollow floor
-@on("ev_ch6_start")
-def ev_ch6_start():
-    chapter_open(6, C_E1_X, C_E1_Y, "ch6")
+# ------------------------------------------------------------ chapter 5: hollow floor
+@on("ev_ch5_start")
+def ev_ch5_start():
+    chapter_open(5, C_E1_X, C_E1_Y, "ch5")
 
 
 @on("ev_glitch")
@@ -1164,6 +1097,7 @@ def ev_tetsu_mem():
 @on("ev_academy_mem")
 def ev_academy_mem():
     say_once("academy_mem")
+    hint = "warden"
 
 
 @on("ev_possess")
@@ -1227,7 +1161,99 @@ def ev_kuro_dead():
         wait_until(mode == "play")
         sfxq.append("flatline")
     flash = 90
-    chapter_jump(C_ROOM_F1)
+    chapter_jump(C_ROOM_C0)
+
+
+# ------------------------------------------------------------ chapter 6: the physic gardens (inside the Spire, after the choice)
+@on("ev_ch6_start")
+def ev_ch6_start():
+    if kbranch == 2:
+        chapter_open(6, C_C0_X, C_C0_Y, "ch6_alone")
+    else:
+        chapter_open(6, C_C0_X, C_C0_Y, "ch6")
+
+
+@on("ev_garden")
+def ev_garden():
+    say_once_b("garden")
+
+
+@on("ev_vents")
+def ev_vents():
+    if kbranch != 2:
+        say_once("vents")
+    hint = "mist"
+
+
+@on("ev_warden")
+def ev_warden():
+    if len(ent_type) > 0:
+        if kbranch != 2:
+            say_once("warden")
+        hint = "warden"
+
+
+@on("ev_pulse")
+def ev_pulse():
+    hint = "pulse"
+
+
+@on("ev_daicam4")
+def ev_daicam4():
+    if daicam4_done == 0:
+        say_once_b("daicam4")
+
+
+@on("ev_daicam4_end")
+def ev_daicam4_end():
+    say("daicam4b")
+    wait_until(mode == "play")
+    daicam4_done = 1
+
+
+@on("ev_pricing")
+def ev_pricing():
+    say_once_b("pricing")
+
+
+@on("ev_harm_gate")
+def ev_harm_gate():
+    if harm_dead == 0:
+        say_once_b("harm_gate")
+        hint = "gate_harm"
+
+
+@on("ev_harm_start")
+def ev_harm_start():
+    if harm_dead == 0:
+        if kbranch == 2:
+            boss_open("the_harmacist", "harm", "harm_alone")
+        else:
+            boss_open("the_harmacist", "harm", "harm")
+
+
+@on("ev_harm_phase2")
+def ev_harm_phase2():
+    if kbranch == 2:
+        boss_phase2("harm2_alone")
+    else:
+        boss_phase2("harm2")
+
+
+@on("ev_harm_dead")
+def ev_harm_dead():
+    harm_dead = 1
+    music_want = "none"
+    wait(0.9)
+    say("harm_dead")
+    wait_until(mode == "play")
+    harm_dead = 2
+    wait(2.6)
+    boss_down(0)
+    say_b("harm_dead2")
+    wait_until(mode == "play")
+    if chapter == 6:
+        music_want = "gardens"
 
 
 # ------------------------------------------------------------ chapter 7: the academy

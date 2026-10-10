@@ -887,7 +887,7 @@ nface = 1
 is_clone = 1
 clone()
 is_clone = 0
-''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy" or O_TYPE[oi] == "mknpc" or O_TYPE[oi] == "planter" or O_TYPE[oi] == "herbs" or O_TYPE[oi] == "board" or O_TYPE[oi] == "debtor" or O_TYPE[oi] == "soldier":').replace(
+''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy" or O_TYPE[oi] == "mknpc" or O_TYPE[oi] == "planter" or O_TYPE[oi] == "herbs" or O_TYPE[oi] == "board" or O_TYPE[oi] == "debtor" or O_TYPE[oi] == "soldier" or O_TYPE[oi] == "desk" or O_TYPE[oi] == "directory":').replace(
     'kind = O_A[oi]', 'kind = O_A[oi]\n            pmode = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
 @on("t_draw")
 def draw():
@@ -921,8 +921,8 @@ def draw():
             costume(join("board_", floor(frame / 15) % 2))
         elif kind == "debtor":
             costume(join("debtor_", (floor(frame / 24) + floor(x / 16)) % 2))
-        elif kind == "soldier":
-            costume("soldier")
+        elif kind == "soldier" or kind == "desk" or kind == "directory":
+            costume(kind)
         elif kind == "mknpc":
             # Mukuro's body, carried up by Hotaru when Kuro was spared; Kuro moves in at the Last Shrine
             if kbranch != 1 or (pmode == "ally" and kuro_in == 0):
@@ -956,7 +956,7 @@ def draw():
                     costume(join("mk_idr_", floor(frame / 8) % 4))
                 # Kuro's soul shows through as a violet cast
                 effect("color", 160)
-        if chapter == 6:
+        if chapter == 5:
             effect("ghost", 35)
         else:
             fl_t -= 1
