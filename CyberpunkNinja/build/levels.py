@@ -481,8 +481,8 @@ b4.obj('drone', cx(20), top(13))
 b4.obj('slotturret', left(28), top(9) - 8, a=-90)
 b4.obj('pachinko', cx(5), bottom(18))
 b4.obj('pachinko', cx(8), bottom(18))
-for c in (20, 22, 24):
-    b4.obj('debtor', cx(c), bottom(18))
+for c, who in ((20, 2), (22, 0), (24, 3)):                       # who: art/src/civilians.png figure; 2 speaks
+    b4.obj('debtor', cx(c), bottom(18), a=who)
 b4.obj('trig', cx(19), 0, a='debtors')
 
 # B5 High rollers lounge ----------------------------------------------
@@ -1109,8 +1109,8 @@ f6.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 1
 f6.deco('y', 1, 19, 28, 19)
 f6.obj('shrine', cx(4), bottom(18))
 f6.obj('daicam', cx(22), bottom(18), a='intake')
-for c in (24, 26):
-    f6.obj('debtor', cx(c), bottom(18))
+for c, who in ((24, 2), (26, 1)):                                # the same man from the Vaults, first in line
+    f6.obj('debtor', cx(c), bottom(18), a=who)
 f6.obj('shell', cx(16), bottom(18), a=0)
 f6.obj('shell', cx(19), bottom(18), a=1)
 f6.obj('door', left(29), bottom(18), a='lock')

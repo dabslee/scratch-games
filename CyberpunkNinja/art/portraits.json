@@ -10,7 +10,7 @@
       "speakers": [
         "hotaru"
       ],
-      "lines": 67
+      "lines": 90
     },
     {
       "name": "hotaru_angry",
@@ -19,7 +19,7 @@
       "speakers": [
         "hotaru"
       ],
-      "lines": 37
+      "lines": 41
     },
     {
       "name": "hotaru_visor_up",
@@ -28,7 +28,7 @@
       "speakers": [
         "hotaru"
       ],
-      "lines": 29
+      "lines": 33
     },
     {
       "name": "kuro_neutral",
@@ -37,7 +37,7 @@
       "speakers": [
         "kuro"
       ],
-      "lines": 160
+      "lines": 166
     },
     {
       "name": "kuro_smirk",
@@ -46,7 +46,7 @@
       "speakers": [
         "kuro"
       ],
-      "lines": 34
+      "lines": 33
     },
     {
       "name": "tetsu_neutral",
@@ -64,7 +64,7 @@
       "speakers": [
         "daicam"
       ],
-      "lines": 36
+      "lines": 39
     },
     {
       "name": "mukuro_neutral",
@@ -91,7 +91,7 @@
       "speakers": [
         "luck"
       ],
-      "lines": 4
+      "lines": 6
     },
     {
       "name": "sys_boot",
@@ -100,7 +100,7 @@
       "speakers": [
         "system"
       ],
-      "lines": 25
+      "lines": 35
     },
     {
       "name": "oni_neutral",
@@ -118,7 +118,16 @@
       "speakers": [
         "harm"
       ],
-      "lines": 6
+      "lines": 11
+    },
+    {
+      "name": "debtor_neutral",
+      "row": 3,
+      "col": 1,
+      "speakers": [
+        "debtor"
+      ],
+      "lines": 3
     }
   ]
 }

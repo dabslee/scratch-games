@@ -373,19 +373,45 @@ def price_board(frame):
     return im
 
 
-def debtor(frame):
-    """A debtor in line, head down, 10x30 (bottom-center)."""
-    im = Image.new('RGBA', (10, 30), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.rectangle([3, 22, 4, 29], fill=C('slate1'))
-    d.rectangle([6, 22, 7, 29], fill=C('slate1'))
-    d.rectangle([2, 11 + frame, 8, 23], fill=C('slate2'), outline=C('slate1'))
-    d.ellipse([3, 5 + frame, 8, 11 + frame], fill=C('skin1'))
-    d.line([3, 6 + frame, 8, 6 + frame], fill=C('night2'))
-    d.line([1, 13 + frame, 1, 20], fill=C('slate2'))
-    d.line([9, 13 + frame, 9, 20], fill=C('slate2'))
-    d.rectangle([2, 15, 8, 16], fill=C('red1'))
-    return im
+SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'art', 'src')
+CIVILIANS = 4                           # art/src/civilians.png: four 14x28 townsfolk, facing right
+
+
+def breathe(im, waist):
+    """An idle breath: everything above the waist row settles one pixel."""
+    out = im.copy()
+    top = im.crop((0, 0, im.width, waist))
+    out.paste((0, 0, 0, 0), (0, 0, im.width, waist + 1))
+    out.alpha_composite(top, (0, 1))
+    return out
+
+
+def civilian(i, frame):
+    """Townsperson i (debtors, captives) from art/src/civilians.png, centered on a 14x28
+    canvas (bottom-center). The figures sit wherever they were drawn on the strip, split on
+    their empty columns. Frame 1 is the out-breath."""
+    sheet = Image.open(os.path.join(SRC, 'civilians.png')).convert('RGBA')
+    alpha = sheet.getchannel('A')
+    filled = [any(alpha.getpixel((x, y)) for y in range(sheet.height)) for x in range(sheet.width)]
+    spans, x = [], 0
+    while x < sheet.width:
+        if filled[x]:
+            x0 = x
+            while x < sheet.width and filled[x]:
+                x += 1
+            spans.append((x0, x))
+        x += 1
+    assert len(spans) == CIVILIANS, 'expected %d figures in civilians.png, found %d' % (CIVILIANS, len(spans))
+    x0, x1 = spans[i]
+    im = Image.new('RGBA', (14, 28), (0, 0, 0, 0))
+    im.alpha_composite(sheet.crop((x0, 0, x1, 28)), ((14 - (x1 - x0)) // 2, 0))
+    return breathe(im, 15) if frame else im
+
+
+def receptionist(frame):
+    """The Spire Lobby's receptionist (art/src/receptionist.png), turned to face the door, 18x29."""
+    im = Image.open(os.path.join(SRC, 'receptionist.png')).convert('RGBA').transpose(Image.FLIP_LEFT_RIGHT)
+    return breathe(im, 16) if frame else im
 
 
 def soldier():
@@ -409,19 +435,11 @@ def soldier():
     return im
 
 
-def desk():
-    """The Spire Lobby's reception desk, with a hollowed receptionist behind it, 72x30 (bottom-center)."""
+def desk(frame=0):
+    """The Spire Lobby's reception desk, with the receptionist behind it, 72x30 (bottom-center)."""
     im = Image.new('RGBA', (72, 30), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    # the receptionist: Kanshi uniform, headset, the same empty white stare as the soldiers
-    d.rectangle([40, 9, 51, 15], fill=C('night2'), outline=C('ink'))
-    d.line([45, 9, 46, 13], fill=C('red2'))
-    d.ellipse([42, 0, 49, 8], fill=C('skin1'), outline=C('ink'))
-    d.rectangle([42, 0, 49, 2], fill=C('night1'))
-    d.point([(42, 3), (49, 3)], fill=C('night1'))
-    d.line([43, 4, 48, 4], fill=C('white'))
-    d.line([41, 3, 41, 6], fill=C('slate2'))
-    d.point([(42, 7)], fill=C('red3'))
+    im.alpha_composite(receptionist(frame), (37, -2))
     # a terminal on the counter
     d.rectangle([12, 6, 24, 14], fill=C('ink'), outline=C('slate2'))
     d.rectangle([14, 8, 22, 12], fill=C('cyan1'))

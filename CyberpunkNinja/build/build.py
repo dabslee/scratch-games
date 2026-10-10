@@ -617,9 +617,9 @@ props.append(costume_from(art_ch56.dummy(), 'dummy', 7, 26))
 props += [costume_from(art_v2.planter(i), 'planter_%d' % i, 8, 24) for i in range(2)]
 props.append(costume_from(art_v2.herbs(), 'herbs', 7, 30))
 props += [costume_from(art_v2.price_board(i), 'board_%d' % i, 38, 0) for i in range(2)]
-props += [costume_from(art_v2.debtor(i), 'debtor_%d' % i, 5, 30) for i in range(2)]
+props += [costume_from(art_v2.civilian(i, f), 'debtor_%d_%d' % (i, f), 7, 28) for i in range(art_v2.CIVILIANS) for f in range(2)]
 props.append(costume_from(art_v2.soldier(), 'soldier', 7, 36))
-props.append(costume_from(art_v2.desk(), 'desk', 36, 30))
+props += [costume_from(art_v2.desk(f), 'desk_%d' % f, 36, 30) for f in range(2)]
 props.append(costume_from(art_v2.directory(), 'directory', 38, 0))
 
 
@@ -852,6 +852,7 @@ dlg.append(costume_from(art_ch2.nameplate('LADY LUCK'), 'name_lady_luck', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('SYSTEM', border='cyan2'), 'name_system', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('BIG ONI', border='red2'), 'name_big_oni', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('THE HARMACIST', border='green2'), 'name_the_harmacist', 0, 0))
+dlg.append(costume_from(art_ch2.nameplate('DEBTOR', border='steel'), 'name_debtor', 0, 0))
 sprite('Dialogue', dlg, visuals.DIALOGUE)
 sprite('Menu', MENU_COSTUMES, menu.MENU)
 sprite('TextFX', copy_costumes('Font'), menu.TEXTFX)

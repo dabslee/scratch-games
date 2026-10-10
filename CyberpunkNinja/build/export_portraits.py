@@ -9,7 +9,8 @@ Run with CN_PACK set:  python3 build/export_portraits.py
 The sheet is the source of truth once it exists (it holds hand-made art), so this
 only refreshes portraits.json and the preview from it. Pass --reset to rebuild the
 sheet from the original art, or --hotaru PNG to install a new Hotaru set (an 80x40
-image: neutral on the left, visor up on the right; the angry face is derived).
+image: neutral on the left, visor up on the right; the angry face is derived), or
+--debtor PNG to install the debtor (a 40x40 figure on a transparent backdrop).
 """
 import json
 import os
@@ -30,9 +31,10 @@ CELL, COLS = 40, 4
 ORDER = ['hotaru_neutral', 'hotaru_angry', 'hotaru_visor_up', 'kuro_neutral',
          'kuro_smirk', 'tetsu_neutral', 'daicam_neutral', 'mukuro_neutral',
          'daimyo_neutral', 'luck_neutral', 'sys_boot', 'oni_neutral',
-         'harm_neutral']
+         'harm_neutral', 'debtor_neutral']
 DRAWN = {'luck_neutral': art_ch2.luck_portrait, 'sys_boot': art_ch2.system_portrait,
-         'oni_neutral': art_v2.oni_portrait, 'harm_neutral': art_v2.harm_portrait}
+         'oni_neutral': art_v2.oni_portrait, 'harm_neutral': art_v2.harm_portrait,
+         'debtor_neutral': lambda: debtor_portrait(os.path.join(ART, 'src', 'debtor_portrait.png'))}
 
 
 def source_portraits():
@@ -229,6 +231,12 @@ def install_kuro(sheet, neutral_src, smirk_src):
     return ims
 
 
+def debtor_portrait(src):
+    # the debtor in the Vaults and at Academy intake: his figure (transparent backdrop) on
+    # a plain grey gradient with steel flecks
+    return framed(Image.open(src).convert('RGBA'), ('night1', 'slate1', 'steel'))
+
+
 def install_keyed(sheet, name, src, tones, key=(255, 0, 241)):
     """A 40x40 portrait whose backdrop is marked in a key color: the key is cut away and
     the figure set on a dithered gradient (top, bottom and fleck colors), framed."""
@@ -333,6 +341,11 @@ def main():
         out = os.path.join(ART, 'src', 'luck_portrait.png')
         clean_keyed(src, out)
         install_keyed(sheet, 'luck_neutral', out, ('night1', 'mag1', 'gold'), key=(255, 0, 255))
+    if '--debtor' in sys.argv:
+        i = ORDER.index('debtor_neutral')
+        x, y = (i % COLS) * CELL, (i // COLS) * CELL
+        sheet.paste((0, 0, 0, 0), (x, y, x + CELL, y + CELL))
+        sheet.alpha_composite(debtor_portrait(sys.argv[sys.argv.index('--debtor') + 1]), (x, y))
     for k, arg in enumerate(sys.argv):
         if arg == '--framed':
             install_framed(sheet, sys.argv[k + 1], sys.argv[k + 2])

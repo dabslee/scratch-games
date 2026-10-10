@@ -13,17 +13,18 @@ STORY = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 SPEAKER_KEY = {
     'Hotaru': 'hotaru', 'Kuro': 'kuro', 'Tetsu': 'tetsu', 'DaiCam': 'daicam', 'Lady Luck': 'luck',
     'System': 'system', 'Mukuro': 'mukuro', 'The Daimyo': 'daimyo', 'Big Oni': 'oni',
-    'The Harmacist': 'harm', '???': 'unknown',
+    'The Harmacist': 'harm', 'Debtor': 'debtor', '???': 'unknown',
 }
 NAMEPLATE = {
     'hotaru': 'name_hotaru', 'kuro': 'name_kuro', 'tetsu': 'name_tetsu',
     'daicam': 'name_daicam', 'unknown': 'name_unknown', 'luck': 'name_lady_luck', 'system': 'name_system',
     'mukuro': 'name_mukuro', 'daimyo': 'name_the_daimyo', 'oni': 'name_big_oni', 'harm': 'name_the_harmacist',
+    'debtor': 'name_debtor',
 }
 PORTRAIT = {
     'hotaru': 'hotaru_neutral', 'kuro': 'kuro_neutral', 'tetsu': 'tetsu_neutral', 'daicam': 'daicam_neutral',
     'luck': 'luck_neutral', 'system': 'sys_boot', 'mukuro': 'mukuro_neutral', 'daimyo': 'daimyo_neutral',
-    'oni': 'oni_neutral', 'harm': 'harm_neutral',
+    'oni': 'oni_neutral', 'harm': 'harm_neutral', 'debtor': 'debtor_neutral',
 }
 # (scene id, line index) -> portrait, where the speaker's default expression doesn't fit
 EXPRESSION = {

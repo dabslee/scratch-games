@@ -920,8 +920,11 @@ def draw():
         elif kind == "board":
             costume(join("board_", floor(frame / 15) % 2))
         elif kind == "debtor":
-            costume(join("debtor_", (floor(frame / 24) + floor(x / 16)) % 2))
-        elif kind == "soldier" or kind == "desk" or kind == "directory":
+            # pmode picks which townsperson; each breathes on its own beat
+            costume(join("debtor_", pmode, "_", (floor(frame / 20) + floor(x / 16)) % 2))
+        elif kind == "desk":
+            costume(join("desk_", floor(frame / 22) % 2))
+        elif kind == "soldier" or kind == "directory":
             costume(kind)
         elif kind == "mknpc":
             # Mukuro's body, carried up by Hotaru when Kuro was spared; Kuro moves in at the Last Shrine

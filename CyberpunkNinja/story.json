@@ -20,7 +20,8 @@
     "Dobunushi": "'Lord of the ditch.' A mass of mutants fused around a broken Kanshi outflow pipe in the Sewers.",
     "Lady Luck": "Croupier who runs the Pachinko Vaults. Kanshi pays her to keep the city gambling, broke, and distracted, and per head for the debtors she sends up.",
     "The Harmacist": "Head of Kanshi's Physic Gardens, on the Spire's lower floors. She sells the Sump the cure for the sickness Kanshi's factories cause, at whatever price it will bear.",
-    "The Daimyo": "CEO of Kanshi Dynamics. A human man in a samurai exoskeleton who believes the soul is the root of every riot, strike, and theft. He carries Tamakiri, the blade that split Kuro."
+    "The Daimyo": "CEO of Kanshi Dynamics. A human man in a samurai exoskeleton who believes the soul is the root of every riot, strike, and theft. He carries Tamakiri, the blade that split Kuro.",
+    "Debtor": "A Sump man who gambled everything at the Pachinko Vaults and lost himself as collateral. Hotaru passes him in the debtors' line, and finds him again at the Academy's intake."
   },
   "branches": {
     "description": "One choice at the end of Chapter 5 decides the rest of the game. A scene whose condition is 'branch: kuro_spared' or 'branch: kuro_destroyed' plays only on that branch. 'optional' marks a scene the player can skip (repeat talks); 'optional; branch: ...' means both. Scenes with no condition play on every branch.",
@@ -766,6 +767,14 @@
             {
               "speaker": "System",
               "text": "ACCOUNT CLOSED. Balance: 0. Collateral: SELF. Destination: ACADEMY INTAKE."
+            },
+            {
+              "speaker": "Debtor",
+              "text": "You! You're not with them, are you? Please, I'll pay it all back, I swear. Just don't let them send me up there!"
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Hang on. I'll find out where they're taking you."
             },
             {
               "speaker": "Kuro",
@@ -2357,6 +2366,14 @@
             {
               "speaker": "Hotaru",
               "text": "You don't want to know. Get behind me."
+            },
+            {
+              "speaker": "Debtor",
+              "text": "You... you're the one from the Vaults. Please. They take us into that Bay one at a time, and nobody comes back out."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Then nobody else is going in."
             }
           ]
         },
@@ -2372,6 +2389,10 @@
             {
               "speaker": "DaiCam",
               "text": "Chat, I'm not joking now. They're cutting the souls out of our bodies! Making soldiers or something..."
+            },
+            {
+              "speaker": "Debtor",
+              "text": "You came back for us. I don't even know your name. ...Thank you."
             }
           ]
         },
