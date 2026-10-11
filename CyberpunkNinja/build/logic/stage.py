@@ -516,8 +516,6 @@ def late_run(c):
     gourd = 3
     seen.append("tetsu")
     if c >= 2:
-        gmax = 4
-        gourd = 4
         boss_dead = 1
         daicam_done = 1
     if c >= 3:
@@ -859,11 +857,6 @@ def ev_oni_dead():
     boss_dead = 1
     hold_still()
     boss_down(1.4)
-    gmax = 4
-    gourd = gmax
-    hint = "upgrade"
-    sfxq.append("pickup")
-    wait(2.5)
     say("oni_dead")
     wait_until(mode == "play")
     walk_to = 999
