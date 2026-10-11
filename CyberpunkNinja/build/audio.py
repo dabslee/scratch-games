@@ -1192,6 +1192,7 @@ def build_sfx():
     S['type'] = blip(1900, 0.018, 'square', 0.16) * expenv(0.018, 0.006)
     S['type_k'] = add(blip(760, 0.022, 'square', 0.14) * expenv(0.022, 0.008), glitch(0.022, 0.08))
     S['dawn'] = dawn_swell()
+    S['jingle'] = splash_jingle()
     S['kvoice'] = glitch(0.09, 0.35) + blip(330, 0.09, 'square', 0.12)
     S['cam_beep'] = np.concatenate([blip(1800, 0.06, 'sine', 0.4), silence(0.04), blip(2400, 0.08, 'sine', 0.4)])
     S['menu_move'] = blip(880, 0.035, 'square', 0.18)
@@ -1235,6 +1236,27 @@ def gurgle():
         pop = sine(f0 * np.exp(T(bd) / bd * 1.1), bd) * expenv(bd, bd * 0.45, 0.004)
         mix_into(x, pop, k * 0.062 + rng.uniform(0, 0.03), 0.9)
     return x
+
+
+def splash_jingle():
+    """The logo's sting: a bright chiptune run up to a held major chord, a koto pluck
+    and a taiko hit, about two and a half seconds."""
+    d = 2.6
+    x = np.zeros(int(d * SR))
+    run = ['C5', 'E5', 'G5', 'C6', 'E6']
+    for i, nm in enumerate(run):
+        f = mtof(n2m(nm))
+        mix_into(x, square(f, 0.09, 0.25) * expenv(0.09, 0.05, 0.002) * 0.22, i * 0.075)
+    at = len(run) * 0.075
+    for nm in ('C5', 'E5', 'G5', 'C6'):
+        f = mtof(n2m(nm))
+        tone = (square(f, 1.6, 0.5) * 0.12 + tri(f, 1.6) * 0.25) * adsr(1.6, 0.01, 0.25, 0.55, 0.9)
+        mix_into(x, lp(tone, 5000), at)
+    mix_into(x, shamisen(n2m('G5'), 1.2, 0.6), at)
+    mix_into(x, shamisen(n2m('C6'), 1.2, 0.5), at + 0.12)
+    mix_into(x, taiko(0.9), at)
+    mix_into(x, chime([n2m('E7'), n2m('G7')], 0.08, 0.8, 0.25), at + 0.35)
+    return reverb(x, 1.2, 0.25)[:int(d * SR)]
 
 
 def dawn_swell():

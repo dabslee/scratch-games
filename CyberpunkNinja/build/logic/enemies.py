@@ -3217,6 +3217,10 @@ y = O_Y[oi]
 period = O_A[oi]
 offs = O_B[oi]
 x = 999
+lt = 0
+# in the Tenshu the crow holds off for 3 s after Hotaru comes in
+hold = 90 * (chapter == 8)
+ph = 0
 is_clone = 1
 clone()
 is_clone = 0
@@ -3224,7 +3228,16 @@ is_clone = 0
 @on("t_world")
 def tick():
     if is_clone == 1:
-        ph = (frame + offs) % period
+        lt += 1
+        if lt <= hold:
+            ph = -1
+            x = 999
+            return
+        if hold > 0:
+            # after the hold its first pass starts with the warning
+            ph = (lt - hold - 1) % period
+        else:
+            ph = (frame + offs) % period
         if ph < 30:
             x = 999
         else:
@@ -3241,8 +3254,7 @@ def tick():
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        ph = (frame + offs) % period
-        if ph < 30 and mode == "play":
+        if ph >= 0 and ph < 30 and mode == "play":
             costume(join("warn_", floor(frame / 4) % 2))
             goto(222, y + 64)
             show()
@@ -4031,6 +4043,8 @@ def dm_next_phase():
         x = exo_x
         if ally_x < 900:
             ally_st = "fall"
+            ally_rev = 0
+            ally_inv = 0
             broadcast("ev_kuro_falls")
         broadcast("ev_dm_phase3")
     else:
@@ -4291,8 +4305,8 @@ def dm_exo():
             dm_rec(30)
     elif st == "charge":
         if t < 30:
+            # facing is fixed when the warning starts (dm_go): he dashes that way
             ent_brk[slot] = 1
-            dm_face()
             prel = px - x
         else:
             x += face * 14
@@ -4603,8 +4617,13 @@ def al_update():
         return
     if dm_ph >= 3:
         ally_st = "fall"
+    if ally_st == "fall" or ally_st == "down":
+        # down for good: no shard burning over him, no flashing
+        ally_rev = 0
+        ally_inv = 0
+        ally_dash = 0
         return
-    if ally_st == "down" or boss_on == 0:
+    if boss_on == 0:
         return
     if ally_inv > 0:
         ally_inv -= 1
@@ -4908,7 +4927,7 @@ def dm_draw():
             hide()
     elif role == "shard":
         # a Memory Shard burning away over Kuro as it puts him back on his feet
-        if ally_rev > 0 and ally_x < 900:
+        if ally_rev > 0 and ally_x < 900 and kuro_in == 1 and ally_st != "fall" and ally_st != "down":
             costume(join("shard_", floor(frame / 3) % 6))
             goto(ally_x + shx, fy + 76 + (50 - ally_rev) * 1.2 + shy)
             effect("ghost", max(0, 60 - ally_rev * 2))
@@ -5096,6 +5115,8 @@ def db_update():
             return
     if ehp <= 10 and dobu_ph == 1:
         dobu_ph = 2
+        # the shorter phase 2 cycle starts over, so the tide doesn't jump to high
+        tcyc = 0
         # phase 2 opens with the spew: the arms hold off until it's out
         spew_first = 1
         dobu_turn = 9
@@ -5121,7 +5142,7 @@ def db_update():
             sfxq.append("breach")
     elif st == "spew":
         ent_brk[cslot] = 1
-        if t == 26:
+        if t == 41:
             sfxq.append("oni_slam")
             shake = 8
             shake_amp = 4
@@ -5133,7 +5154,7 @@ def db_update():
                 pq_y.append(by)
                 pq_vx.append(6 - 12 * k)
                 pq_vy.append(0)
-        if t >= 50:
+        if t >= 65:
             st = "closed"
             t = 0
             if dobu_turn == 9:
@@ -5196,7 +5217,7 @@ def db_draw():
     else:
         costume(join("dobu_idle_", floor(t / 15) % 2))
     goto(bx + shx, by - 8 + shy)
-    if st == "spew" and t >= 17 and t <= 25:
+    if st == "spew" and t >= 32 and t <= 40:
         effect("brightness", 100)
     elif flash_t > 0:
         flash_t -= 1

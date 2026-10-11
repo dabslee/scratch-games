@@ -520,16 +520,20 @@ def tiny_text(im, x, y, text, col):
 
 
 def directory():
-    """The Spire Lobby's sign over the desk: the welcome, and Kanshi's motto in small grey type."""
+    """The Spire Lobby's sign over the desk: the welcome over two lines, and Kanshi's motto
+    in small grey type. 72 px wide at most, to sit inside the dark panel behind the desk."""
     import assets
     f = assets.Font(False)
-    title = 'Welcome to Kanshi Spire'
-    w = max(f.width(title), tiny_width('Invent the Future')) + 10
-    im = Image.new('RGBA', (w, 22), C('ink'))
+    lines = ['Welcome to', 'Kanshi Spire']
+    motto = 'Invent the Future'
+    w = max(max(f.width(t) for t in lines), tiny_width(motto)) + 4
+    assert w <= 72, ('lobby sign too wide', w)
+    im = Image.new('RGBA', (w, 30), C('ink'))
     d = ImageDraw.Draw(im)
-    d.rectangle([0, 0, w - 1, 21], outline=C('cyan2'))
-    f.draw(im, (w - f.width(title)) // 2, 2, title, P['white'])
-    tiny_text(im, (w - tiny_width('Invent the Future')) // 2, 14, 'Invent the Future', C('steel'))
+    d.rectangle([0, 0, w - 1, 29], outline=C('cyan2'))
+    for k, t in enumerate(lines):
+        f.draw(im, (w - f.width(t)) // 2, 2 + k * 9, t, P['white'])
+    tiny_text(im, (w - tiny_width(motto)) // 2, 22, motto, C('steel'))
     return im
 
 
@@ -930,11 +934,27 @@ def harm_sword(im):
                 for dy in (0, 1):
                     out[(int(round(sx)) + dx, int(round(sy)) + dy)] = c
     else:
-        # the blade itself: drawn on out to twice its length
-        for (x, y), c in cols.items():
-            for k in range(11):
-                s = 1 + k / 10
-                out[(int(round(hx + (x - hx) * s)), int(round(hy + (y - hy) * s)))] = c
+        # the blade itself, raised in the windup: a long sword, two pixels wide with a dark
+        # edge so it reads against her white coat
+        solid = [q for q in blade if im.getpixel(q)[3] == 255 and sum(im.getpixel(q)[:3]) > 360] or blade
+        tx, ty = max(solid, key=lambda q: (q[0] - hx) ** 2 + (q[1] - hy) ** 2)
+        L = ((tx - hx) ** 2 + (ty - hy) ** 2) ** 0.5 or 1
+        ux, uy = (tx - hx) / L, (ty - hy) / L
+        length = L * 2.8
+        edge, core, shine = SWORD_GREENS[3] + (255,), SWORD_GREENS[1] + (255,), SWORD_GREENS[0] + (255,)
+        line = []
+        k = 1.5
+        while k <= length:
+            line.append((hx + ux * k, hy + uy * k))
+            k += 0.5
+        for lx, ly in line:
+            for ox in (-1, 0, 1):
+                for oy in (-1, 0, 1):
+                    q = (int(round(lx + ox)), int(round(ly + oy)))
+                    out.setdefault(q, edge)
+        for lx, ly in line:
+            out[(int(round(lx)), int(round(ly)))] = core
+            out[(int(round(lx - uy * 0.7)), int(round(ly + ux * 0.7)))] = shine
     for (x, y), c in out.items():
         if 0 <= x < im.width and 0 <= y < im.height and (not px[x, y][3] or (x, y) in cols or px[x, y][3] < c[3]):
             px[x, y] = c

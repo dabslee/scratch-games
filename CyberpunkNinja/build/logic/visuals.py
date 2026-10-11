@@ -128,6 +128,7 @@ def hud_boot():
     if is_clone == 0:
         for k in range(1, len(HUD_ROLES) + 1):
             role = HUD_ROLES[k]
+            hshown = "-"
             is_clone = 1
             clone()
             is_clone = 0
@@ -137,93 +138,90 @@ def hud_boot():
 @on("t_draw")
 def draw():
     if is_clone == 1:
+        # each piece works out what it should show (hc: a costume, "" for nothing, at hx, hy)
+        # and touches the sprite only when that changes
+        hc = ""
         if ingame == 1 and (mode == "play" or mode == "dlg" or mode == "trans" or mode == "dead" or menu == "pause" or menu == "pause_options"):
-            hud_draw()
-        else:
-            hide()
+            hud_want()
+        if hc != hshown:
+            hshown = hc
+            if hc == "":
+                hide()
+            else:
+                costume(hc)
+                goto(hx, hy)
+                show()
 
 
 @proc
-def hud_draw():
+def hud_want():
     if role == "hp":
         # a hit can take part of a segment (damage options, some bosses): a started segment shows
         hv = ceil(hp)
         if hv >= 10:
-            costume("hp_10")
+            hc = "hp_10"
         else:
-            costume(join("hp_0", max(0, hv)))
-        goto(-232, 172)
-        show()
+            hc = join("hp_0", max(0, hv))
+        hx = -232
+        hy = 172
         # the run's stopwatch, as the end screen counts it
         secs = floor(play_time / 30)
         if secs % 60 < 10:
             clk_s = join(floor(secs / 60), ":0", secs % 60)
         else:
             clk_s = join(floor(secs / 60), ":", secs % 60)
-    elif role == "dash":
-        # the Phase Step dot and the gourd sit in line with the health bar, to its right
-        costume(join("dash_", dash_ch))
-        goto(-118, 170)
-        show()
-    elif role == "gourd":
-        if has_gourd == 1:
-            costume(join("gourd_", gourd))
-            goto(-96, 175)
-            show()
-        else:
-            hide()
-    elif "clk" in role:
-        # one digit of the stopwatch, counted from the right
-        ck = letter(4, role)
-        if ck > strlen(clk_s):
-            hide()
-        else:
-            costume(join("clk_", letter(strlen(clk_s) + 1 - ck, clk_s)))
-            goto(234 - ck * 12, 172)
-            show()
     elif role == "heat":
         # Hotaru's Stance works like everyone else's: it fills gold as she blocks, breaks when full
         pv = min(16, max(0, round(heat)))
         if pst == "overheat":
             if frame % 6 < 3:
-                costume("heat_max_flash")
+                hc = "heat_max_flash"
             else:
-                costume("integrity_16")
+                hc = "integrity_16"
         elif pv < 10:
-            costume(join("integrity_0", pv))
+            hc = join("integrity_0", pv)
         else:
-            costume(join("integrity_", pv))
-        goto(0, -154)
-        show()
-    elif role == "bplate":
-        if boss_on == 1:
-            costume(join("boss_", boss_name))
-            goto(-164, 148)
-            show()
-        else:
-            hide()
-    elif role == "bbar":
-        if boss_on == 1:
+            hc = join("integrity_", pv)
+        hx = 0
+        hy = -154
+    elif "clk" in role:
+        # one digit of the stopwatch, counted from the right
+        ck = letter(4, role)
+        if ck <= strlen(clk_s):
+            hc = join("clk_", letter(strlen(clk_s) + 1 - ck, clk_s))
+            hx = 234 - ck * 12
+            hy = 172
+    elif role == "dash":
+        # the Phase Step dot and the gourd sit in line with the health bar, to its right
+        hc = join("dash_", dash_ch)
+        hx = -118
+        hy = 170
+    elif role == "gourd":
+        if has_gourd == 1:
+            hc = join("gourd_", gourd)
+            hx = -96
+            hy = 175
+    elif boss_on == 1:
+        if role == "bplate":
+            hc = join("boss_", boss_name)
+            hx = -164
+            hy = 148
+        elif role == "bbar":
             bh = ceil(boss_hp)
             if bh < 10:
-                costume(join("boss_0", max(0, bh)))
+                hc = join("boss_0", max(0, bh))
             else:
-                costume(join("boss_", bh))
-            goto(0, 124)
-            show()
-        else:
-            hide()
-    elif role == "bint":
-        if boss_on == 1:
+                hc = join("boss_", bh)
+            hx = 0
+            hy = 124
+        elif role == "bint":
             bv = min(16, max(0, round(boss_int)))
             if bv < 10:
-                costume(join("integrity_0", bv))
+                hc = join("integrity_0", bv)
             else:
-                costume(join("integrity_", bv))
-            goto(0, 106)
-            show()
-        else:
-            hide()
+                hc = join("integrity_", bv)
+            hx = 0
+            hy = 106
 '''
 
 
@@ -877,6 +875,30 @@ def draw():
             effect("ghost", 0)
         else:
             effect("ghost", min(100, (splash_t - 100) * 5.6))
+        show()
+    else:
+        hide()
+'''
+
+
+# Scratch compiles a shader the first time anything is drawn with a new mix of the color,
+# brightness and ghost effects, and the browser stalls while it does (worst on Windows).
+# During the splash this square, hidden behind the logo, is drawn with all eight mixes so
+# none of them is first needed in the middle of a fight.
+WARMUP = '''
+@flag
+def w_init():
+    hide()
+
+
+@on("t_draw")
+def draw():
+    if mode == "splash":
+        wk = splash_t % 8
+        effect("color", 25 * (wk % 2))
+        effect("brightness", 30 * (floor(wk / 2) % 2))
+        effect("ghost", 40 * (floor(wk / 4) % 2))
+        goto(0, 0)
         show()
     else:
         hide()

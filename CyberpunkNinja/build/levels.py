@@ -590,6 +590,8 @@ w3.deco('g', 1, 3, 9, 3).deco('g', 20, 3, 28, 3).deco('i', 4, 4, 4, 12)
 w3.obj('falls', cx(15), top(3), a=17)                                   # down into the pool; it burns
 w3.obj('drainling', cx(6), bottom(18))
 w3.obj('drainling', cx(25), bottom(18))
+w3.obj('door', left(0) + 8, bottom(18), a='ambush')
+w3.obj('door', left(29), bottom(18), a='lock')
 w3.obj('trig', -999, 0, a='drainling')
 
 # W4 Pump station (the sludge tide) -----------------------------------
@@ -608,14 +610,13 @@ w4.tide = 13
 w4s = room('w4s', 3, 'Overflow Cistern')
 w4s.solid(0, 0, 29, 2).solid(0, 0, 1, 22).solid(28, 0, 29, 22)
 w4s.solid(0, 19, 11, 22).solid(16, 19, 29, 22).plat(12, 15, 19)
-w4s.plat(6, 8, 16).plat(21, 23, 16).plat(4, 9, 12).plat(20, 25, 12).plat(11, 18, 9)
+w4s.plat(4, 9, 14).plat(20, 25, 14).plat(11, 18, 9)
 w4s.deco('g', 2, 3, 27, 3)
 w4s.obj('drainling', cx(10), bottom(18))
 w4s.obj('drainling', cx(18), bottom(18))
 w4s.obj('drone', cx(14), top(6))
 w4s.obj('shard', cx(14) + 8, top(6))
 w4s.flags.append('challenge')
-w4s.tide = 13
 
 # W5 Drainling nest (DaiCam, ambush) -----------------------------------
 w5 = room('w5', 3, 'Drainling Nest')
@@ -809,6 +810,8 @@ e2.phase(15, 18, 12, 'G').plat(3, 6, 14)
 e2.obj('laser', cx(17), bottom(18), b=1)
 e2.obj('drone', cx(8), top(9))
 e2.obj('hannya', cx(23), bottom(14), a=0)
+e2.obj('door', left(0) + 8, bottom(18), a='ambush')
+e2.obj('door', left(29), bottom(18), a='lock')
 e2.obj('trig', -999, 0, a='sump_mem')
 
 # E3 Memory: Tetsu's roof ---------------------------------------------
@@ -1128,6 +1131,8 @@ f7.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 1
 f7.obj('turret', left(1), top(9) - 8, a=90)
 f7.obj('turret', left(29), top(9) - 8, a=-90)
 f7.obj('shell', cx(24), bottom(18), a=1)
+f7.obj('door', left(0) + 8, bottom(18), a='ambush')
+f7.obj('door', left(29), bottom(18), a='lock')
 f7.obj('trig', cx(8), 0, a='extraction')
 
 # F8 Mukuro's ring (Mukuro) ------------------------------------------
@@ -1198,6 +1203,7 @@ g4.obj('laser', cx(19), bottom(18), b=50)
 g4.obj('post', 0, top(19), a=160, b=0)
 g4.obj('shell', cx(15), bottom(18), a=0)
 g4.obj('turret', left(29), top(8) - 8, a=-90)
+g4.obj('door', left(29), bottom(18), a='lock')
 g4.obj('trig', cx(9), 0, a='grid')
 
 # G4s Daimyo's study (Memory Shard challenge) -------------------------

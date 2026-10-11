@@ -146,7 +146,10 @@ def frame_step():
         # the Splash sprite fades the logo in over 20 frames, holds it, and fades it out
         # from 100 (any key skips ahead); then the title comes up out of black
         splash_t += 1
-        if p_any == 1 and splash_t < 100:
+        if splash_t == 4:
+            sfxq.append("jingle")
+        # a key skips ahead, once the warm-up behind the logo (visuals.WARMUP) has had its frames
+        if p_any == 1 and splash_t > 12 and splash_t < 100:
             splash_t = 100
         if splash_t >= 118:
             fade = 100
@@ -997,6 +1000,8 @@ def ev_toxic():
 @on("ev_drainling")
 def ev_drainling():
     if len(ent_type) > 0:
+        # Sludge Falls' doors seal until its Drainlings are down
+        ambush_on = 1
         say_once("drainling")
         hint = "drainling"
 
@@ -1142,6 +1147,8 @@ def ev_glitch():
 
 @on("ev_sump_mem")
 def ev_sump_mem():
+    if len(ent_type) > 0:
+        ambush_on = 1
     say_once("slums_mem")
 
 
@@ -1378,6 +1385,8 @@ def ev_daicam7_end():
 
 @on("ev_extraction")
 def ev_extraction():
+    if len(ent_type) > 0:
+        ambush_on = 1
     if muk_dead == 0:
         once("extraction")
         if first == 1:

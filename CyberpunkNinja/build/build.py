@@ -719,6 +719,7 @@ for ch in range(10):
         PAR[1].append(make_costume('ch%d' % ch, up4(far()), 480, 360, FILES))
         PAR[2].append(make_costume('ch%d' % ch, up4(mid()), 480, 360, FILES))
 stage.sounds = []
+stage.current_costume = [c['name'] for c in stage.costumes].index('black')
 scratchc.compile_sprite(stage, read_logic('stage.py'), C)
 
 # the splash logo (art/src/splash_logo.png, any size), on white, filling the screen's height
@@ -727,6 +728,7 @@ _sc = min(640 / _logo.height, 900 / _logo.width)
 _logo = _logo.resize((round(_logo.width * _sc), round(_logo.height * _sc)), Image.LANCZOS)
 _splash = Image.new('RGBA', (960, 720), (255, 255, 255, 255))
 _splash.alpha_composite(_logo, ((960 - _logo.width) // 2, (720 - _logo.height) // 2))
+sprite('Warmup', [costume_from(Image.new('RGBA', (8, 8), P['steel'] + (255,)), 'square', 4, 4)], visuals.WARMUP)
 sprite('Splash', [make_costume('splash', _splash, 480, 360, FILES)], visuals.SPLASH)
 # the Tenshu's moon, and the dawn (behind the clouds)
 sprite('Sky', [costume_from(MOON, 'moon', *MOON_C), costume_from(sun_disc(), 'sun', 24, 24),
@@ -800,7 +802,8 @@ props += [make_costume('soldier_%s' % n[len('h_idle_'):], im.transpose(Image.FLI
           for n, im, cx, cy in art_ch2.recolor_costumes('Mukuro', art_v2.SOLDIER_MAP, 'h_') if n.startswith('h_idle_')]
 props += [costume_from(art_v2.desk(f), 'desk_%d' % f, 36, 30) for f in range(2)]
 props.append(costume_from(art_v2.desk(staffed=False), 'desk_empty', 36, 30))
-props.append(costume_from(art_v2.directory(), 'directory', 38, 0))
+_dir = art_v2.directory()
+props.append(costume_from(_dir, 'directory', _dir.width / 2, 0))
 
 
 for k in range(4):
@@ -1000,9 +1003,22 @@ hud = [snug_hp('hp_%02d' % k) for k in range(11)]
 hud += [costume_from(ST.image_1x('HUD', src).crop((0, 0, 8, 9)), 'dash_%d' % i, 0, 0) for i, src in enumerate(('dash_0', 'dash_2', 'dash_1'))]
 hud += copy_costumes('HUD', names=['gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro', 'boss_the_daimyo'])
 hud += [costume_from(art_v2.boss_plate(t), 'boss_' + k, 0, 0) for k, t in (('dobunushi', 'DOBUNUSHI'), ('the_harmacist', 'THE HARMACIST'))]
-# the stopwatch, top right: one costume per character, centred in a 6 px cell, top at the anchor
+# the stopwatch, top right: one costume per character, centred in a 6 px cell, top at the anchor,
+# lettered like the flask's charge count (the regular face in white with a dark outline all round)
+def outlined_char(ch):
+    t = text_image([ch], REG, P['white'])
+    a = t.split()[3]
+    out = Image.new('RGBA', (t.width + 2, t.height + 2), (0, 0, 0, 0))
+    ink = Image.new('RGBA', t.size, P['ink'] + (255,))
+    for dx in (-1, 0, 1):
+        for dy in (-1, 0, 1):
+            out.paste(ink, (1 + dx, 1 + dy), a)
+    out.alpha_composite(t, (1, 1))
+    return out
+
+
 for _ch in '0123456789:':
-    _t = text_image([_ch], BOLD, P['white'], shadow=P['ink'])
+    _t = outlined_char(_ch)
     hud.append(costume_from(_t, 'clk_' + _ch, _t.width / 2 - 0.5, 0))
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])
