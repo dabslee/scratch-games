@@ -1,4 +1,4 @@
-# Menus: main menu, options (assist mode), chapters, controls, pause, end.
+# Menus: main menu, options (difficulty), chapters, controls, pause, end.
 
 MENU = '''
 @flag
@@ -45,7 +45,7 @@ def build():
         add_btn("continue", 0, -28)
         add_btn("chapters", 0, -64)
         add_btn("options", 0, -100)
-        add_btn("quit", 0, -136)
+        add_btn("controls", 0, -136)
         if has_save == 1:
             msel = 2
     elif menu == "pause":
@@ -56,16 +56,16 @@ def build():
     elif menu == "options" or menu == "pause_options":
         add_deco("panel", 0, 0)
         add_deco("ttl_options", 0, 158)
-        add_deco("ttl_assist", -150, 134)
-        add_opt("wide", 110)
-        add_opt("slow", 86)
-        add_opt("heat", 62)
-        add_opt("gourd", 38)
-        add_opt("god", 14)
-        add_opt("music", -18)
-        add_opt("sfx", -42)
-        add_opt("shake", -66)
-        add_opt("controls", -96)
+        add_opt("preset", 130)
+        add_opt("dmg_in", 108)
+        add_opt("dmg_out", 86)
+        add_opt("wide", 64)
+        add_opt("heat", 42)
+        add_opt("slow", 20)
+        add_opt("music", -10)
+        add_opt("sfx", -32)
+        add_opt("shake", -54)
+        add_opt("controls", -86)
         add_btn("back", 0, -142)
     elif menu == "chapters":
         add_deco("panel", 0, 0)
@@ -245,16 +245,26 @@ def step_sel(dv):
 @proc
 def change_opt(k, dv):
     sfxq.append("menu_move")
-    if k == "wide":
+    if k == "preset":
+        # Custom (4) leaves the settings as they are
+        opt_preset = (opt_preset + dv) % 5
+        if opt_preset < 4:
+            apply_preset()
+    elif k == "dmg_in":
+        opt_din = (opt_din + dv) % 5
+        find_preset()
+    elif k == "dmg_out":
+        opt_dout = (opt_dout + dv) % 5
+        find_preset()
+    elif k == "wide":
         opt_wide = 1 - opt_wide
+        find_preset()
     elif k == "slow":
         opt_slow = 1 - opt_slow
+        find_preset()
     elif k == "heat":
         opt_heat = 1 - opt_heat
-    elif k == "gourd":
-        opt_gourd = 1 - opt_gourd
-    elif k == "god":
-        opt_god = 1 - opt_god
+        find_preset()
     elif k == "shake":
         opt_shake = 1 - opt_shake
     elif k == "music":
@@ -271,6 +281,58 @@ def change_opt(k, dv):
             ctl_from = "options"
         menu = "controls"
         broadcast("menu_build")
+    set_mults()
+
+
+@proc
+def apply_preset():
+    # Easy, Normal, Hard, Insane: deflect window, Stance buildup, damage taken / dealt
+    # (multiplier steps 0x, 0.5x, 1x, 1.5x, 3x); game speed is never slowed by a preset
+    opt_wide = 0
+    opt_heat = 0
+    opt_slow = 0
+    opt_din = 2
+    opt_dout = 2
+    if opt_preset == 0:
+        opt_wide = 1
+        opt_heat = 1
+        opt_din = 1
+        opt_dout = 3
+    elif opt_preset == 1:
+        opt_heat = 1
+        opt_dout = 3
+    elif opt_preset == 3:
+        opt_din = 3
+        opt_dout = 1
+
+
+@proc
+def find_preset():
+    # a hand-set mix that matches no preset shows as Custom
+    opt_preset = 4
+    for pk in range(4):
+        if opt_preset == 4:
+            opt_preset = pk
+            keep_w = opt_wide
+            keep_h = opt_heat
+            keep_s = opt_slow
+            keep_i = opt_din
+            keep_o = opt_dout
+            apply_preset()
+            same = opt_wide == keep_w and opt_heat == keep_h and opt_slow == keep_s and opt_din == keep_i and opt_dout == keep_o
+            opt_wide = keep_w
+            opt_heat = keep_h
+            opt_slow = keep_s
+            opt_din = keep_i
+            opt_dout = keep_o
+            if not same:
+                opt_preset = 4
+
+
+@proc
+def set_mults():
+    dmg_in = MULTS[opt_din + 1]
+    dmg_out = MULTS[opt_dout + 1]
 
 
 @proc
@@ -296,6 +358,10 @@ def activate(k):
         broadcast("menu_build")
     elif k == "quit":
         broadcast("quit_to_title")
+    elif k == "controls":
+        ctl_from = "main"
+        menu = "controls"
+        broadcast("menu_build")
     elif k == "resume":
         menu = ""
         mode = "play"
@@ -348,6 +414,12 @@ def m_draw():
             vv = join("vol", opt_sfx)
         elif ckey == "controls":
             vv = "view"
+        elif ckey == "preset":
+            vv = PRESETS[opt_preset + 1]
+        elif ckey == "dmg_in":
+            vv = MULTN[opt_din + 1]
+        elif ckey == "dmg_out":
+            vv = MULTN[opt_dout + 1]
         else:
             if ckey == "wide":
                 ov = opt_wide
@@ -355,10 +427,6 @@ def m_draw():
                 ov = opt_slow
             elif ckey == "heat":
                 ov = opt_heat
-            elif ckey == "gourd":
-                ov = opt_gourd
-            elif ckey == "god":
-                ov = opt_god
             else:
                 ov = opt_shake
             if ov == 1:

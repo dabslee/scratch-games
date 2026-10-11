@@ -1,6 +1,6 @@
 {
   "title": "Cyberpunk Ninja",
-  "premise": "Kanshi Dynamics owns the Kanshi Spire and everything below it. Its CEO, the Daimyo, is building an army of super soldiers by tearing the soul out of the city's people and throwing it away. Without a soul, a body obeys and doesn't complain when its parts are replaced with cybernetic enhancements. Kuro, the Daimyo's bodyguard and the Academy's master instructor, found out and turned on him. The Daimyo split him in two: his body became Mukuro, the obedient captain of the hollowed guard, and his soul was thrown down the Spire like everyone else's. Discarded souls fade within minutes. Kuro's did not. Tethered to life by rage and missing most of his memories, it fell into the Sump Scrapyard and woke a scrapped Kanshi robot: Hotaru. Hotaru believes she is a living person who lost her memories. Kuro only knows that someone at the top of the Spire killed him. They climb together, him for revenge and her for answers, while the hollowed army prepares to march on the rest of the city.",
+  "premise": "Kanshi Dynamics owns the Kanshi Spire and everything below it. Its CEO, the Daimyo, is building an army of super soldiers by tearing the soul out of the city's people and throwing it away. Without a soul, a body obeys and doesn't complain when its parts are replaced with cybernetic enhancements. Kuro, the Daimyo's bodyguard and the Academy's master instructor, found out and turned on him. The Daimyo split him in two: his body became Mukuro, the obedient captain of the hollowed guard, and his soul was thrown down the Spire like everyone else's. Discarded souls fade within minutes. Kuro's did not. Tethered to life by rage and missing most of his memories, it fell into the Slums Scrapyard and woke a scrapped Kanshi robot: Hotaru. Hotaru believes she is a living person who lost her memories. Kuro only knows that someone at the top of the Spire killed him. They climb together, him for revenge and her for answers, while the hollowed army prepares to march on the rest of the city.",
   "lore": {
     "soul_and_mind": "A soul is what keeps a body alive and wanting things. A mind is memory and personality. Kuro's mind rides on his soul. Hotaru's mind grew on that same soul after it woke her frame. One soul can keep only one body alive for long.",
     "kuro_memories": "When Kuro was split, his memories tore three ways. Some came with his soul: how to fight, and how the city and Kanshi work. Those memories are where Hotaru's skills come from. Some broke off as Memory Shards. The rest stayed in his body, Mukuro.",
@@ -8,20 +8,20 @@
     "the_army": "Most of the city is still free. The hollowed soldiers, drilled at the Academy and mustered in the Tenshu, are about to march on the city to capture and hollow everyone else.",
     "hotaru_frame": "HTR-0 'HOTARU' was a prototype from Kanshi's first super-soldier program: robot Shinobi frames with phase drives. They were scrapped because a machine without a soul cannot improvise. The Daimyo switched to hollowing people. Kuro's soul is what made the frame work, and the fighting memories that came with it are where her skills come from. Her name is the model name stamped on her chassis.",
     "memory_shards": "Pieces of Kuro's memory that broke off when he was split from his body; the rest stayed in Mukuro. They scattered down the Spire and across the city as his soul fell, so one waits in every area.",
-    "the_pipeline": "Big Oni sells Sump residents to Kanshi and delivers them to the Pachinko Vaults. Lady Luck sends up debtors who lose everything. Both go down a freight lift to Platform 9, a Kanshi Line station hidden off the Sewers, and ride the monorail up to the Spire. Kanshi's factories poison the Sump, and the Physic Gardens on the Spire's lower floors sell the cure at a huge markup. Every road leads to the Academy, where people are hollowed."
+    "the_pipeline": "Big Oni sells Slums residents to Kanshi and delivers them to the Pachinko Vaults. Lady Luck sends up debtors who lose everything. Both go down a freight lift to Platform 9, a Kanshi Line station hidden off the Sewers, and ride the monorail up to the Spire. Kanshi's factories poison the Slums, and the Physic Gardens on the Spire's lower floors sell the cure at a huge markup. Every road leads to the Academy, where people are hollowed."
   },
   "cast": {
     "Hotaru": "Scrapped prototype frame HTR-0, woken by Kuro's soul. Dry, guarded, and certain she is a person. Her scarf shows her Phase Step charges. The game's central question is whether she is alive. She is.",
     "Kuro": "The soul of the Daimyo's former bodyguard, with only some of his memories: how to fight and how the city works, but almost nothing of his own life. Sardonic, driven by rage, and slowly remembering who he was. He appears as a violet glitch at the edge of Hotaru's visor.",
     "Mukuro": "Kuro's body, hollowed. Captain of the Daimyo's guard and the Academy's enforcer. He has Kuro's skill and the memories that stayed in the body, and none of his soul.",
-    "Tetsu": "A one-armed ramen cook in the Sump and Kuro's oldest friend. He lost his arm when a Kanshi drone malfunctioned; Kanshi covered it up, and he's been digging into the company ever since. He treats Hotaru as a stranger, but some of her habits remind him of someone.",
-    "DaiCam": "A Sump livestreamer climbing the Spire for views. Comic relief who keeps getting into trouble, until his stream becomes the city's warning.",
-    "Big Oni": "Boss of the Hannya Boys. Kanshi pays him to keep the Sump penned in and to sell its people.",
+    "Tetsu": "A one-armed ramen cook in the Slums and Kuro's oldest friend. He lost his arm when a Kanshi drone malfunctioned; Kanshi covered it up, and he's been digging into the company ever since. He treats Hotaru as a stranger, but some of her habits remind him of someone.",
+    "DaiCam": "A Slums livestreamer climbing the Spire for views. Comic relief who keeps getting into trouble, until his stream becomes the city's warning.",
+    "Big Oni": "Boss of the Hannya Boys. Kanshi pays him to keep the Slums penned in and to sell its people.",
     "Dobunushi": "'Lord of the ditch.' A mass of mutants fused around a broken Kanshi outflow pipe in the Sewers.",
     "Lady Luck": "Croupier who runs the Pachinko Vaults. Kanshi pays her to keep the city gambling, broke, and distracted, and per head for the debtors she sends up.",
-    "The Harmacist": "Head of Kanshi's Physic Gardens, on the Spire's lower floors. She sells the Sump the cure for the sickness Kanshi's factories cause, at whatever price it will bear.",
+    "The Harmacist": "Head of Kanshi's Physic Gardens, on the Spire's lower floors. She sells the Slums the cure for the sickness Kanshi's factories cause, at whatever price it will bear.",
     "The Daimyo": "CEO of Kanshi Dynamics. A human man in a samurai exoskeleton who believes the soul is the root of every riot, strike, and theft. He carries Tamakiri, the blade that split Kuro.",
-    "Debtor": "A Sump man who gambled everything at the Pachinko Vaults and lost himself as collateral. Hotaru passes him in the debtors' line, and finds him again at the Academy's intake.",
+    "Debtor": "A Slums man who gambled everything at the Pachinko Vaults and lost himself as collateral. Hotaru passes him in the debtors' line, and finds him again at the Academy's intake.",
     "Receptionist": "The Kanshi Spire's front-desk man, sword under the counter. He doesn't let unauthorized scrap through his lobby."
   },
   "branches": {
@@ -32,7 +32,7 @@
   "bosses": {
     "Big Oni": {
       "chapter": "ch1",
-      "who": "Gang boss of the Hannya Boys. He guards the gate out of the Sump, toward the Pachinko Vaults.",
+      "who": "Gang boss of the Hannya Boys. He guards the gate out of the Slums, toward the Pachinko Vaults.",
       "mechanics": [
         "Slow club swings: deflect them.",
         "Heavy Strikes (Phase Step, then attack) stagger him.",
@@ -46,17 +46,17 @@
         "A slot machine behind her picks each attack, and names it when the reels stop (CARD FAN!, SHOCKWAVE!, LASERS!...).",
         "Deflect her card-blades to send them back.",
         "SHOCKWAVE is a Breach: jump or Phase Step. Jackpot turns on laser grids: Phase Step through them.",
-        "Her dash across the floor between attacks is a Breach: it can't be blocked, and a Heavy Strike won't knock her out of it. Jump it or Phase Step through."
+        "She spins the reels where she stands; phase 2 always opens with a Jackpot. Beaten, she stays on her knees, faded, through her last words."
       ]
     },
     "Dobunushi": {
       "chapter": "ch3",
       "who": "A mass of polluted mutants fused around a broken Kanshi outflow pipe.",
       "mechanics": [
-        "Sludge rises in waves from the bottom of the arena: stay on the platforms while the tide is high.",
-        "Its arms slam down onto platforms: deflect the slam, then cut the arm. Each arm has its own Stance bar.",
+        "Sludge rises in waves from the bottom of the arena, with the same TIDE RISING warning and pump gurgle as the Sewers: stay on the platforms while the tide is high.",
+        "Its arms never guard: cut them whenever they're in reach. Deflect a slam to pin the arm, open until its Stance breaks and it can be cut off. Every cut, and every blow on the closed core, also builds the body's Stance.",
         "With both arms cut, its core opens: strike it until the arms regrow.",
-        "Phase 2 toxic spew is a Breach wave across the floor: jump it or Phase Step through."
+        "Phase 2 opens with its toxic spew, a tall green Breach wave along the floor that reaches the thin platforms: jump it from up there, or Phase Step through it."
       ]
     },
     "Raijin": {
@@ -84,6 +84,7 @@
       "who": "Head of the Physic Gardens on the Spire's lower floors, armed with a vial bandolier and a stim injector.",
       "mechanics": [
         "Throws vials in arcs: deflect them back at her.",
+        "Up close she cuts with a long green blade, after a 0.6 s windup.",
         "Poison clouds linger where vials break: they sting (damage without staggering), so leave the cloud or Phase Step through it.",
         "When she pulls out a stim to heal, interrupt her with a Heavy Strike.",
         "Phase 2: she injects herself, gets faster, and she can crush a vial to jet forward on the gas before it bursts into a poison cloud that acts as a Breach.",
@@ -161,7 +162,7 @@
         "keys": "R"
       },
       {
-        "action": "Talk / Shrine / next",
+        "action": "Interact",
         "keys": "E  or  Enter"
       },
       {
@@ -171,7 +172,7 @@
     ],
     "core_combat": [
       "Attack chains into a 4-hit combo; Up + attack is a rising Launcher.",
-      "Phase Step (Space): an invincible, aimable dash with one charge (the scarf greys out while it's spent). Passes through lasers and attacks. It comes back a second after it's spent once Hotaru is on the ground, or at once with a perfect deflect.",
+      "Phase Step (Space): an invincible, aimable dash with one charge (the scarf greys out while it's spent). Passes through lasers and attacks, with a 1-second recharge between uses: it comes back a second after it's spent once Hotaru is on the ground, or at once with a perfect deflect.",
       "Heavy Strike: attack during or right after a Phase Step. It can't cut through a guard or a deflect, but it builds a lot of enemy Stance.",
       "Deflect: press Down right before a hit lands (enemies flash white just before). A perfect deflect builds the attacker's Stance. Holding Down blocks, but blocking builds Hotaru's Stance.",
       "Stance: every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure, then slowly settles (more slowly the lower a fighter's health, down to half speed; Hotaru's only with her guard down). When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution (instant kill for regular enemies, a whole health segment for bosses). Every Execution also refills one gourd charge and clears Hotaru's Stance. When Hotaru's Stance breaks, she overheats and staggers.",
@@ -184,7 +185,7 @@
     "traversal": [
       "Wall cling and wall jump; jump up through thin platforms, double-tap Down (or Phase Step down) to drop through.",
       "Lifts and shafts: the Scrapyard lift up into Neon Alley; the freight shaft behind Lady Luck's table, dropping into the Sewers; the service lift from the Apothecary up into the Academy; the Spire Lift behind Mukuro's Ring, up into the Tenshu.",
-      "Toxic pools and rising sludge tides (Sewers). Each room starts at low tide; a TIDE RISING warning flashes and the pumps gurgle before each rise.",
+      "Toxic pools, burning sludge falls and rising sludge tides (Sewers: the Pump Station, Overflow Cistern, Lock Gate and Dobunushi's chamber). Each room starts at low tide; a TIDE RISING warning flashes and the pumps gurgle before each rise.",
       "Laser grids pulse on and off (Vaults, Castle).",
       "Greenhouse heat vents carry you upward; some vents pulse (Physic Gardens).",
       "Headwind, bottomless gaps between cars, and Kanshi patrol crows skimming the roofs (Monorail).",
@@ -205,18 +206,19 @@
     ],
     "collectibles": "Nine hidden Memory Shards, one per area. Each is a piece of Kuro's memory that broke off when he was split from his body. The memories play in order, oldest first, whichever shard you find; nothing outside them depends on finding them.",
     "assist_options": [
+      "Difficulty preset (Easy, Normal, Hard, Insane, Custom)",
+      "Damage taken multiplier",
+      "Damage dealt multiplier",
       "Wide deflect window",
-      "Slower game speed",
       "Slower Stance buildup",
-      "Infinite Nano-Gourd",
-      "Invincibility"
+      "Slower game speed"
     ]
   },
   "chapters": [
     {
       "id": "prologue",
       "label": "Prologue",
-      "title": "Sump Scrapyard",
+      "title": "Slums Scrapyard",
       "summary": "A scrapped Kanshi robot wakes up in the Scrapyard with a soul that isn't supposed to exist. Hotaru believes she's a person who lost her memories. Kuro, the voice in her head, only knows that someone at the top of the Spire killed him. Tetsu the ramen cook has never met her, but one of her habits stops him cold.",
       "rooms": [
         "Reboot",
@@ -237,11 +239,15 @@
           "lines": [
             {
               "speaker": "System",
-              "text": "KANSHI DYNAMICS // HTR-0. Shinobi frame, prototype. Status: SCRAPPED."
+              "text": "KANSHI DYNAMICS // HTR-0 frame, prototype. Status: SCRAPPED."
             },
             {
               "speaker": "System",
-              "text": "Pilot: NONE. ...Pilot: DETECTED. Source: UNKNOWN. Motor control: OK. Memory index: NOT FOUND."
+              "text": "Searching for pilot. ...Pilot: NONE."
+            },
+            {
+              "speaker": "System",
+              "text": "...Pilot: DETECTED. Source: UNKNOWN. Motor control: OK. Memory index: NOT FOUND."
             }
           ]
         },
@@ -277,8 +283,9 @@
               "text": "Who said that? There's no one here."
             },
             {
-              "speaker": "Kuro",
-              "text": "I'm in your mind. I don't know how I got in, so don't ask. Maybe you're malfunctioning."
+              "speaker": "???",
+              "text": "I'm in your mind. I don't know how I got in, so don't ask. Maybe you're malfunctioning.",
+              "actually": "Kuro"
             },
             {
               "speaker": "Hotaru",
@@ -318,11 +325,15 @@
             },
             {
               "speaker": "Kuro",
-              "text": "...Sure, whatever you say. Whatever happened, something tells me the Spire will have answers. The Kanshi Spire: HQ for the mega-corp that runs this city."
+              "text": "...Sure, whatever you say. Whatever happened, something tells me the Spire will have answers."
             },
             {
               "speaker": "Kuro",
-              "text": "You want your answers, I want my killer. Let's start climbing."
+              "text": "That is, the 'Kanshi Spire': HQ for the mega-corp that runs this city."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "You want your answers, I want my killer. Let's get out of this scrapyard."
             }
           ]
         },
@@ -352,7 +363,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Catch the round on your blade at the last instant and send it home."
+              "text": "Catch the round on your blade at the last instant to reflect it back."
             }
           ]
         },
@@ -366,15 +377,19 @@
               "text": "Kanshi laser fence. It'll burn you if you touch it, but you should be able to phase right through."
             },
             {
-              "speaker": "Hotaru",
-              "text": "Why do I have all these enhancements...?"
+              "speaker": "Kuro",
+              "text": "Your phase shift takes a second to recharge between uses. You can shift in any direction."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "The blue dot next to your healthbar shows if your phase shift is available. It's empty while spent."
             }
           ]
         },
         {
           "id": "tetsu",
           "room": "Tetsu's Cart",
-          "trigger": "Talk to Tetsu (E)",
+          "trigger": "Entering Tetsu's cart",
           "lines": [
             {
               "speaker": "Tetsu",
@@ -406,7 +421,11 @@
             },
             {
               "speaker": "Tetsu",
-              "text": "That vending machine's a Shrine--hacked it myself. Rest there, and it'll fix you up and fill up that healing gourd of yours."
+              "text": "I have a gift for you--a Nano-Gourd. It can hold up to 3 charges of healing, stitching your metal back together."
+            },
+            {
+              "speaker": "Tetsu",
+              "text": "That vending machine's a Shrine--hacked it myself. Rest there, and it'll fix you up and recharge the Nano-Gourd."
             },
             {
               "speaker": "Kuro",
@@ -452,12 +471,8 @@
           "trigger": "Reach the edge of the Scrapyard",
           "lines": [
             {
-              "speaker": "Kuro",
-              "text": "Neon Alley. Past those masks is the only way out of the Sump."
-            },
-            {
               "speaker": "Hotaru",
-              "text": "And past that?"
+              "text": "A lift out of the scrapyard."
             },
             {
               "speaker": "Kuro",
@@ -472,7 +487,7 @@
       "label": "Chapter 1",
       "title": "Neon Alley",
       "boss": "Big Oni",
-      "summary": "The Hannya Boys keep the Sump penned in and sell its people to Kanshi. Hotaru meets DaiCam the livestreamer and executes Big Oni, whose ledger shows where the captives go: up the Spire, by way of the Pachinko Vaults next door.",
+      "summary": "The Hannya Boys keep the Slums penned in and sell its people to Kanshi. Hotaru meets DaiCam the livestreamer and executes Big Oni, whose ledger shows where the captives go: up the Spire, by way of the Pachinko Vaults next door.",
       "rooms": [
         "Neon Alley",
         "Market Street",
@@ -512,11 +527,23 @@
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "See the bar over his head? That's his Stance. You have one too, at the bottom of the screen."
+              "text": "See the bar over his head? That's his Stance. You have that too, at the bottom of the screen."
             },
             {
               "speaker": "Kuro",
-              "text": "Deflect his swings and hit him hard. When his Stance breaks, you'll see a bullseye indicator. Click it to execute him."
+              "text": "You can deflect his swings right before they hit. Deflecting his swings or hitting him builds his Stance damage."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "When his Stance breaks, you'll see a bullseye indicator. Click it to execute him."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "That goes for you, too. You can hold the deflect key to block continuous attacks, but that'll build your own Stance damage."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "If your own Stance meter fills up, you'll be stunned for a second or two, so be careful."
             }
           ]
         },
@@ -554,11 +581,11 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "You don't look like you're from the Sump. Get back to safety."
+              "text": "You don't look like you're from the Slums. Get back to safety."
             },
             {
               "speaker": "DaiCam",
-              "text": "And miss out on exclusive content? Smash that follow, ninja lady!"
+              "text": "And miss out on exclusive content? No way! Smash that follow, ninja lady!"
             }
           ]
         },
@@ -591,7 +618,7 @@
         {
           "id": "boss_gate",
           "room": "Boss Gate",
-          "trigger": "Before the boss arena",
+          "trigger": "Reaching the shrine",
           "lines": [
             {
               "speaker": "Kuro",
@@ -599,7 +626,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "He's a big one, guarding the gate out of the Sump. He's slow, though."
+              "text": "He's a big one, guarding the gate out of the Slums. He's slow, though."
             },
             {
               "speaker": "Kuro",
@@ -622,15 +649,15 @@
           "lines": [
             {
               "speaker": "Big Oni",
-              "text": "A runaway from the Scrapyard? Kanshi pays double for the ones with chrome."
+              "text": "A working robot from the Scrapyard? Kanshi's gonna be interested in this."
             },
             {
               "speaker": "Kuro",
-              "text": "That's him, Big Oni, boss of the Hannya Boys. Deflect the club swings."
+              "text": "That's him--Big Oni, boss of the Hannya Boys. Deflect the club swings."
             },
             {
               "speaker": "Kuro",
-              "text": "Heavy Strikes stagger him: Phase Step, then attack. Break his Stance and execute him."
+              "text": "Heavy Strikes stagger him: Phase Step, then attack. Break his Stance and execute this lowlife."
             }
           ]
         },
@@ -668,7 +695,7 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "A list of names, dates, and prices... Every one delivered to the Pachinko Vaults."
+              "text": "A list of names, dates, and prices... Kidnapping victims. Every one delivered to the Pachinko Vaults."
             },
             {
               "speaker": "Hotaru",
@@ -680,7 +707,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "The Vaults are right through that gate. If the captives went through there, so do we."
+              "text": "The Vaults should be past that gate. Let's follow the captives to the Spire."
             },
             {
               "speaker": "DaiCam",
@@ -724,7 +751,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Let's move quickly. This place can be addictive--I've seen too many people end up enslaved by the games here."
+              "text": "Let's move quickly--this place can be addictive. I've seen too many people end up enslaved by the games here."
             }
           ]
         },
@@ -739,14 +766,14 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Wait for a gap, or Phase Step straight through it. Mid-fight, if you have to."
+              "text": "Wait for a gap, or Phase Step straight through them."
             }
           ]
         },
         {
           "id": "slots",
           "room": "Slot Floor",
-          "trigger": "First slot turrets",
+          "trigger": "Entering the Slot Floor",
           "lines": [
             {
               "speaker": "Kuro",
@@ -765,27 +792,27 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "These are the people from the ledger... but also some others?"
-            },
-            {
-              "speaker": "System",
-              "text": "ACCOUNT CLOSED. Balance: 0. Collateral: SELF. Destination: ACADEMY INTAKE."
+              "text": "Those people... They're the ones from the ledger. But also some others?"
             },
             {
               "speaker": "Debtor",
-              "text": "You! You're not with them, are you? Please, I'll pay it all back, I swear. Just don't let them send me up there!"
+              "text": "Wait! You there, dressed like a ninja... you're not with them, are you?"
             },
             {
-              "speaker": "Hotaru",
-              "text": "Hang on. I'll find out where they're taking you."
+              "speaker": "Debtor",
+              "text": "Please, I'll pay it all back, I swear. Just don't let them send me up there!"
             },
             {
-              "speaker": "Kuro",
-              "text": "Lose your money, lose yourself--seems like these people gambled away even their freedom."
+              "speaker": "Kanshi Associate",
+              "text": "Enough from you. You bet your selves as collateral, and you lost. Fair is fair."
             },
             {
               "speaker": "Kuro",
               "text": "Their minder's hustling them out. Deal with the drones first--then we find out where they're going."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "Lose your money, lose yourself--these people gambled away even their freedom."
             }
           ]
         },
@@ -807,7 +834,11 @@
           "lines": [
             {
               "speaker": "DaiCam",
-              "text": "Chat, I am currently being held as collateral. I bet my stream. I lost my stream. The stream is still running."
+              "text": "Chat, I am currently being held as collateral. I bet my stream. I lost my stream."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "With just a few donations as seed money, I'm sure I can win it back..."
             },
             {
               "speaker": "DaiCam",
@@ -849,11 +880,11 @@
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "We're coming up on Lady Luck's tables. She runs the casino, but the slot machine behind her runs her."
+              "text": "We're coming up on Lady Luck's tables. She runs the casino, while her slot machine runs her."
             },
             {
               "speaker": "Kuro",
-              "text": "Watch the reels. Spades, sevens, cherries... and if they land on skulls, get off the floor."
+              "text": "Watch the reels. She'll throw cards on spades or sevens. On a cherry, she'll lunge. Skulls are a shockwave."
             },
             {
               "speaker": "Hotaru",
@@ -861,7 +892,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Then we find out how fast you are."
+              "text": "Then just focus on staying alive."
             }
           ]
         },
@@ -899,7 +930,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Jackpot means lasers. Phase Step through them!"
+              "text": "I sense Jackpots incoming. Time to dance!"
             }
           ]
         },
@@ -914,19 +945,27 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "Not this time, chrome-dome. Where are you sending them?"
+              "text": "Not this time, chrome-dome. Where'd you put the captives?"
             },
             {
               "speaker": "Lady Luck",
-              "text": "Down the freight shaft behind my table, sweetheart. To a station that isn't on any map: Platform 9, under the Sewers."
+              "text": "They're already gone, sweetheart! Probably already at the Spire, which you'll never get to."
             },
             {
               "speaker": "Lady Luck",
-              "text": "The Kanshi Line runs from there straight up to the Spire. Every debt gets paid upstairs."
+              "text": "The only way to get to the Spire is through the monorail, whose next stop in the Slums isn't for months."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "That's cow dung. There's clearly a way you get the captives there. My patience is wearing VERY thin."
+            },
+            {
+              "speaker": "Lady Luck",
+              "text": "...Down the freight shaft behind my table, down into the sewers. There's an entrance to a secret station there."
             },
             {
               "speaker": "Kuro",
-              "text": "A secret monorail stop. That's our way to the upper city."
+              "text": "A secret station. That's our way up."
             },
             {
               "speaker": "DaiCam",
@@ -945,7 +984,7 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "Then we take the short way down."
+              "text": "...Let's hope the landing's soft."
             }
           ]
         }
@@ -976,6 +1015,10 @@
           "lines": [
             {
               "speaker": "Hotaru",
+              "text": "Ugh... mushy ground. At least it broke our fall."
+            },
+            {
+              "speaker": "Hotaru",
               "text": "That smell... What is that?"
             },
             {
@@ -995,12 +1038,12 @@
               "text": "It's the pollution you're smelling, the toxic runoff of their dozens of enterprises. It all ends up down here."
             },
             {
-              "speaker": "Kuro",
-              "text": "And everything down here ends up in the Sump's water."
+              "speaker": "Hotaru",
+              "text": "And everything down here ends up in the Slums' water supply."
             },
             {
-              "speaker": "Hotaru",
-              "text": "Lady Luck said Platform 9 is somewhere down here. We follow the pipes."
+              "speaker": "Kuro",
+              "text": "Lady Luck said the secret monorail station is somewhere down here. Follow the pipes."
             }
           ]
         },
@@ -1026,7 +1069,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Sump workers. Kanshi sends them to unjam the pipes, but the work takes a toll."
+              "text": "Sewer workers. Kanshi sends them to unjam the pipes, but the work takes a toll."
             },
             {
               "speaker": "Kuro",
@@ -1117,11 +1160,11 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "It looks like the Sump workers, but mashed together into... that!"
+              "text": "It looks like the sewer workers, but mashed together into... that!"
             },
             {
               "speaker": "Kuro",
-              "text": "I've heard of this... Dobunushi, Lord of the ditch. It's where the Sump workers end up after too much degeneration."
+              "text": "I've heard of this... Dobunushi, Lord of the ditch. It's where the sewer workers end up after too much degeneration."
             },
             {
               "speaker": "Kuro",
@@ -1159,7 +1202,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Platform 9. Kanshi's secret station. Next stop, the upper city."
+              "text": "That must be Kanshi's secret station. Let's go."
             }
           ]
         }
@@ -1190,19 +1233,15 @@
           "lines": [
             {
               "speaker": "System",
-              "text": "KANSHI LINE // PLATFORM 9 // FREIGHT ONLY. Kanshi ID required at all gates."
+              "text": "KANSHI LINE // PLATFORM 9 // FREIGHT ONLY."
             },
             {
               "speaker": "Hotaru",
-              "text": "A whole station hidden under the city. This is how the captives go up."
+              "text": "A tiny, remote station accessible only from the sewers. This is how the captives go up."
             },
             {
               "speaker": "Kuro",
-              "text": "Straight to the Spire, no questions asked. You'd normally need Kanshi ID to ride."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "But nobody checks IDs on the roof. Get up there."
+              "text": "Straight to the Spire, no questions asked. I hear a train coming--we'll hop onto its roof."
             }
           ]
         },
@@ -1247,18 +1286,18 @@
             },
             {
               "speaker": "Kuro",
-              "text": "There's a maintenance passage in the tower wall too, if you're curious."
+              "text": "I see a maintenance passage in the tower wall too, if you're curious."
             }
           ]
         },
         {
           "id": "daicam5",
           "room": "Dining Car",
-          "trigger": "DaiCam in the dining car with Kanshi guards",
+          "trigger": "Entering the Dining Car",
           "lines": [
             {
               "speaker": "DaiCam",
-              "text": "Hotaru! First class! I snuck aboard with the freight! They have little towels!"
+              "text": "Hotaru! Didn't expect to see you in the first class carriage. They have little towels!"
             },
             {
               "speaker": "Hotaru",
@@ -1281,11 +1320,11 @@
           "lines": [
             {
               "speaker": "DaiCam",
-              "text": "Well, that was terrible. I think I'll get off at the next stop."
+              "text": "That was some terrible service. I'm going to leave them a very bad review."
             },
             {
               "speaker": "DaiCam",
-              "text": "...Or wherever they'll let me, I guess. Stay safe! Like and subscribe!"
+              "text": "You heard that, chat? Kanshi's monorail is NOT the luxury express it used to be. Like and subscribe!"
             }
           ]
         },
@@ -1295,22 +1334,28 @@
           "trigger": "A broadcast fills every screen in the car",
           "lines": [
             {
+              "speaker": "System",
+              "text": "PA: Please direct your attention to the nearest screen. The Daimyo has a message for you."
+            },
+            {
               "speaker": "Hotaru",
               "text": "Every window in the car just turned into a screen. A man in elegant blue robes... and someone standing behind him?"
             },
             {
-              "speaker": "???",
-              "text": "A scrapped HTR frame riding my line. Walking, fighting. That shouldn't be possible.",
-              "actually": "The Daimyo"
+              "speaker": "Kuro",
+              "text": "That's the Daimyo, CEO of Kanshi. The man behind him looks familiar, but..."
             },
             {
-              "speaker": "???",
-              "text": "Unless... that stance. Kuro. I threw you out with the rest.",
-              "actually": "The Daimyo"
+              "speaker": "The Daimyo",
+              "text": "A scrapped HTR frame riding my line. Walking, fighting. That shouldn't be possible."
+            },
+            {
+              "speaker": "The Daimyo",
+              "text": "Unless... that stance. Kuro, is that you in there? I threw you out with the rest."
             },
             {
               "speaker": "Kuro",
-              "text": "...You know me?"
+              "text": "...He knows me? He knows I'm in here?"
             },
             {
               "speaker": "The Daimyo",
@@ -1331,7 +1376,7 @@
             },
             {
               "speaker": "The Daimyo",
-              "text": "Raijin will collect you both. Mukuro, with me."
+              "text": "No, Mukuro. You stay with me. Raijin will collect Kuro and his shell."
             }
           ]
         },
@@ -1343,6 +1388,10 @@
             {
               "speaker": "The Daimyo",
               "text": "Raijin keeps my line clean. Makes sure any strays are shaken off before they get to my Spire."
+            },
+            {
+              "speaker": "The Daimyo",
+              "text": "He keeps the lowborn trash far, far away from our fine upper city."
             },
             {
               "speaker": "Kuro",
@@ -1469,7 +1518,7 @@
       "summary": "Kuro tries to take the frame for himself. Inside the space they share, built from his broken memories, Hotaru fights to prove she's alive. When he falls, she chooses: compromise with him, or destroy his mind and keep the soul for herself.",
       "rooms": [
         "Static",
-        "Memory: The Sump",
+        "Memory: The Slums",
         "Memory: Tetsu's Roof",
         "Memory: The Academy",
         "Possession",
@@ -1503,7 +1552,7 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "Where... This is the Sump. No. It's purple. Everything's wrong."
+              "text": "Where... This is the scrapyard. No. It's purple. Everything's wrong."
             },
             {
               "speaker": "Kuro",
@@ -1515,33 +1564,18 @@
             },
             {
               "speaker": "Kuro",
-              "text": "And you're a machine I entered to drive. It's time I started driving."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Kuro? Don't you dare."
+              "text": "Look at that. Those blocks flicker in and out. We're unstable with two pilots."
             }
           ]
         },
         {
-          "id": "glitch",
-          "room": "Static",
-          "trigger": "First glitch blocks",
-          "lines": [
-            {
-              "speaker": "Kuro",
-              "text": "Look at this. Those blocks flicker in and out. We're unstable with two pilots."
-            }
-          ]
-        },
-        {
-          "id": "sump_mem",
-          "room": "Memory: The Sump",
-          "trigger": "Memory of the Sump",
+          "id": "slums_mem",
+          "room": "Memory: The Slums",
+          "trigger": "Memory of the Slums",
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "The Scrapyard. But the scrap is new. This is from before it rusted."
+              "text": "The scrapyard... but it looks newer, somehow. Less rusted."
             },
             {
               "speaker": "Kuro",
@@ -1560,7 +1594,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Tetsu. With both arms. My best friend."
+              "text": "Tetsu. Still with both arms in my memory. My best friend."
             },
             {
               "speaker": "Kuro",
@@ -1625,7 +1659,7 @@
         {
           "id": "white_room",
           "room": "The White Room",
-          "trigger": "The room where Kuro was split",
+          "trigger": "Entering the White Room",
           "lines": [
             {
               "speaker": "System",
@@ -1633,7 +1667,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "This is where he did it. Tamakiri. The blade that cleaves a person in two without cutting flesh."
+              "text": "I remember how he did it. He cleaved me in two, rending soul from body."
             },
             {
               "speaker": "Kuro",
@@ -1652,7 +1686,7 @@
         {
           "id": "daicam6",
           "room": "The White Room",
-          "trigger": "A memory of DaiCam",
+          "trigger": "Once the memories in the room are defeated",
           "lines": [
             {
               "speaker": "DaiCam",
@@ -1752,7 +1786,7 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "You get your revenge, I get my answers. But I'm not going to just be your puppet."
+              "text": "You get your revenge, everyone else gets justice. But I'm not going to just be your puppet."
             },
             {
               "speaker": "Kuro",
@@ -1803,7 +1837,7 @@
       "label": "Chapter 6",
       "title": "The Physic Gardens",
       "boss": "The Harmacist",
-      "summary": "The monorail carries Hotaru into the Kanshi Spire itself. Past the lobby, the lower floors are a real garden where Kanshi grows medicine. The pollution from the Sewers makes the Sump sick, and the Gardens sell it the cure at a huge markup. The Harmacist sets the prices.",
+      "summary": "The monorail carries Hotaru into the Kanshi Spire itself. Past the lobby, the lower floors are a real garden where Kanshi grows medicine. The pollution from the Sewers makes the Slums sick, and the Gardens sell it the cure at a huge markup. The Harmacist sets the prices.",
       "rooms": [
         "Spire Lobby",
         "Garden Gate",
@@ -1826,11 +1860,11 @@
           "lines": [
             {
               "speaker": "System",
-              "text": "KANSHI SPIRE // LOBBY. Welcome, valued asset. Floors 2-40: PHYSIC GARDENS. Floors 41-90: THE ACADEMY. Tenshu: by invitation only."
+              "text": "PA: Welcome, valued teammember. Please swipe your card upon all entrances and exits to accurately track your hours."
             },
             {
               "speaker": "Hotaru",
-              "text": "The train carried us the rest of the way in. We're inside the Spire. Kuro? Are you there?"
+              "text": "Looks like train carried us the rest of the way. We're finally at the Spire's lobby. Kuro? Are you there?"
             },
             {
               "speaker": "Kuro",
@@ -1842,11 +1876,15 @@
             },
             {
               "speaker": "Receptionist",
-              "text": "Wait... a scrapped HTR frame. You're the one who wrecked Raijin! Security! ...Ugh. Fine. I'll handle this myself."
+              "text": "Wait... a scrapped HTR frame. You're the one who wrecked Raijin! Where is security!?"
+            },
+            {
+              "speaker": "Receptionist",
+              "text": "...Ugh. Fine. I'll handle this myself."
             },
             {
               "speaker": "Kuro",
-              "text": "Kanshi's front desk carries a sword. Of course it does."
+              "text": "Kanshi's front desk carries a sword. Of course he does."
             }
           ]
         },
@@ -1858,11 +1896,11 @@
           "lines": [
             {
               "speaker": "System",
-              "text": "KANSHI SPIRE // LOBBY. Welcome, valued asset. Floors 2-40: PHYSIC GARDENS. Floors 41-90: THE ACADEMY. Tenshu: by invitation only."
+              "text": "PA: Welcome, valued teammember. Please swipe your card upon all entrances and exits to accurately track your hours."
             },
             {
               "speaker": "Hotaru",
-              "text": "The train carried me the rest of the way in. I'm inside the Spire. Kuro?"
+              "text": "The train carried me the rest of the way. I'm inside the Spire lobby now. Kuro?"
             },
             {
               "speaker": "Hotaru",
@@ -1874,11 +1912,15 @@
             },
             {
               "speaker": "Receptionist",
-              "text": "Wait... a scrapped HTR frame. You're the one who wrecked Raijin! Security! ...Ugh. Fine. I'll handle this myself."
+              "text": "Wait... a scrapped HTR frame. You're the one who wrecked Raijin! Where is security!?"
+            },
+            {
+              "speaker": "Receptionist",
+              "text": "...Ugh. Fine. I'll handle this myself."
             },
             {
               "speaker": "Hotaru",
-              "text": "Of course the front desk carries a sword."
+              "text": "Kanshi's front desk carries a sword. Of course he does."
             }
           ]
         },
@@ -1890,7 +1932,15 @@
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "So much for the welcome. Gardens first, partner. Then the Academy. Then him."
+              "text": "So much for a warm welcome."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "These lower floors are going to be the Garden, home of Kanshi Pharmaceuticals. The Academy is next."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "After that, the Tenshi floors where the Daimyo resides. Here we come."
             }
           ]
         },
@@ -1902,7 +1952,7 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "So much for the welcome. Gardens first. Then the Academy. Then him."
+              "text": "So much for the welcome. Daimyo, here I come."
             }
           ]
         },
@@ -1931,10 +1981,6 @@
             {
               "speaker": "Hotaru",
               "text": "Grass. Trees. Clean water. In here, the whole time."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Kanshi's Physic Gardens. Everything that grows here gets ground into pills."
             }
           ]
         },
@@ -1951,30 +1997,50 @@
           ]
         },
         {
+          "id": "vents_alone",
+          "room": "Greenhouse Steps",
+          "trigger": "First greenhouse heat vent",
+          "condition": "branch: kuro_destroyed",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Heat vents from the greenhouses. They look strong enough to carry me upwards."
+            }
+          ]
+        },
+        {
           "id": "warden",
           "room": "Herb Rows",
-          "trigger": "First Garden Warden",
+          "trigger": "Entering the Herb Rows",
           "condition": "branch: kuro_spared",
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "A Garden Warden, Kanshi duelist. It loves to block anything you throw at it."
+              "text": "This... looks like Shou. One of my former students, but hollowed out. No more soul."
             },
             {
               "speaker": "Kuro",
-              "text": "So let it swing first. Deflect, break its guard, then cut."
+              "text": "Let her swing first. Deflect, break her guard, then cut."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "I'm sorry, Kuro."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "Don't be sorry. Hesitation is defeat."
             }
           ]
         },
         {
           "id": "pricing",
           "room": "Dispensary",
-          "trigger": "The price board over the dispensary",
+          "trigger": "Entering the Dispensary",
           "condition": "branch: kuro_spared",
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "Is that a price board?"
+              "text": "Looks like a profit dashboard up there."
             },
             {
               "speaker": "System",
@@ -1990,19 +2056,19 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "Ends up at the Vaults. And then the Academy."
+              "text": "Dies. Or ends up at the Academy."
             }
           ]
         },
         {
           "id": "pricing_alone",
           "room": "Dispensary",
-          "trigger": "The price board over the dispensary",
+          "trigger": "Entering the Dispensary",
           "condition": "branch: kuro_destroyed",
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "Is that a price board?"
+              "text": "Looks like a profit dashboard up there."
             },
             {
               "speaker": "System",
@@ -2014,19 +2080,23 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "They poison the water, then sell the cure. And whoever can't pay ends up at the Vaults. And then the Academy."
+              "text": "They poison the water, then sell the cure. And whoever can't pay dies or is taken away."
             }
           ]
         },
         {
           "id": "daicam4",
           "room": "Koi Terraces",
-          "trigger": "DaiCam's sponsored stream",
+          "trigger": "Entering the Koi Terraces",
           "condition": "branch: kuro_spared",
           "lines": [
             {
+              "speaker": "Kuro",
+              "text": "More of my trainees... and that streamer, AGAIN?"
+            },
+            {
               "speaker": "DaiCam",
-              "text": "This stream is brought to you by Kanshi Clear! Breathe easy, Sump! *cough* *cough*"
+              "text": "This stream is brought to you by Kanshi Clear! Breathe easy, Slums! *cough* *cough*"
             },
             {
               "speaker": "Hotaru",
@@ -2049,12 +2119,12 @@
         {
           "id": "daicam4_alone",
           "room": "Koi Terraces",
-          "trigger": "DaiCam's sponsored stream",
+          "trigger": "Entering the Koi Terraces",
           "condition": "branch: kuro_destroyed",
           "lines": [
             {
               "speaker": "DaiCam",
-              "text": "This stream is brought to you by Kanshi Clear! Breathe easy, Sump! *cough* *cough*"
+              "text": "This stream is brought to you by Kanshi Clear! Breathe easy, Slums! *cough* *cough*"
             },
             {
               "speaker": "Hotaru",
@@ -2081,11 +2151,15 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "The reason you're coughing is the pollution Kanshi releases, DaiCam. The pills only cost four credits to make, but once you're sick, you're dependent."
+              "text": "The reason you're coughing is the pollution Kanshi releases, DaiCam."
+            },
+            {
+              "speaker": "Hotaru",
+              "text": "The pills only cost 4 credits to make, but once you're sick, you're dependent."
             },
             {
               "speaker": "DaiCam",
-              "text": "Four credits?! Chat, I've been paying two thousand four hundred! I'm canceling the sponsorship."
+              "text": "4 credits?! Chat, I've been paying 2,400! I'm canceling the sponsorship."
             },
             {
               "speaker": "DaiCam",
@@ -2145,7 +2219,7 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "You charge six hundred times what it costs to make. You hold people's lives ransom for profit."
+              "text": "You charge 600 times what they cost to make. You hold people's lives ransom for profit."
             },
             {
               "speaker": "The Harmacist",
@@ -2177,7 +2251,7 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "You charge six hundred times what it costs to make. You hold people's lives ransom for profit."
+              "text": "You charge 600 times what they cost to make. You hold people's lives ransom for profit."
             },
             {
               "speaker": "The Harmacist",
@@ -2224,7 +2298,11 @@
           "lines": [
             {
               "speaker": "The Harmacist",
-              "text": "Kill me... and the Sump dies by spring... You need me..."
+              "text": "No! Wait!"
+            },
+            {
+              "speaker": "The Harmacist",
+              "text": "Kill me... and the Slums dies by spring... You need me..."
             },
             {
               "speaker": "Hotaru",
@@ -2239,12 +2317,12 @@
           "condition": "branch: kuro_spared",
           "lines": [
             {
-              "speaker": "Hotaru",
-              "text": "There's a service lift behind the Apothecary. Floor 41 and up: the Academy."
+              "speaker": "Kuro",
+              "text": "There's a service lift behind the Apothecary. Next set of floors: The Academy."
             },
             {
-              "speaker": "Kuro",
-              "text": "Where every road in this city ends. Let's not keep it waiting."
+              "speaker": "Hotaru",
+              "text": "Where every road in this city ends. Let's not keep them waiting."
             }
           ]
         },
@@ -2256,11 +2334,7 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "There's a service lift behind the Apothecary. Floor 41 and up: the Academy."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "Where every road in this city ends."
+              "text": "Looks like there's a service lift behind the Apothecary. Up and up we go."
             }
           ]
         }
@@ -2320,7 +2394,7 @@
         {
           "id": "trainee",
           "room": "Kata Hall",
-          "trigger": "First hollowed trainees",
+          "trigger": "Entering the Kata Hall",
           "condition": "branch: kuro_spared",
           "lines": [
             {
@@ -2330,14 +2404,6 @@
             {
               "speaker": "Kuro",
               "text": "They fight the way I taught them. Dash in, kunai, dash out."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "I'm sorry, Kuro."
-            },
-            {
-              "speaker": "Kuro",
-              "text": "Don't be sorry. Hesitation is defeat."
             }
           ]
         },
@@ -2377,14 +2443,14 @@
           "lines": [
             {
               "speaker": "Kuro",
-              "text": "The sparring ring: The doors seal until combat is over. I regret writing that rule."
+              "text": "The sparring ring: The doors seal until combat is over."
             }
           ]
         },
         {
           "id": "intake",
           "room": "Intake",
-          "trigger": "DaiCam in the intake queue",
+          "trigger": "Entering the Intake hall",
           "lines": [
             {
               "speaker": "DaiCam",
@@ -2423,7 +2489,7 @@
             },
             {
               "speaker": "DaiCam",
-              "text": "Chat, I'm not joking now. They're cutting the souls out of our bodies! Making soldiers or something..."
+              "text": "Chat, I'm not joking anymore. They're cutting the souls out of our bodies! Making soldiers or something..."
             },
             {
               "speaker": "Debtor",
@@ -2478,9 +2544,8 @@
           "condition": "branch: kuro_spared",
           "lines": [
             {
-              "speaker": "???",
-              "text": "Captain Kuro. You are not authorized to be here.",
-              "actually": "Mukuro"
+              "speaker": "Mukuro",
+              "text": "Captain Kuro. You are not authorized to be here."
             },
             {
               "speaker": "Kuro",
@@ -2496,7 +2561,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Watch the rhythm. He'll hold a strike to bait your deflect."
+              "text": "Watch the rhythm. He may hold a strike to bait your deflect."
             }
           ]
         },
@@ -2507,9 +2572,8 @@
           "condition": "branch: kuro_destroyed",
           "lines": [
             {
-              "speaker": "???",
-              "text": "Unit HTR-0. You are not authorized to be here.",
-              "actually": "Mukuro"
+              "speaker": "Mukuro",
+              "text": "Unit HTR-0. You are not authorized to be here."
             },
             {
               "speaker": "Mukuro",
@@ -2613,11 +2677,11 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "His door's open. There's a lift back there."
+              "text": "That door's open. There's a lift back there."
             },
             {
               "speaker": "Kuro",
-              "text": "The Spire Lift. Straight up to the Tenshu. That's where he'll be."
+              "text": "The Spire Lift. Straight up to the Tenshu floors. That's where the Daimyo will be."
             }
           ]
         },
@@ -2629,11 +2693,7 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "His door's open. There's a lift back there."
-            },
-            {
-              "speaker": "Hotaru",
-              "text": "The Spire Lift. Straight up to the Tenshu, and the Daimyo."
+              "text": "That door's open. There's a lift back there."
             }
           ]
         }
@@ -2693,7 +2753,7 @@
           "lines": [
             {
               "speaker": "Hotaru",
-              "text": "I'm above the clouds. Look at the moon! I've never seen it this clear."
+              "text": "I'm above the clouds. Look at that moon! I've never seen it this clear."
             },
             {
               "speaker": "Hotaru",
@@ -2748,7 +2808,11 @@
             },
             {
               "speaker": "DaiCam",
-              "text": "Hotaru! I rode the lift up behind you, and I'm live! Chat, this is the army. This is what's coming. Get out of the city! Tell everyone."
+              "text": "Hotaru! I'm streaming us live! Chat, this is the army. This is what's coming. Get out of the city! Tell everyone."
+            },
+            {
+              "speaker": "DaiCam",
+              "text": "...No, chat, we DON'T have time to do the giveaway. No, I'm not saying that just to avoid doing it!"
             },
             {
               "speaker": "Hotaru",
@@ -2763,7 +2827,7 @@
         {
           "id": "transfer",
           "room": "Last Shrine",
-          "trigger": "Kuro moves into Mukuro's body",
+          "trigger": "Passing the Last Shrine",
           "condition": "branch: kuro_spared",
           "lines": [
             {
@@ -2844,7 +2908,7 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "He might be gone, but his grudge remains. I'll take you down in his name."
+              "text": "He might be dead, but his mission is not. I'll take you down in his name."
             },
             {
               "speaker": "The Daimyo",
@@ -2928,6 +2992,18 @@
           ]
         },
         {
+          "id": "kuro_revive",
+          "room": "Tenshu Core",
+          "trigger": "A Memory Shard puts Kuro back on his feet for the first time",
+          "condition": "branch: kuro_spared",
+          "lines": [
+            {
+              "speaker": "Kuro",
+              "text": "Those memory shards we collected... they're letting me hold on longer. Keep going!"
+            }
+          ]
+        },
+        {
           "id": "kuro_falls",
           "room": "Tenshu Core",
           "trigger": "End of phase 2: Kuro collapses",
@@ -2957,19 +3033,15 @@
               "text": "Enough machines. I'll do this myself."
             },
             {
-              "speaker": "The Daimyo",
-              "text": "Tamakiri cut your captain in two. It will cut you out of that frame like a bad wire."
-            },
-            {
               "speaker": "Hotaru",
-              "text": "Then come and try."
+              "text": "You will try."
             }
           ]
         },
         {
           "id": "dm_dead",
           "room": "Tenshu Core",
-          "trigger": "The Daimyo falls to his knees",
+          "trigger": "The Daimyo falls to his knees; Hotaru finishes it",
           "lines": [
             {
               "speaker": "The Daimyo",
@@ -2978,14 +3050,7 @@
             {
               "speaker": "Hotaru",
               "text": "We'll figure out a way to restore them--if not, we've at least stopped you from doing this to more."
-            }
-          ]
-        },
-        {
-          "id": "dm_finish",
-          "room": "Tenshu Core",
-          "trigger": "Hotaru finishes it",
-          "lines": [
+            },
             {
               "speaker": "Hotaru",
               "text": "Now, die."
@@ -3035,7 +3100,11 @@
             },
             {
               "speaker": "Kuro",
-              "text": "Go see the sunrise from up here. Then, go tell Tetsu the kid came home."
+              "text": "Watch the sunrise from up here--it's quite the sight. Then, go have that meal with Tetsu."
+            },
+            {
+              "speaker": "Kuro",
+              "text": "And tell him... I was always ashamed of helping Kanshi. Tell him I'm sorry for taking so long to finally get things right."
             },
             {
               "speaker": "System",
@@ -3044,6 +3113,10 @@
             {
               "speaker": "Hotaru",
               "text": "...Kuro?"
+            },
+            {
+              "speaker": "System",
+              "text": "Above the clouds, the sky is starting to turn gold."
             }
           ]
         },
@@ -3066,6 +3139,17 @@
               "text": "Above the clouds, the sky is starting to turn gold."
             }
           ]
+        },
+        {
+          "id": "sunrise",
+          "room": "Tenshu Core",
+          "trigger": "After the ending: the sun rises over the clouds",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "So beautiful..."
+            }
+          ]
         }
       ]
     },
@@ -3085,15 +3169,15 @@
           "lines": [
             {
               "speaker": "Tetsu",
-              "text": "Eat up, kid. Nobody climbs a tower on an empty stomach."
+              "text": "I'm glad you're back, kid. Can't be leaving you with an empty stomach after all that."
             },
             {
               "speaker": "DaiCam",
-              "text": "Chat! Forty million! The whole city watched! They're calling it 'The Firefly Climb'!"
+              "text": "Chat! Fourteen million! The whole city watched! They're calling it 'The Firefly Climb'!"
             },
             {
               "speaker": "Hotaru",
-              "text": "Please don't call it that."
+              "text": "I'm just glad everyone's okay."
             }
           ]
         },
@@ -3102,6 +3186,10 @@
           "room": "Tetsu's Cart",
           "trigger": "A hollowed soldier stands near the cart",
           "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Is that one of the soldiers over there?"
+            },
             {
               "speaker": "Tetsu",
               "text": "Some of them--the hollow ones--wander down here now. No orders. They just stand in the rain."
@@ -3128,11 +3216,11 @@
             },
             {
               "speaker": "Hotaru",
-              "text": "He helped me go up the tower. He said to tell you the kid came home."
+              "text": "He helped me go up the tower. He said to tell you he's sorry for taking so long to get things right."
             },
             {
               "speaker": "Tetsu",
-              "text": "...He always came back here. Every time. Stupid kid."
+              "text": "...Stupid kid. He always was too hard on himself."
             },
             {
               "speaker": "Tetsu",
@@ -3196,7 +3284,7 @@
       "THE END",
       "CYBERPUNK NINJA",
       "Hotaru climbed the Spire,",
-      "and Kuro came home.",
+      "and Kuro was set free.",
       "Thanks for playing!"
     ],
     "kuro_destroyed": [
@@ -3250,7 +3338,7 @@
           },
           {
             "speaker": "Hotaru",
-            "text": "A piece of Kuro, broken off when he was split. ...I'll keep it for him."
+            "text": "...What is this? One of Kuro's memories?"
           }
         ]
       },
@@ -3266,11 +3354,11 @@
           },
           {
             "speaker": "Kuro",
-            "text": "...A rooftop in the Sump. Rain. A big guy laughing next to me, sharing noodles."
+            "text": "...A rooftop in the Slums. Rain. A big guy laughing next to me, sharing noodles."
           },
           {
             "speaker": "Kuro",
-            "text": "Two arms, back then. He called me 'kid'."
+            "text": "Two arms, back then. He always called me 'kid', even after I was fully grown."
           },
           {
             "speaker": "Hotaru",
@@ -3278,7 +3366,7 @@
           },
           {
             "speaker": "Kuro",
-            "text": "...Huh. I wonder if he saw me in you somehow?"
+            "text": "He sensed me in you, somehow. He could always read me like an open book."
           }
         ]
       },
@@ -3290,11 +3378,11 @@
         "lines": [
           {
             "speaker": "System",
-            "text": "MEMORY FRAGMENT: A rooftop in the Sump. Rain. A big man with two good arms shares his noodles with a boy. 'Eat up, kid.'"
+            "text": "MEMORY FRAGMENT: A rooftop in the Slums. Rain. A big man with two good arms shares his noodles with a boy. 'Eat up, kid.'"
           },
           {
             "speaker": "Hotaru",
-            "text": "Tetsu. Before Kanshi took his arm."
+            "text": "That must be Tetsu, before he lost his arm."
           }
         ]
       },
@@ -3338,7 +3426,7 @@
           },
           {
             "speaker": "Hotaru",
-            "text": "His mother. The factories got to her too."
+            "text": "Kuro's mother. The pollution destroyed her lungs."
           }
         ]
       },
@@ -3354,7 +3442,7 @@
           },
           {
             "speaker": "Kuro",
-            "text": "...A fighting pit under a casino. I'm young. I'm winning."
+            "text": "...A fighting pit under the casino. I'm young. I'm winning."
           },
           {
             "speaker": "Kuro",
@@ -3378,11 +3466,11 @@
         "lines": [
           {
             "speaker": "System",
-            "text": "MEMORY FRAGMENT: A fighting pit under a casino. A man in a Kanshi coat: 'The Daimyo's guard pays in medicine.'"
+            "text": "MEMORY FRAGMENT: A fighting pit under a casino. A man in a Kanshi coat remarks: 'The Daimyo's guard pays in medicine.'"
           },
           {
             "speaker": "Hotaru",
-            "text": "Medicine for his mother. That's how Kanshi got him."
+            "text": "Medicine for his mother. That's how Kanshi got Kuro to join them."
           }
         ]
       },
@@ -3402,7 +3490,7 @@
           },
           {
             "speaker": "Kuro",
-            "text": "I watched the Sump get smaller out the window. Tetsu didn't come to see me off."
+            "text": "I watched the Slums get smaller out the window. Tetsu didn't come to see me off."
           },
           {
             "speaker": "Hotaru",
@@ -3422,11 +3510,11 @@
         "lines": [
           {
             "speaker": "System",
-            "text": "MEMORY FRAGMENT: A young guard rides the Kanshi Line up, ID on a lanyard, watching the Sump shrink in the window. Nobody sees him off."
+            "text": "MEMORY FRAGMENT: A young guard rides the Kanshi Line up, ID on a lanyard, watching the Slums shrink in the window. Nobody sees him off."
           },
           {
             "speaker": "Hotaru",
-            "text": "He went up for her. Alone."
+            "text": "Kuro went up the line for her. He was... ashamed of working for Kanshi."
           }
         ]
       },
@@ -3470,7 +3558,7 @@
           },
           {
             "speaker": "Hotaru",
-            "text": "It wasn't enough for her. It was never going to be enough."
+            "text": "Kuro's first payday. But it wasn't enough. It was never going to be enough."
           }
         ]
       },
@@ -3490,7 +3578,7 @@
           },
           {
             "speaker": "Kuro",
-            "text": "They stand in rows. They don't blink. Ren looks right through me."
+            "text": "They stand in rows. They don't blink. Ren--my oldest student--looks right through me."
           },
           {
             "speaker": "Hotaru",
@@ -3514,7 +3602,7 @@
           },
           {
             "speaker": "Hotaru",
-            "text": "His students. That's when he found out what the Academy really was."
+            "text": "Kuro's students. That's when he found out what the Academy was doing--stripping out souls to make hollow, obedient soldiers."
           }
         ]
       },
@@ -3530,7 +3618,7 @@
           },
           {
             "speaker": "Kuro",
-            "text": "...That night I went to Tetsu first. He said we should run."
+            "text": "...The night I found out, I went to Tetsu first. He said we should run."
           },
           {
             "speaker": "Kuro",
@@ -3542,7 +3630,7 @@
           },
           {
             "speaker": "Kuro",
-            "text": "I was stupid. Same thing, a lot of the time."
+            "text": "I was stupid. Same thing, far too often."
           }
         ]
       },
@@ -3562,7 +3650,7 @@
           },
           {
             "speaker": "Hotaru",
-            "text": "...He went up alone. Just like I'm doing now."
+            "text": "...Kuro went up to confront the Daimyo alone. Just like I'm doing now."
           }
         ]
       },
@@ -3591,10 +3679,6 @@
           {
             "speaker": "Kuro",
             "text": "Out of every piece of scrap in that yard, I fell into the one named after her charm."
-          },
-          {
-            "speaker": "Kuro",
-            "text": "Maybe I wasn't lost. Maybe I was finding my way home."
           }
         ]
       },
@@ -3614,7 +3698,7 @@
           },
           {
             "speaker": "Hotaru",
-            "text": "His mother's charm, and my name. Out of all the scrap in that yard. Funny coincidence."
+            "text": "His mother's charm, and my name. Out of all the scrap in that yard, he fell into me. Funny coincidence."
           }
         ]
       }

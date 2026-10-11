@@ -85,8 +85,11 @@ def ui_start():
 @on("t_draw")
 def draw():
     if is_clone == 1:
-        if ent_alive[slot] != 1:
+        if ent_alive[slot] == 0:
             delete_clone()
+        if ent_alive[slot] != 1:
+            hide()
+            return
         ex = ent_x[slot]
         ey = ent_y[slot]
         eh = ent_h[slot]
@@ -143,26 +146,41 @@ def draw():
 @proc
 def hud_draw():
     if role == "hp":
-        if hp >= 10:
+        # a hit can take part of a segment (damage options, some bosses): a started segment shows
+        hv = ceil(hp)
+        if hv >= 10:
             costume("hp_10")
         else:
-            costume(join("hp_0", max(0, hp)))
+            costume(join("hp_0", max(0, hv)))
         goto(-232, 172)
         show()
+        # the run's stopwatch, as the end screen counts it
+        secs = floor(play_time / 30)
+        if secs % 60 < 10:
+            clk_s = join(floor(secs / 60), ":0", secs % 60)
+        else:
+            clk_s = join(floor(secs / 60), ":", secs % 60)
     elif role == "dash":
+        # the Phase Step dot and the gourd sit in line with the health bar, to its right
         costume(join("dash_", dash_ch))
-        goto(-230, 147)
+        goto(-118, 170)
         show()
     elif role == "gourd":
         if has_gourd == 1:
-            if opt_gourd == 1:
-                costume("gourd_3")
-            else:
-                costume(join("gourd_", gourd))
-            goto(-192, 151)
+            costume(join("gourd_", gourd))
+            goto(-96, 175)
             show()
         else:
             hide()
+    elif "clk" in role:
+        # one digit of the stopwatch, counted from the right
+        ck = letter(4, role)
+        if ck > strlen(clk_s):
+            hide()
+        else:
+            costume(join("clk_", letter(strlen(clk_s) + 1 - ck, clk_s)))
+            goto(234 - ck * 12, 172)
+            show()
     elif role == "heat":
         # Hotaru's Stance works like everyone else's: it fills gold as she blocks, breaks when full
         pv = min(16, max(0, round(heat)))
@@ -186,10 +204,11 @@ def hud_draw():
             hide()
     elif role == "bbar":
         if boss_on == 1:
-            if boss_hp < 10:
-                costume(join("boss_0", max(0, boss_hp)))
+            bh = ceil(boss_hp)
+            if bh < 10:
+                costume(join("boss_0", max(0, bh)))
             else:
-                costume(join("boss_", boss_hp))
+                costume(join("boss_", bh))
             goto(0, 124)
             show()
         else:
@@ -251,6 +270,7 @@ def draw():
             alpha = min(100, alpha + 12)
         if shown == "" or alpha <= 0:
             hide()
+            hint_hover = 0
         else:
             costume(join("hint_", shown))
             if boss_on == 1 and boss_hp > 0:
@@ -259,6 +279,11 @@ def draw():
                 goto(0, 104)
             effect("ghost", 100 - alpha)
             show()
+            # a click on the card puts it away (and isn't an attack)
+            hint_hover = touching_mouse()
+            if hint_hover == 1 and p_click == 1 and want == shown:
+                hint = ""
+                sfxq.append("menu_back")
 '''
 
 
@@ -348,7 +373,7 @@ def d_init():
 @on("boot")
 def d_boot():
     if is_clone == 0:
-        for k in range(1, 6):
+        for k in range(1, len(DLG_ROLES) + 1):
             role = DLG_ROLES[k]
             is_clone = 1
             clone()
@@ -380,15 +405,27 @@ def d_ctl():
             show_page()
     elif dlg_on == 1:
         dlg_t += 1
-        if dlg_t > 8 and (p_ok == 1 or p_click == 1 or pA == 1):
-            di += 1
-            if di > dend:
-                dlg_on = 0
-                dlg_spk = ""
-                mode = "play"
-                broadcast(join("end_", dlg_name))
+        # the page types out at 60 characters a second, ticking as it goes
+        if dlg_c < dlg_n:
+            dlg_c += 2
+            if dlg_t % 2 == 1:
+                if dlg_spk == "kuro":
+                    sfxq.append("type_k")
+                else:
+                    sfxq.append("type")
+        if dlg_t > 3 and (p_ok == 1 or p_click == 1 or pA == 1):
+            if dlg_c < dlg_n:
+                # a press while it types finishes the page
+                dlg_c = dlg_n
             else:
-                show_page()
+                di += 1
+                if di > dend:
+                    dlg_on = 0
+                    dlg_spk = ""
+                    mode = "play"
+                    broadcast(join("end_", dlg_name))
+                else:
+                    show_page()
 
 
 @proc
@@ -398,10 +435,11 @@ def show_page():
     dlg_txt = DL_TEXT[di]
     dlg_nm = DL_NAME[di]
     dlg_t = 0
+    dlg_c = 0
+    dlg_pg = di
+    dlg_n = DLL_N[di * 3 - 2] + DLL_N[di * 3 - 1] + DLL_N[di * 3]
     if dlg_spk == "kuro":
         sfxq.append("kvoice")
-    else:
-        sfxq.append("blip")
 
 
 @proc
@@ -432,10 +470,30 @@ def d_draw():
     elif role == "text":
         costume(dlg_txt)
         goto(-136, 145)
-        effect("ghost", max(0, 80 - dlg_t * 20))
     elif role == "arrow":
+        if dlg_c < dlg_n:
+            hide()
+            return
         costume(join("next_", floor(frame / 8) % 2))
         goto(218, 92)
+    else:
+        # m1-m3: a strip of the box's own background over the part of each line not yet typed
+        ml = letter(2, role)
+        mi = dlg_pg * 3 - 3 + ml
+        mc = dlg_c
+        if ml > 1:
+            mc -= DLL_N[dlg_pg * 3 - 2]
+        if ml > 2:
+            mc -= DLL_N[dlg_pg * 3 - 1]
+        if mc >= DLL_N[mi]:
+            hide()
+            return
+        if mc < 0:
+            mc = 0
+        # the strip reaches from the typed edge to the right margin, in steps of 4 stage px
+        # (2 box pixels); each line sits 8 box rows below the last, so one set fits all three
+        costume(join("mask_", ceil((176 - DLL_W[mi] * mc / DLL_N[mi] * 0.75) / 2)))
+        goto(0, 128 - (ml - 1) * 16)
     show()
 '''
 
@@ -571,6 +629,8 @@ def draw():
             effect("color", rand(-40, 40))
         else:
             effect("color", 0)
+        # the clouds catch the sunrise
+        effect("brightness", dawn * 0.12)
         if is_clone == 1:
             goto(po - 480 + gj, 0)
         else:
@@ -590,7 +650,10 @@ def l_init():
 @on("t_draw")
 def draw():
     if ingame == 1 and (mode != "menu" or menu == "pause"):
-        costume(R_LEVEL[room])
+        if frame % 24 < 12:
+            costume(R_LEVEL[room])
+        else:
+            costume(R_LEVEL2[room])
         goto(-240 + shx, 180 + shy)
         show()
     else:
@@ -743,6 +806,77 @@ def draw():
     if ingame == 1 and (room == C_ROOM_G5 or room == C_ROOM_F7) and (mode != "menu" or menu == "pause"):
         costume("ranks")
         goto(0 - px * 0.08, -124)
+        show()
+    else:
+        hide()
+'''
+
+
+# The Tenshu's sky, between the backdrop and the clouds: the moon sets as Hotaru climbs
+# (its height per room is R_MOON; 999 = down), and after the Daimyo the dawn comes up
+# behind the clouds (dawn counts 0 to 150).
+SKY = '''
+@flag
+def k_init():
+    hide()
+    is_clone = 0
+    role = "orb"
+
+
+@on("boot")
+def k_boot():
+    if is_clone == 0:
+        # a clone sits just behind its parent: the dawn sky, under the moon and sun
+        role = "dawn"
+        is_clone = 1
+        clone()
+        is_clone = 0
+        role = "orb"
+
+
+@on("t_draw")
+def draw():
+    if ingame == 0 or chapter != 8 or (mode == "menu" and menu != "pause"):
+        hide()
+        return
+    if role == "dawn":
+        if dawn > 0:
+            costume("dawn")
+            goto(0, 0)
+            effect("ghost", 100 - dawn * 100 / 150)
+            show()
+        else:
+            hide()
+    elif dawn > 0:
+        costume("sun")
+        goto(70 - px * 0.02, -150 + dawn * 1.3)
+        show()
+    elif R_MOON[room] < 900:
+        costume("moon")
+        goto(104 - px * 0.02, R_MOON[room])
+        show()
+    else:
+        hide()
+'''
+
+
+SPLASH = '''
+@flag
+def sp_init():
+    hide()
+
+
+@on("t_draw")
+def draw():
+    if mode == "splash":
+        costume("splash")
+        goto(0, 0)
+        if splash_t < 20:
+            effect("ghost", 100 - splash_t * 5)
+        elif splash_t < 100:
+            effect("ghost", 0)
+        else:
+            effect("ghost", min(100, (splash_t - 100) * 5.6))
         show()
     else:
         hide()

@@ -42,9 +42,10 @@ To build against another copy of the asset pack, set `CN_PACK=/path/to/Cyberpunk
 unzip -l CyberpunkNinja.sb3 project.json
 ```
 
-Logic is the main cost. `min()` and `max()` compile to expressions that repeat both
-arguments, so prefer `x -= ...` followed by a clamp over `x = max(0, x - ...)` with a long
-expression inside.
+Logic is the main cost. Inside an expression, `min()` and `max()` compile to arithmetic that
+repeats both arguments; assigned straight to a variable (`x = min(max(x + d, lo), hi)`) they
+compile to a set and an `if` per bound instead, which is much smaller. The size that counts is
+what Scratch saves after loading the file, which has the same layout as the build's output.
 
 ## Playtest
 
@@ -88,6 +89,8 @@ BOSS="start_ch4,47,80" SPR=Raijin NOBOT=1 V=1 npm run tells   # bot off, every f
 | `start_ch3` | 38 | `Dobunushi` |
 | `start_ch4` | 47 | `Raijin` |
 | `start_ch5` | 56 | `KuroBoss` |
-| `start_ch6` | 66 | `Harmacist` (Wardens in rooms 58 to 64) |
+| `start_ch6` | 66 | `Harmacist` (Wardens in rooms 60 to 64) |
 | `start_ch7` | 76 | `Mukuro` |
 | `start_ch8` | 86 | `Daimyo` |
+
+Both test scripts set `dmg_in` (the damage-taken multiplier) to 0 so the bot can't lose.

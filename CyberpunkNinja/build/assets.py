@@ -156,8 +156,9 @@ def autotile(room, c, r, rng):
     return 'left' if rt else 'right'
 
 
-def render_room(room):
-    """Render the static tile layer of a room as a 1x RGBA image (240x184)."""
+def render_room(room, frame=0):
+    """Render the static tile layer of a room as a 1x RGBA image (240x184). `frame` picks
+    the toxic runoff's bubbling frame (0 or 1)."""
     tiles = tile_images(MATERIAL[room.chapter])
     rng = random.Random(room.key)
     im = Image.new('RGBA', (levels.W * 8, levels.H * 8), (0, 0, 0, 0))
@@ -177,7 +178,7 @@ def render_room(room):
                 name = 'spikes_down'
             elif ch == 'w':
                 import art_v2
-                im.alpha_composite(art_v2.toxic_tile(r == 0 or room.g[r - 1][c] != 'w'), (c * 8, r * 8))
+                im.alpha_composite(art_v2.toxic_tile(r == 0 or room.g[r - 1][c] != 'w', frame, c), (c * 8, r * 8))
                 continue
             deco = room.decor.get((c, r))
             if deco and ch in '.#':

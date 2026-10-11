@@ -31,7 +31,7 @@ def pr_spawn():
             owner = "e"
         elif kind == "burst":
             owner = "c"
-        elif kind == "wave":
+        elif kind == "wave" or kind == "gwave":
             owner = "w"
         else:
             owner = "p"
@@ -59,12 +59,13 @@ def pr_update():
     y += vy
     if t > 100 or x < -260 or x > 260 or y < -200 or y > 260:
         delete_clone()
-    if kind == "wave":
+    if owner == "w":
         cell(x + vx * 2, y + 8)
         if cc == "#" or cc == "D":
             cfx("hit", x, y + 10, 0)
             delete_clone()
-        if px + 7 > x - 10 and px - 7 < x + 10 and py < y + 22 and py + 34 > y:
+        # a shockwave is 22 tall; Dobunushi's sludge wall reaches the thin platforms
+        if px + 7 > x - 10 and px - 7 < x + 10 and py < y + 22 + 74 * (kind == "gwave") and py + 34 > y:
             if vx > 0:
                 hit_player(3, 1, x - 30)
             else:
@@ -75,6 +76,11 @@ def pr_update():
     cell(x, y)
     if cc == "=" and (kind != "vial" or vy >= 0):
         cc = "."
+    if cc == "#" and (chapter == 5 or chapter == 7 or chapter == 8):
+        # shots pass through the blinking phase blocks rather than vanishing mid-air
+        pbc = letter(ccy * 30 + ccx + 1, R_GRID[room])
+        if pbc == "G" or pbc == "H":
+            cc = "."
     if cc == "#" or cc == "B" or cc == "D" or cc == "=":
         if kind == "vial":
             # the Harmacist's vials shatter into a lingering poison cloud
@@ -121,7 +127,7 @@ def pr_update():
                 t = 0
             elif res != "miss":
                 delete_clone()
-        elif kind == "bullet" and chapter == 8 and ally_x < 900 and ally_st != "down" and ally_st != "fall" and abs(ally_x - x) < 9 and y > fy_floor and y < fy_floor + 50:
+        elif kind == "bullet" and chapter == 8 and boss_on == 1 and ally_x < 900 and ally_st != "down" and ally_st != "fall" and abs(ally_x - x) < 9 and y > fy_floor and y < fy_floor + 50:
             # turret fire aimed at Kuro: he deflects most of it back into the eye
             if rand(1, 10) <= 6:
                 sfxq.append("deflect")
@@ -145,9 +151,9 @@ def pr_update():
                     # a round Kuro sent back hits half as hard as one of Hotaru's
                     kw = 1 - kd * 0.5
                     if kind == "bullet" or kind == "rshell" or kind == "crescent":
-                        ent_dmg[ei] = ent_dmg[ei] + 2 * kw
+                        ent_dmg[ei] = ent_dmg[ei] + 2 * kw * dmg_out + 0.0001
                     else:
-                        ent_dmg[ei] = ent_dmg[ei] + kw
+                        ent_dmg[ei] = ent_dmg[ei] + kw * dmg_out + 0.0001
                     if kind == "rshell" or kind == "crescent":
                         ent_idmg[ei] = ent_idmg[ei] + 3 * kw
                     else:
@@ -203,6 +209,8 @@ def pr_draw():
         effect("brightness", 0)
     if kind == "wave":
         costume(join("wave_", floor(t / 3) % 2))
+    elif kind == "gwave":
+        costume(join("gwave_", floor(t / 3) % 2))
     elif kind == "card":
         costume(join("card_", floor(t / 3) % 4))
     elif kind == "shell":
@@ -299,16 +307,13 @@ is_clone = 0
 ''') + '''
 @on("t_world")
 def tick():
-    if is_clone == 1 and tmode == "":
+    if is_clone == 1 and tmode == "" and has_gourd == 1:
         if abs(px - x) < 44 and abs(py - y) < 24 and p_ground == 1 and pst == "move":
             prompt_on = 1
             prompt_x = x
             prompt_y = y + 84
             if pE == 1:
-                if has_gourd == 0:
-                    dlg_req = "tetsu"
-                else:
-                    dlg_req = "tetsu2"
+                dlg_req = "tetsu2"
                 mode = "dlg"
 
 
@@ -1086,6 +1091,16 @@ def on_spawn():
                     is_clone = 1
                     clone()
                     is_clone = 0
+
+
+@on("t_world")
+def tick():
+    # the sludge falls burn like a live laser: a hit and a knockback (Phase Step passes through)
+    if is_clone == 1 and kind == "falls":
+        if abs(px - x) < 13 and py < y + 16 and py + 34 > y - 16 and pdash == 0 and pinv == 0 and pst != "dead" and pst != "cut" and pst != "reboot":
+            hq_t.append("hit")
+            hq_d.append(1)
+            hq_x.append(x)
 
 
 @on("t_draw")

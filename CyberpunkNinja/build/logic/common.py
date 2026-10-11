@@ -69,7 +69,8 @@ def hit_player(dmg, breach, sx):
     if res == "hit":
         pinv = 3
     hq_t.append(res)
-    hq_d.append(dmg)
+    # a boss's own damage scale (boss_dmul) applies to everything it throws
+    hq_d.append(dmg * (1 + (boss_dmul - 1) * boss_on))
     hq_x.append(sx)
     if breach == 1 and res == "hit" and (pparry > 0 or (pblock == 1 and (sx - px) * pface >= 0)):
         # a Breach goes through her guard, but meeting it with one still costs Stance

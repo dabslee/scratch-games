@@ -1188,7 +1188,10 @@ def build_sfx():
     S['card'] = np.concatenate([whoosh(0.3, 400, 3000, 0.6), taiko(0.6)[:int(0.9 * SR)]])
     S['blip'] = blip(1320, 0.04, 'square', 0.18)
     S['glass'] = add(hp(noise(0.12), 3500) * expenv(0.12, 0.03) * 0.6, chime([96, 101, 93], 0.025, 0.25, 0.35))
-    S['gurgle'] = cat(*[lp(noise(0.06), 500 + 200 * i) * expenv(0.06, 0.03) * 0.8 for i in range(5)])
+    S['gurgle'] = gurgle()
+    S['type'] = blip(1900, 0.018, 'square', 0.16) * expenv(0.018, 0.006)
+    S['type_k'] = add(blip(760, 0.022, 'square', 0.14) * expenv(0.022, 0.008), glitch(0.022, 0.08))
+    S['dawn'] = dawn_swell()
     S['kvoice'] = glitch(0.09, 0.35) + blip(330, 0.09, 'square', 0.12)
     S['cam_beep'] = np.concatenate([blip(1800, 0.06, 'sine', 0.4), silence(0.04), blip(2400, 0.08, 'sine', 0.4)])
     S['menu_move'] = blip(880, 0.035, 'square', 0.18)
@@ -1219,6 +1222,27 @@ def build_sfx():
         v = np.asarray(v, dtype=float)
         out[k] = fade(normalize(v, 0.85), 0.001, 0.01)
     return out
+
+
+def gurgle():
+    """The pumps before the tide: a deep churn under a run of fat bubbles, a second long."""
+    d = 1.1
+    x = dist(lp(noise(d), 160) * 3.0, 2) * adsr(d, 0.08, 0.2, 0.8, 0.3) * 0.7
+    rng = np.random.default_rng(11)
+    for k in range(16):
+        f0 = rng.uniform(140, 320)
+        bd = rng.uniform(0.05, 0.11)
+        pop = sine(f0 * np.exp(T(bd) / bd * 1.1), bd) * expenv(bd, bd * 0.45, 0.004)
+        mix_into(x, pop, k * 0.062 + rng.uniform(0, 0.03), 0.9)
+    return x
+
+
+def dawn_swell():
+    """Sunrise: a slow, warm major chord that swells and fades over four seconds."""
+    d = 4.2
+    x = pad(chord('D4', 'M') + [n2m('E5'), n2m('A5')], d, 2600, 1.0, 1.4, 2.0)
+    mix_into(x, chime([n2m(n) for n in ('D6', 'F#6', 'A6', 'D7')], 0.22, 1.6, 0.25), 1.2)
+    return reverb(x, 2.0, 0.35)[:int(d * SR)]
 
 
 def victory_sting():

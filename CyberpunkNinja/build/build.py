@@ -162,7 +162,7 @@ mode menu frame ingame room chapter exL exR exU exD enter_dir want_room want_res
 px py pface pst pinv pparry pblock pdash p_ground p_onplat p_cmd hp heat gourd gmax has_gourd
 dash_ch hitstop shake shake_amp shx shy flash fade fade_to
 kL kR kU kD kA kZ kS kH kE kN kP pU pD pL pR pA pZ pS pH pE p_ok p_click p_pause p_any
-opt_wide opt_slow opt_heat opt_gourd opt_god opt_music opt_sfx opt_shake
+opt_wide opt_slow opt_heat opt_music opt_sfx opt_shake opt_preset opt_din opt_dout dmg_in dmg_out
 banner banner_t card hint prompt_on prompt_x prompt_y dlg_req dlg_on dlg_spk dlg_port dlg_txt dlg_nm dlg_name
 boss_on boss_hp boss_int boss_slot boss_phase boss_dead ambush_on mp_on mp_x mp_y lift_ride
 cp_room cp_x cp_y has_save shards shard_id deaths play_time daicam_done cam_x cam_y music_cur music_want
@@ -177,6 +177,7 @@ dobu_cut dobu_gen dobu_ph dobu_open dobu_turn
 walk_to muk_bx muk_carry recep escort_go
 ally_hp ally_lives ally_rev ally_inv ally_def ally_dash ally_shot fy_floor dm_z dm_hi dm_lh exo_x dm_st dm_t dm_fc dm_tell dm_fl
 hold_x hold_y ke1_tell ke2_tell
+flip_t dawn boss_dmul foes_left hint_hover clk_s splash_t dlg_c dlg_n dlg_pg
 '''.split()
 
 GLOBAL_LISTS = '''
@@ -187,6 +188,7 @@ pq_t pq_x pq_y pq_vx pq_vy pk_x pk_y pz_x pz_y brk_hits sfxq ui_slot ui_role
 trig_x trig_ev trig_on dead_objs seen got_shards broken dm_hits
 CONV_NAME CONV_START CONV_LEN DL_SPK DL_PORT DL_TEXT DL_NAME
 MI_KEY MI_X MI_Y MI_KIND HUD_ROLES DLG_ROLES FONT_W sl_q reel_q RZ R_WIND R_MOVE R_FLIP R_TIDE GL_I GL_T
+R_LEVEL2 R_MOON DLL_N DLL_W PRESETS MULTS MULTN
 '''.split()
 
 for g in GLOBALS:
@@ -208,6 +210,15 @@ if problems:
 
 set_list('R_GRID', [r.grid_string() for r in ROOMS])
 set_list('R_LEVEL', ['room_' + r.key for r in ROOMS])
+# rooms with toxic runoff have a second frame for it to bubble
+BUBBLING = [r for r in ROOMS if any('w' in row for row in r.g)]
+set_list('R_LEVEL2', ['room_' + r.key + ('_b' if r in BUBBLING else '') for r in ROOMS])
+# the moon over the Tenshu sets as Hotaru climbs: its height per room (999 = below the clouds)
+MOON_STEP = {'g1': 0, 'g2': 1, 'g3': 2, 'g4': 3, 'g4s': 3, 'g5': 4, 'g6': 5, 'g7': 6}
+set_list('R_MOON', [96 - 28 * MOON_STEP[r.key] if r.key in MOON_STEP else 999 for r in ROOMS])
+set_list('PRESETS', dialogue.PRESETS)
+set_list('MULTS', dialogue.MULTS)
+set_list('MULTN', dialogue.MULTN)
 set_list('R_CH', [r.chapter for r in ROOMS])
 for d in 'LRUD':
     set_list('R_' + d, [RI[r.exits[d]] if d in r.exits else 0 for r in ROOMS])
@@ -256,7 +267,7 @@ C.update({
     'C_ROOM_D1': RI['d1'], 'C_D1_X': d1_start['x'], 'C_D1_Y': d1_start['y'],
     'C_ROOM_E1': RI['e1'], 'C_E1_X': e1_start['x'], 'C_E1_Y': e1_start['y'],
     'C_ROOM_F1': RI['f1'], 'C_F1_X': f1_start['x'], 'C_F1_Y': f1_start['y'],
-    'C_ROOM_G1': RI['g1'], 'C_G1_X': g1_start['x'], 'C_G1_Y': g1_start['y'], 'C_ROOM_EP': RI['ep'], 'C_ROOM_G5': RI['g5'], 'C_ROOM_F7': RI['f7'],
+    'C_ROOM_G1': RI['g1'], 'C_ROOM_E2': RI['e2'], 'C_ROOM_E6': RI['e6'], 'C_G1_X': g1_start['x'], 'C_G1_Y': g1_start['y'], 'C_ROOM_EP': RI['ep'], 'C_ROOM_G5': RI['g5'], 'C_ROOM_F7': RI['f7'],
     'C_LIFT_LOW': -200, 'C_LIFT_TOP': levels.top(19),
     'C_G': 1.5, 'C_JUMP': 16.5, 'C_WALLJUMP': 15, 'C_BOOST': 18, 'C_RUN': 6, 'C_MAXFALL': 13,
     'C_SLIDE': 3, 'C_DASHV': 21.3, 'C_DASHF': 6, 'C_HW': 7, 'C_PH': 34, 'C_COYOTE': 3,
@@ -267,6 +278,7 @@ C.update({
 # ------------------------------------------------------------------ dialogue pages
 DLG_COSTUMES = []
 CONV_NAME, CONV_START, CONV_LEN, DL_SPK, DL_PORT, DL_TEXT, DL_NAME = [], [], [], [], [], [], []
+DLL_N, DLL_W = [], []    # per page, three entries: each line's characters and width (art px), for typing it out
 page_no = 0
 for cname, lines in dialogue.CONVERSATIONS.items():
     CONV_NAME.append(cname)
@@ -277,6 +289,9 @@ for cname, lines in dialogue.CONVERSATIONS.items():
         wrapped = REG.wrap(text, 234)
         for i in range(0, len(wrapped), 3):
             page = wrapped[i:i + 3]
+            for k in range(3):
+                DLL_N.append(len(page[k]) if k < len(page) else 0)
+                DLL_W.append(REG.width(page[k]) if k < len(page) else 0)
             page_no += 1
             name = 'txt_%d' % page_no
             tim = text_image(page, width=234)
@@ -294,8 +309,11 @@ set_list('DL_SPK', DL_SPK)
 set_list('DL_PORT', DL_PORT)
 set_list('DL_TEXT', DL_TEXT)
 set_list('DL_NAME', DL_NAME)
-set_list('HUD_ROLES', ['hp', 'dash', 'gourd', 'heat', 'bplate', 'bbar', 'bint'])
-set_list('DLG_ROLES', ['box', 'port', 'name', 'text', 'arrow'])
+set_list('DLL_N', DLL_N)
+set_list('DLL_W', DLL_W)
+set_list('HUD_ROLES', ['hp', 'dash', 'gourd', 'heat', 'bplate', 'bbar', 'bint'] + ['clk%d' % k for k in range(1, 7)])
+# m1-m3 hide each line's untyped part; they're made after the text, so they draw over it
+set_list('DLG_ROLES', ['box', 'port', 'name', 'text', 'm1', 'm2', 'm3', 'arrow'])
 set_list('FONT_W', [REG.glyphs[c['name'][3:]].width for c in ST.costumes('Font')])
 
 
@@ -316,8 +334,10 @@ def hint_image(segs):
     widths = [sum(p[1].width if p[0] == 'img' else p[1] for p in r) + 3 * (len(r) - 1) for r in rows]
     w = 8 + max(widths)
     rh = 17
-    h = 4 + rh * len(rows)
+    # a line under the rows for the small grey note: a click puts the card away
+    h = 4 + rh * len(rows) + 5
     im = panel_image(w, h, alpha=215, accent=None, border='slate3')
+    art_v2.tiny_text(im, w - art_v2.tiny_width(HINT_NOTE) - 4, h - 8, HINT_NOTE, rgba('slate3'))
     for ri, row in enumerate(rows):
         x = (w - widths[ri]) // 2
         cy = 2 + ri * rh + rh // 2
@@ -332,6 +352,7 @@ def hint_image(segs):
     return im
 
 
+HINT_NOTE = 'click to hide'
 HINT_COSTUMES = []
 for k, v in dialogue.HINTS.items():
     him = hint_image(v)
@@ -340,6 +361,35 @@ for k, v in dialogue.HINTS.items():
 # ------------------------------------------------------------------ menu images
 MENU_COSTUMES = []
 MENU_COSTUMES += copy_costumes('Buttons')
+
+
+def text_button(label):
+    """A main-menu button for `label` in the pack's style, drawn over the pack's QUIT button:
+    {state: 1x image}."""
+    out = {}
+    for state in ('normal', 'hover', 'pressed', 'disabled'):
+        quit_im = ST.image_1x('Buttons', 'quit_' + state)
+        blank = ST.image_1x('Buttons', 'blank_' + state)
+        qa, ba = quit_im.load(), blank.load()
+        # QUIT's lettering: where it differs from the blank button
+        diff = [(x, y) for y in range(quit_im.height) for x in range(quit_im.width) if qa[x, y] != ba[x, y]]
+        x0 = min(x for x, y in diff)
+        y0 = min(y for x, y in diff)
+        y1 = max(y for x, y in diff)
+        # its colors, top to bottom: the face, and (hover) the shadow under it
+        face = max((qa[x, y] for x, y in diff), key=lambda c: sum(c[:3]))
+        bold = state == 'hover'
+        font = BOLD if bold else REG
+        im = blank.copy()
+        t = text_image([label], font, face[:3], shadow=P['ink'] if bold else None)
+        im.alpha_composite(t, ((im.width - t.width) // 2, y0 + (y1 - y0 + 1 - 8) // 2 - 1))
+        out[state] = im
+    return out
+
+
+for _st, _im in text_button('CONTROLS').items():
+    c = ST.costume('Buttons', 'quit_' + _st)
+    MENU_COSTUMES.append(make_costume('controls_' + _st, up4(_im), c['rotationCenterX'], c['rotationCenterY'], FILES))
 MENU_COSTUMES += copy_costumes('MenuCursor')
 MENU_COSTUMES += copy_costumes('Panels')
 MENU_COSTUMES += [costume_from(art_v2.chapter_card(i), 'ch%d' % i, 100, 22) for i in range(9)]
@@ -347,7 +397,7 @@ MENU_COSTUMES += copy_costumes('KeyPrompts', names=['key_left', 'key_right'])
 MENU_COSTUMES += copy_costumes('Banners', names=['press_any_key'])
 big = panel_image(232, 176)
 MENU_COSTUMES.append(costume_from(big, 'panel', 116, 88))
-for key, label, col in (('ttl_options', 'OPTIONS', 'cyan3'), ('ttl_chapters', 'CHAPTERS', 'cyan3'), ('ttl_assist', 'ASSIST MODE', 'mag3')):
+for key, label, col in (('ttl_options', 'OPTIONS', 'cyan3'), ('ttl_chapters', 'CHAPTERS', 'cyan3')):
     im = text_image([label], BOLD, P[col], shadow=P['mag2'] if col == 'cyan3' else P['ink'])
     MENU_COSTUMES.append(costume_from(im, key, im.width / 2, 4.5))
 for key, label in dialogue.OPTION_LABELS.items():
@@ -355,6 +405,7 @@ for key, label in dialogue.OPTION_LABELS.items():
     assert im.width <= 128, ('option label too wide', label, im.width)
     MENU_COSTUMES.append(costume_from(im, 'lbl_' + key, 0, 5))
 values = {'on': 'ON', 'off': 'OFF', 'view': 'VIEW'}
+values.update(dialogue.VALUE_TEXT)
 for i in range(6):
     values['vol%d' % i] = '%d%%' % (i * 20)
 for vk, vt in values.items():
@@ -440,10 +491,30 @@ def wave_frame(n):
 
 
 WAVE_COSTUMES = [costume_from(wave_frame(i), 'wave_%d' % i, 8, 13) for i in range(2)]
+
+
+def sludge_wave(n):
+    """Dobunushi's spew: a green wall of sludge 48 px tall (96 on stage), feet at the bottom."""
+    im = Image.new('RGBA', (14, 48), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    for i, col in enumerate(['green1', 'green2', 'lime', 'green2', 'green1']):
+        x = 2 + i * 2
+        top = [14, 4, 0, 3, 12][i] + (n * (i % 2)) * 2
+        d.line([x, top, x, 47], fill=rgba(col))
+        d.line([x + 1, top + 2, x + 1, 47], fill=rgba(col, 200))
+    for k in range(6):
+        y = 8 + ((k * 7 + n * 4) % 38)
+        im.putpixel((3 + (k * 5) % 9, y), rgba('white', 220))
+    d.line([0, 47, 13, 47], fill=rgba('lime'))
+    return im
+
+
+WAVE_COSTUMES += [costume_from(sludge_wave(i), 'gwave_%d' % i, 7, 47) for i in range(2)]
 tiles_alley = assets.tile_images('alley')
 BREAK_COSTUMES = [costume_from(tiles_alley['breakable'], 'breakable', 4, 4),
                   costume_from(tiles_alley['breakable_cracked'], 'breakable_cracked', 4, 4)]
 ROOM_COSTUMES = [make_costume('room_' + r.key, up4(assets.render_room(r)), 0, 0, FILES) for r in ROOMS]
+ROOM_COSTUMES += [make_costume('room_' + r.key + '_b', up4(assets.render_room(r, 1)), 0, 0, FILES) for r in BUBBLING]
 
 # ------------------------------------------------------------------ audio
 import audio  # noqa: E402
@@ -482,6 +553,23 @@ def sprite(name, costumes, src, sounds=(), visible=False, x=0, y=0):
 
 
 MEM_RAMP = ['night2', 'purple1', 'purple2', 'purple3', 'white']
+
+
+def tinted(sprite_name, prefix, color, amount):
+    """A sprite's pack costumes blended `amount` of the way toward `color` (a palette name)."""
+    out = []
+    tc = P[color]
+    for c in ST.costumes(sprite_name):
+        im = ST.image_1x(sprite_name, c['name'])
+        px = im.load()
+        for y in range(im.height):
+            for x in range(im.width):
+                r, g, b, a = px[x, y]
+                if a:
+                    px[x, y] = (round(r + (tc[0] - r) * amount), round(g + (tc[1] - g) * amount),
+                                round(b + (tc[2] - b) * amount), a)
+        out.append(make_costume(prefix + c['name'], up4(im), c['rotationCenterX'], c['rotationCenterY'], FILES))
+    return out
 
 
 def toned(sprite_name, ramp, prefix, suffix='', recolor_map=None):
@@ -545,7 +633,77 @@ NEW_BG = {2: (art_ch2.sky, art_ch2.far, art_ch2.mid),
           5: (art_ch56.hollow_sky, art_ch56.hollow_far, art_ch56.hollow_mid),
           7: (art_ch56.academy_sky, art_ch56.academy_far, art_ch56.academy_mid)}
 PAR = {0: [], 1: [], 2: []}
+
+
+def tenshu_sky():
+    """The Tenshu's night sky without its moon, and the moon on its own (it sets as Hotaru
+    climbs; see visuals.SKY). Returns (sky, moon, (moon centre x, y)) in 1x art pixels."""
+    sky = ST.image_1x('Stage', 'sky_tenshu')
+    px = sky.load()
+    # the moon: the biggest patch of bright pixels up there (stars are single pixels)
+    bright = {(x, y) for y in range(0, 100) for x in range(120, 230) if sum(px[x, y][:3]) > 330}
+    best = set()
+    while bright:
+        todo = [bright.pop()]
+        comp = set(todo)
+        while todo:
+            x, y = todo.pop()
+            for q in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1), (x + 1, y + 1), (x - 1, y - 1), (x + 1, y - 1), (x - 1, y + 1)):
+                if q in bright:
+                    bright.discard(q)
+                    comp.add(q)
+                    todo.append(q)
+        if len(comp) > len(best):
+            best = comp
+    x0, x1 = min(p[0] for p in best), max(p[0] for p in best)
+    y0, y1 = min(p[1] for p in best), max(p[1] for p in best)
+    mx, my, r = (x0 + x1) / 2, (y0 + y1) / 2, max(x1 - x0, y1 - y0) / 2 + 0.5
+    moon = Image.new('RGBA', (x1 - x0 + 3, y1 - y0 + 3), (0, 0, 0, 0))
+    for y in range(y0 - 1, y1 + 2):
+        for x in range(x0 - 1, x1 + 2):
+            if (x - mx) ** 2 + (y - my) ** 2 <= r * r:
+                moon.putpixel((x - x0 + 1, y - y0 + 1), px[x, y])
+    # the sky behind it: the same rows from further left (it's a vertical gradient with stars)
+    for y in range(y0 - 2, y1 + 3):
+        for x in range(x0 - 2, x1 + 3):
+            if (x - mx) ** 2 + (y - my) ** 2 <= (r + 1.5) ** 2:
+                px[x, y] = px[x - int(2 * r + 8), y]
+    return sky, moon, (mx - x0 + 1, my - y0 + 1)
+
+
+def dawn_sky():
+    """The sunrise behind the Tenshu's clouds: violet overhead to gold at the horizon."""
+    stops = [(0, (44, 30, 96)), (70, (150, 64, 140)), (115, (240, 120, 96)), (150, (255, 186, 98)), (180, (255, 222, 140))]
+    im = Image.new('RGBA', (240, 180))
+    for y in range(180):
+        for (ya, ca), (yb, cb) in zip(stops, stops[1:]):
+            if ya <= y <= yb:
+                f = (y - ya) / (yb - ya)
+                col = tuple(round(a + (b - a) * f) for a, b in zip(ca, cb)) + (255,)
+        for x in range(240):
+            im.putpixel((x, y), col)
+    return im
+
+
+def sun_disc():
+    im = Image.new('RGBA', (48, 48), (0, 0, 0, 0))
+    for y in range(48):
+        for x in range(48):
+            d = ((x - 23.5) ** 2 + (y - 23.5) ** 2) ** 0.5
+            if d <= 13:
+                im.putpixel((x, y), (255, 248, 214, 255) if d < 9 else (255, 224, 120, 255))
+            elif d <= 23:
+                im.putpixel((x, y), (255, 214, 120, int(150 * (23 - d) / 10)))
+    return im
+
+
+SKY8, MOON, MOON_C = tenshu_sky()
 for ch in range(10):
+    if ch == 8:
+        stage.costumes.append(make_costume('sky_8', up4(SKY8), 480, 360, FILES))
+        for li, layer in ((1, 'Parallax_far'), (2, 'Parallax_mid')):
+            PAR[li] += copy_costumes(layer, names=['tenshu'], rename=lambda n: 'ch8')
+        continue
     if ch in PACK_BG:
         k = PACK_BG[ch]
         stage.costumes += copy_costumes('Stage', names=['sky_' + k], rename=lambda n, ch=ch: 'sky_%d' % ch)
@@ -563,6 +721,16 @@ for ch in range(10):
 stage.sounds = []
 scratchc.compile_sprite(stage, read_logic('stage.py'), C)
 
+# the splash logo (art/src/splash_logo.png, any size), on white, filling the screen's height
+_logo = Image.open(os.path.join(HERE, '..', 'art', 'src', 'splash_logo.png')).convert('RGBA')
+_sc = min(640 / _logo.height, 900 / _logo.width)
+_logo = _logo.resize((round(_logo.width * _sc), round(_logo.height * _sc)), Image.LANCZOS)
+_splash = Image.new('RGBA', (960, 720), (255, 255, 255, 255))
+_splash.alpha_composite(_logo, ((960 - _logo.width) // 2, (720 - _logo.height) // 2))
+sprite('Splash', [make_costume('splash', _splash, 480, 360, FILES)], visuals.SPLASH)
+# the Tenshu's moon, and the dawn (behind the clouds)
+sprite('Sky', [costume_from(MOON, 'moon', *MOON_C), costume_from(sun_disc(), 'sun', 24, 24),
+               make_costume('dawn', up4(dawn_sky()), 480, 360, FILES)], visuals.SKY)
 PAR_FAR = sprite('Parallax_far', PAR[1], visuals.parallax(0.05, 1))
 PAR_MID = sprite('Parallax_mid', PAR[2], visuals.parallax(0.12, 9))
 def ranks_image():
@@ -689,11 +857,16 @@ for i, c in enumerate(ST.costumes('HannyaBoy')):
 # from the Vaults on, the grunts are men in black suits (u_); in the Hollow Floor, a memory of one (m_)
 suit = art_edits.suit_costumes(ST, 'u_')
 suit_mem = [('m_' + n[2:], art_ch56.tone(im, MEM_RAMP, stretch=True), cx, cy) for n, im, cx, cy in suit]
+# the Slums memory's Hannya Boy, toned like the rest of Kuro's memories (mg_)
+suit_mem += [('mg_' + c['name'], art_ch56.tone(up4(ST.image_1x('HannyaBoy', c['name'])), MEM_RAMP, stretch=True),
+              c['rotationCenterX'], c['rotationCenterY']) for c in ST.costumes('HannyaBoy')]
 sprite('HannyaBoy', copy_costumes('HannyaBoy') + [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in suit + suit_mem]
        + drain_cos, CL + FX + EN + enemies.HANNYA)
 sprite('BigOni', copy_costumes('BigOni'), CL + FX + EN + enemies.ONI)
 SPRAYER_MAP = {'slate3': 'white', 'slate2': 'steel', 'steel': 'green2', 'slate1': 'green1', 'red3': 'lime'}
-sprite('ScavDrone', copy_costumes('ScavDrone') + recolored('ScavDrone', SPRAYER_MAP, 'p_'), CL + FX + EN + enemies.DRONE)
+# Hollow Floor's drones (h_) are memories: a slight violet cast
+sprite('ScavDrone', copy_costumes('ScavDrone') + recolored('ScavDrone', SPRAYER_MAP, 'p_') + tinted('ScavDrone', 'h_', 'purple2', 0.3),
+       CL + FX + EN + enemies.DRONE)
 sprite('LadyLuck', [make_costume(n, im, cx, cy, FILES) for n, im, cx, cy in art_edits.luck_costumes(ST)], CL + FX + EN + enemies.LUCK)
 sprite('Warden', recolored('Mukuro', art_ch3.WARDEN_MAP) + toned('Mukuro', MEM_RAMP, 'm_') + recolored('Mukuro', art_v2.TRAINEE_MAP, 's_')
        + recolored('Mukuro', art_v2.SOLDIER_MAP, 'h_'), CL + FX + EN + enemies.WARDEN)
@@ -827,11 +1000,19 @@ hud = [snug_hp('hp_%02d' % k) for k in range(11)]
 hud += [costume_from(ST.image_1x('HUD', src).crop((0, 0, 8, 9)), 'dash_%d' % i, 0, 0) for i, src in enumerate(('dash_0', 'dash_2', 'dash_1'))]
 hud += copy_costumes('HUD', names=['gourd_', 'heat_', 'integrity_', 'boss_']) + copy_costumes('NamePlates', names=['boss_big_oni', 'boss_lady_luck', 'boss_mukuro', 'boss_raijin', 'boss_kuro', 'boss_the_daimyo'])
 hud += [costume_from(art_v2.boss_plate(t), 'boss_' + k, 0, 0) for k, t in (('dobunushi', 'DOBUNUSHI'), ('the_harmacist', 'THE HARMACIST'))]
+# the stopwatch, top right: one costume per character, centred in a 6 px cell, top at the anchor
+for _ch in '0123456789:':
+    _t = text_image([_ch], BOLD, P['white'], shadow=P['ink'])
+    hud.append(costume_from(_t, 'clk_' + _ch, _t.width / 2 - 0.5, 0))
 sprite('HUD', hud, visuals.HUD)
 hint_cos = HINT_COSTUMES + copy_costumes('KeyPrompts', names=['key_e'])
 sprite('Hints', hint_cos, visuals.HINTS)
 _ex = art_v2.banner_word('EXECUTION')
-ban = copy_costumes('Banners') + [costume_from(_ex, 'execution', _ex.width / 2, _ex.height / 2)] + [costume_from(art_v2.chapter_card(i), 'ch%d' % i, 100, 22) for i in range(9)]
+# a boss's defeat reads ENEMY FELLED (the pack's banner said TARGET SEVERED)
+_felled = art_v2.banner_word('ENEMY FELLED')
+ban = ([c for c in copy_costumes('Banners') if c['name'] != 'victory']
+       + [costume_from(_felled, 'victory', _felled.width / 2, _felled.height / 2)]
+       + [costume_from(_ex, 'execution', _ex.width / 2, _ex.height / 2)]) + [costume_from(art_v2.chapter_card(i), 'ch%d' % i, 100, 22) for i in range(9)]
 epi = panel_image(200, 44, border='mag3', accent='cyan3')
 REG.draw(epi, 10, 6, 'THE END OF THE CLIMB', P['mag3'], P['ink'])
 et = text_image(['EPILOGUE'], BOLD, P['cyan3'], shadow=P['mag2'])
@@ -858,14 +1039,43 @@ def sheet_portraits():
     return out
 
 
-dlg = (copy_costumes('Dialogue') + sheet_portraits() + copy_costumes('NamePlates', names=['name_'])
-       + DLG_COSTUMES)
+def dialogue_box():
+    """The pack's dialogue box with its text panel made opaque, and the strips that hide
+    the untyped part of each line: crops of that same panel, so they match it exactly.
+    The box draws at (0, 128) with its centre at (116, 24) in box pixels (2 stage px each);
+    a line's text spans 16.5 stage px, which 9 box rows cover, starting at rows 15, 23 and
+    31 (all odd, so the panel's scanlines line up for one set of strips)."""
+    c = ST.costume('Dialogue', 'box')
+    box = ST.image_1x('Dialogue', 'box')
+    px = box.load()
+    for y in range(box.height):
+        for x in range(box.width):
+            if 200 <= px[x, y][3] < 255:
+                px[x, y] = px[x, y][:3] + (255,)
+    right, top, rows = 224, 15, 9
+    for y in range(top, 31 + rows):
+        for x in range(48, right):
+            assert px[x, y] == px[100, top + (y - top) % 2], ('dialogue panel not plain at', x, y)
+    out = [make_costume('box', up4(box), c['rotationCenterX'], c['rotationCenterY'], FILES)]
+    for k in range(89):
+        w = max(1, 2 * k)
+        strip = box.crop((right - w, top, right, top + rows))
+        if k == 0:
+            strip = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
+        out.append(costume_from(strip, 'mask_%d' % k, 116 - (right - w), 24 - top))
+    return out
+
+
+_box = dialogue_box()
+dlg = ([_box[0]] + copy_costumes('Dialogue', names=['next_']) + _box[1:] + sheet_portraits()
+       + copy_costumes('NamePlates', names=['name_']) + DLG_COSTUMES)
 dlg.append(costume_from(art_ch2.nameplate('LADY LUCK'), 'name_lady_luck', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('SYSTEM', border='cyan2'), 'name_system', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('BIG ONI', border='red2'), 'name_big_oni', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('THE HARMACIST', border='green2'), 'name_the_harmacist', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('DEBTOR', border='steel'), 'name_debtor', 0, 0))
 dlg.append(costume_from(art_ch2.nameplate('RECEPTIONIST', border='cyan2'), 'name_receptionist', 0, 0))
+dlg.append(costume_from(art_ch2.nameplate('KANSHI ASSOCIATE', border='cyan2'), 'name_kanshi_associate', 0, 0))
 sprite('Dialogue', dlg, visuals.DIALOGUE)
 sprite('Menu', MENU_COSTUMES, menu.MENU)
 sprite('TextFX', copy_costumes('Font'), menu.TEXTFX)

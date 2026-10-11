@@ -172,9 +172,10 @@ def timers():
     air_t += 1
     heat_idle += 1
     # Stance only recovers with her guard down: never while blocking. The more hurt
-    # she is the slower it settles, down to half speed near empty
+    # she is the slower it settles, down to half speed near empty. Her bar is half the
+    # size of a fighter's, so every rate on it runs double
     if heat_idle > 30 and heat > 0 and pst != "overheat" and pst != "block" and pst != "deflect" and frame % 6 == 0:
-        heat -= 0.5 + hp / 20
+        heat -= 1 + hp / 10
         if heat < 0:
             heat = 0
 
@@ -535,7 +536,7 @@ def do_hit():
     for ei in range(1, len(ent_type) + 1):
         if ent_alive[ei] == 1 and ent_x[ei] + ent_w[ei] > ax1 and ent_x[ei] - ent_w[ei] < ax2:
             if ent_y[ei] + ent_h[ei] > ay1 and ent_y[ei] < ay2:
-                ent_dmg[ei] = ent_dmg[ei] + atk_dmg
+                ent_dmg[ei] = ent_dmg[ei] + atk_dmg * dmg_out + 0.0001
                 ent_idmg[ei] = ent_idmg[ei] + atk_int
                 ent_kb[ei] = pface * atk_kb
                 ent_hk[ei] = p_atk
@@ -659,7 +660,7 @@ def guard_cancel():
 @proc
 def try_heal():
     if grounded == 1 and hp < 10:
-        if gourd > 0 or (opt_gourd == 1 and has_gourd == 1):
+        if gourd > 0:
             pst = "heal"
             pt = 0
             healed = 0
@@ -675,8 +676,7 @@ def st_heal():
     if healed == 0 and pfr >= 3:
         healed = 1
         hp = min(10, hp + C_HEAL)
-        if opt_gourd == 0:
-            gourd -= 1
+        gourd -= 1
         cfx("heal", px, py, pface)
         sfxq.append("heal")
     if pfr >= a_n:
@@ -753,7 +753,7 @@ def proc_hits():
 
 @proc
 def got_deflect(sx):
-    heat = max(0, heat - 2)
+    heat = max(0, heat - 4)
     dash_ch = 1
     hitstop = max(hitstop, 4)
     if sx > px:
@@ -768,9 +768,9 @@ def got_deflect(sx):
 @proc
 def got_block(sx):
     if opt_heat == 1:
-        heat += 1.5
-    else:
         heat += 3
+    else:
+        heat += 6
     heat_idle = 0
     if sx > px:
         pvx = -3
@@ -788,8 +788,7 @@ def got_block(sx):
 def take_hit(dmg, sx):
     if pst == "dead":
         return
-    if opt_god == 0:
-        hp -= dmg
+    hp -= dmg * dmg_in
     pinv = C_IFRAMES
     if px > sx:
         pvx = 5
@@ -820,9 +819,9 @@ def guard_break():
     if pst == "dead":
         return
     if opt_heat == 1:
-        heat += 1.5
-    else:
         heat += 3
+    else:
+        heat += 6
     heat_idle = 0
     if heat >= 16:
         overheat()
@@ -868,9 +867,8 @@ def st_held():
 def squeeze(dmg):
     if pst != "held":
         return
-    if opt_god == 0:
-        hp -= dmg
-    heat = min(16, heat + 3)
+    hp -= dmg * dmg_in
+    heat = min(16, heat + 6)
     heat_idle = 0
     sfxq.append("zap")
     cfx("hit", px, py + 20, 0)
@@ -905,8 +903,7 @@ def thrown(sx):
 def sting(dmg):
     if pst == "dead" or pinv > 0:
         return
-    if opt_god == 0:
-        hp -= dmg
+    hp -= dmg * dmg_in
     pinv = 12
     sfxq.append("zap")
     cfx("hit", px, py + 18, 0)
@@ -920,8 +917,7 @@ def sting(dmg):
 def hazard(dmg):
     if pst == "dead":
         return
-    if opt_god == 0:
-        hp -= dmg
+    hp -= dmg * dmg_in
     px = safe_x
     py = safe_y
     pvx = 0
@@ -944,8 +940,7 @@ def hazard(dmg):
 @proc
 def tide_hit():
     # the sludge tide: a burn and a bounce back up, no teleport
-    if opt_god == 0:
-        hp -= 1
+    hp -= dmg_in
     pvy = 17
     py = tide_y - 4
     pinv = 24

@@ -6,7 +6,7 @@ module.exports = async (page) => {
   const bc = async m => page.evaluate(m => { vm.runtime.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: m}); return 0; }, m);
   await L.W(1500); await bc(ev); await L.W(2500);
   for (let i=0;i<4;i++){ await L.W(600); await L.skipDialogue(30);}
-  await L.sv('opt_god', 1);
+  await L.sv('dmg_in', 0);
   for (const kv of (process.env.SET || '').split(';').filter(Boolean)) { const [k, v] = kv.split('='); await L.sv(k, isNaN(+v) ? v : +v); }
   await L.goto(+room, +(process.env.SX || -150), +(process.env.SY || -124)); await L.W(600);
   await page.evaluate((spr) => {

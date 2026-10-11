@@ -141,7 +141,7 @@ def link(a, direction, b):
 
 
 # =====================================================================
-# PROLOGUE: THE SUMP
+# PROLOGUE: THE SLUMS
 # =====================================================================
 
 # P1 Reboot -----------------------------------------------------------
@@ -226,7 +226,7 @@ p6.obj('sign', cx(10), bottom(10), a='NeonSign_Ramen')
 p6.obj('lantern', cx(13), bottom(10))
 p6.obj('lantern', cx(9) + 6, bottom(10))
 p6.obj('shrine', cx(22), bottom(18))
-p6.obj('trig', -999, 0, a='tetsu_seen')
+p6.obj('trig', -999, 0, a='tetsu_seen')                                # Tetsu speaks up as she walks in
 
 # P7 Gauntlet ---------------------------------------------------------
 p7 = room('p7', 0, 'Gauntlet')
@@ -405,7 +405,7 @@ a9.deco('z', 1, 3, 28, 3).deco('r', 24, 13, 28, 13).deco('x', 3, 7, 8, 7)
 a9.obj('shrine', cx(8), bottom(18))
 a9.obj('sign', cx(20), bottom(3), a='NeonSign_Danger')
 a9.obj('lantern', cx(14), bottom(3))
-a9.obj('trig', cx(16), 0, a='boss_gate')
+a9.obj('trig', cx(8), 0, a='boss_gate')                                 # at the shrine
 
 # A10 Big Oni arena ---------------------------------------------------
 a10 = room('a10', 1, 'Rooftop Arena')
@@ -465,7 +465,7 @@ b3.obj('slotturret', left(14), top(12) - 8, a=90)
 b3.obj('slotturret', left(28), top(15) - 8, a=-90)
 b3.obj('pachinko', cx(7), bottom(18))
 b3.obj('pachinko', cx(9), bottom(18))
-b3.obj('trig', cx(10), 0, a='slots')
+b3.obj('trig', -999, 0, a='slots')
 
 # B4 Pachinko shaft (vertical) ----------------------------------------
 b4 = room('b4', 2, 'Pachinko Shaft')
@@ -587,7 +587,7 @@ w3.solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
 w3.solid(0, 19, 9, 22).toxic(10, 19, 20).solid(20, 19, 29, 22)
 w3.plat(12, 17, 15).plat(3, 7, 13).plat(22, 26, 13)
 w3.deco('g', 1, 3, 9, 3).deco('g', 20, 3, 28, 3).deco('i', 4, 4, 4, 12)
-w3.obj('falls', cx(15), top(3), a=16)
+w3.obj('falls', cx(15), top(3), a=17)                                   # down into the pool; it burns
 w3.obj('drainling', cx(6), bottom(18))
 w3.obj('drainling', cx(25), bottom(18))
 w3.obj('trig', -999, 0, a='drainling')
@@ -608,13 +608,14 @@ w4.tide = 13
 w4s = room('w4s', 3, 'Overflow Cistern')
 w4s.solid(0, 0, 29, 2).solid(0, 0, 1, 22).solid(28, 0, 29, 22)
 w4s.solid(0, 19, 11, 22).solid(16, 19, 29, 22).plat(12, 15, 19)
-w4s.plat(4, 9, 14).plat(20, 25, 14).plat(11, 18, 9)
+w4s.plat(6, 8, 16).plat(21, 23, 16).plat(4, 9, 12).plat(20, 25, 12).plat(11, 18, 9)
 w4s.deco('g', 2, 3, 27, 3)
 w4s.obj('drainling', cx(10), bottom(18))
 w4s.obj('drainling', cx(18), bottom(18))
 w4s.obj('drone', cx(14), top(6))
 w4s.obj('shard', cx(14) + 8, top(6))
 w4s.flags.append('challenge')
+w4s.tide = 13
 
 # W5 Drainling nest (DaiCam, ambush) -----------------------------------
 w5 = room('w5', 3, 'Drainling Nest')
@@ -634,9 +635,10 @@ w5.obj('trig', -999, 0, a='daicam_sewer')
 w6 = room('w6', 3, 'Lock Gate')
 w6.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
 w6.solid(13, 3, 16, 12).deco('z', 13, 12, 16, 12).deco('g', 13, 5, 16, 5).deco('g', 13, 9, 16, 9)
-w6.plat(4, 8, 14).plat(21, 25, 14)
+w6.plat(5, 7, 16).plat(22, 24, 16).plat(4, 8, 12).plat(21, 25, 12)
 w6.deco('i', 3, 4, 3, 18).deco('i', 26, 4, 26, 18)
 w6.obj('drainling', cx(21), bottom(18))
+w6.tide = 13
 
 # W7 Maintenance shrine ---------------------------------------------------
 w7 = room('w7', 3, 'Maintenance Shrine')
@@ -653,7 +655,7 @@ w7.obj('lantern', cx(21), top(3))
 w8 = room('w8', 3, 'Outflow Chamber')
 w8.solid(0, 19, 29, 22).solid(0, 0, 29, 1)
 w8.solid(0, 2, 0, 13).solid(29, 2, 29, 13)
-w8.plat(3, 8, 14).plat(21, 26, 14).plat(11, 18, 11)
+w8.plat(3, 8, 14).plat(21, 26, 14)
 w8.deco('g', 1, 19, 28, 19).deco('z', 29, 2, 29, 13)
 w8.obj('door', left(0) + 8, bottom(18), a='ambush')
 w8.obj('door', left(29), bottom(18), a='lock')
@@ -764,7 +766,7 @@ d6.obj('hannya', cx(10), bottom(14), a=0)
 d6.obj('hannya', cx(16), bottom(14), a=1)
 d6.obj('croupier', cx(26), bottom(14), a=0)
 d6.obj('door', left(29), bottom(14), a='lock')
-d6.obj('trig', cx(6), 0, a='daicam5')
+d6.obj('trig', -999, 0, a='daicam5')
 d6.moving = 1
 
 # D7 Observation deck --------------------------------------------------
@@ -799,8 +801,8 @@ e1.obj('start', cx(3), bottom(18))
 e1.obj('trig', -999, 0, a='ch5_start')
 e1.obj('trig', cx(7), 0, a='glitch')
 
-# E2 Memory: the Sump -------------------------------------------------
-e2 = room('e2', 5, 'Memory: The Sump')
+# E2 Memory: the Slums -------------------------------------------------
+e2 = room('e2', 5, 'Memory: The Slums')
 e2.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
 e2.solid(9, 16, 13, 18).solid(10, 14, 12, 15).solid(20, 15, 25, 18)
 e2.phase(15, 18, 12, 'G').plat(3, 6, 14)
@@ -860,8 +862,7 @@ e6.obj('pod', cx(16), bottom(18))
 e6.obj('daicam', cx(23), bottom(18), a='echo')
 e6.obj('hannya', cx(10), bottom(18), a=0)
 e6.obj('warden', cx(20), bottom(18), a=0)
-e6.obj('trig', cx(12), 0, a='white_room')
-e6.obj('trig', cx(19), 0, a='daicam6')
+e6.obj('trig', -999, 0, a='white_room')                                 # DaiCam's memory speaks once the room is clear
 
 # E7 Threshold --------------------------------------------------------
 e7 = room('e7', 5, 'Threshold')
@@ -921,7 +922,7 @@ c2.solid(0, 19, 29, 22).solid(0, 0, 14, 1).solid(19, 0, 29, 1)
 c2.solid(0, 2, 1, 13).solid(28, 2, 29, 18)
 c2.mist(5, 7, 18).deco('v', 5, 19, 6, 19)
 c2.plat(8, 13, 9)
-c2.mist(16, 0, 12)
+c2.mist(16, 0, 18).deco('v', 16, 19, 17, 19)
 c2.solid(22, 14, 27, 18).deco('g', 22, 14, 27, 14)
 c2.obj('drone', cx(20), top(10))
 c2.obj('toro', cx(24), bottom(13))
@@ -940,7 +941,7 @@ for c in (6, 8, 10, 12):
 for c in (21, 23, 25, 27):
     c3.obj('planter', cx(c), bottom(18))
 c3.obj('warden', cx(24), bottom(18), a=0)
-c3.obj('trig', cx(19), 0, a='warden')
+c3.obj('trig', -999, 0, a='warden')
 
 # C4 Koi terraces ---------------------------------------------------
 c4 = room('c4', 6, 'Koi Terraces')
@@ -958,7 +959,7 @@ c4.obj('warden', cx(23), bottom(12), a=0)
 c4.obj('warden', cx(5), bottom(12), a=1)
 c4.obj('daicam', cx(26), bottom(12), a='sponsor')
 c4.obj('trig', -999, 0, a='pulse')
-c4.obj('trig', cx(13), 0, a='daicam4')
+c4.obj('trig', -999, 0, a='daicam4')
 
 # C5 Drying lofts (down the shaft; heat vent up to the seed vault) -----
 c5 = room('c5', 6, 'Drying Lofts')
@@ -999,7 +1000,7 @@ c6.obj('warden', cx(25), bottom(18), a=1)
 c6.obj('door', left(29), bottom(18), a='lock')
 c6.obj('toro', cx(8), bottom(18))
 c6.obj('bonsai', cx(25), bottom(12))
-c6.obj('trig', cx(9), 0, a='pricing')
+c6.obj('trig', -999, 0, a='pricing')
 
 # C7 Moon bridge ----------------------------------------------------
 c7 = room('c7', 6, 'Moon Bridge')
@@ -1061,7 +1062,9 @@ f2.plat(4, 9, 14).plat(20, 25, 14).deco('y', 1, 19, 28, 19)
 f2.obj('dummy', cx(5), bottom(18))
 f2.obj('dummy', cx(8), bottom(18))
 f2.obj('shell', cx(20), bottom(18), a=0)
-f2.obj('trig', cx(10), 0, a='trainee')
+f2.obj('door', left(0) + 8, bottom(18), a='ambush')
+f2.obj('door', left(29), bottom(18), a='lock')
+f2.obj('trig', -999, 0, a='trainee')
 
 # F3 Laser drill ------------------------------------------------------
 f3 = room('f3', 7, 'Laser Drill')
@@ -1088,7 +1091,7 @@ f4.obj('shell', cx(22), bottom(18), a=1)
 f5 = room('f5', 7, 'Sparring Ring')
 f5.solid(0, 19, 19, 22).solid(25, 19, 29, 22).plat(20, 24, 19).solid(0, 0, 3, 2).solid(8, 0, 29, 2)
 f5.solid(0, 3, 0, 18).solid(29, 3, 29, 13)
-f5.plat(4, 7, 15).plat(4, 7, 10).plat(4, 7, 5).deco('r', 9, 19, 26, 19)
+f5.solid(1, 3, 3, 15).solid(8, 3, 9, 15).deco('r', 9, 19, 26, 19)        # a chimney up to the loft: wall jump it
 f5.obj('shell', cx(14), bottom(18), a=0)
 f5.obj('shell', cx(23), bottom(18), a=1)
 f5.obj('drone', cx(18), top(9))
@@ -1110,19 +1113,20 @@ f6 = room('f6', 7, 'Intake')
 f6.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
 f6.deco('y', 1, 19, 28, 19)
 f6.obj('shrine', cx(4), bottom(18))
-f6.obj('daicam', cx(22), bottom(18), a='intake')
-for c, who in ((24, 2), (26, 1)):                                # the same man from the Vaults, first in line
+f6.obj('daicam', cx(26), bottom(18), a='intake')                         # DaiCam is next in line
+for c, who in ((22, 2), (24, 1)):                                # the same man from the Vaults behind him
     f6.obj('debtor', cx(c), bottom(18), a=who)
 f6.obj('shell', cx(16), bottom(18), a=0)
 f6.obj('shell', cx(19), bottom(18), a=1)
 f6.obj('door', left(29), bottom(18), a='lock')
-f6.obj('trig', cx(10), 0, a='intake')
+f6.obj('trig', -999, 0, a='intake')
 
 # F7 Extraction hall ---------------------------------------------------
 f7 = room('f7', 7, 'Extraction Hall')
 f7.flags.append('ranks')
 f7.solid(0, 19, 29, 22).solid(0, 0, 29, 2).solid(0, 3, 0, 13).solid(29, 3, 29, 13)
-f7.obj('post', 0, top(19), a=170, b=40)
+f7.obj('turret', left(1), top(9) - 8, a=90)
+f7.obj('turret', left(29), top(9) - 8, a=-90)
 f7.obj('shell', cx(24), bottom(18), a=1)
 f7.obj('trig', cx(8), 0, a='extraction')
 
@@ -1169,6 +1173,8 @@ g2.plat(8, 10, 17).plat(19, 21, 17).plat(13, 16, 11)
 g2.obj('shell', cx(15), bottom(15), a=1)
 g2.obj('drone', cx(9), top(8))
 g2.obj('drone', cx(21), top(7))
+g2.obj('door', left(0) + 8, bottom(18), a='ambush')
+g2.obj('door', left(29), bottom(12), a='lock')
 g2.obj('trig', -999, 0, a='bailey')
 g2.wind = -1.0
 
@@ -1222,7 +1228,7 @@ g6.obj('shrine', cx(5), bottom(18))
 g6.obj('mknpc', cx(9), bottom(18), a='body')
 g6.obj('lantern', cx(10), top(3))
 g6.obj('lantern', cx(16), top(3))
-g6.obj('trig', cx(13), 0, a='transfer')
+g6.obj('trig', cx(5) + 8, 0, a='transfer')                             # just past the shrine
 
 # G7 Throne gate ------------------------------------------------------
 g7 = room('g7', 8, 'Throne Gate')

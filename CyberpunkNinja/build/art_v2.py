@@ -117,20 +117,29 @@ def sewer_atlas():
                            'cyan1': 'green1', 'cyan3': 'lime', 'cyan4': 'lime', 'mag3': 'lime'})
 
 
-def toxic_tile(surface, frame=0):
-    """8x8 cell of glowing Kanshi runoff; `surface` draws the bright top edge."""
+def toxic_tile(surface, frame=0, col=0):
+    """8x8 cell of glowing Kanshi runoff; `surface` draws the bright top edge. The two
+    frames bubble: specks drift up and bubbles swell and pop along the surface."""
     im = Image.new('RGBA', (8, 8), C('green1'))
     d = ImageDraw.Draw(im)
     for y in range(8):
         for x in range(8):
-            if (x * 3 + y * 5 + frame) % 9 == 0:
+            if (x * 3 + (y + frame) * 5) % 9 == 0:
                 im.putpixel((x, y), C('green2'))
     if surface:
         d.line([0, 0, 7, 0], fill=C('lime'))
         d.line([0, 1, 7, 1], fill=C('green2'))
         for x in ((1 + frame * 3) % 8, (5 + frame * 3) % 8):
             im.putpixel((x, 0), C('white'))
-    im.putpixel(((2 + frame * 5) % 8, 4), C('lime'))
+        # a bubble every few cells, swelling on one frame and bursting on the other
+        bx = (col * 5 + 2) % 6 + 1
+        if (col + frame) % 3 == 0:
+            for q in ((bx, 1), (bx - 1, 2), (bx + 1, 2), (bx, 3)):
+                im.putpixel(q, C('lime'))
+            im.putpixel((bx, 2), C('green1'))
+        elif (col + frame) % 3 == 1:
+            im.putpixel((bx, 2), C('lime'))
+    im.putpixel(((2 + frame * 5) % 8, 4 - frame), C('lime'))
     return im
 
 
@@ -243,7 +252,7 @@ def heat_vent(frame):
 
 # ------------------------------------------------------------------ chapter cards
 CARDS = [
-    ('PROLOGUE', 'THE SUMP', '沈殿'), ('CHAPTER 1', 'NEON ALLEY', 'ネオン横丁'),
+    ('PROLOGUE', 'THE SLUMS', '貧民街'), ('CHAPTER 1', 'NEON ALLEY', 'ネオン横丁'),
     ('CHAPTER 2', 'PACHINKO', '金庫'), ('CHAPTER 3', 'THE SEWERS', '下水道'),
     ('CHAPTER 4', 'MONORAIL', '登り線'), ('CHAPTER 5', 'HOLLOW FLOOR', '虚ろ'),
     ('CHAPTER 6', 'THE GARDENS', '薬草園'), ('CHAPTER 7', 'THE ACADEMY', '忍道場'),
@@ -484,18 +493,43 @@ def desk(frame=0, staffed=True):
     return im
 
 
+# a 3x5 pixel face for small print (case-insensitive)
+TINY = {
+    'a': '010101111101101', 'b': '110101110101110', 'c': '011100100100011', 'd': '110101101101110',
+    'e': '111100110100111', 'f': '111100110100100', 'g': '011100101101011', 'h': '101101111101101',
+    'i': '111010010010111', 'j': '001001001101010', 'k': '101101110101101', 'l': '100100100100111',
+    'm': '101111111101101', 'n': '110101101101101', 'o': '010101101101010', 'p': '110101110100100',
+    'q': '010101101110011', 'r': '110101110101101', 's': '011100010001110', 't': '111010010010010',
+    'u': '101101101101111', 'v': '101101101101010', 'w': '101101111111101', 'x': '101101010101101',
+    'y': '101101010010010', 'z': '111001010100111', ' ': '000000000000000', '-': '000000111000000',
+    '.': '000000000000010', "'": '010010000000000',
+}
+
+
+def tiny_width(text):
+    return len(text) * 4 - 1
+
+
+def tiny_text(im, x, y, text, col):
+    """Draw `text` in the 3x5 face with its top-left at (x, y)."""
+    for i, ch in enumerate(text.lower()):
+        g = TINY[ch]
+        for k, bit in enumerate(g):
+            if bit == '1':
+                im.putpixel((x + i * 4 + k % 3, y + k // 3), col)
+
+
 def directory():
-    """The Spire Lobby's floor directory, 76x40 (top-center)."""
+    """The Spire Lobby's sign over the desk: the welcome, and Kanshi's motto in small grey type."""
     import assets
-    im = Image.new('RGBA', (76, 40), C('ink'))
-    d = ImageDraw.Draw(im)
-    d.rectangle([0, 0, 75, 39], outline=C('cyan2'))
-    d.line([0, 10, 75, 10], fill=C('cyan1'))
     f = assets.Font(False)
-    f.draw(im, (76 - f.width('KANSHI SPIRE')) // 2, 1, 'KANSHI SPIRE', P['white'])
-    f.draw(im, 3, 12, '2-40 GARDENS', P['lime'])
-    f.draw(im, 3, 21, '41-90 ACADEMY', P['gold'])
-    f.draw(im, 3, 30, 'TOP  TENSHU', P['red3'])
+    title = 'Welcome to Kanshi Spire'
+    w = max(f.width(title), tiny_width('Invent the Future')) + 10
+    im = Image.new('RGBA', (w, 22), C('ink'))
+    d = ImageDraw.Draw(im)
+    d.rectangle([0, 0, w - 1, 21], outline=C('cyan2'))
+    f.draw(im, (w - f.width(title)) // 2, 2, title, P['white'])
+    tiny_text(im, (w - tiny_width('Invent the Future')) // 2, 14, 'Invent the Future', C('steel'))
     return im
 
 
@@ -847,7 +881,64 @@ def harm_frames():
         for comp in comps[:-1]:
             for q in comp:
                 px[q] = (0, 0, 0, 0)
+    out['slash'] = [harm_sword(im) for im in out['slash']]
     return out
+
+
+# the sword's greens, light to dark (kept off the visor's lime so harm_juiced leaves them alone)
+SWORD_GREENS = [(232, 255, 204), (170, 250, 104), (66, 210, 120), (30, 110, 70)]
+
+
+def harm_sword(im):
+    """Her scalpel, made a sword: the blade (or the swoosh of the cut) doubled in length
+    out from her hand, and green instead of cyan."""
+    im = im.copy()
+    px = im.load()
+    blade, hand = [], []
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            if not a:
+                continue
+            if (b - r > 35 and g - r > 30 and b >= g - 6) or ((r, g, b) == (255, 255, 255) and a < 255):
+                blade.append((x, y))
+            elif (r, g, b) in ((242, 196, 160), (206, 150, 122)) and y > 36:
+                hand.append((x, y))
+    if not blade:
+        return im
+    if hand:
+        hx = sum(q[0] for q in hand) / len(hand)
+        hy = sum(q[1] for q in hand) / len(hand)
+    else:
+        hx, hy = min(blade, key=lambda q: (q[0] - 40) ** 2 + (q[1] - 44) ** 2)
+
+    def green(p):
+        r, g, b, a = p
+        lum = (r + g + b) / 3
+        k = 0 if lum > 225 else 1 if lum > 170 else 2 if lum > 90 else 3
+        return SWORD_GREENS[k] + (a,)
+
+    cols = {q: green(px[q]) for q in blade}
+    for q, c in cols.items():
+        px[q] = c
+    out = {}
+    if len(blade) > 25:
+        # the swoosh of the cut: the same arc at twice the size
+        for (x, y), c in cols.items():
+            sx, sy = hx + (x - hx) * 2, hy + (y - hy) * 2
+            for dx in (0, 1):
+                for dy in (0, 1):
+                    out[(int(round(sx)) + dx, int(round(sy)) + dy)] = c
+    else:
+        # the blade itself: drawn on out to twice its length
+        for (x, y), c in cols.items():
+            for k in range(11):
+                s = 1 + k / 10
+                out[(int(round(hx + (x - hx) * s)), int(round(hy + (y - hy) * s)))] = c
+    for (x, y), c in out.items():
+        if 0 <= x < im.width and 0 <= y < im.height and (not px[x, y][3] or (x, y) in cols or px[x, y][3] < c[3]):
+            px[x, y] = c
+    return im
 
 
 def harm_juiced(im, frame=0):

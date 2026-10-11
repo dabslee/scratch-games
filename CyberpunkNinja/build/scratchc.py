@@ -32,20 +32,36 @@ class CompileError(Exception):
     pass
 
 
-_counter = [0]
+_counters = {}
+_ALPHA = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+# block ids start with a letter that no variable, list, broadcast or argument id uses,
+# so they never look like a number (JSON key order) or like another kind of id
+_FIRST = ''.join(c for c in _ALPHA if c.isalpha() and c not in 'vlma')
+
+
+def _short(n, first=_FIRST):
+    """n -> a short id: one char from `first`, then base-62 digits."""
+    s = ''
+    if n < len(first):
+        return first[n]
+    n -= len(first)
+    k = 1
+    while n >= len(first) * 62 ** k:
+        n -= len(first) * 62 ** k
+        k += 1
+    for _ in range(k):
+        s = _ALPHA[n % 62] + s
+        n //= 62
+    return first[n] + s
 
 
 def new_id(prefix='b'):
-    _counter[0] += 1
-    n = _counter[0]
-    s = ''
-    alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    while True:
-        s = alphabet[n % 62] + s
-        n //= 62
-        if n == 0:
-            break
-    return prefix + s
+    """A project-wide unique id for a variable ('v'), list ('l'), broadcast ('m') or
+    argument ('a'). Each kind counts on its own so the ids stay short; the size of
+    project.json is what Scratch limits."""
+    n = _counters.get(prefix, 0)
+    _counters[prefix] = n + 1
+    return prefix + _short(n, _ALPHA)
 
 
 def fmt_num(v):
@@ -128,7 +144,13 @@ class Target:
         self.layer_order = 0
         self.volume = 100
         self.script_y = 0
+        self.nblocks = 0
         project.targets.append(self)
+
+    def block_id(self):
+        # block ids only have to be unique within their sprite
+        self.nblocks += 1
+        return _short(self.nblocks - 1)
 
     def to_json(self, project):
         d = {
@@ -196,7 +218,7 @@ class SpriteCompiler:
 
     # ------------------------------------------------------------ blocks
     def mk(self, opcode, inputs=None, fields=None, shadow=False, mutation=None, top=False):
-        bid = new_id()
+        bid = self.t.block_id()
         b = {'opcode': opcode, 'next': None, 'parent': None, 'inputs': {}, 'fields': fields or {},
              'shadow': shadow, 'topLevel': top}
         if top:
@@ -551,6 +573,9 @@ class SpriteCompiler:
             prop = args[0].value
             obj = self.expr(args[1])
             return Val('rep', id=self.mk('sensing_of', {'OBJECT': (obj, ('menu', 'sensing_of_object_menu', 'OBJECT', '_stage_'))}, {'PROPERTY': [prop, None]}))
+        if fname == 'touching_mouse':
+            return Val('bool', id=self.mk('sensing_touchingobject', {'TOUCHINGOBJECTMENU': (
+                Val('lit', '_mouse_'), ('menu', 'sensing_touchingobjectmenu', 'TOUCHINGOBJECTMENU', '_mouse_'))}))
         if fname == 'num':
             return self.arith('operator_add', self.expr(args[0]), Val('lit', 0))
         if fname == 'true':
@@ -591,6 +616,9 @@ class SpriteCompiler:
                 lname, lid = self.list_ref(tgt.value)
                 return [self.mk('data_replaceitemoflist', {'INDEX': (self.expr(tgt.slice), 'int'), 'ITEM': (self.expr(s.value), 'text')}, {'LIST': [lname, lid]})]
             name, vid = self.var_ref(tgt.id, s)
+            lowered = self.assign_minmax(tgt.id, name, vid, s.value)
+            if lowered is not None:
+                return lowered
             return [self.mk('data_setvariableto', {'VALUE': (self.expr(s.value), 'text')}, {'VARIABLE': [name, vid]})]
         if isinstance(s, ast.AugAssign):
             tgt = s.target
@@ -650,6 +678,48 @@ class SpriteCompiler:
             return [self.mk('control_stop', fields={'STOP_OPTION': ['this script', None]},
                             mutation={'tagName': 'mutation', 'children': [], 'hasnext': 'false'})]
         raise CompileError('%s: unsupported statement %s line %s' % (self.t.name, type(s).__name__, s.lineno))
+
+    @staticmethod
+    def _is_minmax(n):
+        return (isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id in ('min', 'max')
+                and len(n.args) == 2 and not n.keywords)
+
+    def assign_minmax(self, src_name, name, vid, value):
+        """`v = min(a, b)` as `v = a; if b < v: v = b` (max likewise, nesting allowed).
+
+        As an expression min/max repeats both arguments, (a + b - |a - b|) / 2, and
+        nested calls multiply that; assigned straight to a variable they don't need to.
+        Returns None when the variable appears in an argument evaluated after it is set."""
+        if not self._is_minmax(value):
+            return None
+
+        def refs(node):
+            return any(isinstance(n, ast.Name) and n.id == src_name for n in ast.walk(node))
+
+        def order(node):
+            # (first, second) argument order, or None if it can't be lowered
+            a, b = node.args
+            if refs(b):
+                if refs(a):
+                    return None
+                a, b = b, a
+            if self._is_minmax(a) and order(a) is None:
+                return None
+            return a, b
+
+        if order(value) is None:
+            return None
+
+        def lower(node):
+            if not self._is_minmax(node):
+                return [self.mk('data_setvariableto', {'VALUE': (self.expr(node), 'text')}, {'VARIABLE': [name, vid]})]
+            a, b = order(node)
+            first = lower(a)
+            op = ast.Lt() if node.func.id == 'min' else ast.Gt()
+            cond = self.compare(b, op, ast.Name(id=src_name, lineno=getattr(node, 'lineno', 0)))
+            body = self.mk('data_setvariableto', {'VALUE': (self.expr(b), 'text')}, {'VARIABLE': [name, vid]})
+            return first + [self.mk('control_if', {'CONDITION': (cond, 'bool'), 'SUBSTACK': (body, 'stack')})]
+        return lower(value)
 
     def call_stmt(self, c):
         if isinstance(c.func, ast.Attribute):
@@ -884,9 +954,9 @@ class SpriteCompiler:
             self.params = {nm: aid for nm, aid in zip(pr['argnames'], pr['argids'])}
             hat = self.mk('procedures_definition', top=True)
             proto_inputs = {}
-            proto = new_id()
+            proto = self.t.block_id()
             for nm, aid in zip(pr['argnames'], pr['argids']):
-                sid = new_id()
+                sid = self.t.block_id()
                 self.t.blocks[sid] = {'opcode': 'argument_reporter_string_number', 'next': None, 'parent': proto,
                                       'inputs': {}, 'fields': {'VALUE': [nm, None]}, 'shadow': True, 'topLevel': False}
                 proto_inputs[aid] = [1, sid]

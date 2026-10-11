@@ -10,8 +10,8 @@ module.exports = (page) => {
   L.hold = async (keys, ms) => { for (const k of keys) await L.down(k); await L.W(ms); for (const k of keys) await L.up(k); };
   L.sv = async (n, v) => page.evaluate(([n, v]) => sv(n, v), [n, v]);
   L.until = async (expr, timeout=8000) => { const t0 = Date.now(); while (Date.now() - t0 < timeout) { if (await page.evaluate(expr)) return true; await L.W(50);} return false; };
-  L.skipDialogue = async (max=20) => { for (let i=0;i<max;i++){ if (!(await page.evaluate(()=>gv('mode')==='dlg'))) return; await L.W(300); await L.press('e'); } };
+  L.skipDialogue = async (max=20) => { for (let i=0;i<max*2;i++){ if (!(await page.evaluate(()=>gv('mode')==='dlg'))) return; await L.W(150); await L.press('e'); } };
   L.goto = async (room, x, y) => { await page.evaluate(([r,x,y])=>{sv('cp_x',x);sv('cp_y',y);sv('want_room',r);sv('enter_dir','C');}, [room,x,y]); await L.W(700); };
-  L.newGame = async () => { await L.W(1200); await L.press(' '); await L.W(400); await L.press('Enter'); await L.W(1500); };
+  L.newGame = async () => { await L.W(800); await L.press(' '); await L.W(1500); await L.press(' '); await L.W(400); await L.press('Enter'); await L.W(1500); };
   return L;
 };

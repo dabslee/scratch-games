@@ -29,18 +29,26 @@ def boot():
     backdrop("black")
     clear_queues()
     broadcast("boot")
-    go_title()
+    # the splash: the author's logo fades in from black, holds, and fades out to the title
+    mode = "splash"
+    splash_t = 0
+    fade = 0
+    fade_to = 0
     while True:
         frame_step()
 
 
 @proc
 def init_options():
+    # the Normal difficulty preset (see menu.py's apply_preset)
+    opt_preset = 1
     opt_wide = 0
     opt_slow = 0
-    opt_heat = 0
-    opt_gourd = 0
-    opt_god = 0
+    opt_heat = 1
+    opt_din = 2
+    opt_dout = 3
+    dmg_in = 1
+    dmg_out = 1.5
     opt_music = 4
     opt_sfx = 4
     opt_shake = 1
@@ -52,6 +60,8 @@ def reset_run():
     walk_to = 999
     recep = 0
     escort_go = 0
+    ally_x = 999
+    dawn = 0
     heat = 0
     gourd = 0
     gmax = 3
@@ -132,7 +142,16 @@ def clear_queues():
 def frame_step():
     frame += 1
     read_input()
-    if mode == "title":
+    if mode == "splash":
+        # the Splash sprite fades the logo in over 20 frames, holds it, and fades it out
+        # from 100 (any key skips ahead); then the title comes up out of black
+        splash_t += 1
+        if p_any == 1 and splash_t < 100:
+            splash_t = 100
+        if splash_t >= 118:
+            fade = 100
+            go_title()
+    elif mode == "title":
         backdrop(join("title_", (frame // 4) % 8))
         if p_any == 1:
             sfxq.append("menu_select")
@@ -185,9 +204,9 @@ def phase_step():
     # the sludge tide: low, rising, high, falling (a boss can drive tide_lvl itself)
     if R_TIDE[room] != 0:
         tide_hi = R_TIDE[room]
-        tide_warn = 0
         if tide_force == 0:
             # each visit starts at low tide
+            tide_warn = 0
             tide_t += 1
             tcyc = tide_t % 300
             if tcyc >= 95 and tcyc < 150:
@@ -211,7 +230,8 @@ def phase_step():
         tide_y = 0
     # Kuro periodically takes the controls in possessed rooms
     if R_FLIP[room] == 1:
-        cyc = frame % 330
+        flip_t += 1
+        cyc = flip_t % 330
         if cyc >= 210 and cyc < 240:
             flip_warn = 1
         else:
@@ -243,7 +263,7 @@ def read_input():
         kR = tmp
     kU = key("up arrow") or key("w")
     kD = key("down arrow") or key("s")
-    kA = mouse_down() or key("x") or key("j")
+    kA = (mouse_down() and hint_hover == 0) or key("x") or key("j")
     kZ = key("space") or key("z") or key("k")
     kS = key("down arrow") or key("s") or key("l")
     kH = key("r")
@@ -383,6 +403,11 @@ def load_room(r):
     moving = R_MOVE[r]
     flip = 0
     flip_warn = 0
+    # a possessed room flickers at once, then goes purple (see phase_step)
+    flip_t = 209
+    dawn = 0
+    boss_dmul = 1
+    ally_x = 999
     tide_force = 0
     tide_lvl = 0
     tide_y = 0
@@ -444,6 +469,14 @@ def load_room(r):
         music_want = "none"
     broadcast("clear")
     broadcast("spawn")
+
+
+@proc
+def stage_foes():
+    foes_left = 0
+    for fi in range(1, len(ent_type) + 1):
+        if ent_alive[fi] == 1 and ent_foe[fi] == 1:
+            foes_left += 1
 
 
 @proc
@@ -767,8 +800,9 @@ def ev_hint_dash():
 
 @on("ev_tetsu_seen")
 def ev_tetsu_seen():
+    # the first talk starts as she walks in; after it, E talks to him again
     if has_gourd == 0:
-        hint = "talk"
+        say("tetsu")
 
 
 @on("end_tetsu")
@@ -1103,13 +1137,12 @@ def ev_ch5_start():
 
 @on("ev_glitch")
 def ev_glitch():
-    say_once("glitch")
     hint = "glitch"
 
 
 @on("ev_sump_mem")
 def ev_sump_mem():
-    say_once("sump_mem")
+    say_once("slums_mem")
 
 
 @on("ev_tetsu_mem")
@@ -1132,14 +1165,16 @@ def ev_possess():
 @on("ev_white_room")
 def ev_white_room():
     say_once("white_room")
-
-
-@on("ev_daicam6")
-def ev_daicam6():
     if daicam6_done == 0:
-        say("daicam6")
-        wait_until(mode == "play")
-        daicam6_done = 1
+        stage_foes()
+        while foes_left > 0 and room == C_ROOM_E6:
+            wait(0.1)
+            stage_foes()
+        if room == C_ROOM_E6:
+            wait_until(mode == "play")
+            say("daicam6")
+            wait_until(mode == "play")
+            daicam6_done = 1
 
 
 @on("ev_kuro_gate")
@@ -1216,8 +1251,7 @@ def ev_garden():
 
 @on("ev_vents")
 def ev_vents():
-    if kbranch != 2:
-        say_once("vents")
+    say_once_b("vents")
     hint = "mist"
 
 
@@ -1307,6 +1341,8 @@ def ev_ch7_start():
 @on("ev_trainee")
 def ev_trainee():
     if len(ent_type) > 0:
+        # the hall's doors seal until the trainees are down
+        ambush_on = 1
         once("trainee")
         if first == 1:
             say_b("trainee")
@@ -1405,6 +1441,9 @@ def ev_ch8_start():
 
 @on("ev_bailey")
 def ev_bailey():
+    if len(ent_type) > 0:
+        # the bailey's gates seal until its guards are down
+        ambush_on = 1
     if kbranch != 2:
         say_once("bailey")
 
@@ -1426,16 +1465,13 @@ def ev_muster():
 @on("ev_transfer")
 def ev_transfer():
     if kbranch == 1 and kuro_in == 0:
-        # Hotaru lays the body down by the Shrine
-        if muk_carry == 1:
-            muk_carry = 0
-            sfxq.append("land")
-            wait(0.5)
         say("transfer")
         wait(0.2)
         wait_until(dlg_spk == "system" or mode == "play")
+        # the soul link: Kuro's body is on its feet beside her
         sfxq.append("sync")
         flash = 60
+        muk_carry = 0
         kuro_in = 1
         wait_until(mode == "play")
 
@@ -1469,6 +1505,11 @@ def ev_dm_phase2():
         boss_phase2("dm2")
 
 
+@on("ev_kuro_revive")
+def ev_kuro_revive():
+    say_once("kuro_revive")
+
+
 @on("ev_kuro_falls")
 def ev_kuro_falls():
     say_once("kuro_falls")
@@ -1479,6 +1520,8 @@ def ev_dm_phase3():
     music_want = "engram"
     hint = "duel3"
     wait(1.2)
+    # Kuro's collapse plays out in full first
+    wait_until(mode == "play")
     say_once("dm3")
 
 
@@ -1488,10 +1531,8 @@ def ev_dm_dead():
     hint = ""
     hold_still()
     boss_down(1.6)
-    say("dm_dead")
-    wait_until(mode == "play")
     # he kneels through his last words; then Hotaru finishes it, and he's gone
-    say("dm_finish")
+    say("dm_dead")
     wait_until(mode == "play")
     mk_st = "dying"
     sfxq.append("rj_die")
@@ -1516,6 +1557,15 @@ def ev_dm_dead():
         flash = 100
         kuro_in = 2
         wait_until(mode == "play")
+    # the sun comes up over the clouds
+    wait(0.6)
+    sfxq.append("dawn")
+    for _ in range(150):
+        dawn += 1
+        wait(0)
+    wait(0.5)
+    say("sunrise")
+    wait_until(mode == "play")
     wait(0.6)
     chapter_jump(C_ROOM_EP)
 
