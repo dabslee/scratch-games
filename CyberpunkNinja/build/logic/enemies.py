@@ -1498,7 +1498,7 @@ def l_update():
         else:
             sfxq.append("clang")
             cfx("deflect", x + face * 12, y + 26, 0 - face)
-            if hk == "heavy" and st != "jackpot":
+            if hk == "heavy" and st != "jackpot" and st != "move":
                 # a Heavy Strike doesn't cut through her guard, but it rocks her back
                 st = "stagger"
                 t = 0
@@ -1539,6 +1539,9 @@ def l_update():
             face = 1
         else:
             face = -1
+        if t == 1:
+            hitdone = 0
+            sfxq.append("breach")
         if abs(tx - x) < 10:
             st = "spin"
             t = 0
@@ -1548,6 +1551,14 @@ def l_update():
             sfxq.append("reels")
         else:
             x += face * 7
+            # the dash across the floor is a Breach: it can't be blocked, and a Heavy Strike
+            # doesn't knock her out of it, so jump it or Phase Step through
+            ent_brk[slot] = 1
+            if hitdone == 0:
+                p_overlap(x - 16, x + 16, y + 4, y + 42)
+                if ov == 1:
+                    hit_player(2, 1, x)
+                    hitdone = 1
     elif st == "spin":
         slot_t = t
         fr += 0.2
@@ -3820,7 +3831,7 @@ if daimyo_dead == 0:
     dm_tell = 0
     dm_fl = 0
     if kbranch == 1 and kuro_in == 1:
-        ally_x = -150
+        ally_x = -230
     boss_hp = 20
     boss_int = 0
     is_clone = 1
@@ -4017,9 +4028,10 @@ def dm_next_phase():
             broadcast("ev_kuro_falls")
         broadcast("ev_dm_phase3")
     else:
+        # beaten: he kneels through his last words; the stage sends him off (mk_st "dying")
         st = "end"
         ehp = 0
-        mk_st = "dead"
+        mk_st = "kneel"
         ent_alive[slot] = 0
         boss_hp = 0
         boss_int = 0
@@ -4030,6 +4042,9 @@ def dm_next_phase():
 def dm_update():
     t += 1
     if st == "end":
+        if mk_st == "dying":
+            mk_st = "dead"
+            t = 0
         dm_publish()
         return
     if st == "wait":
@@ -4145,14 +4160,6 @@ def dm_combo(kind):
         dm_hits.append(58)
     elif kind == "riposte":
         dm_hits.append(9)
-    elif kind == "storm":
-        dm_hits.append(26)
-        dm_hits.append(36)
-        dm_hits.append(46)
-        dm_hits.append(66)
-        dm_hits.append(74)
-        dm_hits.append(82)
-        dm_hits.append(108)
     else:
         dm_hits.append(26)
         dm_hits.append(50)
@@ -4192,7 +4199,7 @@ def dm_pick():
         if ad > 160 and (k == 0 or k == 4):
             k = 1
         if k == 0:
-            dm_combo("storm")
+            dm_combo("cut3")
         elif k == 1 or k == 6:
             dm_go("tempest")
         elif k == 2:
@@ -4785,10 +4792,19 @@ def dm_draw():
         else:
             hide()
     elif role == "man":
-        if mk_st == "man" or mk_st == "dead":
+        if mk_st == "man" or mk_st == "dead" or mk_st == "kneel" or mk_st == "dying":
             if mk_st == "dead":
-                # he crumbles to ash; Tamakiri is left on the floor
-                costume(join("dmf_death_", min(27, floor(dm_t / 3))))
+                # up off his knees only to let Tamakiri fall; he crumbles to ash, then he's gone
+                if dm_t >= 66:
+                    hide()
+                    return
+                costume(join("dmf_death_", min(27, 13 + floor(dm_t / 3))))
+                effect("ghost", max(0, (dm_t - 44) * 5))
+            elif mk_st == "kneel" or mk_st == "dying":
+                if dm_t < 8:
+                    costume(join("dmf_kneel_stunned_", floor(dm_t / 4)))
+                else:
+                    costume(join("dmf_kneel_stunned_", 2 + floor(dm_t / 5) % 6))
             elif dm_st == "emerge":
                 if dm_t < 30:
                     hide()
@@ -4863,7 +4879,7 @@ def dm_draw():
                 costume(join("dmf_run_", floor(frame / 3) % 8))
             else:
                 costume(join("dmf_idle_", floor(frame / 5) % 12))
-            if mk_st == "dead":
+            if mk_st != "man":
                 effect("brightness", 0)
             elif dm_tell == 1:
                 effect("brightness", 100)

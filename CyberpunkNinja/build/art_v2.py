@@ -244,9 +244,9 @@ def heat_vent(frame):
 # ------------------------------------------------------------------ chapter cards
 CARDS = [
     ('PROLOGUE', 'THE SUMP', '沈殿'), ('CHAPTER 1', 'NEON ALLEY', 'ネオン横丁'),
-    ('CHAPTER 2', 'PACHINKO VAULTS', '金庫'), ('CHAPTER 3', 'THE SEWERS', '下水道'),
-    ('CHAPTER 4', 'MONORAIL ASCENT', '登り線'), ('CHAPTER 5', 'HOLLOW FLOOR', '虚ろ'),
-    ('CHAPTER 6', 'PHYSIC GARDENS', '薬草園'), ('CHAPTER 7', 'THE ACADEMY', '忍道場'),
+    ('CHAPTER 2', 'PACHINKO', '金庫'), ('CHAPTER 3', 'THE SEWERS', '下水道'),
+    ('CHAPTER 4', 'MONORAIL', '登り線'), ('CHAPTER 5', 'HOLLOW FLOOR', '虚ろ'),
+    ('CHAPTER 6', 'THE GARDENS', '薬草園'), ('CHAPTER 7', 'THE ACADEMY', '忍道場'),
     ('CHAPTER 8', 'THE TENSHU', '天守'),
 ]
 
@@ -406,6 +406,34 @@ def civilian(i, frame):
     im = Image.new('RGBA', (14, 28), (0, 0, 0, 0))
     im.alpha_composite(sheet.crop((x0, 0, x1, 28)), ((14 - (x1 - x0)) // 2, 0))
     return breathe(im, 15) if frame else im
+
+
+def stride(im, k, top=19):
+    """A running step from a standing figure: below the hips the legs part (k = 1) or cross
+    (k = -1) by a pixel each side of their middle, and the body above lifts a pixel."""
+    w, h = im.size
+    px = im.load()
+    cols = [x for x in range(w) for y in range(top, h) if px[x, y][3]]
+    mid = (min(cols) + max(cols)) / 2
+    out = Image.new('RGBA', im.size, (0, 0, 0, 0))
+    out.alpha_composite(im.crop((0, 0, w, top)), (0, -1))
+    op = out.load()
+    for y in range(top, h):
+        for x in range(w):
+            if px[x, y][3]:
+                nx = x + (k if x > mid else -k)
+                if 0 <= nx < w:
+                    op[nx, y - (1 if y < top + 2 else 0)] = px[x, y]
+    for x in range(w):
+        if px[x, top][3] and not op[x, top - 1][3]:
+            op[x, top - 1] = px[x, top]
+    return out
+
+
+def civilian_run(i, frame):
+    """Townsperson i running (four frames: legs apart, passing, crossed, passing), facing right."""
+    base = civilian(i, 0)
+    return (stride(base, 1), base, stride(base, -1), base)[frame]
 
 
 def receptionist(frame):

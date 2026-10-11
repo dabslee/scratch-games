@@ -51,6 +51,7 @@ def reset_run():
     hp = 10
     walk_to = 999
     recep = 0
+    escort_go = 0
     heat = 0
     gourd = 0
     gmax = 3
@@ -522,6 +523,7 @@ def late_run(c):
     if c >= 3:
         luck_dead = 1
         daicam3_done = 1
+        escort_go = 2
     if c >= 4:
         dobu_dead = 1
         daicam2_done = 1
@@ -541,6 +543,8 @@ def late_run(c):
     if c >= 8:
         muk_dead = 1
         daicam7_done = 1
+        if kbranch == 1:
+            muk_carry = 1
 
 
 @proc_yield
@@ -888,6 +892,11 @@ def ev_slots():
 @on("ev_debtors")
 def ev_debtors():
     say_once("debtors")
+    if escort_go == 0:
+        # their minder hurries the line out the far door, and it slams behind them
+        escort_go = 1
+        wait(3)
+        escort_go = 2
 
 
 @on("ev_rollers")
@@ -1424,6 +1433,11 @@ def ev_muster():
 @on("ev_transfer")
 def ev_transfer():
     if kbranch == 1 and kuro_in == 0:
+        # Hotaru lays the body down by the Shrine
+        if muk_carry == 1:
+            muk_carry = 0
+            sfxq.append("land")
+            wait(0.5)
         say("transfer")
         wait(0.2)
         wait_until(dlg_spk == "system" or mode == "play")
@@ -1482,6 +1496,14 @@ def ev_dm_dead():
     hold_still()
     boss_down(1.6)
     say("dm_dead")
+    wait_until(mode == "play")
+    # he kneels through his last words; then Hotaru finishes it, and he's gone
+    say("dm_finish")
+    wait_until(mode == "play")
+    mk_st = "dying"
+    sfxq.append("rj_die")
+    wait(2.4)
+    say("dm_signal")
     wait_until(mode == "play")
     if kbranch == 2:
         say("ending_alone")

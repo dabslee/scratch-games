@@ -321,7 +321,7 @@ def draw():
         else:
             fr += 0.17
             costume(join("idle_", floor(fr) % 4))
-        if tmode == "mem":
+        if tmode == "mem" and chapter == 5:
             effect("ghost", 25 + (frame % 40 < 3) * 40)
         goto(x + shx, y + shy)
         point(-90)
@@ -738,11 +738,15 @@ if dmode == "lock":
         st = "open"
     if dc < 15 and enter_dir == "L":
         st = "open"
+elif dmode == "flee":
+    st = "open"
+    if escort_go == 2:
+        st = "closed"
 else:
     st = "open"
 if boss_dead == 1 and dmode == "ambush":
     st = "open"
-if st == "closed":
+if st == "closed" or dmode == "flee":
     set_cells("D")
 fr = 4
 is_clone = 1
@@ -759,13 +763,18 @@ def set_cells(v):
 def tick():
     if is_clone == 1:
         count_foes()
-        if st == "closed":
+        if st == "closed" and dmode != "flee":
             if foes == 0:
                 st = "opening"
                 fr = 0
                 set_cells(".")
                 sfxq.append("door_open")
         elif st == "open":
+            if dmode == "flee" and escort_go == 2:
+                st = "closed"
+                sfxq.append("door_close")
+                shake = 4
+                shake_amp = 2
             if dmode == "ambush" and ambush_on == 1 and foes > 0:
                 if abs(px - x) > 30:
                     st = "closed"
@@ -884,10 +893,14 @@ fl_t = rand(30, 200)
 fr = 0
 fr2 = 0
 nface = 1
+placed = 0
+fled = 0
+if (O_TYPE[oi] == "debtor" or O_TYPE[oi] == "escort") and ((chapter == 2 and escort_go == 2) or (chapter == 7 and daicam7_done == 1)):
+    fled = 1
 is_clone = 1
 clone()
 is_clone = 0
-''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy" or O_TYPE[oi] == "mknpc" or O_TYPE[oi] == "planter" or O_TYPE[oi] == "herbs" or O_TYPE[oi] == "board" or O_TYPE[oi] == "debtor" or O_TYPE[oi] == "soldier" or O_TYPE[oi] == "desk" or O_TYPE[oi] == "directory":').replace(
+''').replace('if O_TYPE[oi] == "sign":', 'if O_TYPE[oi] == "sign" or O_TYPE[oi] == "escort" or O_TYPE[oi] == "lantern" or O_TYPE[oi] == "cart" or O_TYPE[oi] == "pachinko" or O_TYPE[oi] == "rack" or O_TYPE[oi] == "pod" or O_TYPE[oi] == "toro" or O_TYPE[oi] == "bonsai" or O_TYPE[oi] == "seat" or O_TYPE[oi] == "dummy" or O_TYPE[oi] == "mknpc" or O_TYPE[oi] == "planter" or O_TYPE[oi] == "herbs" or O_TYPE[oi] == "board" or O_TYPE[oi] == "debtor" or O_TYPE[oi] == "soldier" or O_TYPE[oi] == "desk" or O_TYPE[oi] == "directory":').replace(
     'kind = O_A[oi]', 'kind = O_A[oi]\n            pmode = O_A[oi]\n            if O_TYPE[oi] != "sign":\n                kind = O_TYPE[oi]') + '''
 @on("t_draw")
 def draw():
@@ -919,16 +932,38 @@ def draw():
             costume("herbs")
         elif kind == "board":
             costume(join("board_", floor(frame / 15) % 2))
-        elif kind == "debtor":
-            # pmode picks which townsperson; each breathes on its own beat
-            costume(join("debtor_", pmode, "_", (floor(frame / 20) + floor(x / 16)) % 2))
+        elif kind == "debtor" or kind == "escort":
+            # pmode picks which townsperson; each breathes on its own beat. They leave off the
+            # left edge: the Vaults' line when its minder hurries them out (escort_go), the
+            # Academy's freed captives once the intake line is clear (daicam7_done)
+            if fled == 1:
+                hide()
+                return
+            if (chapter == 2 and escort_go == 1) or (chapter == 7 and daicam7_done == 1):
+                x -= 3.6
+                fr2 += 0.3
+                if x < -260:
+                    fled = 1
+                if kind == "escort":
+                    costume(join("escort_run_", floor(fr2) % 6))
+                else:
+                    costume(join("debtorrun_", pmode, "_", floor(fr2) % 4))
+            elif kind == "escort":
+                costume(join("escort_idle_", floor(frame / 8) % 4))
+            elif chapter == 2:
+                costume(join("debtorl_", pmode, "_", (floor(frame / 20) + floor(x / 16)) % 2))
+            else:
+                costume(join("debtor_", pmode, "_", (floor(frame / 20) + floor(x / 16)) % 2))
         elif kind == "desk":
             # the receptionist stays at his post until he comes over the counter (recep = 1)
             if recep == 0:
                 costume(join("desk_", floor(frame / 22) % 2))
             else:
                 costume("desk_empty")
-        elif kind == "soldier" or kind == "directory":
+        elif kind == "soldier":
+            # one of the hollowed, as they stood in the Muster Hall
+            costume(join("soldier_", floor(frame / 8) % 4))
+        elif kind == "directory":
             costume(kind)
         elif kind == "mknpc":
             # Mukuro's body, carried up by Hotaru when Kuro was spared; Kuro moves in at the Last Shrine
@@ -936,8 +971,16 @@ def draw():
                 hide()
                 return
             if kuro_in == 0:
+                if muk_carry == 1:
+                    # still on Hotaru's shoulder: it goes down where she stands
+                    x = px - pface * 16
+                    hide()
+                    return
                 costume("mk_lie")
             else:
+                if pmode == "ally" and placed == 0:
+                    x = px - pface * 20
+                    placed = 1
                 # Kuro in his own body: he keeps at Hotaru's back and looks where she looks
                 mv = 0
                 if mode == "play":

@@ -174,7 +174,7 @@ kuro_dead kbranch kb_last kuro_in daicam6_done daicam7_done flip flip_warn gph k
 daicam8_done daimyo_dead dm_ph dm_vul eye_x eye_y eye_st mk_x mk_y mk_st ally_x ally_st
 dobu_dead daicam2_done harm_dead tide_y tide_hi tide_force tide_lvl tide_t tide_warn
 dobu_cut dobu_gen dobu_ph dobu_open dobu_turn
-walk_to muk_bx muk_carry recep
+walk_to muk_bx muk_carry recep escort_go
 ally_hp ally_lives ally_rev ally_inv ally_def ally_dash ally_shot fy_floor dm_z dm_hi dm_lh exo_x dm_st dm_t dm_fc dm_tell dm_fl
 hold_x hold_y ke1_tell ke2_tell
 '''.split()
@@ -618,7 +618,18 @@ props += [costume_from(art_v2.planter(i), 'planter_%d' % i, 8, 24) for i in rang
 props.append(costume_from(art_v2.herbs(), 'herbs', 7, 30))
 props += [costume_from(art_v2.price_board(i), 'board_%d' % i, 38, 0) for i in range(2)]
 props += [costume_from(art_v2.civilian(i, f), 'debtor_%d_%d' % (i, f), 7, 28) for i in range(art_v2.CIVILIANS) for f in range(2)]
-props.append(costume_from(art_v2.soldier(), 'soldier', 7, 36))
+# turned to face left (the Vaults' line, headed for its door), and running left
+props += [costume_from(art_v2.civilian(i, f).transpose(Image.FLIP_LEFT_RIGHT), 'debtorl_%d_%d' % (i, f), 7, 28)
+          for i in range(art_v2.CIVILIANS) for f in range(2)]
+props += [costume_from(art_v2.civilian_run(i, f).transpose(Image.FLIP_LEFT_RIGHT), 'debtorrun_%d_%d' % (i, f), 7, 28)
+          for i in range(art_v2.CIVILIANS) for f in range(4)]
+# the Vaults debtors' minder: the suit grunt, facing left, standing and running
+_suit = art_edits.suit_frames(ST)
+props += [costume_from(_suit['idle_%d' % k].transpose(Image.FLIP_LEFT_RIGHT), 'escort_idle_%d' % k, 24, 37) for k in range(4)]
+props += [costume_from(_suit['walk_%d' % k].transpose(Image.FLIP_LEFT_RIGHT), 'escort_run_%d' % k, 24, 37) for k in range(6)]
+# the epilogue's hollowed soldier: a Tenshu trainee (the Muster Hall's look) idling, facing left
+props += [make_costume('soldier_%s' % n[len('h_idle_'):], im.transpose(Image.FLIP_LEFT_RIGHT), im.width - cx, cy, FILES)
+          for n, im, cx, cy in art_ch2.recolor_costumes('Mukuro', art_v2.SOLDIER_MAP, 'h_') if n.startswith('h_idle_')]
 props += [costume_from(art_v2.desk(f), 'desk_%d' % f, 36, 30) for f in range(2)]
 props.append(costume_from(art_v2.desk(staffed=False), 'desk_empty', 36, 30))
 props.append(costume_from(art_v2.directory(), 'directory', 38, 0))

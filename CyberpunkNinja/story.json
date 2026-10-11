@@ -45,7 +45,8 @@
       "mechanics": [
         "A slot machine behind her picks each attack, and names it when the reels stop (CARD FAN!, SHOCKWAVE!, LASERS!...).",
         "Deflect her card-blades to send them back.",
-        "SHOCKWAVE is a Breach: jump or Phase Step. Jackpot turns on laser grids: Phase Step through them."
+        "SHOCKWAVE is a Breach: jump or Phase Step. Jackpot turns on laser grids: Phase Step through them.",
+        "Her dash across the floor between attacks is a Breach: it can't be blocked, and a Heavy Strike won't knock her out of it. Jump it or Phase Step through."
       ]
     },
     "Dobunushi": {
@@ -170,7 +171,7 @@
     ],
     "core_combat": [
       "Attack chains into a 4-hit combo; Up + attack is a rising Launcher.",
-      "Phase Step (Space): an invincible, aimable dash with one charge (the scarf greys out while it's spent). Passes through lasers and attacks; refills on landing or a perfect deflect.",
+      "Phase Step (Space): an invincible, aimable dash with one charge (the scarf greys out while it's spent). Passes through lasers and attacks. It comes back a second after it's spent once Hotaru is on the ground, or at once with a perfect deflect.",
       "Heavy Strike: attack during or right after a Phase Step. It can't cut through a guard or a deflect, but it builds a lot of enemy Stance.",
       "Deflect: press Down right before a hit lands (enemies flash white just before). A perfect deflect builds the attacker's Stance. Holding Down blocks, but blocking builds Hotaru's Stance.",
       "Stance: every fighter has a Stance bar, Hotaru included. It starts empty and fills gold under pressure, then slowly settles (more slowly the lower a fighter's health, down to half speed; Hotaru's only with her guard down). When an enemy's Stance fills and breaks, a red reticle appears: attack near it to perform an Execution (instant kill for regular enemies, a whole health segment for bosses). Every Execution also refills one gourd charge and clears Hotaru's Stance. When Hotaru's Stance breaks, she overheats and staggers.",
@@ -760,7 +761,7 @@
         {
           "id": "debtors",
           "room": "Pachinko Shaft",
-          "trigger": "A line of debtors being led away",
+          "trigger": "A line of debtors led toward a door by a suited minder",
           "lines": [
             {
               "speaker": "Hotaru",
@@ -784,7 +785,7 @@
             },
             {
               "speaker": "Kuro",
-              "text": "They're being shipped out like freight. Let's find out where."
+              "text": "Their minder's hustling them out. Deal with the drones first--then we find out where they're going."
             }
           ]
         },
@@ -2968,7 +2969,7 @@
         {
           "id": "dm_dead",
           "room": "Tenshu Core",
-          "trigger": "The Daimyo falls",
+          "trigger": "The Daimyo falls to his knees",
           "lines": [
             {
               "speaker": "The Daimyo",
@@ -2977,7 +2978,25 @@
             {
               "speaker": "Hotaru",
               "text": "We'll figure out a way to restore them--if not, we've at least stopped you from doing this to more."
-            },
+            }
+          ]
+        },
+        {
+          "id": "dm_finish",
+          "room": "Tenshu Core",
+          "trigger": "Hotaru finishes it",
+          "lines": [
+            {
+              "speaker": "Hotaru",
+              "text": "Now, die."
+            }
+          ]
+        },
+        {
+          "id": "dm_signal",
+          "room": "Tenshu Core",
+          "trigger": "He crumbles to ash",
+          "lines": [
             {
               "speaker": "System",
               "text": "MUSTER HALL // Command signal: LOST. March order: CANCELLED."

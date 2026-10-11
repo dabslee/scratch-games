@@ -321,6 +321,7 @@ def wall_jump(side):
 def try_dash():
     if dash_ch > 0:
         dash_ch -= 1
+        dash_cd = 30
         ddx = kR - kL
         ddy = kU - kD
         if grounded == 1 and ddy < 0 and not (on_oneway == 1 and on_solid == 0):
@@ -1019,10 +1020,14 @@ def physics():
         move_y(sty)
     if was_g == 1 and grounded == 0 and pvy <= 0 and jumping == 0:
         coyote = C_COYOTE
+    # the Phase Step charge comes back a second after it's spent, once she's on the ground
+    if dash_cd > 0:
+        dash_cd -= 1
     if grounded == 1:
         air_t = 0
-        if was_g == 0:
+        if dash_cd == 0 and dash_ch < 1:
             dash_ch = 1
+        if was_g == 0:
             airatk = 0
             if fallv < -9 and pst == "move":
                 land_t = 5
