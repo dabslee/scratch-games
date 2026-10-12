@@ -387,7 +387,8 @@ def go_title():
 @proc
 def check_triggers():
     for ti in range(1, len(trig_x) + 1):
-        if trig_on[ti] == 1 and px > trig_x[ti]:
+        # trig_on 2 waits for Hotaru to be standing, wherever she is
+        if trig_on[ti] > 0 and px > trig_x[ti] and (trig_on[ti] == 1 or p_ground == 1):
             trig_on[ti] = 0
             broadcast(join("ev_", trig_ev[ti]))
 
@@ -456,7 +457,10 @@ def load_room(r):
         if O_TYPE[oi] == "trig":
             trig_x.append(O_X[oi])
             trig_ev.append(O_A[oi])
-            trig_on.append(1)
+            if O_B[oi] == "land":
+                trig_on.append(2)
+            else:
+                trig_on.append(1)
     boss_on = 0
     ambush_on = 0
     mp_on = 0

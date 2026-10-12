@@ -186,7 +186,7 @@ p3.deco('g', 2, 3, 27, 3).deco('i', 10, 4, 10, 18).deco('o', 3, 16, 4, 16)
 p3.obj('drone', cx(8), top(11))
 p3.obj('drone', cx(22), top(10))
 p3.obj('door', left(29), bottom(18), a='lock')
-p3.obj('trig', cx(18), 0, a='hint_attack')
+p3.obj('trig', -999, 0, a='hint_attack', b='land')                     # once she lands from the climb up
 
 # P4 Return fire ------------------------------------------------------
 p4 = room('p4', 0, 'Return Fire')

@@ -49,6 +49,7 @@ def p_enter():
             py = -200
             pvy = C_BOOST
             jumping = 0
+            grounded = 0
     elif enter_dir == "T":
         py = 152
     else:

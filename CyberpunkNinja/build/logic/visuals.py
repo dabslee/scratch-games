@@ -94,8 +94,8 @@ def draw():
         ey = ent_y[slot]
         eh = ent_h[slot]
         if role == "bar":
-            if ent_int[slot] > 0 or ent_stag[slot] == 1:
-                # Stance fills gold under pressure; full means broken
+            if ey > -900:
+                # Stance fills gold under pressure; full means broken (a reset Dobu arm sits at -999)
                 costume(join("enemy_int_", min(8, round(ent_int[slot] * 8 / ent_imax[slot]))))
                 goto(ex + shx, ey + eh + 12 + shy)
                 show()
