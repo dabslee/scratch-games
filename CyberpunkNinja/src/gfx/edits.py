@@ -1,6 +1,6 @@
 """Hand edits to pack characters, carried from one edited idle frame to every frame.
 
-The art in art/src/edits is a single edited idle_0 per character. Every other
+The art in art/characters/pack_edits is a single edited idle_0 per character. Every other
 animation frame gets the edit in three passes:
   1. Pose frames: the original idle head is found in the frame (best pixel match;
      some frames give the spot by hand) and the edited head is pasted there. Only
@@ -19,10 +19,12 @@ from collections import Counter, defaultdict
 
 from PIL import Image
 
-import art_ch2
+import assets
 from assets import PALETTE as P
+from gfx import vaults
+from gfx.util import recolor_costumes
 
-EDITS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'art', 'src', 'edits')
+EDITS = assets.art_path('characters', 'pack_edits')
 CLEAR = (0, 0, 0, 0)
 
 
@@ -328,7 +330,7 @@ def _sash(muk):
 
 
 def luck_frames(st):
-    frames = {n: _1x(im) for n, im, _, _ in art_ch2.recolor_costumes('Mukuro', art_ch2.LUCK_MAP)}
+    frames = {n: _1x(im) for n, im, _, _ in recolor_costumes('Mukuro', vaults.LUCK_MAP)}
     head, waist = (13, 11, 33, 24), (15, 24, 31, 34)
     new = _load('luck_idle_0.png')
     ed = Edit(frames['idle_0'], new, head=head, head_colors={_rgba('mag3'): LUCK_DARK, _rgba('mag2'): LUCK_DARK})

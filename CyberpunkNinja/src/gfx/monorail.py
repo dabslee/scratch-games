@@ -2,7 +2,9 @@
 Chapter 4 (Monorail Ascent) art. The pack has nothing for the monorail, so
 this draws it in the pack's palette: a train-livery recolor of the alley
 tiles, a dusk sky above the cloud layer, rail pylons that rush past, wind
-streaks, trackside signal posts, and Raijin, the armored locomotive.
+streaks, trackside signal posts, Kanshi's patrol crows, and Raijin, the
+armored locomotive.
+
 
 All functions return 1x art-pixel images unless noted.
 """
@@ -12,12 +14,7 @@ import random
 from PIL import Image, ImageDraw
 
 import assets
-from assets import PALETTE as P
-from art_ch2 import recolor, gradient, st  # noqa: F401
-
-
-def C(name, a=255):
-    return P[name] + (a,)
+from gfx.util import C, gradient, pix_grid, recolor
 
 
 # Kanshi rail livery: pale steel cars with an orange stripe.
@@ -295,3 +292,42 @@ def plow(frame):
     for x in (8, 26, 40):
         d.point((x, 12), fill=C('yellow' if frame % 2 else 'orange'))
     return im
+
+
+# ------------------------------------------------------------------ robotic crows
+CROW = [[
+"..........kkk...........",
+".........kSSSk..........",
+"........kSssSSk.........",
+"..kkk..kSsssSSSk........",
+".kSSDk.kSsssSSSSk.......",
+"kDSDDDkkkSsSSSSSSk......",
+".kkDDDDDSSDDDDDDDSkk....",
+"kyrkDDDDDDDDDDDDDDDDkkk.",
+"kkkkkDDDDDDDDDDDDDDkDDDk",
+"...kkkkDDDDDDDDDkkkk.kkk",
+"......kkkkkDkkkkk.......",
+"..........kok...........",
+"..........k.k...........",
+"........................",
+], [
+"........................",
+"........................",
+"........................",
+"..kkk...................",
+".kSSDk..................",
+"kDSDDDk.................",
+".kkDDDDkkkkkkkkkkkk.....",
+"kyrkDDDDDDDDDDDDDDDkkkk.",
+"kkkkkDDDDSSSDDDDDDDkDDDk",
+"...kkkkDDSsssSDDDkkk.kkk",
+"......kkkSsssSSkkk......",
+".........kSssSk.........",
+"..........kSSk..........",
+"...........kk...........",
+]]
+
+
+def robo_crow(frame):
+    """A Kanshi surveillance crow, 24x14, flying left, red eye and a signal light."""
+    return pix_grid(CROW[frame % 2], 24, 14)

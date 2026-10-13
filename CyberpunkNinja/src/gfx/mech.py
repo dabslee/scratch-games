@@ -1,6 +1,6 @@
 """The Daimyo's mech (phase 1), animated from the user's parts by a small 2D rig.
 
-art/src/daimyo_mech holds the parts (helmet, upper arm, forearm, fist, sword,
+art/characters/daimyo_mech holds the parts (helmet, upper arm, forearm, fist, sword,
 torso with the waist plates and scabbard, upper leg, lower leg) cut from the
 user's sheet, and the assembled pose they come from. Each pose places the hips,
 the feet and the sword's grip; the knees and elbows are solved to reach them
@@ -13,7 +13,9 @@ import os
 
 from PIL import Image
 
-SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'art', 'src', 'daimyo_mech')
+import assets
+
+SRC = assets.art_path('characters', 'daimyo_mech')
 UP = 8
 
 # where the parts sit in the user's assembled pose (top-left corners)

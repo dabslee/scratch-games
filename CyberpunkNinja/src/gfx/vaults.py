@@ -4,42 +4,16 @@ everything here is generated: palette swaps of existing pack art (the pack's
 sprites are drawn from one 34-color palette precisely so they can be
 recolored) plus new pixel art drawn in that same palette.
 
+
 All functions return 1x art-pixel images unless noted.
 """
-import io
-
 from PIL import Image, ImageDraw
 
 import assets
 from assets import PALETTE as P
-
-ST = None
-
-
-def st():
-    global ST
-    if ST is None:
-        ST = assets.starter()
-    return ST
-
-
-def C(name, a=255):
-    return P[name] + (a,)
-
-
-# ------------------------------------------------------------------ recolors
-def recolor(im, mapping):
-    """Swap palette colors by name: {'night1': 'purple1', ...}."""
-    lut = {P[a]: P[b] for a, b in mapping.items()}
-    im = im.convert('RGBA').copy()
-    px = im.load()
-    for y in range(im.height):
-        for x in range(im.width):
-            r, g, b, a = px[x, y]
-            if a and (r, g, b) in lut:
-                nr, ng, nb = lut[(r, g, b)]
-                px[x, y] = (nr, ng, nb, a)
-    return im
+from gfx.portraits import luck_portrait
+from gfx.ui import nameplate
+from gfx.util import C, gradient, recolor, recolor_costumes
 
 
 LUCK_MAP = {
@@ -60,74 +34,12 @@ TILE_MAP = {
     'slate1': 'purple1', 'slate2': 'mag1', 'slate3': 'mag2', 'steel': 'gold',
     'cyan1': 'brown', 'cyan3': 'yellow', 'cyan4': 'white', 'night2': 'night2', 'white': 'yellow',
 }
-PORTRAIT_MAP = {
-    'night1': 'purple1', 'night2': 'mag1', 'red1': 'brown', 'red2': 'gold', 'red3': 'yellow',
-    'cyan2': 'mag3', 'slate1': 'slate3', 'slate2': 'steel', 'slate3': 'white',
-}
-
-
-def recolor_costumes(sprite, mapping, prefix=''):
-    """[(name, 4x image, rcx, rcy)] for every costume of a pack sprite, recolored."""
-    out = []
-    for c in st().costumes(sprite):
-        im = recolor(st().image(sprite, c['name']), mapping)
-        out.append((prefix + c['name'], im, c['rotationCenterX'], c['rotationCenterY']))
-    return out
-
-
-def luck_portrait():
-    im = recolor(st().image_1x('Portraits', 'mukuro_neutral'), PORTRAIT_MAP)
-    d = ImageDraw.Draw(im)
-    # a gold card held up at the left edge of the frame
-    d.rectangle([4, 24, 11, 34], fill=C('white'), outline=C('gold'))
-    d.point([(7, 28), (8, 28), (7, 29), (8, 29), (6, 29), (9, 29), (7, 30), (8, 30)], fill=C('red2'))
-    return im
-
-
-def nameplate(text, border='gold'):
-    """Dialogue name tag in the style of the pack's NamePlates."""
-    base = st().image_1x('NamePlates', 'name_mukuro')
-    bg = (20, 15, 45, 235)
-    red = P['red2'] + (255,)
-    tw = assets.Font(True).width(text)
-    w = tw + 12
-    im = Image.new('RGBA', (w, base.height), (0, 0, 0, 0))
-    left = base.crop((0, 0, 4, base.height))
-    right = base.crop((base.width - 5, 0, base.width, base.height))
-    mid = base.crop((5, 0, 6, base.height))
-    im.paste(left, (0, 0))
-    for x in range(4, w - 5):
-        im.paste(mid, (x, 0))
-    im.paste(right, (w - 5, 0))
-    px = im.load()
-    for y in range(im.height):
-        for x in range(im.width):
-            p = px[x, y]
-            if p[3] and p[:3] == P['white']:
-                px[x, y] = bg
-            elif p[3] and p == red:
-                px[x, y] = C(border)
-    assets.Font(True).draw(im, 5, 1, text, P['white'])
-    return im
 
 
 # ------------------------------------------------------------------ tiles
 def vaults_atlas():
     atlas = Image.open(assets.pack_path('tilesets', 'alley_atlas_8x8.png')).convert('RGBA')
     return recolor(atlas, TILE_MAP)
-
-
-# ------------------------------------------------------------------ backgrounds
-BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
-
-
-def gradient(im, y0, y1, c0, c1):
-    """Two-color ordered-dither gradient between rows y0..y1."""
-    px = im.load()
-    for y in range(y0, y1):
-        f = (y - y0) / max(1, (y1 - y0 - 1))
-        for x in range(im.width):
-            px[x, y] = C(c1) if f * 16 > BAYER[y % 4][x % 4] else C(c0)
 
 
 def sky():
@@ -372,19 +284,4 @@ def cage(stage):
         d.rectangle([0, h - 4, w - 1, h - 1], fill=C('gold'), outline=C('brown'))
         for x in (1, 5, 22, 26):
             d.line([x, h - 5, x + (2 if x < 14 else -2), h - 14], fill=C('gold'))
-    return im
-
-
-def system_portrait():
-    """Boot-screen portrait for the Kanshi system log."""
-    im = Image.new('RGBA', (40, 40), C('ink'))
-    d = ImageDraw.Draw(im)
-    for y in range(0, 40, 2):
-        d.line([0, y, 39, y], fill=C('night1'))
-    d.ellipse([12, 6, 27, 21], outline=C('cyan2'))
-    d.line([19, 4, 19, 13], fill=C('cyan3'))
-    d.line([20, 4, 20, 13], fill=C('cyan3'))
-    for i, (w, col) in enumerate(((30, 'cyan2'), (22, 'cyan1'), (26, 'red2'), (14, 'cyan2'))):
-        d.line([5, 26 + i * 3, 5 + w, 26 + i * 3], fill=C(col))
-    d.rectangle([0, 0, 39, 39], outline=C('cyan1'))
     return im

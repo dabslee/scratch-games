@@ -1,6 +1,9 @@
 """
-Chapter 7 (The Tenshu) art: the Daimyo in all three forms. The castle
-itself (tiles, sky, fake moon) comes straight from the pack.
+Chapter 8 (The Tenshu) art: the Daimyo in all three forms (the mech's procedural
+fallback, the castle defense eye, the engram and the man himself), his slash
+wave, the hollowed soldiers and the Tenshu's cables. The castle itself (tiles,
+sky, fake moon) comes straight from the pack.
+
 
 All functions return 1x art-pixel images unless noted.
 """
@@ -9,11 +12,7 @@ import random
 
 from PIL import Image, ImageDraw
 
-from assets import PALETTE as P
-
-
-def C(name, a=255):
-    return P[name] + (a,)
+from gfx.util import C, pix_grid
 
 
 # ------------------------------------------------------------------ the exoskeleton
@@ -170,4 +169,138 @@ def orb(frame):
     d = ImageDraw.Draw(im)
     d.ellipse([0, 0, 7, 7], fill=C('purple2'))
     d.ellipse([2, 2, 5, 5], fill=C('mag4' if frame % 2 else 'white'))
+    return im
+
+
+# ------------------------------------------------------------------ hollowed soldiers (Mukuro's rig)
+# The Tenshu's guard in lacquered armor, eyes blank white.
+def soldier():
+    """A hollowed soldier at attention: Kanshi armor, an empty white visor, 14x36 (bottom-center)."""
+    im = Image.new('RGBA', (14, 36), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rectangle([3, 26, 5, 35], fill=C('night2'))
+    d.rectangle([8, 26, 10, 35], fill=C('night2'))
+    d.rectangle([2, 34, 5, 35], fill=C('slate2'))
+    d.rectangle([8, 34, 11, 35], fill=C('slate2'))
+    d.rectangle([2, 12, 11, 26], fill=C('night2'), outline=C('ink'))
+    d.line([2, 12, 11, 12], fill=C('red2'))
+    d.rectangle([5, 16, 8, 22], fill=C('slate1'))
+    d.line([1, 13, 1, 24], fill=C('night2'))
+    d.line([12, 13, 12, 24], fill=C('night2'))
+    d.rectangle([0, 12, 2, 15], fill=C('red1'))
+    d.rectangle([11, 12, 13, 15], fill=C('red1'))
+    d.ellipse([3, 2, 10, 11], fill=C('night1'), outline=C('ink'))
+    d.rectangle([4, 6, 9, 7], fill=C('white'))
+    d.line([2, 2, 11, 2], fill=C('slate2'))
+    return im
+
+
+SOLDIER_MAP = {'night3': 'indigo', 'indigo': 'slate3', 'red2': 'white', 'red3': 'red2',
+               'slate2': 'slate1', 'slate3': 'slate2', 'yellow': 'gold'}
+
+
+# ------------------------------------------------------------------ the Daimyo, in person
+DM_DEAD = [
+"...............................................p",
+".......................................p........",
+"...........................................p....",
+"....................................kk..........",
+"..................................kk22k.........",
+"................................kk222222kk......",
+"...............................kS2kk222222kss...",
+"..........................kkkkkSS2222222222ksss.",
+"...........kkkkkkkkkkkkkkNNNNrrkSS2222222kkssk..",
+".....kk...knnnnnnnnnnnnkNNNNNNNrkkk22222k.kk....",
+"....kbbk.knnnknnnnnnnkkoooNNoNNNNNkkkkkk........",
+"....kbbkknnnnnknnnnnnnkoooNoNoNNNNk.............",
+"....kbbknnnnnnnknnnnnnkoooNNoNNNNk22k...........",
+".....kkknnnnnnnnnnnnnnkoooNNNNNNk.k22k..........",
+".......kkkkkkkkkkkkkkkkkkkkkkkkkk..k22kobkDDSSSc",
+"...........................RRRRRRRRRRRRRR.......",
+]
+
+
+MAN_W, MAN_H = 40, 36
+MAN_FOOT = (17, 35)
+MAN_POSES = {
+    # blade (hilt x, y, angle), lean, stride, hand open (soul grab)
+    'idle': ((22, 22, -40), 0, 2, False),
+    'walk': ((22, 22, -35), 1, 4, False),
+    'wind': ((10, 22, 200), -1, 3, False),
+    'cut': ((24, 18, 5), 3, 7, False),
+    'feint': ((12, 20, 150), 0, 3, False),
+    'grab0': ((10, 24, 210), -1, 3, True),
+    'grab1': ((10, 24, 210), 3, 8, True),
+    'hurt': ((20, 26, -70), -2, 1, False),
+}
+
+
+def daimyo_man(pose='idle', frame=0):
+    """The Daimyo out of his armor: an old man in black and gold with Tamakiri. Faces right."""
+    if pose == 'dead':
+        return pix_grid(DM_DEAD, 48, 16)
+    im = Image.new('RGBA', (MAN_W, MAN_H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    (hx, hy, ang), lean, step, grab = MAN_POSES[pose]
+    bob = frame % 2 if pose in ('idle', 'walk') else 0
+    cx0 = 17 + lean
+    top = 10 + bob
+    # hakama (wide trousers) and sandals
+    d.polygon([(cx0 - 5, 24), (cx0 + 5, 24), (cx0 + 5 + step // 2, 34), (cx0 - 6 - step // 2, 34)],
+              fill=C('night1'), outline=C('ink'))
+    d.line([cx0, 25, cx0, 33], fill=C('ink'))
+    d.point([(cx0 - 6 - step // 2, 35), (cx0 + 5 + step // 2, 35)], fill=C('brown'))
+    # black kimono with a gold mon and red under-collar
+    d.polygon([(cx0 - 5, top + 3), (cx0 + 5, top + 3), (cx0 + 6, 25), (cx0 - 6, 25)], fill=C('night2'),
+              outline=C('ink'))
+    d.line([cx0 - 2, top + 3, cx0 + 2, top + 9], fill=C('red2'))
+    d.rectangle([cx0 - 5, 22, cx0 + 6, 23], fill=C('gold'))
+    d.ellipse([cx0 - 3, top + 8, cx0, top + 11], outline=C('gold'))
+    # head: shaved, gray topknot, hard eyes, a thin beard
+    d.ellipse([cx0 - 3, top - 7, cx0 + 4, top + 2], fill=C('skin2'), outline=C('ink'))
+    d.rectangle([cx0 - 2, top - 9, cx0, top - 7], fill=C('steel'))
+    d.line([cx0 + 1, top - 3, cx0 + 3, top - 3], fill=C('ink'))
+    d.line([cx0 + 1, top + 1, cx0 + 3, top + 2], fill=C('slate3'))
+    # Tamakiri: a long blade that glows like a cut in the air
+    a = math.radians(ang)
+    tip = (hx + math.cos(a) * 17, hy - math.sin(a) * 17)
+    d.line([cx0 + 2, top + 5, hx, hy], fill=C('night2'), width=2)
+    d.line([(hx, hy), (hx - math.cos(a) * 3, hy + math.sin(a) * 3)], fill=C('gold'), width=2)
+    d.line([(hx, hy), tip], fill=C('cyan4'))
+    d.line([(hx + math.cos(a) * 3, hy - math.sin(a) * 3), tip], fill=C('purple3'))
+    if grab:
+        # the free hand reaches out, glowing: the soul grab
+        gx = cx0 + 8 + (6 if pose == 'grab1' else 0)
+        d.line([cx0 + 3, top + 5, gx, top + 6], fill=C('night2'), width=2)
+        for k in range(3):
+            d.point((gx + 1, top + 4 + k * 2), fill=C('skin2'))
+        d.ellipse([gx - 1, top + 2, gx + 5, top + 10], outline=C('purple3'))
+    return im
+
+
+def cable():
+    """A bundle of Tenshu cables, 6x110 (bottom-center), hanging from the ceiling."""
+    im = Image.new('RGBA', (6, 110), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    for x, col in ((1, 'night2'), (3, 'slate1'), (4, 'night2')):
+        d.line([x, 0, x, 109], fill=C(col))
+    for y in range(4, 110, 13):
+        d.point((2, y), fill=C('red3'))
+    return im
+
+
+# ------------------------------------------------------------------ the Daimyo's slash wave
+def crescent(frame):
+    """A crescent of Tamakiri's red edge flung through the air, 14x20, travelling right."""
+    im = Image.new('RGBA', (14, 20), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.ellipse([0, 0, 13, 19], fill=C('red2'))
+    d.ellipse([-5 + frame, 2, 9 + frame, 17], fill=(0, 0, 0, 0))
+    px = im.load()
+    for y in range(20):
+        row = [x for x in range(14) if px[x, y][3]]
+        if row:
+            px[row[-1], y] = C('white')          # the hot outer edge
+            if len(row) > 2:
+                px[row[0], y] = C('red3')
     return im

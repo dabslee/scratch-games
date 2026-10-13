@@ -1,11 +1,9 @@
 """
-Chapter 5 (Hollow Floor) and Chapter 6 (The Academy) art.
+Chapter 5 (Hollow Floor) art. Hollow Floor is built from Kuro's memories, so
+most of it is pack art re-toned into a violet "memory" ramp by luminance, with
+glitches flickering behind the rooms. The phasing block is shared with the
+Academy (glitch blocks here, training holograms there).
 
-Hollow Floor is built from Kuro's memories, so most of it is pack art
-re-toned into a violet "memory" ramp by luminance. The Academy re-tones the
-Tenshu tileset into red lacquer and draws a training-hall backdrop. Both
-chapters share the phasing block (glitch blocks in Ch5, training holograms
-in Ch6).
 
 All functions return 1x art-pixel images unless noted.
 """
@@ -15,15 +13,10 @@ from PIL import Image, ImageDraw
 
 import assets
 from assets import PALETTE as P
-from art_ch2 import recolor, gradient, st  # noqa: F401
-
-
-def C(name, a=255):
-    return P[name] + (a,)
+from gfx.util import C, gradient, st
 
 
 MEMORY_RAMP = ['ink', 'night1', 'night2', 'purple1', 'purple2', 'purple3', 'white']
-ACADEMY_RAMP = ['ink', 'night1', 'brown', 'red1', 'red2', 'orange', 'yellow']
 
 
 def tone(im, ramp, keep=(), stretch=False):
@@ -82,7 +75,7 @@ def glitch_rows(im, seed, n=10, shift=6):
     return out
 
 
-# ------------------------------------------------------------------ Chapter 5
+# ------------------------------------------------------------------ tiles and backdrops
 def memory_atlas():
     atlas = Image.open(assets.pack_path('tilesets', 'sump_atlas_8x8.png')).convert('RGBA')
     return tone(atlas, ['purple1', 'purple2', 'purple3', 'white'], keep=('mag3', 'mag2'), stretch=True)
@@ -128,7 +121,7 @@ def possess():
     return im
 
 
-# ------------------------------------------------------------------ shared phasing blocks
+# ------------------------------------------------------------------ phasing blocks (shared with the Academy)
 def phase_block(state, holo=False):
     """8x8 block: state 'on', 'warn' (about to vanish), 'soon' (about to appear) or 'off'.
     Glitch (violet) or hologram (cyan). 'off' is only a faint dotted outline so it reads as empty."""
@@ -154,75 +147,51 @@ def phase_block(state, holo=False):
     return im
 
 
-# ------------------------------------------------------------------ Chapter 6
-SHELL_MAP = {'cyan1': 'red1', 'cyan2': 'red2', 'cyan3': 'red3', 'cyan4': 'orange'}
-
-
-def academy_atlas():
-    atlas = Image.open(assets.pack_path('tilesets', 'tenshu_atlas_8x8.png')).convert('RGBA')
-    return tone(atlas, ['night1', 'brown', 'red1', 'red2', 'orange', 'yellow'], keep=('gold',), stretch=True)
-
-
-def academy_sky():
-    im = Image.new('RGBA', (240, 180), C('ink'))
-    gradient(im, 0, 80, 'ink', 'night1')
-    gradient(im, 80, 180, 'night1', 'red1')
-    d = ImageDraw.Draw(im)
-    for x in (20, 80, 140, 200):
-        d.line([x, 0, x, 10], fill=C('brown'))
-        d.ellipse([x - 5, 10, x + 5, 22], fill=C('red2'), outline=C('red1'))
-        d.line([x - 4, 16, x + 4, 16], fill=C('orange'))
-    return im
-
-
-def academy_far():
-    """A shoji screen wall with trainee silhouettes behind the paper."""
-    im = Image.new('RGBA', (240, 180), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.rectangle([0, 70, 239, 160], fill=C('brown'))
-    for x in range(0, 240, 30):
-        d.rectangle([x + 2, 74, x + 27, 156], fill=C('orange', 60))
-        for gx in range(x + 2, x + 28, 8):
-            d.line([gx, 74, gx, 156], fill=C('brown'))
-        for gy in range(74, 157, 12):
-            d.line([x + 2, gy, x + 27, gy], fill=C('brown'))
-    rng = random.Random(14)
-    for x in range(15, 240, 60):
-        h = rng.randint(30, 38)
-        top = 150 - h
-        d.ellipse([x - 3, top, x + 3, top + 6], fill=C('red1', 200))
-        d.rectangle([x - 3, top + 6, x + 3, 150], fill=C('red1', 200))
-        d.line([x + 3, top + 10, x + 14, top + 2], fill=C('red1', 200))
-    d.rectangle([0, 160, 239, 179], fill=C('night1'))
-    return im
-
-
-def academy_mid():
-    """Lacquered pillars with hanging banners, every 120 px."""
-    im = Image.new('RGBA', (240, 180), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    for x in (30, 150):
-        d.rectangle([x, 0, x + 8, 179], fill=C('red1'))
-        d.line([x + 1, 0, x + 1, 179], fill=C('red2'))
-        d.rectangle([x - 2, 40, x + 10, 44], fill=C('gold'))
-        bx = x + 30
-        d.rectangle([bx, 6, bx + 16, 70], fill=C('night2'), outline=C('gold'))
-        d.line([bx + 8, 14, bx + 8, 40], fill=C('white'), width=2)
-        d.line([bx + 3, 24, bx + 13, 24], fill=C('white'))
-        d.line([bx + 4, 48, bx + 12, 58], fill=C('red3'), width=2)
-        d.line([bx + 12, 48, bx + 4, 58], fill=C('red3'), width=2)
-        d.polygon([(bx, 70), (bx + 8, 64), (bx + 16, 70)], fill=C('ink'))
-    return im
-
-
-def dummy():
-    """Training dummy, 14x26."""
-    im = Image.new('RGBA', (14, 26), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.rectangle([6, 8, 7, 25], fill=C('brown'))
-    d.rectangle([1, 10, 12, 12], fill=C('brown'))
-    d.ellipse([3, 0, 10, 8], fill=C('gold'), outline=C('brown'))
-    d.rectangle([4, 13, 9, 20], fill=C('gold'), outline=C('brown'))
-    d.line([4, 16, 9, 16], fill=C('red2'))
-    d.rectangle([3, 24, 10, 25], fill=C('slate2'))
+# ------------------------------------------------------------------ background glitches
+def glitch_piece(i):
+    """Torn scanlines, RGB-split blocks and corrupted glyph rows that flicker behind
+    Hollow Floor's rooms. Returns a 1x image (center anchored)."""
+    rng = random.Random(900 + i)
+    kind = i % 4
+    if kind == 0:
+        # a horizontal tear: stacked scanlines sliding apart
+        w, h = rng.randint(90, 160), rng.randint(6, 12)
+        im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        for y in range(0, h, 2):
+            x0 = rng.randint(0, w // 4)
+            x1 = rng.randint(w * 3 // 4, w - 1)
+            d.line([x0, y, x1, y], fill=C(rng.choice(('cyan2', 'purple2', 'mag2', 'indigo')), 200))
+    elif kind == 1:
+        # an RGB-split block
+        w, h = rng.randint(20, 46), rng.randint(14, 30)
+        im = Image.new('RGBA', (w + 6, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rectangle([0, 0, w - 1, h - 1], fill=C('mag2', 150))
+        d.rectangle([6, 0, w + 5, h - 1], fill=C('cyan2', 150))
+        d.rectangle([6, 0, w - 1, h - 1], fill=C('purple3', 170))
+        for y in range(1, h, 3):
+            d.line([0, y, w + 5, y], fill=C('night1', 120))
+    elif kind == 2:
+        # a row of corrupted glyph blocks
+        w, h = rng.randint(60, 110), 7
+        im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        px = im.load()
+        x = 0
+        while x < w - 4:
+            col = C(rng.choice(('cyan3', 'purple3', 'mag3', 'white')), 220)
+            for yy in range(5):
+                for xx in range(3):
+                    if rng.random() < 0.55:
+                        px[x + xx, 1 + yy] = col
+            x += rng.randint(4, 7)
+    else:
+        # a dithered dead-pixel patch
+        w, h = rng.randint(30, 60), rng.randint(20, 40)
+        im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+        px = im.load()
+        for y in range(h):
+            for x in range(w):
+                if (x + y) % 2 == 0 and rng.random() < 0.6 - abs(y - h / 2) / h:
+                    px[x, y] = C(rng.choice(('purple1', 'purple2', 'indigo', 'cyan1')), 190)
     return im

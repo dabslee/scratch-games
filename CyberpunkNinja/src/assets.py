@@ -17,12 +17,18 @@ from PIL import Image
 import levels
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# the asset pack ships in the repo next to build/; CN_PACK points the build at another copy
+# the asset pack ships in the repo next to src/; CN_PACK points the build at another copy
 PACK = os.environ.get('CN_PACK', os.path.join(HERE, '..', 'CyberpunkNinja_AssetPack'))
+# this project's own hand-drawn source art
+ART = os.path.join(HERE, '..', 'art')
 
 
 def pack_path(*p):
     return os.path.join(PACK, *p)
+
+
+def art_path(*p):
+    return os.path.join(ART, *p)
 
 
 class Starter:
@@ -91,17 +97,20 @@ MATERIAL = {0: 'sump', 1: 'alley', 2: 'vaults', 3: 'sewer', 4: 'rail', 5: 'memor
 def tile_images(material):
     layout = json.load(open(pack_path('tilesets', 'layout.json')))
     if material == 'sewer':
-        import art_v2
-        atlas = art_v2.sewer_atlas()
+        from gfx import sewers
+        atlas = sewers.sewer_atlas()
     elif material == 'vaults':
-        import art_ch2
-        atlas = art_ch2.vaults_atlas()
+        from gfx import vaults
+        atlas = vaults.vaults_atlas()
     elif material == 'rail':
-        import art_ch4
-        atlas = art_ch4.rail_atlas()
-    elif material in ('memory', 'academy'):
-        import art_ch56
-        atlas = art_ch56.memory_atlas() if material == 'memory' else art_ch56.academy_atlas()
+        from gfx import monorail
+        atlas = monorail.rail_atlas()
+    elif material == 'memory':
+        from gfx import hollow_floor
+        atlas = hollow_floor.memory_atlas()
+    elif material == 'academy':
+        from gfx import academy
+        atlas = academy.academy_atlas()
     else:
         atlas = Image.open(pack_path('tilesets', '%s_atlas_8x8.png' % material)).convert('RGBA')
     tiles = {}
@@ -177,8 +186,8 @@ def render_room(room, frame=0):
             elif ch == 'v':
                 name = 'spikes_down'
             elif ch == 'w':
-                import art_v2
-                im.alpha_composite(art_v2.toxic_tile(r == 0 or room.g[r - 1][c] != 'w', frame, c), (c * 8, r * 8))
+                from gfx import sewers
+                im.alpha_composite(sewers.toxic_tile(r == 0 or room.g[r - 1][c] != 'w', frame, c), (c * 8, r * 8))
                 continue
             deco = room.decor.get((c, r))
             if deco and ch in '.#':
@@ -209,37 +218,37 @@ OBJ_PREVIEW = {
 }
 
 
-CH2_PREVIEW = {'croupier': ('HannyaBoy', 'CROUPIER_MAP', 'idle_0'), 'slotturret': ('Turret', 'SLOT_TURRET_MAP', 'idle_0'),
-               'luck': ('Mukuro', 'LUCK_MAP', 'idle_0'), 'warden': ('Mukuro', 'art_ch3.WARDEN_MAP', 'idle_0')}
+CH2_PREVIEW = {'croupier': ('HannyaBoy', 'vaults.CROUPIER_MAP', 'idle_0'), 'slotturret': ('Turret', 'vaults.SLOT_TURRET_MAP', 'idle_0'),
+               'luck': ('Mukuro', 'vaults.LUCK_MAP', 'idle_0'), 'warden': ('Mukuro', 'gardens.WARDEN_MAP', 'idle_0')}
 
 
 def preview_room(room, scale=2):
     st = starter()
     if room.chapter == 3:
-        import art_v2
-        bg = art_v2.sewer_sky()
-        bg.alpha_composite(art_v2.sewer_far())
-        bg.alpha_composite(art_v2.sewer_mid())
+        from gfx import sewers
+        bg = sewers.sewer_sky()
+        bg.alpha_composite(sewers.sewer_far())
+        bg.alpha_composite(sewers.sewer_mid())
     elif room.chapter == 2:
-        import art_ch2
-        bg = art_ch2.sky()
-        bg.alpha_composite(art_ch2.far())
-        bg.alpha_composite(art_ch2.mid())
+        from gfx import vaults
+        bg = vaults.sky()
+        bg.alpha_composite(vaults.far())
+        bg.alpha_composite(vaults.mid())
     elif room.chapter == 4:
-        import art_ch4
-        bg = art_ch4.sky()
-        bg.alpha_composite(art_ch4.far())
-        bg.alpha_composite(art_ch4.mid())
-    elif room.chapter in (5, 7):
-        import art_ch56 as a56
-        if room.chapter == 5:
-            bg = a56.hollow_sky()
-            bg.alpha_composite(a56.hollow_far())
-            bg.alpha_composite(a56.hollow_mid())
-        else:
-            bg = a56.academy_sky()
-            bg.alpha_composite(a56.academy_far())
-            bg.alpha_composite(a56.academy_mid())
+        from gfx import monorail
+        bg = monorail.sky()
+        bg.alpha_composite(monorail.far())
+        bg.alpha_composite(monorail.mid())
+    elif room.chapter == 5:
+        from gfx import hollow_floor
+        bg = hollow_floor.hollow_sky()
+        bg.alpha_composite(hollow_floor.hollow_far())
+        bg.alpha_composite(hollow_floor.hollow_mid())
+    elif room.chapter == 7:
+        from gfx import academy
+        bg = academy.academy_sky()
+        bg.alpha_composite(academy.academy_far())
+        bg.alpha_composite(academy.academy_mid())
     else:
         ch = {0: 'sump', 1: 'neon_alley', 6: 'server_gardens', 8: 'tenshu', 9: 'sump'}[room.chapter]
         bg = Image.open(pack_path('backgrounds', ch, 'sky.png')).convert('RGBA')
@@ -249,29 +258,28 @@ def preview_room(room, scale=2):
     im.paste(bg, (0, 0))
     im.alpha_composite(render_room(room))
     if room.chapter in (5, 7, 8):
-        import art_ch56 as a56
+        from gfx import hollow_floor
         for r in range(levels.H):
             for c in range(levels.W):
                 if room.g[r][c] in 'GH':
                     on = 'on' if room.g[r][c] == 'G' else 'off'
-                    im.alpha_composite(a56.phase_block(on, room.chapter == 7), (c * 8, r * 8))
-    import art_ch2
-    import art_ch3
-    import art_ch4
+                    im.alpha_composite(hollow_floor.phase_block(on, room.chapter == 7), (c * 8, r * 8))
+    from gfx import academy, gardens, monorail, npcs, tenshu, vaults
+    from gfx.util import recolor
     for o in room.objs:
-        extra = {'pachinko': (art_ch2.pachinko_prop(0), 8, 30), 'slot': (art_ch2.slot_machine(0), 40, 38),
-                 'jackpot': (art_ch2.jackpot_sign(True), 26, 0), 'pod': (art_ch3.pod(0), 7, 30),
-                 'toro': (art_ch3.toro(0), 6, 22), 'bonsai': (art_ch3.bonsai(), 7, 18),
-                 'seat': (art_ch4.seat(), 9, 12), 'post': (art_ch4.post(), 5, 22),
-                 'desk': (__import__('art_v2').desk(), 36, 30), 'directory': (__import__('art_v2').directory(), 38, 0),
-                 'dummy': (__import__('art_ch56').dummy(), 7, 26),
-                 'daimyo': (__import__('art_ch7').exo('idle', 0), 42, 91),
-                 'raijin': (art_ch4.raijin('idle', 0).crop((0, 0, art_ch4.RJ_W, art_ch4.RJ_CUT)),
-                            art_ch4.RJ_CORE[0], art_ch4.RJ_CUT)}
+        extra = {'pachinko': (vaults.pachinko_prop(0), 8, 30), 'slot': (vaults.slot_machine(0), 40, 38),
+                 'jackpot': (vaults.jackpot_sign(True), 26, 0), 'pod': (gardens.pod(0), 7, 30),
+                 'toro': (gardens.toro(0), 6, 22), 'bonsai': (gardens.bonsai(), 7, 18),
+                 'seat': (monorail.seat(), 9, 12), 'post': (monorail.post(), 5, 22),
+                 'desk': (npcs.desk(), 36, 30), 'directory': (npcs.directory(), 38, 0),
+                 'dummy': (academy.dummy(), 7, 26),
+                 'daimyo': (tenshu.exo('idle', 0), 42, 91),
+                 'raijin': (monorail.raijin('idle', 0).crop((0, 0, monorail.RJ_W, monorail.RJ_CUT)),
+                            monorail.RJ_CORE[0], monorail.RJ_CUT)}
         key = 'jackpot' if o['type'] == 'sign' and o['a'] == 'NeonSign_Jackpot' else o['type']
         if key == 'mist':
             for k in range(o['a']):
-                _paste_clip(im, art_ch3.mist(k % 8), int((o['x'] + 240) / 2) - 8, int((180 - o['y']) / 2) - 8 * (k + 1))
+                _paste_clip(im, gardens.mist(k % 8), int((o['x'] + 240) / 2) - 8, int((180 - o['y']) / 2) - 8 * (k + 1))
             continue
         if key in extra:
             sp, ax, ay = extra[key]
@@ -279,12 +287,12 @@ def preview_room(room, scale=2):
             continue
         if o['type'] in CH2_PREVIEW or (room.chapter == 4 and o['type'] in ('hannya', 'croupier')):
             if room.chapter == 4 and o['type'] in ('hannya', 'croupier'):
-                spr, mp, cos = 'HannyaBoy', 'art_ch4.' + ('GUARD_MAP' if o['type'] == 'hannya' else 'GUNNER_MAP'), 'idle_0'
+                spr, mp, cos = 'HannyaBoy', 'monorail.' + ('GUARD_MAP' if o['type'] == 'hannya' else 'GUNNER_MAP'), 'idle_0'
             else:
                 spr, mp, cos = CH2_PREVIEW[o['type']]
             c = st.costume(spr, cos)
-            mod = {'art_ch3': art_ch3, 'art_ch4': art_ch4}.get(mp.split('.')[0], art_ch2)
-            sp = art_ch2.recolor(st.image_1x(spr, cos), getattr(mod, mp.split('.')[-1]))
+            mod = {'vaults': vaults, 'gardens': gardens, 'monorail': monorail}[mp.split('.')[0]]
+            sp = recolor(st.image_1x(spr, cos), getattr(mod, mp.split('.')[1]))
             if o['a'] == -90:
                 sp = sp.transpose(Image.FLIP_LEFT_RIGHT)
                 ax = sp.width - c['rotationCenterX'] // 4
