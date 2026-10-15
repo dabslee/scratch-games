@@ -1,0 +1,14 @@
+{"costumes": [
+  {"name": "glitch_0", "file": "glitch_0.png", "anchor": [59.5, 4]},
+  {"name": "glitch_1", "file": "glitch_1.png", "anchor": [19.5, 11.5]},
+  {"name": "glitch_2", "file": "glitch_2.png", "anchor": [38.5, 3.5]},
+  {"name": "glitch_3", "file": "glitch_3.png", "anchor": [15.5, 20]},
+  {"name": "glitch_4", "file": "glitch_4.png", "anchor": [63, 5]},
+  {"name": "glitch_5", "file": "glitch_5.png", "anchor": [23.5, 12.5]},
+  {"name": "glitch_6", "file": "glitch_6.png", "anchor": [30, 3.5]},
+  {"name": "glitch_7", "file": "glitch_7.png", "anchor": [26, 16]},
+  {"name": "glitch_8", "file": "glitch_8.png", "anchor": [47, 6]},
+  {"name": "glitch_9", "file": "glitch_9.png", "anchor": [16, 13]},
+  {"name": "glitch_10", "file": "glitch_10.png", "anchor": [49.5, 3.5]},
+  {"name": "glitch_11", "file": "glitch_11.png", "anchor": [22, 16]}
+]}

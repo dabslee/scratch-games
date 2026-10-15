@@ -1,0 +1,8 @@
+{"costumes": [
+  {"name": "spin_0", "file": "spin_0.png", "anchor": [6, 8]},
+  {"name": "spin_1", "file": "spin_1.png", "anchor": [6, 8]},
+  {"name": "spin_2", "file": "spin_2.png", "anchor": [6, 8]},
+  {"name": "spin_3", "file": "spin_3.png", "anchor": [6, 8]},
+  {"name": "spin_4", "file": "spin_4.png", "anchor": [6, 8]},
+  {"name": "spin_5", "file": "spin_5.png", "anchor": [6, 8]}
+]}

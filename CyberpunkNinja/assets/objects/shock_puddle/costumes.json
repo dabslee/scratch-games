@@ -1,0 +1,6 @@
+{"costumes": [
+  {"name": "spark_0", "file": "spark_0.png", "anchor": [12, 7]},
+  {"name": "spark_1", "file": "spark_1.png", "anchor": [12, 7]},
+  {"name": "spark_2", "file": "spark_2.png", "anchor": [12, 7]},
+  {"name": "spark_3", "file": "spark_3.png", "anchor": [12, 7]}
+]}

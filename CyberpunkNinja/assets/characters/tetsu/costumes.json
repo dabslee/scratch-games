@@ -1,0 +1,10 @@
+{"costumes": [
+  {"name": "idle_0", "file": "idle_0.png", "anchor": [24, 37]},
+  {"name": "idle_1", "file": "idle_1.png", "anchor": [24, 37]},
+  {"name": "idle_2", "file": "idle_2.png", "anchor": [24, 37]},
+  {"name": "idle_3", "file": "idle_3.png", "anchor": [24, 37]},
+  {"name": "talk_0", "file": "talk_0.png", "anchor": [24, 37]},
+  {"name": "talk_1", "file": "talk_1.png", "anchor": [24, 37]},
+  {"name": "talk_2", "file": "talk_2.png", "anchor": [24, 37]},
+  {"name": "talk_3", "file": "talk_3.png", "anchor": [24, 37]}
+]}

@@ -1,0 +1,112 @@
+{
+ "idle": {
+  "frames": 4,
+  "fps": 6,
+  "loop": true
+ },
+ "run": {
+  "frames": 8,
+  "fps": 12,
+  "loop": true
+ },
+ "jump": {
+  "frames": 5,
+  "fps": 10,
+  "loop": false
+ },
+ "land": {
+  "frames": 2,
+  "fps": 12,
+  "loop": false
+ },
+ "wall_cling": {
+  "frames": 2,
+  "fps": 6,
+  "loop": true
+ },
+ "dash": {
+  "frames": 4,
+  "fps": 16,
+  "loop": false
+ },
+ "attack1": {
+  "frames": 4,
+  "fps": 14,
+  "loop": false
+ },
+ "attack2": {
+  "frames": 4,
+  "fps": 14,
+  "loop": false
+ },
+ "attack3": {
+  "frames": 4,
+  "fps": 14,
+  "loop": false
+ },
+ "attack4": {
+  "frames": 5,
+  "fps": 14,
+  "loop": false
+ },
+ "air_attack": {
+  "frames": 4,
+  "fps": 14,
+  "loop": false
+ },
+ "launcher": {
+  "frames": 4,
+  "fps": 14,
+  "loop": false
+ },
+ "plunge": {
+  "frames": 3,
+  "fps": 12,
+  "loop": false
+ },
+ "heavy": {
+  "frames": 6,
+  "fps": 10,
+  "loop": false
+ },
+ "deflect": {
+  "frames": 3,
+  "fps": 14,
+  "loop": false
+ },
+ "block": {
+  "frames": 1,
+  "fps": 1,
+  "loop": true
+ },
+ "hurt": {
+  "frames": 2,
+  "fps": 10,
+  "loop": false
+ },
+ "overheat": {
+  "frames": 4,
+  "fps": 6,
+  "loop": true
+ },
+ "heal": {
+  "frames": 6,
+  "fps": 8,
+  "loop": false
+ },
+ "death": {
+  "frames": 6,
+  "fps": 8,
+  "loop": false
+ },
+ "throw": {
+  "frames": 3,
+  "fps": 14,
+  "loop": false
+ },
+ "severance": {
+  "frames": 5,
+  "fps": 12,
+  "loop": false
+ }
+}

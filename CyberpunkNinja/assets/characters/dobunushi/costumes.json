@@ -1,0 +1,14 @@
+{"costumes": [
+  {"name": "dobu_idle_0", "file": "dobu_idle_0.png", "anchor": [52, 72]},
+  {"name": "dobu_idle_1", "file": "dobu_idle_1.png", "anchor": [52, 72]},
+  {"name": "dobu_open_0", "file": "dobu_open_0.png", "anchor": [52, 72]},
+  {"name": "dobu_open_1", "file": "dobu_open_1.png", "anchor": [52, 72]},
+  {"name": "dobu_spew", "file": "dobu_spew.png", "anchor": [52, 72]},
+  {"name": "dobu_dead_0", "file": "dobu_dead_0.png", "anchor": [52, 72]},
+  {"name": "dobu_dead_1", "file": "dobu_dead_1.png", "anchor": [52, 72]},
+  {"name": "dobu_dead_2", "file": "dobu_dead_2.png", "anchor": [52, 72]},
+  {"name": "dobu_dead_3", "file": "dobu_dead_3.png", "anchor": [52, 72]},
+  {"name": "dobu_arm_0", "file": "dobu_arm_0.png", "anchor": [0, 11]},
+  {"name": "dobu_arm_1", "file": "dobu_arm_1.png", "anchor": [0, 11]},
+  {"name": "dobu_stump", "file": "dobu_stump.png", "anchor": [0, 11]}
+]}

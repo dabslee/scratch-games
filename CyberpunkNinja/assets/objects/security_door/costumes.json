@@ -1,0 +1,8 @@
+{"costumes": [
+  {"name": "closed_0", "file": "closed_0.png", "anchor": [7, 35]},
+  {"name": "open_0", "file": "open_0.png", "anchor": [7, 35]},
+  {"name": "open_1", "file": "open_1.png", "anchor": [7, 35]},
+  {"name": "open_2", "file": "open_2.png", "anchor": [7, 35]},
+  {"name": "open_3", "file": "open_3.png", "anchor": [7, 35]},
+  {"name": "open_4", "file": "open_4.png", "anchor": [7, 35]}
+]}

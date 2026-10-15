@@ -1,17 +1,16 @@
 """
-Write the dialogue portrait sheet (art/portraits/portraits.png): every portrait the game
-uses, at native size (40x40 art pixels) on a 4-column grid with no gutters, in the order
-listed in art/portraits/portraits.json. build.py reads portraits back from this sheet, so an
-edited sheet dropped in its place changes the game. Also writes a labeled, enlarged
-preview (art/portraits/portraits_preview.png) that shows which speaker uses which portrait.
+Install new portraits into the dialogue portrait sheet (assets/portraits/portraits.png):
+every portrait the game uses, at native size (40x40 art pixels) on a 4-column grid with no
+gutters, in the order listed in assets/portraits/portraits.json. build.py reads portraits
+back from this sheet, so an edited sheet dropped in its place changes the game.
 
-Run from the CyberpunkNinja folder:  python3 src/export_portraits.py
-The sheet is the source of truth once it exists (it holds hand-made art), so this
-only refreshes portraits.json and the preview from it. Pass --reset to rebuild the
-sheet from the original art, or --hotaru PNG to install a new Hotaru set (an 80x40
-image: neutral on the left, visor up on the right; the angry face is derived), or
---debtor PNG / --receptionist PNG to install those (40x40 figures on a transparent
-backdrop; see FIGURES).
+Run from the CyberpunkNinja folder:  python3 src/export_portraits.py [flags]
+With no flags this refreshes portraits.json (which speakers use each portrait) and Kuro's
+glitch frames from the sheet. The flags install a new portrait into its cell:
+--hotaru PNG (an 80x40 image: neutral on the left, visor up on the right; the angry face
+is derived), --tetsu PNG, --framed NAME PNG, --oni / --harm PNG (on a key color),
+--daimyo / --mukuro / --luck PNG (on a magenta key, cleaned first), --kuro NEUTRAL SMIRK,
+--debtor PNG / --receptionist PNG (40x40 figures on a transparent backdrop; see FIGURES).
 """
 import json
 import os
@@ -19,38 +18,46 @@ import random
 import sys
 from collections import Counter
 
-from PIL import Image, ImageDraw
+from PIL import Image
 
 import assets
 import dialogue
 from assets import PALETTE as P
-from gfx import portraits
 
-ART = assets.art_path('portraits')        # the sheet, its manifest and preview
-SOURCES = os.path.join(ART, 'sources')    # the hand-drawn portraits installed into it
+ART = assets.asset_path('portraits')        # the sheet, its manifest and Kuro's glitch frames
 CELL, COLS = 40, 4
 ORDER = ['hotaru_neutral', 'hotaru_angry', 'hotaru_visor_up', 'kuro_neutral',
          'kuro_smirk', 'tetsu_neutral', 'daicam_neutral', 'mukuro_neutral',
          'daimyo_neutral', 'luck_neutral', 'sys_boot', 'oni_neutral',
          'harm_neutral', 'debtor_neutral', 'recep_neutral']
-DRAWN = {'luck_neutral': portraits.luck_portrait, 'sys_boot': portraits.system_portrait,
-         'oni_neutral': portraits.oni_portrait, 'harm_neutral': portraits.harm_portrait,
-         'debtor_neutral': lambda: figure_portrait('debtor_neutral'),
-         'recep_neutral': lambda: figure_portrait('recep_neutral')}
 
 
-def source_portraits():
-    st = assets.starter()
-    out = {}
-    for name in ORDER:
-        out[name] = DRAWN[name]() if name in DRAWN else st.image_1x('Portraits', name)
-    return out
+def portrait_base(top, bottom, dot):
+    """40x40 portrait frame: the cyan border from frame.png (rounded corners) around a
+    dithered gradient backdrop (top, bottom and fleck colors)."""
+    frame = Image.open(os.path.join(ART, 'frame.png')).convert('RGBA')
+    im = Image.new('RGBA', (CELL, CELL), (0, 0, 0, 0))
+    fp, px = frame.load(), im.load()
+    rng = random.Random(len(top) * 7 + len(dot))
+    for y in range(CELL):
+        for x in range(CELL):
+            p = fp[x, y]
+            if not p[3]:
+                continue
+            if p[:3] == P['cyan2'] and (x in (0, 1, 38, 39) or y in (0, 1, 38, 39)):
+                px[x, y] = p
+            else:
+                t = y / 39
+                px[x, y] = (P[bottom] if (x * 3 + y * 5) % 7 < t * 7 else P[top]) + (255,)
+                if rng.random() < 0.06:
+                    px[x, y] = P[dot] + (255,)
+    return im
 
 
 def framed(figure, tones=('night2', 'cyan1', 'slate2')):
     """A figure on a dithered gradient backdrop (top, bottom and fleck colors; Hotaru's
     blue by default), inside the cyan portrait border."""
-    base = portraits.portrait_base(*tones)
+    base = portrait_base(*tones)
     out = base.copy()
     out.alpha_composite(figure.convert('RGBA'))
     bp, op = base.load(), out.load()
@@ -141,7 +148,7 @@ def snap_palette(images, radius=26):
 
 def bordered(im):
     """The cyan portrait border (rounded corners) over a full-bleed portrait."""
-    base = portraits.portrait_base('night2', 'cyan1', 'slate2')
+    base = portrait_base('night2', 'cyan1', 'slate2')
     out = im.convert('RGBA').copy()
     bp, op = base.load(), out.load()
     for y in range(CELL):
@@ -233,24 +240,24 @@ def install_kuro(sheet, neutral_src, smirk_src):
     return ims
 
 
-# hand-drawn figures on a transparent backdrop: (install flag, source in art/portraits/sources, backdrop tones)
+# hand-drawn figures on a transparent backdrop: (install flag, backdrop tones)
 FIGURES = {
     # the debtor in the Vaults and at Academy intake: a plain grey gradient, steel flecks
-    'debtor_neutral': ('--debtor', 'debtor_portrait.png', ('night1', 'slate1', 'steel')),
+    'debtor_neutral': ('--debtor', ('night1', 'slate1', 'steel')),
     # the Spire Lobby's receptionist: corporate navy to indigo, cyan flecks
-    'recep_neutral': ('--receptionist', 'receptionist_portrait.png', ('night1', 'indigo', 'cyan2')),
+    'recep_neutral': ('--receptionist', ('night1', 'indigo', 'cyan2')),
 }
 
 
-def figure_portrait(name, src=None):
-    flag, default, tones = FIGURES[name]
-    return framed(Image.open(src or os.path.join(SOURCES, default)).convert('RGBA'), tones)
+def figure_portrait(name, src):
+    flag, tones = FIGURES[name]
+    return framed(Image.open(src).convert('RGBA'), tones)
 
 
 def install_keyed(sheet, name, src, tones, key=(255, 0, 241)):
-    """A 40x40 portrait whose backdrop is marked in a key color: the key is cut away and
-    the figure set on a dithered gradient (top, bottom and fleck colors), framed."""
-    im = Image.open(src).convert('RGBA')
+    """A 40x40 portrait (a path or an image) whose backdrop is marked in a key color: the key
+    is cut away and the figure set on a dithered gradient (top, bottom and fleck colors), framed."""
+    im = (src if isinstance(src, Image.Image) else Image.open(src)).convert('RGBA')
     assert im.size == (CELL, CELL), 'expected a 40x40 image, got %s' % (im.size,)
     px = im.load()
     for y in range(CELL):
@@ -263,9 +270,9 @@ def install_keyed(sheet, name, src, tones, key=(255, 0, 241)):
     sheet.alpha_composite(framed(im, tones), (x, y))
 
 
-def clean_keyed(src, out, key=(255, 0, 255), radius=12):
+def clean_keyed(src, key=(255, 0, 255), radius=12):
     """Merge only near-identical shades in a key-color portrait (the key and any
-    transparent pixels are left alone) and save the result."""
+    transparent pixels are left alone)."""
     im = Image.open(src).convert('RGBA')
     px = im.load()
     fig = Image.new('RGB', im.size, key)
@@ -282,7 +289,6 @@ def clean_keyed(src, out, key=(255, 0, 255), radius=12):
         for x in range(im.width):
             if px[x, y][3]:
                 rp[x, y] = (key if fp[x, y] == key else cp[x, y]) + (255,)
-    res.save(out)
     return res
 
 
@@ -312,16 +318,8 @@ def install_hotaru(sheet, src):
 
 
 def main():
-    os.makedirs(ART, exist_ok=True)
     path = os.path.join(ART, 'portraits.png')
-    rows = (len(ORDER) + COLS - 1) // COLS
-    if '--reset' in sys.argv or not os.path.exists(path):
-        ports = source_portraits()
-        sheet = Image.new('RGBA', (COLS * CELL, rows * CELL), (0, 0, 0, 0))
-        for i, name in enumerate(ORDER):
-            sheet.alpha_composite(ports[name].convert('RGBA'), ((i % COLS) * CELL, (i // COLS) * CELL))
-    else:
-        sheet = Image.open(path).convert('RGBA')
+    sheet = Image.open(path).convert('RGBA')
     if '--hotaru' in sys.argv:
         install_hotaru(sheet, sys.argv[sys.argv.index('--hotaru') + 1])
     if '--tetsu' in sys.argv:
@@ -335,23 +333,17 @@ def main():
                       key=(255, 0, 255))
     if '--daimyo' in sys.argv:
         # the Daimyo's own face (no mask), on a dithered navy-to-purple gradient with gold flecks
-        src = sys.argv[sys.argv.index('--daimyo') + 1]
-        out = os.path.join(SOURCES, 'daimyo_portrait.png')
-        clean_keyed(src, out)
-        install_keyed(sheet, 'daimyo_neutral', out, ('night1', 'purple1', 'gold'), key=(255, 0, 255))
+        install_keyed(sheet, 'daimyo_neutral', clean_keyed(sys.argv[sys.argv.index('--daimyo') + 1]),
+                      ('night1', 'purple1', 'gold'), key=(255, 0, 255))
     if '--mukuro' in sys.argv:
         # Mukuro keeps his old navy-to-blood-red backdrop, with red flecks
-        src = sys.argv[sys.argv.index('--mukuro') + 1]
-        out = os.path.join(SOURCES, 'mukuro_portrait.png')
-        clean_keyed(src, out)
-        install_keyed(sheet, 'mukuro_neutral', out, ('night1', 'red1', 'red2'), key=(255, 0, 255))
+        install_keyed(sheet, 'mukuro_neutral', clean_keyed(sys.argv[sys.argv.index('--mukuro') + 1]),
+                      ('night1', 'red1', 'red2'), key=(255, 0, 255))
     if '--luck' in sys.argv:
         # Lady Luck: navy to casino magenta, with gold flecks
-        src = sys.argv[sys.argv.index('--luck') + 1]
-        out = os.path.join(SOURCES, 'luck_portrait.png')
-        clean_keyed(src, out)
-        install_keyed(sheet, 'luck_neutral', out, ('night1', 'mag1', 'gold'), key=(255, 0, 255))
-    for name, (flag, _, _) in FIGURES.items():
+        install_keyed(sheet, 'luck_neutral', clean_keyed(sys.argv[sys.argv.index('--luck') + 1]),
+                      ('night1', 'mag1', 'gold'), key=(255, 0, 255))
+    for name, (flag, _) in FIGURES.items():
         if flag in sys.argv:
             i = ORDER.index(name)
             x, y = (i % COLS) * CELL, (i // COLS) * CELL
@@ -362,13 +354,14 @@ def main():
             install_framed(sheet, sys.argv[k + 1], sys.argv[k + 2])
     if '--kuro' in sys.argv:
         k = sys.argv.index('--kuro')
-        clean = install_kuro(sheet, sys.argv[k + 1], sys.argv[k + 2])
-        # keep the cleaned 40x40 sources next to the sheet
-        for name, im in zip(('kuro_neutral', 'kuro_smirk'), clean):
-            im.save(os.path.join(SOURCES, name + '.png'))
+        install_kuro(sheet, sys.argv[k + 1], sys.argv[k + 2])
     sheet.save(path)
     ports = {n: sheet.crop(((i % COLS) * CELL, (i // COLS) * CELL, (i % COLS + 1) * CELL, (i // COLS + 1) * CELL))
              for i, n in enumerate(ORDER)}
+    # Kuro's portrait glitches now and then while he talks: the build reads these frames
+    for name in ('kuro_neutral', 'kuro_smirk'):
+        for k in (1, 2):
+            kuro_glitch(ports[name], k).save(os.path.join(ART, '%s_g%d.png' % (name, k)))
 
     # which lines show each portrait
     use = Counter()
@@ -383,22 +376,7 @@ def main():
                                'lines': use.get(n, 0)} for i, n in enumerate(ORDER)]}
     json.dump(manifest, open(os.path.join(ART, 'portraits.json'), 'w'), indent=2)
 
-    # enlarged, labeled preview
-    k, lab = 6, 54
-    font = assets.Font(False)
-    W, H = COLS * (CELL * k + 12) + 12, rows * (CELL * k + lab + 12) + 12
-    prev = Image.new('RGBA', (W, H), assets.PALETTE['night1'] + (255,))
-    for i, name in enumerate(ORDER):
-        x = 12 + (i % COLS) * (CELL * k + 12)
-        y = 12 + (i // COLS) * (CELL * k + lab + 12)
-        big = ports[name].convert('RGBA').resize((CELL * k, CELL * k), Image.NEAREST)
-        prev.alpha_composite(big, (x, y))
-        for j, (label, col) in enumerate(((name, 'white'), ('%d lines' % use.get(name, 0), 'steel'))):
-            t = Image.new('RGBA', (font.width(label) + 1, 11), (0, 0, 0, 0))
-            font.draw(t, 0, 0, label, assets.PALETTE[col])
-            prev.alpha_composite(t.resize((t.width * 2, t.height * 2), Image.NEAREST), (x, y + CELL * k + 6 + j * 24))
-    prev.save(os.path.join(ART, 'portraits_preview.png'))
-    print('wrote art/portraits/portraits.png', sheet.size, 'and art/portraits/portraits_preview.png', prev.size)
+    print('wrote assets/portraits/portraits.png', sheet.size, 'and portraits.json')
 
 
 if __name__ == '__main__':

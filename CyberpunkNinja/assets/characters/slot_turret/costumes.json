@@ -1,0 +1,11 @@
+{"costumes": [
+  {"name": "idle_0", "file": "idle_0.png", "anchor": [2, 8]},
+  {"name": "idle_1", "file": "idle_1.png", "anchor": [2, 8]},
+  {"name": "idle_2", "file": "idle_2.png", "anchor": [2, 8]},
+  {"name": "idle_3", "file": "idle_3.png", "anchor": [2, 8]},
+  {"name": "charge_0", "file": "charge_0.png", "anchor": [2, 8]},
+  {"name": "charge_1", "file": "charge_1.png", "anchor": [2, 8]},
+  {"name": "charge_2", "file": "charge_2.png", "anchor": [2, 8]},
+  {"name": "fire_0", "file": "fire_0.png", "anchor": [2, 8]},
+  {"name": "fire_1", "file": "fire_1.png", "anchor": [2, 8]}
+]}

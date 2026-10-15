@@ -1,0 +1,5 @@
+{"costumes": [
+  {"name": "moon", "file": "moon.png", "anchor": [27, 27]},
+  {"name": "sun", "file": "sun.png", "anchor": [24, 24]},
+  {"name": "dawn", "file": "dawn.png", "anchor": [120, 90]}
+]}

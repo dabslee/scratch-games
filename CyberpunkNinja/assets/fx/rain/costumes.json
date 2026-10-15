@@ -1,0 +1,11 @@
+{"costumes": [
+  {"name": "rain_0", "file": "rain_0.png", "anchor": [120, 90]},
+  {"name": "rain_1", "file": "rain_1.png", "anchor": [120, 90]},
+  {"name": "rain_2", "file": "rain_2.png", "anchor": [120, 90]},
+  {"name": "rain_3", "file": "rain_3.png", "anchor": [120, 90]},
+  {"name": "wind_0", "file": "wind_0.png", "anchor": [120, 90]},
+  {"name": "wind_1", "file": "wind_1.png", "anchor": [120, 90]},
+  {"name": "wind_2", "file": "wind_2.png", "anchor": [120, 90]},
+  {"name": "wind_3", "file": "wind_3.png", "anchor": [120, 90]},
+  {"name": "possess", "file": "possess.png", "anchor": [120, 90]}
+]}

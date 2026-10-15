@@ -1,0 +1,6 @@
+{"costumes": [
+  {"name": "crow_0", "file": "crow_0.png", "anchor": [12, 7]},
+  {"name": "crow_1", "file": "crow_1.png", "anchor": [12, 7]},
+  {"name": "warn_0", "file": "warn_0.png", "anchor": [7, 7]},
+  {"name": "warn_1", "file": "warn_1.png", "anchor": [7, 7]}
+]}

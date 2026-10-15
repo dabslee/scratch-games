@@ -1,0 +1,17 @@
+{"costumes": [
+  {"name": "enemy_int_0", "file": "enemy_int_0.png", "anchor": [12, 2]},
+  {"name": "enemy_int_1", "file": "enemy_int_1.png", "anchor": [12, 2]},
+  {"name": "enemy_int_2", "file": "enemy_int_2.png", "anchor": [12, 2]},
+  {"name": "enemy_int_3", "file": "enemy_int_3.png", "anchor": [12, 2]},
+  {"name": "enemy_int_4", "file": "enemy_int_4.png", "anchor": [12, 2]},
+  {"name": "enemy_int_5", "file": "enemy_int_5.png", "anchor": [12, 2]},
+  {"name": "enemy_int_6", "file": "enemy_int_6.png", "anchor": [12, 2]},
+  {"name": "enemy_int_7", "file": "enemy_int_7.png", "anchor": [12, 2]},
+  {"name": "enemy_int_8", "file": "enemy_int_8.png", "anchor": [12, 2]},
+  {"name": "breach_0", "file": "breach_0.png", "anchor": [8, 8]},
+  {"name": "breach_1", "file": "breach_1.png", "anchor": [8, 8]},
+  {"name": "breach_2", "file": "breach_2.png", "anchor": [8, 8]},
+  {"name": "breach_3", "file": "breach_3.png", "anchor": [8, 8]},
+  {"name": "severance_0", "file": "severance_0.png", "anchor": [8, 8]},
+  {"name": "severance_1", "file": "severance_1.png", "anchor": [8, 8]}
+]}

@@ -1,0 +1,8 @@
+{"costumes": [
+  {"name": "tide_0", "file": "tide_0.png", "anchor": [122, 0]},
+  {"name": "tide_1", "file": "tide_1.png", "anchor": [122, 0]},
+  {"name": "tide_2", "file": "tide_2.png", "anchor": [122, 0]},
+  {"name": "tide_3", "file": "tide_3.png", "anchor": [122, 0]},
+  {"name": "tide_warn_0", "file": "tide_warn_0.png", "anchor": [52.5, 8]},
+  {"name": "tide_warn_1", "file": "tide_warn_1.png", "anchor": [52.5, 8]}
+]}
