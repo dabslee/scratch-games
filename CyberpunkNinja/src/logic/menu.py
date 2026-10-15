@@ -81,12 +81,12 @@ def build():
         add_deco("controls_page", 0, 22)
         add_btn("back", 0, -146)
     elif menu == "end":
-        add_deco("end_page", 0, 118)
+        add_deco("end_page", 0, 100)
         if kbranch == 2:
-            add_deco("end_next_alone", 0, -84)
+            add_deco("end_next_alone", 0, -64)
         else:
-            add_deco("end_next", 0, -84)
-        add_deco("press_any_key", 0, -150)
+            add_deco("end_next", 0, -64)
+        add_deco("press_any_key", 0, -136)
         end_stats()
     if len(MI_KEY) > 0:
         ckind = "cursor"
@@ -488,9 +488,9 @@ def t_clear():
 @on("text_write")
 def t_write():
     if is_clone == 0:
-        write_line(join("TIME   ", tstr), -116, 34)
-        write_line(join("DEATHS   ", deaths), -116, 10)
-        write_line(join("MEMORY SHARDS   ", shards, " / 9"), -116, -14)
+        write_line(join("TIME   ", tstr), -116, 50)
+        write_line(join("DEATHS   ", deaths), -116, 26)
+        write_line(join("MEMORY SHARDS   ", shards, " / 9"), -116, 2)
 
 
 @proc
