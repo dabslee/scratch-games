@@ -481,7 +481,7 @@ b4.obj('pachinko', cx(19), bottom(18))
 b4.obj('pachinko', cx(21), bottom(18))
 b4.obj('door', left(0) + 8, bottom(18), a='flee')                 # the minder takes his line out here
 b4.obj('escort', cx(8), bottom(18))
-for c, who in ((11, 0), (13, 3), (15, 2)):                       # who: art/characters/civilians.png figure; 2 speaks
+for c, who in ((11, 0), (13, 3), (15, 2)):                       # who: assets/characters/civilians figure; 2 speaks
     b4.obj('debtor', cx(c), bottom(18), a=who)
 b4.obj('trig', cx(19), 0, a='debtors')
 

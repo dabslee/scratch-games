@@ -1,0 +1,12 @@
+{"costumes": [
+  {"name": "ch0", "file": "ch0.png", "anchor": [120, 90]},
+  {"name": "ch1", "file": "ch1.png", "anchor": [120, 90]},
+  {"name": "ch2", "file": "ch2.png", "anchor": [120, 90]},
+  {"name": "ch3", "file": "ch3.png", "anchor": [120, 90]},
+  {"name": "ch4", "file": "ch4.png", "anchor": [120, 90]},
+  {"name": "ch5", "file": "ch5.png", "anchor": [120, 90]},
+  {"name": "ch6", "file": "ch6.png", "anchor": [120, 90]},
+  {"name": "ch7", "file": "ch7.png", "anchor": [120, 90]},
+  {"name": "ch8", "file": "ch8.png", "anchor": [120, 90]},
+  {"name": "ch9", "file": "ch9.png", "anchor": [120, 90]}
+]}

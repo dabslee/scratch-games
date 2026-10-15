@@ -1,0 +1,18 @@
+{"costumes": [
+  {"name": "run_dust_0", "file": "run_dust_0.png", "anchor": [5, 6]},
+  {"name": "run_dust_1", "file": "run_dust_1.png", "anchor": [5, 6]},
+  {"name": "run_dust_2", "file": "run_dust_2.png", "anchor": [5, 6]},
+  {"name": "run_dust_3", "file": "run_dust_3.png", "anchor": [5, 6]},
+  {"name": "land_dust_0", "file": "land_dust_0.png", "anchor": [13, 7]},
+  {"name": "land_dust_1", "file": "land_dust_1.png", "anchor": [13, 7]},
+  {"name": "land_dust_2", "file": "land_dust_2.png", "anchor": [13, 7]},
+  {"name": "land_dust_3", "file": "land_dust_3.png", "anchor": [13, 7]},
+  {"name": "wall_spark_0", "file": "wall_spark_0.png", "anchor": [3, 0]},
+  {"name": "wall_spark_1", "file": "wall_spark_1.png", "anchor": [3, 0]},
+  {"name": "wall_spark_2", "file": "wall_spark_2.png", "anchor": [3, 0]},
+  {"name": "afterimage_0", "file": "afterimage_0.png", "anchor": [24, 37]},
+  {"name": "afterimage_1", "file": "afterimage_1.png", "anchor": [24, 37]},
+  {"name": "rain_splash_0", "file": "rain_splash_0.png", "anchor": [3, 3]},
+  {"name": "rain_splash_1", "file": "rain_splash_1.png", "anchor": [3, 3]},
+  {"name": "rain_splash_2", "file": "rain_splash_2.png", "anchor": [3, 3]}
+]}

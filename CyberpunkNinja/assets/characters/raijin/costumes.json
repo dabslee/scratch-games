@@ -1,0 +1,17 @@
+{"costumes": [
+  {"name": "rj_idle_0", "file": "rj_idle_0.png", "anchor": [24, 70]},
+  {"name": "rj_idle_1", "file": "rj_idle_1.png", "anchor": [24, 70]},
+  {"name": "rj_vent_0", "file": "rj_vent_0.png", "anchor": [24, 70]},
+  {"name": "rj_vent_1", "file": "rj_vent_1.png", "anchor": [24, 70]},
+  {"name": "rj_fire", "file": "rj_fire.png", "anchor": [24, 70]},
+  {"name": "rj_dead", "file": "rj_dead.png", "anchor": [24, 70]},
+  {"name": "arm_0", "file": "arm_0.png", "anchor": [0, 7]},
+  {"name": "arm_1", "file": "arm_1.png", "anchor": [0, 7]},
+  {"name": "plow_0", "file": "plow_0.png", "anchor": [22, 14]},
+  {"name": "plow_1", "file": "plow_1.png", "anchor": [22, 14]},
+  {"name": "zapw_0", "file": "zapw_0.png", "anchor": [30, 10]},
+  {"name": "zapw_1", "file": "zapw_1.png", "anchor": [30, 10]},
+  {"name": "zapl_0", "file": "zapl_0.png", "anchor": [30, 10]},
+  {"name": "zapl_1", "file": "zapl_1.png", "anchor": [30, 10]},
+  {"name": "zapl_2", "file": "zapl_2.png", "anchor": [30, 10]}
+]}

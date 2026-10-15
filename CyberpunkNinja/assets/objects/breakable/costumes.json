@@ -1,0 +1,4 @@
+{"costumes": [
+  {"name": "breakable", "file": "breakable.png", "anchor": [4, 4]},
+  {"name": "breakable_cracked", "file": "breakable_cracked.png", "anchor": [4, 4]}
+]}

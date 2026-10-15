@@ -1,7 +1,8 @@
 # Building CyberpunkNinja.sb3
 
 `CyberpunkNinja.sb3` is generated, not edited by hand. A Python build compiles the game
-logic, renders the art, synthesizes the audio, and packs everything into a Scratch 3 project.
+logic, loads the art from `assets/`, renders the rooms and text, synthesizes the audio, and packs
+everything into a Scratch 3 project.
 
 ## What's where
 
@@ -11,39 +12,35 @@ CyberpunkNinja/
 ├── CyberpunkNinja_README.md      instructions, controls and credits
 ├── BUILDING.md                   this file
 ├── story.json                    all dialogue, in play order (also documents plot, cast and bosses)
-├── art/                          hand-drawn source art
-│   ├── splash_logo.png           the splash screen logo
-│   ├── portraits/                the dialogue portrait sheet, its manifest and preview
-│   │   └── sources/              hand-drawn portraits installed into the sheet
-│   └── characters/               sprite art: townspeople, the receptionist, Dobunushi, the Daimyo's
-│                                 frames and mech parts, the Harmacist's frames, edits to pack characters
-├── CyberpunkNinja_AssetPack/     the base asset pack (palette, tilesets, backgrounds, characters, fonts)
+├── assets/                       every image, as PNGs (assets/README.md maps it)
+│   ├── characters/  objects/     one costume folder per sprite: PNGs and costumes.json
+│   ├── fx/  ui/  backgrounds/
+│   ├── tilesets/                 the room tiles
+│   ├── portraits/                the dialogue portrait sheet and its cell order
+│   └── fonts/  palette/          Shinobi Mono and the 34-color palette
 ├── src/                          the build
 │   ├── build.py                  entry point
 │   ├── scratchc.py               Python-to-Scratch compiler
 │   ├── logic/                    the game itself, in the compiler's Python subset
-│   ├── gfx/                      procedural and edited art, one module per chapter
 │   ├── levels.py                 every room
 │   ├── dialogue.py               loads story.json and the hint boxes
 │   ├── audio.py                  synthesized music and sound effects
-│   ├── assets.py                 asset pack access, room rendering, text
-│   └── export_portraits.py       rebuilds or installs into the portrait sheet
+│   ├── assets.py                 costume folders, room rendering, text
+│   └── export_portraits.py       installs new portraits into the portrait sheet
 └── tools/playtest/               headless playtests
 ```
 
 | Path | What it is |
 |---|---|
-| `src/build.py` | Entry point. Assembles every sprite, costume, sound and script and writes `CyberpunkNinja.sb3` |
+| `src/build.py` | Entry point. Loads each sprite's costume folder, makes the costumes that come from data (rooms, dialogue, hints, menu text), compiles every script and writes `CyberpunkNinja.sb3` |
 | `src/scratchc.py` | A small Python-to-Scratch compiler: game scripts are written in a Python subset and compiled to Scratch blocks |
 | `src/logic/` | The game itself, in that Python subset: Hotaru (`hotaru.py`), enemies and bosses (`enemies.py`), objects, stage flow, menus, HUD |
-| `src/gfx/` | Generated and edited art. Shared helpers are in `util.py`, with one module per chapter (`vaults`, `sewers`, `monorail`, `hollow_floor`, `gardens`, `academy`, `tenshu`), plus `ui`, `portraits` and `npcs`. `mech.py` rigs the Daimyo's mech and `edits.py` carries edits to pack characters across their frames |
 | `src/levels.py` | Every room: tiles, objects, exits |
 | `src/dialogue.py` | Loads `story.json` and the in-game hint boxes |
 | `src/audio.py` | Synthesized music and sound effects |
-| `src/assets.py` | Reads the asset pack and `art/`, autotiles and renders rooms, draws text in Shinobi Mono |
-| `src/export_portraits.py` | Rebuilds the portrait sheet's preview and manifest, and installs new portraits into it |
-| `art/` | Hand-drawn source art (see the tree above) |
-| `CyberpunkNinja_AssetPack/` | The base asset pack (palette, tilesets, backgrounds, character strips, fonts, and its starter `.sb3`, which supplies most base sprites) |
+| `src/assets.py` | Loads costume folders (`CostumeSet`), autotiles and renders rooms, sets text in Shinobi Mono |
+| `src/export_portraits.py` | Installs new portraits into the portrait sheet, and refreshes its manifest and Kuro's glitch frames |
+| `assets/` | Every image in the game: a costume folder per sprite, plus tilesets, portraits, fonts and the palette. `assets/README.md` maps it |
 | `story.json` | All dialogue, in play order |
 | `tools/playtest/` | Headless playtests: runs the `.sb3` in scratch-vm inside Chromium with a bot playing |
 
@@ -62,8 +59,6 @@ block count. A first build takes about a minute; the synthesized audio is cached
 `src/.audio_cache/` (ignored by git), so later builds are faster. The output is
 deterministic: a clean build matches the committed `.sb3` file for file (only the zip
 timestamps differ).
-
-To build against another copy of the asset pack, set `CN_PACK=/path/to/CyberpunkNinja_AssetPack`.
 
 **Size limit:** Scratch refuses a `project.json` over about 5 MB. Check it after a change:
 

@@ -1,73 +1,27 @@
 """
-Asset helpers: read the starter project from the asset pack, autotile and
-render rooms, and render text with the Shinobi Mono glyphs.
+Asset helpers: load costume folders from assets/, autotile and render rooms, and
+set text in the Shinobi Mono glyphs.
 
-All generated costumes use Scratch's bitmapResolution 2 at 4x art scale,
-exactly like the asset pack: one art pixel = 4 PNG pixels = 2 stage units.
+Every costume uses Scratch's bitmapResolution 2: one art pixel = 4 PNG pixels =
+2 stage units. The PNGs in assets/ are drawn at 1x and scaled up here.
 """
 import hashlib
 import io
 import json
 import os
 import random
-import zipfile
 
 from PIL import Image
 
 import levels
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# the asset pack ships in the repo next to src/; CN_PACK points the build at another copy
-PACK = os.environ.get('CN_PACK', os.path.join(HERE, '..', 'CyberpunkNinja_AssetPack'))
-# this project's own hand-drawn source art
-ART = os.path.join(HERE, '..', 'art')
+# all of the game's art, next to src/ (assets/README.md maps it)
+ASSETS = os.path.join(HERE, '..', 'assets')
 
 
-def pack_path(*p):
-    return os.path.join(PACK, *p)
-
-
-def art_path(*p):
-    return os.path.join(ART, *p)
-
-
-class Starter:
-    """The asset pack's starter .sb3, indexed by sprite and costume name."""
-
-    def __init__(self):
-        self.zip = zipfile.ZipFile(pack_path('scratch', 'CyberpunkNinja_Starter.sb3'))
-        self.project = json.loads(self.zip.read('project.json'))
-        self.targets = {t['name']: t for t in self.project['targets']}
-
-    def costumes(self, sprite):
-        return self.targets[sprite]['costumes']
-
-    def costume(self, sprite, name):
-        for c in self.targets[sprite]['costumes']:
-            if c['name'] == name:
-                return c
-        raise KeyError((sprite, name))
-
-    def data(self, md5ext):
-        return self.zip.read(md5ext)
-
-    def image(self, sprite, name):
-        c = self.costume(sprite, name)
-        return Image.open(io.BytesIO(self.data(c['md5ext']))).convert('RGBA')
-
-    def image_1x(self, sprite, name):
-        im = self.image(sprite, name)
-        return im.resize((im.width // 4, im.height // 4), Image.NEAREST)
-
-
-STARTER = None
-
-
-def starter():
-    global STARTER
-    if STARTER is None:
-        STARTER = Starter()
-    return STARTER
+def asset_path(*p):
+    return os.path.join(ASSETS, *p)
 
 
 # ---------------------------------------------------------------- costumes
@@ -90,34 +44,61 @@ def up4(im):
     return im.resize((im.width * 4, im.height * 4), Image.NEAREST)
 
 
+class CostumeSet:
+    """A costume folder: its PNGs and costumes.json, which lists the costumes in order.
+    Each entry has a name, a file, an anchor (the rotation centre, in the file's pixels)
+    and an optional scale (PNG pixels per file pixel; 4 when left out). An entry
+    {"generated": kind} marks where the build puts costumes it makes from data."""
+
+    def __init__(self, folder):
+        self.folder = folder
+        self.entries = json.load(open(asset_path(folder, 'costumes.json')))['costumes']
+        self.by_name = {e['name']: e for e in self.entries if 'name' in e}
+
+    def names(self):
+        return [e['name'] for e in self.entries if 'name' in e]
+
+    def image(self, name):
+        """A costume's PNG as drawn (1x for scale 4)."""
+        im = Image.open(asset_path(self.folder, self.by_name[name]['file']))
+        im.load()
+        return im
+
+    def costumes(self, store, generated=None):
+        out = []
+        for e in self.entries:
+            if 'generated' in e:
+                out += generated[e['generated']]
+                continue
+            s = e.get('scale', 4)
+            im = self.image(e['name'])
+            if s > 1:
+                im = im.resize((im.width * s, im.height * s), Image.NEAREST)
+            out.append(make_costume(e['name'], im, round(e['anchor'][0] * s), round(e['anchor'][1] * s), store))
+        return out
+
+
 # ---------------------------------------------------------------- tiles
 MATERIAL = {0: 'sump', 1: 'alley', 2: 'vaults', 3: 'sewer', 4: 'rail', 5: 'memory', 6: 'gardens', 7: 'academy', 8: 'tenshu', 9: 'sump'}
 
 
 def tile_images(material):
-    layout = json.load(open(pack_path('tilesets', 'layout.json')))
-    if material == 'sewer':
-        from gfx import sewers
-        atlas = sewers.sewer_atlas()
-    elif material == 'vaults':
-        from gfx import vaults
-        atlas = vaults.vaults_atlas()
-    elif material == 'rail':
-        from gfx import monorail
-        atlas = monorail.rail_atlas()
-    elif material == 'memory':
-        from gfx import hollow_floor
-        atlas = hollow_floor.memory_atlas()
-    elif material == 'academy':
-        from gfx import academy
-        atlas = academy.academy_atlas()
-    else:
-        atlas = Image.open(pack_path('tilesets', '%s_atlas_8x8.png' % material)).convert('RGBA')
+    layout = json.load(open(asset_path('tilesets', 'layout.json')))
+    atlas = Image.open(asset_path('tilesets', '%s_atlas_8x8.png' % material)).convert('RGBA')
     tiles = {}
     for r, row in enumerate(layout['rows']):
         for c, name in enumerate(row):
             tiles[name] = atlas.crop((c * 8, r * 8, c * 8 + 8, r * 8 + 8))
     return tiles
+
+
+def toxic_tile(surface, frame, col):
+    """8x8 cell of the Sewers' toxic runoff (toxic_8x8.png): a row per bubbling frame;
+    the first column is below the surface, the next six the surface (every sixth
+    column alike)."""
+    atlas = Image.open(asset_path('tilesets', 'toxic_8x8.png')).convert('RGBA')
+    x = 8 + 8 * (col % 6) if surface else 0
+    return atlas.crop((x, 8 * frame, x + 8, 8 * frame + 8))
 
 
 def autotile(room, c, r, rng):
@@ -186,8 +167,7 @@ def render_room(room, frame=0):
             elif ch == 'v':
                 name = 'spikes_down'
             elif ch == 'w':
-                from gfx import sewers
-                im.alpha_composite(sewers.toxic_tile(r == 0 or room.g[r - 1][c] != 'w', frame, c), (c * 8, r * 8))
+                im.alpha_composite(toxic_tile(r == 0 or room.g[r - 1][c] != 'w', frame, c), (c * 8, r * 8))
                 continue
             deco = room.decor.get((c, r))
             if deco and ch in '.#':
@@ -206,137 +186,15 @@ def render_room(room, frame=0):
     return im
 
 
-# ---------------------------------------------------------------- previews
-OBJ_PREVIEW = {
-    'drone': ('ScavDrone', 'hover_0'), 'turret': ('Turret', 'idle_0'), 'hannya': ('HannyaBoy', 'idle_0'),
-    'oni': ('BigOni', 'idle_0'), 'shrine': ('ShrineTerminal', 'idle_0'), 'cart': ('RamenCart', 'idle_0'),
-    'tetsu': ('Tetsu', 'idle_0'), 'daicam': ('DaiCam', 'panic_0'), 'laser': ('LaserBarrier', 'on_0'),
-    'crate': ('Crate', 'intact_0'), 'puddle': ('ShockPuddle', 'spark_0'), 'lift': ('MovingPlatform', 'hover_0'),
-    'shard': ('MemoryShard', 'spin_0'), 'lantern': ('Lantern', 'sway_0'), 'door': ('SecurityDoor', 'closed_0'),
-    'start': ('Hotaru', 'idle_0'), 'rack': ('ServerRack', 'blink_0'), 'mukuro': ('Mukuro', 'idle_0'),
-    'kuro': ('Kuro', 'idle_0'), 'shell': ('Hotaru', 'idle_0_g'), 'mknpc': ('Mukuro', 'idle_0'),
-}
-
-
-CH2_PREVIEW = {'croupier': ('HannyaBoy', 'vaults.CROUPIER_MAP', 'idle_0'), 'slotturret': ('Turret', 'vaults.SLOT_TURRET_MAP', 'idle_0'),
-               'luck': ('Mukuro', 'vaults.LUCK_MAP', 'idle_0'), 'warden': ('Mukuro', 'gardens.WARDEN_MAP', 'idle_0')}
-
-
-def preview_room(room, scale=2):
-    st = starter()
-    if room.chapter == 3:
-        from gfx import sewers
-        bg = sewers.sewer_sky()
-        bg.alpha_composite(sewers.sewer_far())
-        bg.alpha_composite(sewers.sewer_mid())
-    elif room.chapter == 2:
-        from gfx import vaults
-        bg = vaults.sky()
-        bg.alpha_composite(vaults.far())
-        bg.alpha_composite(vaults.mid())
-    elif room.chapter == 4:
-        from gfx import monorail
-        bg = monorail.sky()
-        bg.alpha_composite(monorail.far())
-        bg.alpha_composite(monorail.mid())
-    elif room.chapter == 5:
-        from gfx import hollow_floor
-        bg = hollow_floor.hollow_sky()
-        bg.alpha_composite(hollow_floor.hollow_far())
-        bg.alpha_composite(hollow_floor.hollow_mid())
-    elif room.chapter == 7:
-        from gfx import academy
-        bg = academy.academy_sky()
-        bg.alpha_composite(academy.academy_far())
-        bg.alpha_composite(academy.academy_mid())
-    else:
-        ch = {0: 'sump', 1: 'neon_alley', 6: 'server_gardens', 8: 'tenshu', 9: 'sump'}[room.chapter]
-        bg = Image.open(pack_path('backgrounds', ch, 'sky.png')).convert('RGBA')
-        for l in ('far', 'mid'):
-            bg.alpha_composite(Image.open(pack_path('backgrounds', ch, l + '.png')).convert('RGBA'))
-    im = Image.new('RGBA', (240, 184), (0, 0, 0, 255))
-    im.paste(bg, (0, 0))
-    im.alpha_composite(render_room(room))
-    if room.chapter in (5, 7, 8):
-        from gfx import hollow_floor
-        for r in range(levels.H):
-            for c in range(levels.W):
-                if room.g[r][c] in 'GH':
-                    on = 'on' if room.g[r][c] == 'G' else 'off'
-                    im.alpha_composite(hollow_floor.phase_block(on, room.chapter == 7), (c * 8, r * 8))
-    from gfx import academy, gardens, monorail, npcs, tenshu, vaults
-    from gfx.util import recolor
-    for o in room.objs:
-        extra = {'pachinko': (vaults.pachinko_prop(0), 8, 30), 'slot': (vaults.slot_machine(0), 40, 38),
-                 'jackpot': (vaults.jackpot_sign(True), 26, 0), 'pod': (gardens.pod(0), 7, 30),
-                 'toro': (gardens.toro(0), 6, 22), 'bonsai': (gardens.bonsai(), 7, 18),
-                 'seat': (monorail.seat(), 9, 12), 'post': (monorail.post(), 5, 22),
-                 'desk': (npcs.desk(), 36, 30), 'directory': (npcs.directory(), 38, 0),
-                 'dummy': (academy.dummy(), 7, 26),
-                 'daimyo': (tenshu.exo('idle', 0), 42, 91),
-                 'raijin': (monorail.raijin('idle', 0).crop((0, 0, monorail.RJ_W, monorail.RJ_CUT)),
-                            monorail.RJ_CORE[0], monorail.RJ_CUT)}
-        key = 'jackpot' if o['type'] == 'sign' and o['a'] == 'NeonSign_Jackpot' else o['type']
-        if key == 'mist':
-            for k in range(o['a']):
-                _paste_clip(im, gardens.mist(k % 8), int((o['x'] + 240) / 2) - 8, int((180 - o['y']) / 2) - 8 * (k + 1))
-            continue
-        if key in extra:
-            sp, ax, ay = extra[key]
-            _paste_clip(im, sp, int((o['x'] + 240) / 2) - ax, int((180 - o['y']) / 2) - ay)
-            continue
-        if o['type'] in CH2_PREVIEW or (room.chapter == 4 and o['type'] in ('hannya', 'croupier')):
-            if room.chapter == 4 and o['type'] in ('hannya', 'croupier'):
-                spr, mp, cos = 'HannyaBoy', 'monorail.' + ('GUARD_MAP' if o['type'] == 'hannya' else 'GUNNER_MAP'), 'idle_0'
-            else:
-                spr, mp, cos = CH2_PREVIEW[o['type']]
-            c = st.costume(spr, cos)
-            mod = {'vaults': vaults, 'gardens': gardens, 'monorail': monorail}[mp.split('.')[0]]
-            sp = recolor(st.image_1x(spr, cos), getattr(mod, mp.split('.')[1]))
-            if o['a'] == -90:
-                sp = sp.transpose(Image.FLIP_LEFT_RIGHT)
-                ax = sp.width - c['rotationCenterX'] // 4
-            else:
-                ax = c['rotationCenterX'] // 4
-            _paste_clip(im, sp, int((o['x'] + 240) / 2) - ax, int((180 - o['y']) / 2) - c['rotationCenterY'] // 4)
-            continue
-        if o['type'] == 'sign':
-            spr, cos = o['a'], 'on_0'
-        elif o['type'] in OBJ_PREVIEW:
-            spr, cos = OBJ_PREVIEW[o['type']]
-        else:
-            continue
-        c = st.costume(spr, cos)
-        sp = st.image_1x(spr, cos)
-        if o['type'] == 'turret' and o['a'] == -90:
-            sp = sp.transpose(Image.FLIP_LEFT_RIGHT)
-            ax = sp.width - c['rotationCenterX'] // 4
-        else:
-            ax = c['rotationCenterX'] // 4
-        ay = c['rotationCenterY'] // 4
-        px = int((o['x'] + 240) / 2) - ax
-        py = int((180 - o['y']) / 2) - ay
-        _paste_clip(im, sp, px, py)
-    return im.resize((im.width * scale, im.height * scale), Image.NEAREST)
-
-
-def _paste_clip(dst, src, x, y):
-    tmp = Image.new('RGBA', dst.size, (0, 0, 0, 0))
-    tmp.paste(src, (x, y))
-    dst.alpha_composite(tmp)
-
-
 # ---------------------------------------------------------------- font
 class Font:
-    """Shinobi Mono glyphs taken from the Font / FontBold sprites (1x)."""
+    """Shinobi Mono glyphs (1x) from assets/fonts/regular or assets/fonts/bold; each
+    costume is named ch_<character>."""
 
     def __init__(self, bold=False):
-        st = starter()
-        spr = 'FontBold' if bold else 'Font'
-        self.glyphs = {}
-        for c in st.costumes(spr):
-            ch = c['name'][3:]
-            self.glyphs[ch] = st.image_1x(spr, c['name'])
+        glyphs = CostumeSet('fonts/bold' if bold else 'fonts/regular')
+        self.order = [n[3:] for n in glyphs.names()]
+        self.glyphs = {n[3:]: glyphs.image(n) for n in glyphs.names()}
 
     def width(self, text):
         w = 0
@@ -375,4 +233,4 @@ class Font:
 
 
 PALETTE = {k: tuple(int(v[i:i + 2], 16) for i in (1, 3, 5))
-           for k, v in json.load(open(pack_path('palette', 'palette.json'))).items()}
+           for k, v in json.load(open(asset_path('palette', 'palette.json'))).items()}

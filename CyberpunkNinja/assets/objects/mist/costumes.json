@@ -1,0 +1,18 @@
+{"costumes": [
+  {"name": "mist_0", "file": "mist_0.png", "anchor": [8, 8]},
+  {"name": "mist_1", "file": "mist_1.png", "anchor": [8, 8]},
+  {"name": "mist_2", "file": "mist_2.png", "anchor": [8, 8]},
+  {"name": "mist_3", "file": "mist_3.png", "anchor": [8, 8]},
+  {"name": "mist_4", "file": "mist_4.png", "anchor": [8, 8]},
+  {"name": "mist_5", "file": "mist_5.png", "anchor": [8, 8]},
+  {"name": "mist_6", "file": "mist_6.png", "anchor": [8, 8]},
+  {"name": "mist_7", "file": "mist_7.png", "anchor": [8, 8]},
+  {"name": "falls_0", "file": "falls_0.png", "anchor": [8, 8]},
+  {"name": "falls_1", "file": "falls_1.png", "anchor": [8, 8]},
+  {"name": "falls_2", "file": "falls_2.png", "anchor": [8, 8]},
+  {"name": "falls_3", "file": "falls_3.png", "anchor": [8, 8]},
+  {"name": "falls_4", "file": "falls_4.png", "anchor": [8, 8]},
+  {"name": "falls_5", "file": "falls_5.png", "anchor": [8, 8]},
+  {"name": "falls_6", "file": "falls_6.png", "anchor": [8, 8]},
+  {"name": "falls_7", "file": "falls_7.png", "anchor": [8, 8]}
+]}

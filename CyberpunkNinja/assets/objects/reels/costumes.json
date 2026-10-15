@@ -1,0 +1,14 @@
+{"costumes": [
+  {"name": "sym_seven", "file": "sym_seven.png", "anchor": [6, 7]},
+  {"name": "sym_cherry", "file": "sym_cherry.png", "anchor": [6, 7]},
+  {"name": "sym_spade", "file": "sym_spade.png", "anchor": [6, 7]},
+  {"name": "sym_skull", "file": "sym_skull.png", "anchor": [6, 7]},
+  {"name": "sym_jackpot", "file": "sym_jackpot.png", "anchor": [6, 7]},
+  {"name": "blur_0", "file": "blur_0.png", "anchor": [6, 7]},
+  {"name": "blur_1", "file": "blur_1.png", "anchor": [6, 7]},
+  {"name": "call_spade", "file": "call_spade.png", "anchor": [34, 7]},
+  {"name": "call_seven", "file": "call_seven.png", "anchor": [39, 7]},
+  {"name": "call_cherry", "file": "call_cherry.png", "anchor": [41, 7]},
+  {"name": "call_skull", "file": "call_skull.png", "anchor": [38.5, 7]},
+  {"name": "call_jackpot", "file": "call_jackpot.png", "anchor": [28, 7]}
+]}

@@ -1,0 +1,9 @@
+{"costumes": [
+  {"generated": "hints"},
+  {"name": "key_e", "file": "key_e.png", "anchor": [5, 7]},
+  {"name": "key_e_pressed", "file": "key_e_pressed.png", "anchor": [5, 7]},
+  {"name": "key_esc", "file": "key_esc.png", "anchor": [11, 7]},
+  {"name": "key_esc_pressed", "file": "key_esc_pressed.png", "anchor": [11, 7]},
+  {"name": "key_enter", "file": "key_enter.png", "anchor": [17, 7]},
+  {"name": "key_enter_pressed", "file": "key_enter_pressed.png", "anchor": [17, 7]}
+]}

@@ -1,0 +1,14 @@
+{"costumes": [
+  {"name": "idle_0", "file": "idle_0.png", "anchor": [24, 37]},
+  {"name": "idle_1", "file": "idle_1.png", "anchor": [24, 37]},
+  {"name": "idle_2", "file": "idle_2.png", "anchor": [24, 37]},
+  {"name": "idle_3", "file": "idle_3.png", "anchor": [24, 37]},
+  {"name": "wave_0", "file": "wave_0.png", "anchor": [24, 37]},
+  {"name": "wave_1", "file": "wave_1.png", "anchor": [24, 37]},
+  {"name": "wave_2", "file": "wave_2.png", "anchor": [24, 37]},
+  {"name": "wave_3", "file": "wave_3.png", "anchor": [24, 37]},
+  {"name": "panic_0", "file": "panic_0.png", "anchor": [24, 37]},
+  {"name": "panic_1", "file": "panic_1.png", "anchor": [24, 37]},
+  {"name": "panic_2", "file": "panic_2.png", "anchor": [24, 37]},
+  {"name": "panic_3", "file": "panic_3.png", "anchor": [24, 37]}
+]}

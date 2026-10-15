@@ -1,0 +1,20 @@
+{"costumes": [
+  {"name": "flatlined", "file": "flatlined.png", "anchor": [93, 16]},
+  {"name": "severance", "file": "severance.png", "anchor": [65, 12]},
+  {"name": "synced", "file": "synced.png", "anchor": [60, 7]},
+  {"name": "shard", "file": "shard.png", "anchor": [43, 7]},
+  {"name": "press_any_key", "file": "press_any_key.png", "anchor": [46, 7]},
+  {"name": "kanji_death", "file": "kanji_death.png", "anchor": [14, 13]},
+  {"name": "victory", "file": "victory.png", "anchor": [88, 15]},
+  {"name": "execution", "file": "execution.png", "anchor": [67, 15]},
+  {"name": "ch0", "file": "ch0.png", "anchor": [100, 22]},
+  {"name": "ch1", "file": "ch1.png", "anchor": [100, 22]},
+  {"name": "ch2", "file": "ch2.png", "anchor": [100, 22]},
+  {"name": "ch3", "file": "ch3.png", "anchor": [100, 22]},
+  {"name": "ch4", "file": "ch4.png", "anchor": [100, 22]},
+  {"name": "ch5", "file": "ch5.png", "anchor": [100, 22]},
+  {"name": "ch6", "file": "ch6.png", "anchor": [100, 22]},
+  {"name": "ch7", "file": "ch7.png", "anchor": [100, 22]},
+  {"name": "ch8", "file": "ch8.png", "anchor": [100, 22]},
+  {"name": "epi", "file": "epi.png", "anchor": [100, 22]}
+]}

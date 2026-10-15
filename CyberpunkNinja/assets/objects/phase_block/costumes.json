@@ -1,0 +1,10 @@
+{"costumes": [
+  {"name": "gb_on", "file": "gb_on.png", "anchor": [4, 4]},
+  {"name": "gb_warn", "file": "gb_warn.png", "anchor": [4, 4]},
+  {"name": "gb_soon", "file": "gb_soon.png", "anchor": [4, 4]},
+  {"name": "gb_off", "file": "gb_off.png", "anchor": [4, 4]},
+  {"name": "hb_on", "file": "hb_on.png", "anchor": [4, 4]},
+  {"name": "hb_warn", "file": "hb_warn.png", "anchor": [4, 4]},
+  {"name": "hb_soon", "file": "hb_soon.png", "anchor": [4, 4]},
+  {"name": "hb_off", "file": "hb_off.png", "anchor": [4, 4]}
+]}
