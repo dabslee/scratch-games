@@ -1,0 +1,4548 @@
+{
+ "Hotaru": {
+  "idle": {
+   "file": "sprites/characters/Hotaru/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "run": {
+   "file": "sprites/characters/Hotaru/run.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 8,
+   "fps": 12,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "jump": {
+   "file": "sprites/characters/Hotaru/jump.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "land": {
+   "file": "sprites/characters/Hotaru/land.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "wall_cling": {
+   "file": "sprites/characters/Hotaru/wall_cling.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "dash": {
+   "file": "sprites/characters/Hotaru/dash.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 16,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack1": {
+   "file": "sprites/characters/Hotaru/attack1.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack2": {
+   "file": "sprites/characters/Hotaru/attack2.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack3": {
+   "file": "sprites/characters/Hotaru/attack3.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack4": {
+   "file": "sprites/characters/Hotaru/attack4.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "air_attack": {
+   "file": "sprites/characters/Hotaru/air_attack.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "launcher": {
+   "file": "sprites/characters/Hotaru/launcher.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "plunge": {
+   "file": "sprites/characters/Hotaru/plunge.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heavy": {
+   "file": "sprites/characters/Hotaru/heavy.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "deflect": {
+   "file": "sprites/characters/Hotaru/deflect.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "block": {
+   "file": "sprites/characters/Hotaru/block.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "hurt": {
+   "file": "sprites/characters/Hotaru/hurt.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "overheat": {
+   "file": "sprites/characters/Hotaru/overheat.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heal": {
+   "file": "sprites/characters/Hotaru/heal.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "death": {
+   "file": "sprites/characters/Hotaru/death.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "throw": {
+   "file": "sprites/characters/Hotaru/throw.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "severance": {
+   "file": "sprites/characters/Hotaru/severance.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "Hotaru_magenta": {
+  "idle": {
+   "file": "sprites/characters/Hotaru_magenta/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "run": {
+   "file": "sprites/characters/Hotaru_magenta/run.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 8,
+   "fps": 12,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "jump": {
+   "file": "sprites/characters/Hotaru_magenta/jump.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "land": {
+   "file": "sprites/characters/Hotaru_magenta/land.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "wall_cling": {
+   "file": "sprites/characters/Hotaru_magenta/wall_cling.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "dash": {
+   "file": "sprites/characters/Hotaru_magenta/dash.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 16,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack1": {
+   "file": "sprites/characters/Hotaru_magenta/attack1.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack2": {
+   "file": "sprites/characters/Hotaru_magenta/attack2.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack3": {
+   "file": "sprites/characters/Hotaru_magenta/attack3.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack4": {
+   "file": "sprites/characters/Hotaru_magenta/attack4.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "air_attack": {
+   "file": "sprites/characters/Hotaru_magenta/air_attack.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "launcher": {
+   "file": "sprites/characters/Hotaru_magenta/launcher.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "plunge": {
+   "file": "sprites/characters/Hotaru_magenta/plunge.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heavy": {
+   "file": "sprites/characters/Hotaru_magenta/heavy.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "deflect": {
+   "file": "sprites/characters/Hotaru_magenta/deflect.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "block": {
+   "file": "sprites/characters/Hotaru_magenta/block.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "hurt": {
+   "file": "sprites/characters/Hotaru_magenta/hurt.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "overheat": {
+   "file": "sprites/characters/Hotaru_magenta/overheat.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heal": {
+   "file": "sprites/characters/Hotaru_magenta/heal.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "death": {
+   "file": "sprites/characters/Hotaru_magenta/death.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "throw": {
+   "file": "sprites/characters/Hotaru_magenta/throw.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "severance": {
+   "file": "sprites/characters/Hotaru_magenta/severance.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "Hotaru_gray": {
+  "idle": {
+   "file": "sprites/characters/Hotaru_gray/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "run": {
+   "file": "sprites/characters/Hotaru_gray/run.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 8,
+   "fps": 12,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "jump": {
+   "file": "sprites/characters/Hotaru_gray/jump.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "land": {
+   "file": "sprites/characters/Hotaru_gray/land.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "wall_cling": {
+   "file": "sprites/characters/Hotaru_gray/wall_cling.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "dash": {
+   "file": "sprites/characters/Hotaru_gray/dash.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 16,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack1": {
+   "file": "sprites/characters/Hotaru_gray/attack1.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack2": {
+   "file": "sprites/characters/Hotaru_gray/attack2.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack3": {
+   "file": "sprites/characters/Hotaru_gray/attack3.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack4": {
+   "file": "sprites/characters/Hotaru_gray/attack4.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "air_attack": {
+   "file": "sprites/characters/Hotaru_gray/air_attack.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "launcher": {
+   "file": "sprites/characters/Hotaru_gray/launcher.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "plunge": {
+   "file": "sprites/characters/Hotaru_gray/plunge.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heavy": {
+   "file": "sprites/characters/Hotaru_gray/heavy.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "deflect": {
+   "file": "sprites/characters/Hotaru_gray/deflect.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "block": {
+   "file": "sprites/characters/Hotaru_gray/block.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "hurt": {
+   "file": "sprites/characters/Hotaru_gray/hurt.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "overheat": {
+   "file": "sprites/characters/Hotaru_gray/overheat.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heal": {
+   "file": "sprites/characters/Hotaru_gray/heal.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "death": {
+   "file": "sprites/characters/Hotaru_gray/death.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "throw": {
+   "file": "sprites/characters/Hotaru_gray/throw.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "severance": {
+   "file": "sprites/characters/Hotaru_gray/severance.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "Mukuro": {
+  "idle": {
+   "file": "sprites/characters/Mukuro/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "run": {
+   "file": "sprites/characters/Mukuro/run.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 8,
+   "fps": 12,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "jump": {
+   "file": "sprites/characters/Mukuro/jump.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "dash": {
+   "file": "sprites/characters/Mukuro/dash.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 16,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack1": {
+   "file": "sprites/characters/Mukuro/attack1.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack2": {
+   "file": "sprites/characters/Mukuro/attack2.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack3": {
+   "file": "sprites/characters/Mukuro/attack3.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heavy": {
+   "file": "sprites/characters/Mukuro/heavy.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "deflect": {
+   "file": "sprites/characters/Mukuro/deflect.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "block": {
+   "file": "sprites/characters/Mukuro/block.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "hurt": {
+   "file": "sprites/characters/Mukuro/hurt.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "overheat": {
+   "file": "sprites/characters/Mukuro/overheat.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "death": {
+   "file": "sprites/characters/Mukuro/death.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "Kuro": {
+  "idle": {
+   "file": "sprites/characters/Kuro/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "run": {
+   "file": "sprites/characters/Kuro/run.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 8,
+   "fps": 12,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "jump": {
+   "file": "sprites/characters/Kuro/jump.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "dash": {
+   "file": "sprites/characters/Kuro/dash.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 16,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack1": {
+   "file": "sprites/characters/Kuro/attack1.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack2": {
+   "file": "sprites/characters/Kuro/attack2.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack3": {
+   "file": "sprites/characters/Kuro/attack3.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heavy": {
+   "file": "sprites/characters/Kuro/heavy.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "deflect": {
+   "file": "sprites/characters/Kuro/deflect.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 3,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "block": {
+   "file": "sprites/characters/Kuro/block.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "hurt": {
+   "file": "sprites/characters/Kuro/hurt.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "overheat": {
+   "file": "sprites/characters/Kuro/overheat.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "death": {
+   "file": "sprites/characters/Kuro/death.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "HannyaBoy": {
+  "idle": {
+   "file": "sprites/characters/HannyaBoy/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 5,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "walk": {
+   "file": "sprites/characters/HannyaBoy/walk.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "attack": {
+   "file": "sprites/characters/HannyaBoy/attack.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "hurt": {
+   "file": "sprites/characters/HannyaBoy/hurt.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "death": {
+   "file": "sprites/characters/HannyaBoy/death.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 5,
+   "fps": 8,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "BigOni": {
+  "idle": {
+   "file": "sprites/characters/BigOni/idle.png",
+   "frame_w": 112,
+   "frame_h": 88,
+   "frames": 4,
+   "fps": 5,
+   "loop": true,
+   "anchor": [
+    50,
+    85
+   ]
+  },
+  "walk": {
+   "file": "sprites/characters/BigOni/walk.png",
+   "frame_w": 112,
+   "frame_h": 88,
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    50,
+    85
+   ]
+  },
+  "slam": {
+   "file": "sprites/characters/BigOni/slam.png",
+   "frame_w": 112,
+   "frame_h": 88,
+   "frames": 8,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    50,
+    85
+   ]
+  },
+  "stagger": {
+   "file": "sprites/characters/BigOni/stagger.png",
+   "frame_w": 112,
+   "frame_h": 88,
+   "frames": 3,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    50,
+    85
+   ]
+  },
+  "death": {
+   "file": "sprites/characters/BigOni/death.png",
+   "frame_w": 112,
+   "frame_h": 88,
+   "frames": 6,
+   "fps": 6,
+   "loop": false,
+   "anchor": [
+    50,
+    85
+   ]
+  }
+ },
+ "Tetsu": {
+  "idle": {
+   "file": "sprites/characters/Tetsu/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 5,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "talk": {
+   "file": "sprites/characters/Tetsu/talk.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "DaiCam": {
+  "idle": {
+   "file": "sprites/characters/DaiCam/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "wave": {
+   "file": "sprites/characters/DaiCam/wave.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "panic": {
+   "file": "sprites/characters/DaiCam/panic.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 10,
+   "loop": true,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "CamDrone": {
+  "hover": {
+   "file": "sprites/characters/CamDrone/hover.png",
+   "frame_w": 14,
+   "frame_h": 12,
+   "frames": 4,
+   "fps": 10,
+   "loop": true,
+   "anchor": [
+    7,
+    6
+   ]
+  }
+ },
+ "ScavDrone": {
+  "hover": {
+   "file": "sprites/characters/ScavDrone/hover.png",
+   "frame_w": 24,
+   "frame_h": 20,
+   "frames": 4,
+   "fps": 10,
+   "loop": true,
+   "anchor": [
+    12,
+    10
+   ]
+  },
+  "charge": {
+   "file": "sprites/characters/ScavDrone/charge.png",
+   "frame_w": 24,
+   "frame_h": 20,
+   "frames": 4,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    12,
+    10
+   ]
+  },
+  "explode": {
+   "file": "sprites/characters/ScavDrone/explode.png",
+   "frame_w": 24,
+   "frame_h": 20,
+   "frames": 6,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    12,
+    10
+   ]
+  }
+ },
+ "Turret": {
+  "idle": {
+   "file": "sprites/characters/Turret/idle.png",
+   "frame_w": 20,
+   "frame_h": 16,
+   "frames": 4,
+   "fps": 4,
+   "loop": true,
+   "anchor": [
+    2,
+    8
+   ]
+  },
+  "charge": {
+   "file": "sprites/characters/Turret/charge.png",
+   "frame_w": 20,
+   "frame_h": 16,
+   "frames": 3,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    2,
+    8
+   ]
+  },
+  "fire": {
+   "file": "sprites/characters/Turret/fire.png",
+   "frame_w": 20,
+   "frame_h": 16,
+   "frames": 2,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    2,
+    8
+   ]
+  }
+ },
+ "ShrineTerminal": {
+  "idle": {
+   "file": "sprites/objects/ShrineTerminal/idle.png",
+   "frame_w": 18,
+   "frame_h": 30,
+   "frames": 4,
+   "fps": 5,
+   "loop": true,
+   "anchor": [
+    9,
+    29
+   ]
+  },
+  "active": {
+   "file": "sprites/objects/ShrineTerminal/active.png",
+   "frame_w": 18,
+   "frame_h": 30,
+   "frames": 4,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    9,
+    29
+   ]
+  }
+ },
+ "MemoryShard": {
+  "spin": {
+   "file": "sprites/objects/MemoryShard/spin.png",
+   "frame_w": 13,
+   "frame_h": 17,
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "anchor": [
+    6,
+    8
+   ]
+  }
+ },
+ "NeonSign_Ramen": {
+  "flicker": {
+   "file": "sprites/objects/NeonSign_Ramen/flicker.png",
+   "frame_w": 15,
+   "frame_h": 42,
+   "frames": 8,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    7,
+    0
+   ]
+  },
+  "on": {
+   "file": "sprites/objects/NeonSign_Ramen/on.png",
+   "frame_w": 15,
+   "frame_h": 42,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    7,
+    0
+   ]
+  },
+  "off": {
+   "file": "sprites/objects/NeonSign_Ramen/off.png",
+   "frame_w": 15,
+   "frame_h": 42,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    7,
+    0
+   ]
+  }
+ },
+ "NeonSign_Ninja": {
+  "flicker": {
+   "file": "sprites/objects/NeonSign_Ninja/flicker.png",
+   "frame_w": 17,
+   "frame_h": 29,
+   "frames": 8,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    8,
+    0
+   ]
+  },
+  "on": {
+   "file": "sprites/objects/NeonSign_Ninja/on.png",
+   "frame_w": 17,
+   "frame_h": 29,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    8,
+    0
+   ]
+  },
+  "off": {
+   "file": "sprites/objects/NeonSign_Ninja/off.png",
+   "frame_w": 17,
+   "frame_h": 29,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    8,
+    0
+   ]
+  }
+ },
+ "NeonSign_Bar": {
+  "flicker": {
+   "file": "sprites/objects/NeonSign_Bar/flicker.png",
+   "frame_w": 17,
+   "frame_h": 30,
+   "frames": 8,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    8,
+    0
+   ]
+  },
+  "on": {
+   "file": "sprites/objects/NeonSign_Bar/on.png",
+   "frame_w": 17,
+   "frame_h": 30,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    8,
+    0
+   ]
+  },
+  "off": {
+   "file": "sprites/objects/NeonSign_Bar/off.png",
+   "frame_w": 17,
+   "frame_h": 30,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    8,
+    0
+   ]
+  }
+ },
+ "NeonSign_Danger": {
+  "flicker": {
+   "file": "sprites/objects/NeonSign_Danger/flicker.png",
+   "frame_w": 28,
+   "frame_h": 17,
+   "frames": 8,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    14,
+    0
+   ]
+  },
+  "on": {
+   "file": "sprites/objects/NeonSign_Danger/on.png",
+   "frame_w": 28,
+   "frame_h": 17,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    14,
+    0
+   ]
+  },
+  "off": {
+   "file": "sprites/objects/NeonSign_Danger/off.png",
+   "frame_w": 28,
+   "frame_h": 17,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    14,
+    0
+   ]
+  }
+ },
+ "LaserBarrier": {
+  "on": {
+   "file": "sprites/objects/LaserBarrier/on.png",
+   "frame_w": 11,
+   "frame_h": 48,
+   "frames": 4,
+   "fps": 12,
+   "loop": true,
+   "anchor": [
+    5,
+    47
+   ]
+  },
+  "off": {
+   "file": "sprites/objects/LaserBarrier/off.png",
+   "frame_w": 11,
+   "frame_h": 48,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    5,
+    47
+   ]
+  }
+ },
+ "Crate": {
+  "intact": {
+   "file": "sprites/objects/Crate/intact.png",
+   "frame_w": 14,
+   "frame_h": 14,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    7,
+    13
+   ]
+  },
+  "cracked": {
+   "file": "sprites/objects/Crate/cracked.png",
+   "frame_w": 14,
+   "frame_h": 14,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    7,
+    13
+   ]
+  },
+  "break": {
+   "file": "sprites/objects/Crate/break.png",
+   "frame_w": 24,
+   "frame_h": 20,
+   "frames": 3,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    12,
+    19
+   ]
+  }
+ },
+ "ShockPuddle": {
+  "spark": {
+   "file": "sprites/objects/ShockPuddle/spark.png",
+   "frame_w": 24,
+   "frame_h": 8,
+   "frames": 4,
+   "fps": 12,
+   "loop": true,
+   "anchor": [
+    12,
+    7
+   ]
+  }
+ },
+ "MovingPlatform": {
+  "hover": {
+   "file": "sprites/objects/MovingPlatform/hover.png",
+   "frame_w": 32,
+   "frame_h": 9,
+   "frames": 2,
+   "fps": 10,
+   "loop": true,
+   "anchor": [
+    16,
+    0
+   ]
+  }
+ },
+ "SecurityDoor": {
+  "closed": {
+   "file": "sprites/objects/SecurityDoor/closed.png",
+   "frame_w": 14,
+   "frame_h": 36,
+   "frames": 1,
+   "fps": 1,
+   "loop": true,
+   "anchor": [
+    7,
+    35
+   ]
+  },
+  "open": {
+   "file": "sprites/objects/SecurityDoor/open.png",
+   "frame_w": 14,
+   "frame_h": 36,
+   "frames": 5,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    7,
+    35
+   ]
+  }
+ },
+ "RamenCart": {
+  "idle": {
+   "file": "sprites/objects/RamenCart/idle.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    24,
+    39
+   ]
+  }
+ },
+ "Lantern": {
+  "sway": {
+   "file": "sprites/objects/Lantern/sway.png",
+   "frame_w": 10,
+   "frame_h": 16,
+   "frames": 4,
+   "fps": 4,
+   "loop": true,
+   "anchor": [
+    5,
+    0
+   ]
+  }
+ },
+ "ServerRack": {
+  "blink": {
+   "file": "sprites/objects/ServerRack/blink.png",
+   "frame_w": 16,
+   "frame_h": 32,
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "anchor": [
+    8,
+    31
+   ]
+  }
+ },
+ "SlashFX": {
+  "slash1": {
+   "file": "sprites/fx/SlashFX/slash1.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "slash2": {
+   "file": "sprites/fx/SlashFX/slash2.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "thrust": {
+   "file": "sprites/fx/SlashFX/thrust.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "finisher": {
+   "file": "sprites/fx/SlashFX/finisher.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "air": {
+   "file": "sprites/fx/SlashFX/air.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "launcher": {
+   "file": "sprites/fx/SlashFX/launcher.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "heavy": {
+   "file": "sprites/fx/SlashFX/heavy.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "mukuro": {
+   "file": "sprites/fx/SlashFX/mukuro.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 4,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  }
+ },
+ "CombatFX": {
+  "deflect": {
+   "file": "sprites/fx/CombatFX/deflect.png",
+   "frame_w": 24,
+   "frame_h": 24,
+   "frames": 5,
+   "fps": 16,
+   "loop": false,
+   "anchor": [
+    12,
+    12
+   ]
+  },
+  "hit": {
+   "file": "sprites/fx/CombatFX/hit.png",
+   "frame_w": 16,
+   "frame_h": 16,
+   "frames": 4,
+   "fps": 16,
+   "loop": false,
+   "anchor": [
+    8,
+    8
+   ]
+  },
+  "hit_enemy": {
+   "file": "sprites/fx/CombatFX/hit_enemy.png",
+   "frame_w": 16,
+   "frame_h": 16,
+   "frames": 4,
+   "fps": 16,
+   "loop": false,
+   "anchor": [
+    8,
+    8
+   ]
+  },
+  "breach": {
+   "file": "sprites/fx/CombatFX/breach.png",
+   "frame_w": 17,
+   "frame_h": 17,
+   "frames": 4,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    8,
+    8
+   ]
+  },
+  "severance": {
+   "file": "sprites/fx/CombatFX/severance.png",
+   "frame_w": 17,
+   "frame_h": 17,
+   "frames": 2,
+   "fps": 4,
+   "loop": true,
+   "anchor": [
+    8,
+    8
+   ]
+  },
+  "explosion": {
+   "file": "sprites/fx/CombatFX/explosion.png",
+   "frame_w": 32,
+   "frame_h": 32,
+   "frames": 5,
+   "fps": 14,
+   "loop": false,
+   "anchor": [
+    16,
+    16
+   ]
+  },
+  "shockwave": {
+   "file": "sprites/fx/CombatFX/shockwave.png",
+   "frame_w": 72,
+   "frame_h": 16,
+   "frames": 5,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    36,
+    15
+   ]
+  },
+  "heal": {
+   "file": "sprites/fx/CombatFX/heal.png",
+   "frame_w": 16,
+   "frame_h": 24,
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "anchor": [
+    8,
+    23
+   ]
+  },
+  "steam": {
+   "file": "sprites/fx/CombatFX/steam.png",
+   "frame_w": 16,
+   "frame_h": 16,
+   "frames": 4,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    8,
+    15
+   ]
+  },
+  "sync": {
+   "file": "sprites/fx/CombatFX/sync.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  }
+ },
+ "MoveFX": {
+  "run_dust": {
+   "file": "sprites/fx/MoveFX/run_dust.png",
+   "frame_w": 10,
+   "frame_h": 7,
+   "frames": 4,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "land_dust": {
+   "file": "sprites/fx/MoveFX/land_dust.png",
+   "frame_w": 26,
+   "frame_h": 8,
+   "frames": 4,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    13,
+    7
+   ]
+  },
+  "wall_spark": {
+   "file": "sprites/fx/MoveFX/wall_spark.png",
+   "frame_w": 6,
+   "frame_h": 10,
+   "frames": 3,
+   "fps": 12,
+   "loop": true,
+   "anchor": [
+    3,
+    0
+   ]
+  },
+  "afterimage": {
+   "file": "sprites/fx/MoveFX/afterimage.png",
+   "frame_w": 48,
+   "frame_h": 40,
+   "frames": 2,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    24,
+    37
+   ]
+  },
+  "rain_splash": {
+   "file": "sprites/fx/MoveFX/rain_splash.png",
+   "frame_w": 7,
+   "frame_h": 4,
+   "frames": 3,
+   "fps": 12,
+   "loop": false,
+   "anchor": [
+    3,
+    3
+   ]
+  }
+ },
+ "Projectiles": {
+  "shuriken": {
+   "file": "sprites/fx/Projectiles/shuriken.png",
+   "frame_w": 7,
+   "frame_h": 7,
+   "frames": 4,
+   "fps": 16,
+   "loop": true,
+   "anchor": [
+    3,
+    3
+   ]
+  },
+  "bullet": {
+   "file": "sprites/fx/Projectiles/bullet.png",
+   "frame_w": 8,
+   "frame_h": 4,
+   "frames": 2,
+   "fps": 8,
+   "loop": true,
+   "anchor": [
+    4,
+    2
+   ]
+  }
+ },
+ "Buttons": {
+  "new_game_normal": {
+   "file": "sprites/ui/Buttons/new_game_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "new_game_hover": {
+   "file": "sprites/ui/Buttons/new_game_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "new_game_pressed": {
+   "file": "sprites/ui/Buttons/new_game_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "new_game_disabled": {
+   "file": "sprites/ui/Buttons/new_game_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "continue_normal": {
+   "file": "sprites/ui/Buttons/continue_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "continue_hover": {
+   "file": "sprites/ui/Buttons/continue_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "continue_pressed": {
+   "file": "sprites/ui/Buttons/continue_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "continue_disabled": {
+   "file": "sprites/ui/Buttons/continue_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "chapters_normal": {
+   "file": "sprites/ui/Buttons/chapters_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "chapters_hover": {
+   "file": "sprites/ui/Buttons/chapters_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "chapters_pressed": {
+   "file": "sprites/ui/Buttons/chapters_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "chapters_disabled": {
+   "file": "sprites/ui/Buttons/chapters_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "options_normal": {
+   "file": "sprites/ui/Buttons/options_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "options_hover": {
+   "file": "sprites/ui/Buttons/options_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "options_pressed": {
+   "file": "sprites/ui/Buttons/options_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "options_disabled": {
+   "file": "sprites/ui/Buttons/options_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "credits_normal": {
+   "file": "sprites/ui/Buttons/credits_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "credits_hover": {
+   "file": "sprites/ui/Buttons/credits_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "credits_pressed": {
+   "file": "sprites/ui/Buttons/credits_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "credits_disabled": {
+   "file": "sprites/ui/Buttons/credits_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "quit_normal": {
+   "file": "sprites/ui/Buttons/quit_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "quit_hover": {
+   "file": "sprites/ui/Buttons/quit_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "quit_pressed": {
+   "file": "sprites/ui/Buttons/quit_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "quit_disabled": {
+   "file": "sprites/ui/Buttons/quit_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "resume_normal": {
+   "file": "sprites/ui/Buttons/resume_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "resume_hover": {
+   "file": "sprites/ui/Buttons/resume_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "resume_pressed": {
+   "file": "sprites/ui/Buttons/resume_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "resume_disabled": {
+   "file": "sprites/ui/Buttons/resume_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "retry_normal": {
+   "file": "sprites/ui/Buttons/retry_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "retry_hover": {
+   "file": "sprites/ui/Buttons/retry_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "retry_pressed": {
+   "file": "sprites/ui/Buttons/retry_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "retry_disabled": {
+   "file": "sprites/ui/Buttons/retry_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "back_normal": {
+   "file": "sprites/ui/Buttons/back_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "back_hover": {
+   "file": "sprites/ui/Buttons/back_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "back_pressed": {
+   "file": "sprites/ui/Buttons/back_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "back_disabled": {
+   "file": "sprites/ui/Buttons/back_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "yes_normal": {
+   "file": "sprites/ui/Buttons/yes_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "yes_hover": {
+   "file": "sprites/ui/Buttons/yes_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "yes_pressed": {
+   "file": "sprites/ui/Buttons/yes_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "yes_disabled": {
+   "file": "sprites/ui/Buttons/yes_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "no_normal": {
+   "file": "sprites/ui/Buttons/no_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "no_hover": {
+   "file": "sprites/ui/Buttons/no_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "no_pressed": {
+   "file": "sprites/ui/Buttons/no_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "no_disabled": {
+   "file": "sprites/ui/Buttons/no_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "blank_normal": {
+   "file": "sprites/ui/Buttons/blank_normal.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "blank_hover": {
+   "file": "sprites/ui/Buttons/blank_hover.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "blank_pressed": {
+   "file": "sprites/ui/Buttons/blank_pressed.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  },
+  "blank_disabled": {
+   "file": "sprites/ui/Buttons/blank_disabled.png",
+   "frame_w": 80,
+   "frame_h": 16,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    40,
+    7
+   ]
+  }
+ },
+ "MenuCursor": {
+  "spin": {
+   "file": "sprites/ui/MenuCursor/spin.png",
+   "frame_w": 11,
+   "frame_h": 11,
+   "frames": 4,
+   "fps": 10,
+   "loop": true,
+   "anchor": [
+    5,
+    5
+   ]
+  }
+ },
+ "HUD": {
+  "hp_00": {
+   "file": "sprites/ui/HUD/hp_00.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_01": {
+   "file": "sprites/ui/HUD/hp_01.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_02": {
+   "file": "sprites/ui/HUD/hp_02.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_03": {
+   "file": "sprites/ui/HUD/hp_03.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_04": {
+   "file": "sprites/ui/HUD/hp_04.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_05": {
+   "file": "sprites/ui/HUD/hp_05.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_06": {
+   "file": "sprites/ui/HUD/hp_06.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_07": {
+   "file": "sprites/ui/HUD/hp_07.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_08": {
+   "file": "sprites/ui/HUD/hp_08.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_09": {
+   "file": "sprites/ui/HUD/hp_09.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "hp_10": {
+   "file": "sprites/ui/HUD/hp_10.png",
+   "frame_w": 62,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "heat_00": {
+   "file": "sprites/ui/HUD/heat_00.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_01": {
+   "file": "sprites/ui/HUD/heat_01.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_02": {
+   "file": "sprites/ui/HUD/heat_02.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_03": {
+   "file": "sprites/ui/HUD/heat_03.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_04": {
+   "file": "sprites/ui/HUD/heat_04.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_05": {
+   "file": "sprites/ui/HUD/heat_05.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_06": {
+   "file": "sprites/ui/HUD/heat_06.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_07": {
+   "file": "sprites/ui/HUD/heat_07.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_08": {
+   "file": "sprites/ui/HUD/heat_08.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_09": {
+   "file": "sprites/ui/HUD/heat_09.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_10": {
+   "file": "sprites/ui/HUD/heat_10.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_11": {
+   "file": "sprites/ui/HUD/heat_11.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_12": {
+   "file": "sprites/ui/HUD/heat_12.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_13": {
+   "file": "sprites/ui/HUD/heat_13.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_14": {
+   "file": "sprites/ui/HUD/heat_14.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_15": {
+   "file": "sprites/ui/HUD/heat_15.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_16": {
+   "file": "sprites/ui/HUD/heat_16.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "heat_max_flash": {
+   "file": "sprites/ui/HUD/heat_max_flash.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_00": {
+   "file": "sprites/ui/HUD/integrity_00.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_01": {
+   "file": "sprites/ui/HUD/integrity_01.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_02": {
+   "file": "sprites/ui/HUD/integrity_02.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_03": {
+   "file": "sprites/ui/HUD/integrity_03.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_04": {
+   "file": "sprites/ui/HUD/integrity_04.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_05": {
+   "file": "sprites/ui/HUD/integrity_05.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_06": {
+   "file": "sprites/ui/HUD/integrity_06.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_07": {
+   "file": "sprites/ui/HUD/integrity_07.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_08": {
+   "file": "sprites/ui/HUD/integrity_08.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_09": {
+   "file": "sprites/ui/HUD/integrity_09.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_10": {
+   "file": "sprites/ui/HUD/integrity_10.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_11": {
+   "file": "sprites/ui/HUD/integrity_11.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_12": {
+   "file": "sprites/ui/HUD/integrity_12.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_13": {
+   "file": "sprites/ui/HUD/integrity_13.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_14": {
+   "file": "sprites/ui/HUD/integrity_14.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_15": {
+   "file": "sprites/ui/HUD/integrity_15.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "integrity_16": {
+   "file": "sprites/ui/HUD/integrity_16.png",
+   "frame_w": 82,
+   "frame_h": 7,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    41,
+    0
+   ]
+  },
+  "enemy_int_0": {
+   "file": "sprites/ui/HUD/enemy_int_0.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "enemy_int_1": {
+   "file": "sprites/ui/HUD/enemy_int_1.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "enemy_int_2": {
+   "file": "sprites/ui/HUD/enemy_int_2.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "enemy_int_3": {
+   "file": "sprites/ui/HUD/enemy_int_3.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "enemy_int_4": {
+   "file": "sprites/ui/HUD/enemy_int_4.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "enemy_int_5": {
+   "file": "sprites/ui/HUD/enemy_int_5.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "enemy_int_6": {
+   "file": "sprites/ui/HUD/enemy_int_6.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "enemy_int_7": {
+   "file": "sprites/ui/HUD/enemy_int_7.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "enemy_int_8": {
+   "file": "sprites/ui/HUD/enemy_int_8.png",
+   "frame_w": 24,
+   "frame_h": 4,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    12,
+    2
+   ]
+  },
+  "boss_00": {
+   "file": "sprites/ui/HUD/boss_00.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_01": {
+   "file": "sprites/ui/HUD/boss_01.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_02": {
+   "file": "sprites/ui/HUD/boss_02.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_03": {
+   "file": "sprites/ui/HUD/boss_03.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_04": {
+   "file": "sprites/ui/HUD/boss_04.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_05": {
+   "file": "sprites/ui/HUD/boss_05.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_06": {
+   "file": "sprites/ui/HUD/boss_06.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_07": {
+   "file": "sprites/ui/HUD/boss_07.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_08": {
+   "file": "sprites/ui/HUD/boss_08.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_09": {
+   "file": "sprites/ui/HUD/boss_09.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_10": {
+   "file": "sprites/ui/HUD/boss_10.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_11": {
+   "file": "sprites/ui/HUD/boss_11.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_12": {
+   "file": "sprites/ui/HUD/boss_12.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_13": {
+   "file": "sprites/ui/HUD/boss_13.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_14": {
+   "file": "sprites/ui/HUD/boss_14.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_15": {
+   "file": "sprites/ui/HUD/boss_15.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_16": {
+   "file": "sprites/ui/HUD/boss_16.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_17": {
+   "file": "sprites/ui/HUD/boss_17.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_18": {
+   "file": "sprites/ui/HUD/boss_18.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_19": {
+   "file": "sprites/ui/HUD/boss_19.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "boss_20": {
+   "file": "sprites/ui/HUD/boss_20.png",
+   "frame_w": 164,
+   "frame_h": 8,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    82,
+    0
+   ]
+  },
+  "dash_2": {
+   "file": "sprites/ui/HUD/dash_2.png",
+   "frame_w": 17,
+   "frame_h": 9,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "dash_1": {
+   "file": "sprites/ui/HUD/dash_1.png",
+   "frame_w": 17,
+   "frame_h": 9,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "dash_0": {
+   "file": "sprites/ui/HUD/dash_0.png",
+   "frame_w": 17,
+   "frame_h": 9,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "gourd_0": {
+   "file": "sprites/ui/HUD/gourd_0.png",
+   "frame_w": 30,
+   "frame_h": 14,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "gourd_1": {
+   "file": "sprites/ui/HUD/gourd_1.png",
+   "frame_w": 30,
+   "frame_h": 14,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "gourd_2": {
+   "file": "sprites/ui/HUD/gourd_2.png",
+   "frame_w": 30,
+   "frame_h": 14,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "gourd_3": {
+   "file": "sprites/ui/HUD/gourd_3.png",
+   "frame_w": 30,
+   "frame_h": 14,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "gourd_4": {
+   "file": "sprites/ui/HUD/gourd_4.png",
+   "frame_w": 30,
+   "frame_h": 14,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "gourd_5": {
+   "file": "sprites/ui/HUD/gourd_5.png",
+   "frame_w": 30,
+   "frame_h": 14,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "tool_shuriken": {
+   "file": "sprites/ui/HUD/tool_shuriken.png",
+   "frame_w": 22,
+   "frame_h": 22,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "tool_smoke": {
+   "file": "sprites/ui/HUD/tool_smoke.png",
+   "frame_w": 22,
+   "frame_h": 22,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "tool_grapple": {
+   "file": "sprites/ui/HUD/tool_grapple.png",
+   "frame_w": 22,
+   "frame_h": 22,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "tool_emp": {
+   "file": "sprites/ui/HUD/tool_emp.png",
+   "frame_w": 22,
+   "frame_h": 22,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "tool_empty": {
+   "file": "sprites/ui/HUD/tool_empty.png",
+   "frame_w": 22,
+   "frame_h": 22,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  }
+ },
+ "NamePlates": {
+  "name_hotaru": {
+   "file": "sprites/ui/NamePlates/name_hotaru.png",
+   "frame_w": 53,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "name_kuro": {
+   "file": "sprites/ui/NamePlates/name_kuro.png",
+   "frame_w": 39,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "name_tetsu": {
+   "file": "sprites/ui/NamePlates/name_tetsu.png",
+   "frame_w": 46,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "name_daicam": {
+   "file": "sprites/ui/NamePlates/name_daicam.png",
+   "frame_w": 51,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "name_mukuro": {
+   "file": "sprites/ui/NamePlates/name_mukuro.png",
+   "frame_w": 53,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "name_the_daimyo": {
+   "file": "sprites/ui/NamePlates/name_the_daimyo.png",
+   "frame_w": 77,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "name_unknown": {
+   "file": "sprites/ui/NamePlates/name_unknown.png",
+   "frame_w": 32,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "boss_big_oni": {
+   "file": "sprites/ui/NamePlates/boss_big_oni.png",
+   "frame_w": 96,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "boss_lady_luck": {
+   "file": "sprites/ui/NamePlates/boss_lady_luck.png",
+   "frame_w": 96,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "boss_mukuro": {
+   "file": "sprites/ui/NamePlates/boss_mukuro.png",
+   "frame_w": 96,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "boss_raijin": {
+   "file": "sprites/ui/NamePlates/boss_raijin.png",
+   "frame_w": 96,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "boss_kuro": {
+   "file": "sprites/ui/NamePlates/boss_kuro.png",
+   "frame_w": 96,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  },
+  "boss_the_daimyo": {
+   "file": "sprites/ui/NamePlates/boss_the_daimyo.png",
+   "frame_w": 96,
+   "frame_h": 11,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    0,
+    0
+   ]
+  }
+ },
+ "Dialogue": {
+  "box": {
+   "file": "sprites/ui/Dialogue/box.png",
+   "frame_w": 232,
+   "frame_h": 48,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    116,
+    24
+   ]
+  },
+  "next": {
+   "file": "sprites/ui/Dialogue/next.png",
+   "frame_w": 7,
+   "frame_h": 6,
+   "frames": 2,
+   "fps": 3,
+   "loop": true,
+   "anchor": [
+    3,
+    3
+   ]
+  }
+ },
+ "Portraits": {
+  "hotaru_neutral": {
+   "file": "sprites/ui/Portraits/hotaru_neutral.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  },
+  "hotaru_angry": {
+   "file": "sprites/ui/Portraits/hotaru_angry.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  },
+  "hotaru_visor_up": {
+   "file": "sprites/ui/Portraits/hotaru_visor_up.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  },
+  "kuro_neutral": {
+   "file": "sprites/ui/Portraits/kuro_neutral.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  },
+  "kuro_smirk": {
+   "file": "sprites/ui/Portraits/kuro_smirk.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  },
+  "tetsu_neutral": {
+   "file": "sprites/ui/Portraits/tetsu_neutral.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  },
+  "daicam_neutral": {
+   "file": "sprites/ui/Portraits/daicam_neutral.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  },
+  "mukuro_neutral": {
+   "file": "sprites/ui/Portraits/mukuro_neutral.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  },
+  "daimyo_neutral": {
+   "file": "sprites/ui/Portraits/daimyo_neutral.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    20,
+    20
+   ]
+  }
+ },
+ "KeyPrompts": {
+  "key_left": {
+   "file": "sprites/ui/KeyPrompts/key_left.png",
+   "frame_w": 11,
+   "frame_h": 13,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "key_left_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_left_pressed.png",
+   "frame_w": 11,
+   "frame_h": 13,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "key_up": {
+   "file": "sprites/ui/KeyPrompts/key_up.png",
+   "frame_w": 11,
+   "frame_h": 13,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "key_up_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_up_pressed.png",
+   "frame_w": 11,
+   "frame_h": 13,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "key_right": {
+   "file": "sprites/ui/KeyPrompts/key_right.png",
+   "frame_w": 11,
+   "frame_h": 13,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "key_right_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_right_pressed.png",
+   "frame_w": 11,
+   "frame_h": 13,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "key_down": {
+   "file": "sprites/ui/KeyPrompts/key_down.png",
+   "frame_w": 11,
+   "frame_h": 13,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "key_down_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_down_pressed.png",
+   "frame_w": 11,
+   "frame_h": 13,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    6
+   ]
+  },
+  "key_shift": {
+   "file": "sprites/ui/KeyPrompts/key_shift.png",
+   "frame_w": 33,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    16,
+    7
+   ]
+  },
+  "key_shift_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_shift_pressed.png",
+   "frame_w": 33,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    16,
+    7
+   ]
+  },
+  "key_space": {
+   "file": "sprites/ui/KeyPrompts/key_space.png",
+   "frame_w": 35,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    17,
+    7
+   ]
+  },
+  "key_space_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_space_pressed.png",
+   "frame_w": 35,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    17,
+    7
+   ]
+  },
+  "key_r": {
+   "file": "sprites/ui/KeyPrompts/key_r.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "key_r_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_r_pressed.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "key_q": {
+   "file": "sprites/ui/KeyPrompts/key_q.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "key_q_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_q_pressed.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "key_e": {
+   "file": "sprites/ui/KeyPrompts/key_e.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "key_e_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_e_pressed.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "key_esc": {
+   "file": "sprites/ui/KeyPrompts/key_esc.png",
+   "frame_w": 23,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    11,
+    7
+   ]
+  },
+  "key_esc_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_esc_pressed.png",
+   "frame_w": 23,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    11,
+    7
+   ]
+  },
+  "key_enter": {
+   "file": "sprites/ui/KeyPrompts/key_enter.png",
+   "frame_w": 35,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    17,
+    7
+   ]
+  },
+  "key_enter_pressed": {
+   "file": "sprites/ui/KeyPrompts/key_enter_pressed.png",
+   "frame_w": 35,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    17,
+    7
+   ]
+  },
+  "mouse_l": {
+   "file": "sprites/ui/KeyPrompts/mouse_l.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "mouse_l_pressed": {
+   "file": "sprites/ui/KeyPrompts/mouse_l_pressed.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "mouse_r": {
+   "file": "sprites/ui/KeyPrompts/mouse_r.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  },
+  "mouse_r_pressed": {
+   "file": "sprites/ui/KeyPrompts/mouse_r_pressed.png",
+   "frame_w": 11,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    5,
+    7
+   ]
+  }
+ },
+ "Banners": {
+  "flatlined": {
+   "file": "sprites/ui/Banners/flatlined.png",
+   "frame_w": 186,
+   "frame_h": 33,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    93,
+    16
+   ]
+  },
+  "severance": {
+   "file": "sprites/ui/Banners/severance.png",
+   "frame_w": 130,
+   "frame_h": 24,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    65,
+    12
+   ]
+  },
+  "synced": {
+   "file": "sprites/ui/Banners/synced.png",
+   "frame_w": 120,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    60,
+    7
+   ]
+  },
+  "shard": {
+   "file": "sprites/ui/Banners/shard.png",
+   "frame_w": 87,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    43,
+    7
+   ]
+  },
+  "victory": {
+   "file": "sprites/ui/Banners/victory.png",
+   "frame_w": 196,
+   "frame_h": 24,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    98,
+    12
+   ]
+  },
+  "press_any_key": {
+   "file": "sprites/ui/Banners/press_any_key.png",
+   "frame_w": 92,
+   "frame_h": 15,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    46,
+    7
+   ]
+  },
+  "kanji_death": {
+   "file": "sprites/ui/Banners/kanji_death.png",
+   "frame_w": 28,
+   "frame_h": 26,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    14,
+    13
+   ]
+  }
+ },
+ "ChapterCards": {
+  "ch0": {
+   "file": "sprites/ui/ChapterCards/ch0.png",
+   "frame_w": 200,
+   "frame_h": 44,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    100,
+    22
+   ]
+  },
+  "ch1": {
+   "file": "sprites/ui/ChapterCards/ch1.png",
+   "frame_w": 200,
+   "frame_h": 44,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    100,
+    22
+   ]
+  },
+  "ch2": {
+   "file": "sprites/ui/ChapterCards/ch2.png",
+   "frame_w": 200,
+   "frame_h": 44,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    100,
+    22
+   ]
+  },
+  "ch3": {
+   "file": "sprites/ui/ChapterCards/ch3.png",
+   "frame_w": 200,
+   "frame_h": 44,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    100,
+    22
+   ]
+  },
+  "ch4": {
+   "file": "sprites/ui/ChapterCards/ch4.png",
+   "frame_w": 200,
+   "frame_h": 44,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    100,
+    22
+   ]
+  },
+  "ch5": {
+   "file": "sprites/ui/ChapterCards/ch5.png",
+   "frame_w": 200,
+   "frame_h": 44,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    100,
+    22
+   ]
+  },
+  "ch6": {
+   "file": "sprites/ui/ChapterCards/ch6.png",
+   "frame_w": 200,
+   "frame_h": 44,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    100,
+    22
+   ]
+  },
+  "ch7": {
+   "file": "sprites/ui/ChapterCards/ch7.png",
+   "frame_w": 200,
+   "frame_h": 44,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    100,
+    22
+   ]
+  }
+ },
+ "Panels": {
+  "pause": {
+   "file": "sprites/ui/Panels/pause.png",
+   "frame_w": 120,
+   "frame_h": 100,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    60,
+    50
+   ]
+  }
+ },
+ "Logo": {
+  "logo": {
+   "file": "sprites/ui/Logo/logo.png",
+   "frame_w": 111,
+   "frame_h": 65,
+   "frames": 1,
+   "fps": 1,
+   "loop": false,
+   "anchor": [
+    55,
+    32
+   ]
+  }
+ }
+}

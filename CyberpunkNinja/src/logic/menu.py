@@ -1,0 +1,512 @@
+# Menus: main menu, options (difficulty), chapters, controls, pause, end.
+
+MENU = '''
+@flag
+def m_init():
+    hide()
+    is_clone = 0
+    ckind = ""
+    msel = 1
+    press_t = 0
+    pend = ""
+    chap_i = 0
+
+
+@on("menu_close")
+def m_close():
+    if is_clone == 1:
+        delete_clone()
+    else:
+        hide()
+        broadcast("text_clear")
+
+
+@on("menu_build")
+def m_build():
+    if is_clone == 1:
+        delete_clone()
+    else:
+        build()
+
+
+@proc
+def build():
+    MI_KEY.clear()
+    MI_X.clear()
+    MI_Y.clear()
+    MI_KIND.clear()
+    msel = 1
+    press_t = 0
+    pend = ""
+    menu_t = 0
+    broadcast("text_clear")
+    if menu == "main":
+        add_btn("new_game", 0, 8)
+        add_btn("continue", 0, -28)
+        add_btn("chapters", 0, -64)
+        add_btn("options", 0, -100)
+        add_btn("controls", 0, -136)
+        if has_save == 1:
+            msel = 2
+    elif menu == "pause":
+        add_deco("pause", 0, 20)
+        add_btn("resume", 0, 44)
+        add_btn("options", 0, 8)
+        add_btn("quit", 0, -28)
+    elif menu == "options" or menu == "pause_options":
+        add_deco("panel", 0, 0)
+        add_deco("ttl_options", 0, 158)
+        add_opt("preset", 130)
+        add_opt("dmg_in", 108)
+        add_opt("dmg_out", 86)
+        add_opt("wide", 64)
+        add_opt("heat", 42)
+        add_opt("slow", 20)
+        add_opt("music", -10)
+        add_opt("sfx", -32)
+        add_opt("shake", -54)
+        add_opt("controls", -86)
+        add_btn("back", 0, -142)
+    elif menu == "chapters":
+        add_deco("panel", 0, 0)
+        add_deco("ttl_chapters", 0, 150)
+        add_item("prev", "arrow", -208, 50)
+        add_item("card", "card", 0, 50)
+        add_item("next", "arrow", 208, 50)
+        add_deco("chap_label", 0, -20)
+        add_btn("back", 0, -142)
+        msel = 2
+    elif menu == "controls":
+        add_deco("panel", 0, 0)
+        add_deco("controls_page", 0, 22)
+        add_btn("back", 0, -146)
+    elif menu == "end":
+        add_deco("end_page", 0, 118)
+        if kbranch == 2:
+            add_deco("end_next_alone", 0, -84)
+        else:
+            add_deco("end_next", 0, -84)
+        add_deco("press_any_key", 0, -150)
+        end_stats()
+    if len(MI_KEY) > 0:
+        ckind = "cursor"
+        cidx = 0
+        is_clone = 1
+        clone()
+        is_clone = 0
+
+
+@proc
+def end_stats():
+    secs = floor(play_time / 30)
+    mins = floor(secs / 60)
+    secs = secs % 60
+    if secs < 10:
+        tstr = join(mins, ":0", secs)
+    else:
+        tstr = join(mins, ":", secs)
+    broadcast("text_write")
+
+
+@proc
+def add_btn(k, x, y):
+    add_item(k, "btn", x, y)
+
+
+@proc
+def add_item(k, kind, x, y):
+    MI_KEY.append(k)
+    MI_X.append(x)
+    MI_Y.append(y)
+    MI_KIND.append(kind)
+    ckind = kind
+    ckey = k
+    cx = x
+    cy = y
+    cidx = len(MI_KEY)
+    is_clone = 1
+    clone()
+    is_clone = 0
+
+
+@proc
+def add_opt(k, y):
+    add_deco(join("lbl_", k), -212, y)
+    add_item(k, "opt", 148, y)
+
+
+@proc
+def add_deco(c, x, y):
+    ckind = "deco"
+    ccos = c
+    cx = x
+    cy = y
+    cidx = 0
+    is_clone = 1
+    clone()
+    is_clone = 0
+
+
+@on("t_draw")
+def draw():
+    if is_clone == 1:
+        m_draw()
+    elif mode == "menu":
+        m_ctl()
+
+
+@proc
+def m_ctl():
+    n = len(MI_KEY)
+    menu_t += 1
+    if menu_t < 4:
+        omx = mouse_x()
+        omy = mouse_y()
+        return
+    if menu == "end":
+        if p_any == 1:
+            sfxq.append("menu_select")
+            menu = "main"
+            music_want = "title"
+            broadcast("menu_build")
+        return
+    if n == 0:
+        return
+    if press_t > 0:
+        press_t -= 1
+        if press_t == 0:
+            activate(pend)
+        return
+    old = msel
+    if pU == 1:
+        step_sel(-1)
+    if pD == 1:
+        step_sel(1)
+    mx = mouse_x()
+    my = mouse_y()
+    if mx != omx or my != omy:
+        for k in range(1, n + 1):
+            item_w(k)
+            if abs(mx - MI_X[k]) < iw and abs(my - MI_Y[k]) < 15:
+                if not (MI_KEY[k] == "continue" and has_save == 0):
+                    msel = k
+    omx = mx
+    omy = my
+    if msel != old:
+        sfxq.append("menu_move")
+    sk = MI_KEY[msel]
+    if pL == 1 or pR == 1:
+        if MI_KIND[msel] == "opt":
+            change_opt(sk, pR - pL)
+        elif sk == "card":
+            change_chap(pR - pL)
+    clicked = 0
+    if p_click == 1:
+        item_w(msel)
+        if abs(mx - MI_X[msel]) < iw and abs(my - MI_Y[msel]) < 15:
+            clicked = 1
+    if p_ok == 1 or clicked == 1:
+        if MI_KIND[msel] == "opt":
+            change_opt(sk, 1)
+        elif MI_KIND[msel] == "arrow":
+            if sk == "prev":
+                change_chap(-1)
+            else:
+                change_chap(1)
+        elif not (sk == "continue" and has_save == 0):
+            sfxq.append("menu_select")
+            pend = sk
+            press_t = 4
+
+
+@proc
+def item_w(k):
+    if MI_KIND[k] == "card":
+        iw = 170
+    elif MI_KIND[k] == "arrow":
+        iw = 16
+    elif MI_KIND[k] == "opt":
+        iw = 70
+    else:
+        iw = 78
+
+
+@proc
+def step_sel(dv):
+    msel += dv
+    if msel < 1:
+        msel = len(MI_KEY)
+    if msel > len(MI_KEY):
+        msel = 1
+    if MI_KEY[msel] == "continue" and has_save == 0:
+        msel += dv
+
+
+@proc
+def change_opt(k, dv):
+    sfxq.append("menu_move")
+    if k == "preset":
+        # Custom (4) leaves the settings as they are
+        opt_preset = (opt_preset + dv) % 5
+        if opt_preset < 4:
+            apply_preset()
+    elif k == "dmg_in":
+        opt_din = (opt_din + dv) % 5
+        find_preset()
+    elif k == "dmg_out":
+        opt_dout = (opt_dout + dv) % 5
+        find_preset()
+    elif k == "wide":
+        opt_wide = 1 - opt_wide
+        find_preset()
+    elif k == "slow":
+        opt_slow = 1 - opt_slow
+        find_preset()
+    elif k == "heat":
+        opt_heat = 1 - opt_heat
+        find_preset()
+    elif k == "shake":
+        opt_shake = 1 - opt_shake
+    elif k == "music":
+        opt_music = (opt_music + dv) % 6
+        broadcast("music_vol")
+    elif k == "sfx":
+        opt_sfx = (opt_sfx + dv) % 6
+        broadcast("sfx_vol")
+    elif k == "controls":
+        sfxq.append("menu_select")
+        if menu == "pause_options":
+            ctl_from = "pause_options"
+        else:
+            ctl_from = "options"
+        menu = "controls"
+        broadcast("menu_build")
+    set_mults()
+
+
+@proc
+def apply_preset():
+    # Easy, Normal, Hard, Insane: deflect window, Stance buildup, damage taken / dealt
+    # (multiplier steps 0x, 0.5x, 1x, 1.5x, 3x); game speed is never slowed by a preset
+    opt_wide = 0
+    opt_heat = 0
+    opt_slow = 0
+    opt_din = 2
+    opt_dout = 2
+    if opt_preset == 0:
+        opt_wide = 1
+        opt_heat = 1
+        opt_din = 1
+        opt_dout = 3
+    elif opt_preset == 1:
+        opt_heat = 1
+        opt_dout = 3
+    elif opt_preset == 3:
+        opt_din = 3
+        opt_dout = 1
+
+
+@proc
+def find_preset():
+    # a hand-set mix that matches no preset shows as Custom
+    opt_preset = 4
+    for pk in range(4):
+        if opt_preset == 4:
+            opt_preset = pk
+            keep_w = opt_wide
+            keep_h = opt_heat
+            keep_s = opt_slow
+            keep_i = opt_din
+            keep_o = opt_dout
+            apply_preset()
+            same = opt_wide == keep_w and opt_heat == keep_h and opt_slow == keep_s and opt_din == keep_i and opt_dout == keep_o
+            opt_wide = keep_w
+            opt_heat = keep_h
+            opt_slow = keep_s
+            opt_din = keep_i
+            opt_dout = keep_o
+            if not same:
+                opt_preset = 4
+
+
+@proc
+def set_mults():
+    dmg_in = MULTS[opt_din + 1]
+    dmg_out = MULTS[opt_dout + 1]
+
+
+@proc
+def change_chap(dv):
+    chap_i = (chap_i + dv) % 9
+    sfxq.append("menu_move")
+
+
+@proc
+def activate(k):
+    if k == "new_game":
+        broadcast("new_game")
+    elif k == "continue":
+        broadcast("continue_game")
+    elif k == "chapters":
+        menu = "chapters"
+        broadcast("menu_build")
+    elif k == "options":
+        if menu == "pause":
+            menu = "pause_options"
+        else:
+            menu = "options"
+        broadcast("menu_build")
+    elif k == "quit":
+        broadcast("quit_to_title")
+    elif k == "controls":
+        ctl_from = "main"
+        menu = "controls"
+        broadcast("menu_build")
+    elif k == "resume":
+        menu = ""
+        mode = "play"
+        broadcast("menu_close")
+    elif k == "card":
+        if chap_i == 0:
+            broadcast("new_game")
+        else:
+            broadcast(join("start_ch", chap_i))
+    elif k == "back":
+        sfxq.append("menu_back")
+        if menu == "pause_options":
+            menu = "pause"
+        elif menu == "controls":
+            menu = ctl_from
+        else:
+            menu = "main"
+        broadcast("menu_build")
+
+
+@proc
+def m_draw():
+    if ckind == "cursor":
+        k = msel
+        if MI_KIND[k] == "opt":
+            goto(MI_X[k] - 92, MI_Y[k] - 2)
+        elif MI_KIND[k] == "card":
+            hide()
+            return
+        elif MI_KIND[k] == "arrow":
+            goto(MI_X[k], MI_Y[k] - 34)
+        else:
+            goto(MI_X[k] - 98, MI_Y[k] - 2)
+        costume(join("spin_", floor(frame / 3) % 4))
+        show()
+        return
+    st = "normal"
+    if msel == cidx:
+        st = "hover"
+        if press_t > 0:
+            st = "pressed"
+    if ckind == "btn":
+        if ckey == "continue" and has_save == 0:
+            st = "disabled"
+        costume(join(ckey, "_", st))
+    elif ckind == "opt":
+        if ckey == "music":
+            vv = join("vol", opt_music)
+        elif ckey == "sfx":
+            vv = join("vol", opt_sfx)
+        elif ckey == "controls":
+            vv = "view"
+        elif ckey == "preset":
+            vv = PRESETS[opt_preset + 1]
+        elif ckey == "dmg_in":
+            vv = MULTN[opt_din + 1]
+        elif ckey == "dmg_out":
+            vv = MULTN[opt_dout + 1]
+        else:
+            if ckey == "wide":
+                ov = opt_wide
+            elif ckey == "slow":
+                ov = opt_slow
+            elif ckey == "heat":
+                ov = opt_heat
+            else:
+                ov = opt_shake
+            if ov == 1:
+                vv = "on"
+            else:
+                vv = "off"
+        if st == "pressed":
+            st = "hover"
+        costume(join("val_", vv, "_", st))
+    elif ckind == "arrow":
+        if ckey == "prev":
+            costume("key_left")
+        else:
+            costume("key_right")
+        if st == "hover":
+            effect("brightness", 30)
+        else:
+            effect("brightness", 0)
+    elif ckind == "card":
+        costume(join("ch", chap_i))
+        size(88)
+        if chap_i > 8:
+            effect("brightness", -55)
+        elif msel == cidx and frame % 30 < 15:
+            effect("brightness", 15)
+        else:
+            effect("brightness", 0)
+    elif ccos == "chap_label":
+        if chap_i < 9:
+            costume("lbl_play")
+        else:
+            costume("lbl_locked")
+    elif ccos == "press_any_key":
+        costume(ccos)
+        if frame % 40 < 20:
+            effect("ghost", 0)
+        else:
+            effect("ghost", 70)
+    else:
+        costume(ccos)
+    goto(cx, cy)
+    show()
+'''
+
+
+TEXTFX = '''
+@flag
+def t_init():
+    hide()
+    is_clone = 0
+
+
+@on("text_clear")
+def t_clear():
+    if is_clone == 1:
+        delete_clone()
+
+
+@on("text_write")
+def t_write():
+    if is_clone == 0:
+        write_line(join("TIME   ", tstr), -116, 34)
+        write_line(join("DEATHS   ", deaths), -116, 10)
+        write_line(join("MEMORY SHARDS   ", shards, " / 9"), -116, -14)
+
+
+@proc
+def write_line(s, x, y):
+    tx = x
+    for i in range(1, strlen(s) + 1):
+        costume(join("ch_", letter(i, s)))
+        gw = FONT_W[costume_num()]
+        goto(tx, y)
+        is_clone = 1
+        clone()
+        is_clone = 0
+        tx += gw * 2 + 2
+
+
+@clone
+def t_show():
+    show()
+'''

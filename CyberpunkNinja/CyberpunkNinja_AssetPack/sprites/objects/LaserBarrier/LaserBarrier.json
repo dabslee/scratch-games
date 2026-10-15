@@ -1,0 +1,26 @@
+{
+ "on": {
+  "file": "sprites/objects/LaserBarrier/on.png",
+  "frame_w": 11,
+  "frame_h": 48,
+  "frames": 4,
+  "fps": 12,
+  "loop": true,
+  "anchor": [
+   5,
+   47
+  ]
+ },
+ "off": {
+  "file": "sprites/objects/LaserBarrier/off.png",
+  "frame_w": 11,
+  "frame_h": 48,
+  "frames": 1,
+  "fps": 1,
+  "loop": true,
+  "anchor": [
+   5,
+   47
+  ]
+ }
+}

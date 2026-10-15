@@ -1,0 +1,62 @@
+{
+ "idle": {
+  "file": "sprites/characters/HannyaBoy/idle.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 5,
+  "loop": true,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "walk": {
+  "file": "sprites/characters/HannyaBoy/walk.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 6,
+  "fps": 8,
+  "loop": true,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "attack": {
+  "file": "sprites/characters/HannyaBoy/attack.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 6,
+  "fps": 10,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "hurt": {
+  "file": "sprites/characters/HannyaBoy/hurt.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 2,
+  "fps": 10,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "death": {
+  "file": "sprites/characters/HannyaBoy/death.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 5,
+  "fps": 8,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ }
+}

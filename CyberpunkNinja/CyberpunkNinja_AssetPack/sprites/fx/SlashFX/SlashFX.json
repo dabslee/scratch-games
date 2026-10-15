@@ -1,0 +1,98 @@
+{
+ "slash1": {
+  "file": "sprites/fx/SlashFX/slash1.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "slash2": {
+  "file": "sprites/fx/SlashFX/slash2.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "thrust": {
+  "file": "sprites/fx/SlashFX/thrust.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "finisher": {
+  "file": "sprites/fx/SlashFX/finisher.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "air": {
+  "file": "sprites/fx/SlashFX/air.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "launcher": {
+  "file": "sprites/fx/SlashFX/launcher.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "heavy": {
+  "file": "sprites/fx/SlashFX/heavy.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 12,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "mukuro": {
+  "file": "sprites/fx/SlashFX/mukuro.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ }
+}

@@ -1,0 +1,266 @@
+{
+ "idle": {
+  "file": "sprites/characters/Hotaru_gray/idle.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 6,
+  "loop": true,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "run": {
+  "file": "sprites/characters/Hotaru_gray/run.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 8,
+  "fps": 12,
+  "loop": true,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "jump": {
+  "file": "sprites/characters/Hotaru_gray/jump.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 5,
+  "fps": 10,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "land": {
+  "file": "sprites/characters/Hotaru_gray/land.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 2,
+  "fps": 12,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "wall_cling": {
+  "file": "sprites/characters/Hotaru_gray/wall_cling.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 2,
+  "fps": 6,
+  "loop": true,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "dash": {
+  "file": "sprites/characters/Hotaru_gray/dash.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 16,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "attack1": {
+  "file": "sprites/characters/Hotaru_gray/attack1.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "attack2": {
+  "file": "sprites/characters/Hotaru_gray/attack2.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "attack3": {
+  "file": "sprites/characters/Hotaru_gray/attack3.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "attack4": {
+  "file": "sprites/characters/Hotaru_gray/attack4.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 5,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "air_attack": {
+  "file": "sprites/characters/Hotaru_gray/air_attack.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "launcher": {
+  "file": "sprites/characters/Hotaru_gray/launcher.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "plunge": {
+  "file": "sprites/characters/Hotaru_gray/plunge.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 3,
+  "fps": 12,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "heavy": {
+  "file": "sprites/characters/Hotaru_gray/heavy.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 6,
+  "fps": 10,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "deflect": {
+  "file": "sprites/characters/Hotaru_gray/deflect.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 3,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "block": {
+  "file": "sprites/characters/Hotaru_gray/block.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 1,
+  "fps": 1,
+  "loop": true,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "hurt": {
+  "file": "sprites/characters/Hotaru_gray/hurt.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 2,
+  "fps": 10,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "overheat": {
+  "file": "sprites/characters/Hotaru_gray/overheat.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 4,
+  "fps": 6,
+  "loop": true,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "heal": {
+  "file": "sprites/characters/Hotaru_gray/heal.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 6,
+  "fps": 8,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "death": {
+  "file": "sprites/characters/Hotaru_gray/death.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 6,
+  "fps": 8,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "throw": {
+  "file": "sprites/characters/Hotaru_gray/throw.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 3,
+  "fps": 14,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ },
+ "severance": {
+  "file": "sprites/characters/Hotaru_gray/severance.png",
+  "frame_w": 48,
+  "frame_h": 40,
+  "frames": 5,
+  "fps": 12,
+  "loop": false,
+  "anchor": [
+   24,
+   37
+  ]
+ }
+}

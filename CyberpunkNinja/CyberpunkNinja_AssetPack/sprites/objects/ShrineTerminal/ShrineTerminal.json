@@ -1,0 +1,26 @@
+{
+ "idle": {
+  "file": "sprites/objects/ShrineTerminal/idle.png",
+  "frame_w": 18,
+  "frame_h": 30,
+  "frames": 4,
+  "fps": 5,
+  "loop": true,
+  "anchor": [
+   9,
+   29
+  ]
+ },
+ "active": {
+  "file": "sprites/objects/ShrineTerminal/active.png",
+  "frame_w": 18,
+  "frame_h": 30,
+  "frames": 4,
+  "fps": 8,
+  "loop": true,
+  "anchor": [
+   9,
+   29
+  ]
+ }
+}

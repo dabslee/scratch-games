@@ -1,0 +1,4 @@
+# Python 3.11+; ffmpeg must also be on the PATH (the music and sound effects are encoded to MP3)
+pillow>=10
+numpy>=1.26
+scipy>=1.11

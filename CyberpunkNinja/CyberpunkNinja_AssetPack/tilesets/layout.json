@@ -1,0 +1,67 @@
+{
+ "tile_size": 8,
+ "columns": 8,
+ "rows": [
+  [
+   "top_left",
+   "top",
+   "top_right",
+   "col_top",
+   "plat_l",
+   "plat_m",
+   "plat_r",
+   "plat_single"
+  ],
+  [
+   "left",
+   "center",
+   "right",
+   "col_mid",
+   "center_b",
+   "center_c",
+   "vent",
+   "grate"
+  ],
+  [
+   "bottom_left",
+   "bottom",
+   "bottom_right",
+   "col_bottom",
+   "inner_tl",
+   "inner_tr",
+   "inner_bl",
+   "inner_br"
+  ],
+  [
+   "single",
+   "row_l",
+   "row_m",
+   "row_r",
+   "spikes_up",
+   "spikes_down",
+   "hazard",
+   "ladder"
+  ],
+  [
+   "pipe_h",
+   "pipe_v",
+   "trim_cyan",
+   "trim_mag",
+   "window_dark",
+   "window_lit",
+   "window_lit2",
+   "breakable"
+  ],
+  [
+   "electro_0",
+   "electro_1",
+   "electro_2",
+   "electro_3",
+   "breakable_cracked",
+   "trim_gold",
+   "trim_red",
+   "blank"
+  ]
+ ],
+ "note": "electro_0..3 is a 4-frame animated hazard. Autotile rules in README."
+}

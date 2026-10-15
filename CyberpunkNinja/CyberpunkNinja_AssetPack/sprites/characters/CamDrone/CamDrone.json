@@ -1,0 +1,14 @@
+{
+ "hover": {
+  "file": "sprites/characters/CamDrone/hover.png",
+  "frame_w": 14,
+  "frame_h": 12,
+  "frames": 4,
+  "fps": 10,
+  "loop": true,
+  "anchor": [
+   7,
+   6
+  ]
+ }
+}

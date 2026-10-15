@@ -1,0 +1,17 @@
+{
+  "name": "cyberpunk-ninja-playtest",
+  "version": "1.0.0",
+  "description": "Headless playtests for CyberpunkNinja.sb3: scratch-vm in Chromium, driven by a bot",
+  "scripts": {
+    "boss": "node shot.js game.sb3 boss_run.js",
+    "tells": "node shot.js game.sb3 tell_audit.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "playwright-core": "^1.63.0",
+    "scratch-render": "^2.2.84",
+    "scratch-storage": "^6.2.1",
+    "scratch-vm": "^5.0.300"
+  },
+  "private": true
+}
