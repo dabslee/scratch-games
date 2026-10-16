@@ -10,7 +10,7 @@ A collection of games built in Scratch. Each folder holds a project file you can
 
 A ninja action platformer set in a futuristic sci-fi city. You play as Hotaru, a young woman who wakes in the slums with no memories and a ghost in her head; your goal is to fight your way up to the Kanshi Spire. The platforming takes after Celeste and the deflect-and-stance combat after Sekiro, spread across 8 chapters of story and boss fights. The `.sb3` is generated rather than hand-edited: a Python build compiles the game logic to Scratch blocks, renders the rooms, synthesizes the audio, and packs it all into a project. Headless playtests run the game in scratch-vm under Playwright.
 
-## Gavilar
+## Stormlight Archives: The Death of Gavilar
 
 <img src="https://img.shields.io/badge/Scratch-2.0-orange?style=flat-square&logo=scratch&logoColor=white">
 
@@ -26,7 +26,7 @@ A fan game based on the prologue of Brandon Sanderson's *The Way of Kings*. Play
 
 A real-time strategy game set in the Battle School simulator from *Ender's Game*. Drag-select fighters, cruisers and dreadnoughts, use asteroids for cover, and wipe out the Formic fleet. Play six pre-designed Adventure missions, or Freeplay, where random battles get harder as you go.
 
-## PacMan
+## Pac-Man
 
 <img src="https://img.shields.io/badge/Scratch-2.0-orange?style=flat-square&logo=scratch&logoColor=white">
 
