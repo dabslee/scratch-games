@@ -1,6 +1,7 @@
 # Scratch Games
 
 A collection of games built in Scratch. Each folder holds a project file you can load into the Scratch editor, plus a README with instructions, controls and credits.
+See these games in action on my [Scratch profile](https://scratch.mit.edu/users/thebslee/)
 
 ## Cyberpunk Ninja
 
